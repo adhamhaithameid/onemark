@@ -23,5 +23,6 @@ One file per decision. Each records **what was rejected and why** — that is th
 | [0012](0012-latency-budget-scoped-to-real-documents.md) | Latency budget scoped to real documents, not a synthetic 5 MB file | Accepted |
 | [0013](0013-wrap-a-proven-html-sanitiser.md) | Wrap a proven HTML sanitiser; do not write one | Accepted |
 | [0014](0014-sanitiser-v2-profile-free-allowlist.md) | Sanitiser hardening: profile-free allowlist, URL policy on raw HTML, forced safe path | Accepted · supersedes 0013 |
+| [0015](0015-present-layer-verified-by-assertions.md) | Present-layer fidelity verified by structural/style/screenshot assertions, never by eye | Accepted |
 
 [Template](0000-template.md)

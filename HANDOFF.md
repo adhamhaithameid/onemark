@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-08-21 (security-audit session) |
-| Phase | **M0 complete · M1.1–1.3 complete + hardened** — M3 100%, M4 100%, XSS 93/93 blocked, 4 defects fixed ([ADR-0014](docs/adr/0014-sanitiser-v2-profile-free-allowlist.md)) |
+| Last updated | 2026-08-22 |
+| Phase | **M0 complete · M1.1–1.4 complete** — M3 100%, M4 100%, XSS 93/93 blocked, CSS vendored ([ADR-0015](docs/adr/0015-present-layer-verified-by-assertions.md)), OQ-1/2/5 resolved |
 | Repo | https://github.com/adhamhaithameid/onemark (public, nothing pushed) |
 | Local | `~/Desktop/code/OneMark` — git initialised, remote added, **2 local commits** (tooling only: beads init + graphify/session-log; all product code still untracked) |
 
@@ -53,31 +53,31 @@ The documentation is complete. **M0 is done** — the architecture is proven end
 
 ## Next action
 
-**M0 and tasks 1.1–1.3 are complete, and a 2026-08-21 security-audit pass hardened the
-sanitiser and engine** (three sanitiser defects + the WASM depth trap — see
-[ADR-0014](docs/adr/0014-sanitiser-v2-profile-free-allowlist.md) and the
-[audit session log](docs/session-logs/2026-08-21-security-audit.md)). The next build task is
-**task 1.4 — GitHub Markdown CSS, light and dark**. Verify: visual match on a reference document.
-It is the first task judged by eye rather than by byte comparison, so decide up front what "match"
-means and how it is checked (Playwright is installed; a screenshot/style-diff against a reference
-is the obvious falsifiable form).
+**M0 and tasks 1.1–1.4 are complete; OQ-1/2/5 are resolved (PRD §12).** The next build
+task is **task 1.5 — Shiki syntax highlighting, bundled** (verify: zero network requests
+during render). It is tracked as `OneMark-5gz`, along with 1.6–1.8 and the M1c cluster;
+see `bd ready`. Task 1.4's verification method is [ADR-0015](docs/adr/0015-present-layer-verified-by-assertions.md):
+structural + pinned-reference-value assertions in the default suite, screenshot pixel-diff
+opt-in via `pnpm --filter @onemark/renderer test:visual`. When task 1.8 lands alert markup,
+the screenshot baselines will fail — that is the designed re-baseline tripwire, not a bug.
 
 **Carry forward on security:** `renderToSafeHtml` is the shipping path; `renderToUnsafeHtml`
 exists only for the conformance suites and must never reach a DOM. The jsdom-only caveat is now
 partly closed — the sanitiser passed a real-browser matrix (WebKit/Chromium/Firefox: 0 failures,
 0 executions) on 2026-08-21; the full-browser conformance pass at task 1.22 remains owed.
 
-### Verified state after hardening (2026-08-21)
+### Verified state after task 1.4 (2026-08-22)
 
 | | |
 |---|---|
 | fmt / clippy -D warnings | clean |
 | Rust tests | 17 passing |
-| TypeScript tests | 57 engine + 76 renderer |
+| TypeScript tests | 57 engine + 84 renderer (default) + 2 visual (opt-in) |
 | M3 CommonMark | 652/652 = 100.00% |
 | M4 GFM extensions | 22/22 = 100.00% |
 | XSS corpus | **93/93 blocked, 68/93 live unsanitised** |
 | Real browsers | WebKit/Chromium/Firefox: 0 failures, 0 executions (sanitised) |
+| Task 1.4 CSS | vendored 5.8.1; structural + reference assertions green both themes; screenshot diff green |
 
 ### What M0 delivered
 
@@ -132,3 +132,4 @@ The 70 ms of headroom in M1a is an assumption. It gets tested at task 1.20.
 | 2026-08-16 | Architecture grilling | 11 ADRs, full doc set, repo created. [Log](docs/session-logs/2026-08-16-architecture-grilling.md) |
 | 2026-08-18 | M0 foundation | First code. OQ-3 + OQ-4 resolved, OQ-6 raised, 2 blockers. [Log](docs/session-logs/2026-08-18-m0-foundation.md) |
 | 2026-08-21 | Security audit | 4 defects fixed, ADR-0014, corpus 49→93, browser matrix green. [Log](docs/session-logs/2026-08-21-security-audit.md) |
+| 2026-08-22 | Records + task 1.4 | ADR-0015, CSS vendored+verified, OQ-1/2/5 resolved, work fully ticketed. [Log](docs/session-logs/2026-08-22-plan-completion.md) |

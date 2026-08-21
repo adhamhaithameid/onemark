@@ -11,6 +11,22 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 **M0 Foundation complete.** The architecture is proven end to end: TS → WASM → AST → TS, byte-identical to the native build.
 
+### Added — 2026-08-22 (task 1.4 + open questions closed)
+- **Task 1.4 — GitHub Markdown CSS, light and dark** (`packages/renderer/css/`): vendored
+  from `github-markdown-css@5.8.1` (MIT) via `scripts/vendor-github-css.mjs`
+  - **ADR-0015** — present-layer fidelity verified by assertions, never by eye:
+    structural + pinned-reference-value tests run in the default suite
+    (`test/theme.test.ts`, 8 tests); screenshot pixel-diff against committed baselines
+    runs opt-in (`pnpm --filter @onemark/renderer test:visual`)
+- **OQ-1 resolved** — golden-corpus selection rule: deterministic, seeded, stratified,
+  committed manifest, frozen (PRD §12)
+- **OQ-2 resolved** — HTML normalization rules R1–R6, structural DOM diff via parse5,
+  each rule named after the GitHub artifact it neutralises; anything else counts as a
+  real difference (PRD §12)
+- **OQ-5 resolved** — OPFS library is a recent-files store, not a managed library (PRD §12)
+- `fidelity/package.json` + `src/spec.mjs` — `pnpm spec` now verifies corpus integrity
+  (CommonMark 652 · GFM gated 22 · XSS 93)
+
 ### Fixed — 2026-08-21 (security audit + hardening, [ADR-0014](docs/adr/0014-sanitiser-v2-profile-free-allowlist.md))
 - **Dead allowlist config** (`packages/renderer/src/sanitize.ts`): `USE_PROFILES` overrode
   the curated `ALLOWED_TAGS`/`ALLOWED_ATTR`, so DOMPurify's broad default HTML profile

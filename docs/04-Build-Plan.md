@@ -54,7 +54,7 @@
 | 1.1 | `packages/renderer` — AST → semantic HTML | ✅ **CommonMark 652/652 = 100.00%** through our own renderer |
 | 1.2 | GFM extensions: tables, task lists, strikethrough, autolinks, footnotes | ✅ **GFM extensions 22/22 = 100.00%** (M4) |
 | 1.3 | HTML sanitizer + allowlist | ✅ **49/49 XSS vectors blocked** ([ADR-0013](adr/0013-wrap-a-proven-html-sanitiser.md)) |
-| 1.4 | GitHub Markdown CSS, light + dark | Visual match on a reference document |
+| 1.4 | GitHub Markdown CSS, light + dark | ✅ **2026-08-22** — vendored `github-markdown-css@5.8.1` light+dark ([ADR-0015](adr/0015-present-layer-verified-by-assertions.md)): structural + reference-value assertions in the default suite, screenshot diff opt-in (`test:visual`) |
 | 1.5 | Shiki syntax highlighting, **bundled** | Zero network requests during render |
 | 1.6 | KaTeX math, **bundled fonts** | `$x^2$` typesets offline |
 | 1.7 | Mermaid, `securityLevel: 'strict'`, **bundled** | Diagram renders offline |
@@ -154,7 +154,7 @@ Ordered by expected value, all deferred until v1 ships and gets used daily:
 | Milestone | Status |
 |---|---|
 | M0 · Foundation | ✅ **complete** — see [session log](session-logs/2026-08-18-m0-foundation.md) |
-| M1 · Web | 🟡 **1.1–1.3 done** — M3 100%, M4 100%, XSS corpus blocked. **2026-08-21 hardening pass:** 3 sanitiser defects + 1 WASM depth-trap fixed ([ADR-0014](adr/0014-sanitiser-v2-profile-free-allowlist.md)); corpus 49→93, cross-browser verified |
+| M1 · Web | 🟡 **1.1–1.4 done** — M3 100%, M4 100%, XSS corpus blocked. **2026-08-21 hardening pass:** 3 sanitiser defects + 1 WASM depth-trap fixed ([ADR-0014](adr/0014-sanitiser-v2-profile-free-allowlist.md)); corpus 49→93, cross-browser verified. **2026-08-22:** task 1.4 CSS vendored + verified ([ADR-0015](adr/0015-present-layer-verified-by-assertions.md)); OQ-1/2/5 resolved |
 | M2 · macOS | ⬜ not started |
 | M3 · Windows + Linux | ⬜ not started |
 | M4 · Mobile | ⬜ not started |
