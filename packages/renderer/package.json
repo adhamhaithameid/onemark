@@ -1,0 +1,30 @@
+{
+  "name": "@onemark/renderer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "LicenseRef-PolyForm-Noncommercial-1.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "test": "vitest run --exclude '**/node_modules/**' --exclude '**/browser-security.test.ts' --exclude '**/theme-screenshot.test.ts'",
+    "typecheck": "tsc --noEmit",
+    "test:browser": "vitest run test/browser-security.test.ts",
+    "test:visual": "vitest run test/theme-screenshot.test.ts"
+  },
+  "dependencies": {
+    "@onemark/engine": "workspace:*",
+    "dompurify": "^3.4.14"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^22.10.0",
+    "@types/pngjs": "^6.0.5",
+    "jsdom": "^30.0.1",
+    "pixelmatch": "^7.2.0",
+    "playwright": "^1.62.1",
+    "pngjs": "^7.0.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}
