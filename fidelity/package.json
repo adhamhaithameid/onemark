@@ -1,0 +1,8 @@
+{
+  "name": "@onemark/fidelity",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "spec": "node src/spec.mjs"
+  }
+}
