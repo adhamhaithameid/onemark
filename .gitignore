@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Rust
+target/
+**/*.rs.bk
+
+# Build output
+packages/engine/wasm/
+dist/
+build/
+out/
+*.wasm
+!**/fixtures/**/*.wasm
+src-tauri/target/
+src-tauri/gen/
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+**/__screenshots__/**/*.diff.png
+
+# Golden corpus cache (regenerated from GitHub API)
+docs/fidelity/.cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Agent tooling, not part of the project
+.claude/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/

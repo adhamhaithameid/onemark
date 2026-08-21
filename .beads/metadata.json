@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "OneMark",
+  "project_id": "9eadc27c-0125-4ebb-8b32-a3d1913c7889"
+}
