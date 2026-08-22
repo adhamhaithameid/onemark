@@ -328,6 +328,16 @@ function render(node: MarkdownNode, ctx: Ctx, ancestors: MarkdownNode[]): void {
       break;
     }
 
+    case 'math': {
+      // Inert placeholder; renderToSafeHtml hydrates it with KaTeX *after*
+      // sanitisation (KaTeX needs inline styles/MathML the allowlist must keep
+      // forbidding for document content). The unsafe path leaves it visible.
+      const display = attrs['display'] === true;
+      const cls = display ? 'onemark-math onemark-math-display' : 'onemark-math';
+      out.lit(`<span class="${cls}">${escapeHtml(node.literal ?? '')}</span>`);
+      break;
+    }
+
     case 'html_block':
       out.cr();
       out.lit(applyTagfilter(node.literal ?? '', ctx));
