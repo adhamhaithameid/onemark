@@ -29,7 +29,8 @@ import { dirname, join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { chromium, firefox, webkit, type Browser } from 'playwright';
 
-import { GFM_OPTIONS, loadNodeEngine } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { GFM_OPTIONS } from '@onemark/engine';
 
 import { renderToSafeHtml, renderToUnsafeHtml } from '../src/index.js';
 

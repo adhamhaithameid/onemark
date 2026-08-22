@@ -1,0 +1,72 @@
+{
+  "type": "document",
+  "children": [
+    {
+      "type": "alert",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "literal": "careful",
+              "position": {
+                "start": {
+                  "line": 2,
+                  "column": 3,
+                  "offset": 15
+                },
+                "end": {
+                  "line": 2,
+                  "column": 9,
+                  "offset": 21
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 2,
+              "column": 3,
+              "offset": 15
+            },
+            "end": {
+              "line": 2,
+              "column": 9,
+              "offset": 21
+            }
+          }
+        }
+      ],
+      "attrs": {
+        "alert_type": "warning",
+        "multiline": false,
+        "title": null
+      },
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 9,
+          "offset": 21
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 2,
+      "column": 9,
+      "offset": 21
+    }
+  }
+}

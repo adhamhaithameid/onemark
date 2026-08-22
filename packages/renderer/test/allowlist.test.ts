@@ -18,7 +18,8 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { JSDOM } from 'jsdom';
 
-import { GFM_OPTIONS, loadNodeEngine } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { GFM_OPTIONS } from '@onemark/engine';
 
 import { renderToSafeHtml } from '../src/index.js';
 import type { SafeRenderOptions } from '../src/index.js';

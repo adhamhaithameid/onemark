@@ -7,7 +7,8 @@
  */
 
 import { beforeAll, describe, expect, it } from 'vitest';
-import { loadNodeEngine, GFM_OPTIONS, type MarkdownEngine } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { GFM_OPTIONS, type MarkdownEngine } from '@onemark/engine';
 import { renderToSafeHtml, renderToUnsafeHtml } from '../src/index.js';
 
 let engine: MarkdownEngine;

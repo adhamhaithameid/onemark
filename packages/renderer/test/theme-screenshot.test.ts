@@ -23,7 +23,8 @@ import { chromium, type Browser, type Page } from 'playwright';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-import { GFM_OPTIONS, loadNodeEngine } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { GFM_OPTIONS } from '@onemark/engine';
 import { renderToSafeHtml } from '../src/index.js';
 
 const here = dirname(fileURLToPath(import.meta.url));

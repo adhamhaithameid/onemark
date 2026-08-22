@@ -15,7 +15,8 @@ import { dirname, join } from 'node:path';
 import { beforeAll, afterAll, describe, expect, it } from 'vitest';
 import { chromium } from 'playwright';
 
-import { loadNodeEngine, GFM_OPTIONS } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { GFM_OPTIONS } from '@onemark/engine';
 import { renderToSafeHtml } from '../src/index.js';
 
 const here = dirname(fileURLToPath(import.meta.url));

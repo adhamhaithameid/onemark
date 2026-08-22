@@ -1,3 +1,3 @@
 export type { DocumentRef, StorageProvider } from './types.js';
 export { MemoryStorage } from './memory.js';
-export { OpfsStorage, type OpfsDirectoryHandle } from './opfs.js';
+export { OpfsStorage, openOpfsRoot, type OpfsDirectoryHandle, type OpfsFileHandle } from './opfs.js';

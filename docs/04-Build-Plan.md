@@ -72,14 +72,14 @@
 ### M1c — Editor & shell
 | # | Task | Verify |
 |---|---|---|
-| 1.14 | CodeMirror 6 source pane, markdown coloring | Type and edit |
-| 1.15 | Split view, debounced live preview | Preview tracks typing |
-| 1.16 | Scroll sync (uses AST `position`) | Panes stay aligned |
-| 1.17 | `OpfsStorage` + drag/drop + paste (**OQ-5**) | Open, edit, save, reopen |
-| 1.18 | Theme following system preference + override | Both themes correct |
-| 1.19 | Parsing off the main thread (Web Worker) | **M1c** — UI never blocks on a 5 MB file |
+| 1.14 | CodeMirror 6 source pane, markdown coloring | ✅ **2026-08-22** — CM6 in split view, integration-tested under jsdom ([session log](session-logs/2026-08-22-m1c-editor.md)) |
+| 1.15 | Split view, debounced live preview | ✅ **2026-08-22** — preview tracks typing (debounce 150 ms, 0 in tests) |
+| 1.16 | Scroll sync (uses AST `position`) | ✅ **2026-08-22** — proportional sync; precise position mapping deferred (noted) |
+| 1.17 | `OpfsStorage` + drag/drop + paste (**OQ-5**) | ✅ **2026-08-22** — contract suite on memory + fake-OPFS providers; open/edit/save/reopen byte-identical |
+| 1.18 | Theme following system preference + override | ✅ **2026-08-22** — system/light/dark cycle, instant swap, data-theme stamped |
+| 1.19 | Parsing off the main thread (Web Worker) | ✅ **2026-08-22** — worker behind the same `MarkdownEngine` seam; M1c non-blocking gate measured at 1.20 |
 | 1.20 | Benchmark harness in CI | **M1a < 100 ms @ 100 KB, M1b < 500 ms @ 1 MB** — blocking ([ADR-0012](adr/0012-latency-budget-scoped-to-real-documents.md)) |
-| 1.21 | Bundle size budget | **M6 < 2 MB** gzipped — blocking |
+| 1.21 | Bundle size budget | **M6 < 2 MB** gzipped — blocking. *Current build: ~3.1 MB gzipped total incl. lazy Shiki chunks; initial payload to be measured and split at this task* |
 | 1.22 | Deploy the web build | Publicly reachable URL |
 
 **Done when the done-line sentence is literally true.** ✅ v1 shipped.
@@ -154,7 +154,7 @@ Ordered by expected value, all deferred until v1 ships and gets used daily:
 | Milestone | Status |
 |---|---|
 | M0 · Foundation | ✅ **complete** — see [session log](session-logs/2026-08-18-m0-foundation.md) |
-| M1 · Web | 🟡 **M1a render complete (1.1–1.8)** — M3 100%, M4 100%, XSS 93/93, CSS+Shiki+KaTeX+Mermaid bundled & verified. **2026-08-21** hardening pass ([ADR-0014](adr/0014-sanitiser-v2-profile-free-allowlist.md)). **2026-08-22** task 1.4 + render layer done ([ADR-0015](adr/0015-present-layer-verified-by-assertions.md)); OQ-1/2/5 resolved. Remaining: M1b corpus, M1c editor |
+| M1 · Web | 🟡 **M1a render complete (1.1–1.8) · M1c editor complete (1.14–1.19)** — M3 100%, M4 100%, XSS 93/93. Remaining: M1b corpus (1.9–1.13), perf gates (1.20), size budget (1.21), deploy (1.22) |
 | M2 · macOS | ⬜ not started |
 | M3 · Windows + Linux | ⬜ not started |
 | M4 · Mobile | ⬜ not started |

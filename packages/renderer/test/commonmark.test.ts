@@ -12,8 +12,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { beforeAll, describe, it } from 'vitest';
 
-import { loadNodeEngine, type MarkdownNode } from '@onemark/engine';
-import type { ParseOptions } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { type MarkdownNode, type ParseOptions } from '@onemark/engine';
 
 import { renderToUnsafeHtml } from '../src/index.js';
 

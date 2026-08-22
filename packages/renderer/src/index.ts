@@ -8,3 +8,6 @@ export { isSafeUrl } from './url-policy.js';
 export type { UrlContext } from './url-policy.js';
 export { escapeHref, escapeHtml } from './escape.js';
 export { filterDisallowedTags } from './tagfilter.js';
+export { createSyntaxHighlighter, BUNDLED_LANGS } from './highlight.js';
+export type { SyntaxHighlighter } from './highlight.js';
+export { configureMermaid, hydrateMermaid } from './mermaid.js';

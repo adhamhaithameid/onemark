@@ -1,0 +1,34 @@
+[
+  {
+    "name": "heading",
+    "source": "# hello\n"
+  },
+  {
+    "name": "gfm_table",
+    "source": "| a | b |\n|:--|--:|\n| 1 | 2 |\n"
+  },
+  {
+    "name": "task_list",
+    "source": "- [x] done\n- [ ] todo\n"
+  },
+  {
+    "name": "alert",
+    "source": "> [!WARNING]\n> careful\n"
+  },
+  {
+    "name": "math",
+    "source": "$x^2$\n\n$$y = 1$$\n"
+  },
+  {
+    "name": "frontmatter",
+    "source": "---\ntitle: hi\n---\n\n# body\n"
+  },
+  {
+    "name": "code_block",
+    "source": "```rust\nfn main() {}\n```\n"
+  },
+  {
+    "name": "footnote",
+    "source": "text[^a]\n\n[^a]: note\n"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "type": "document",
+  "children": [
+    {
+      "type": "code_block",
+      "literal": "fn main() {}\n",
+      "attrs": {
+        "fenced": true,
+        "info": "rust",
+        "lang": "rust"
+      },
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 3,
+          "column": 3,
+          "offset": 23
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 3,
+      "column": 3,
+      "offset": 23
+    }
+  }
+}

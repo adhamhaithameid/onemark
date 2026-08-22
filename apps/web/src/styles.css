@@ -1,0 +1,17 @@
+/* Split-view shell. Document styling lives in the vendored theme sheets. */
+:root { color-scheme: light dark; }
+html, body { margin: 0; height: 100%; }
+body { display: flex; flex-direction: column; font-family: system-ui, sans-serif; }
+
+.onemark-toolbar {
+  display: flex; gap: 12px; align-items: center;
+  padding: 6px 12px; border-bottom: 1px solid #d1d9e0;
+}
+.onemark-toolbar-spacer { flex: 1; }
+.onemark-status { color: #59636e; font-size: 12px; }
+
+#app { flex: 1; min-height: 0; }
+.onemark-workspace { display: flex; height: 100%; min-height: 0; }
+.onemark-editor-pane { flex: 1 1 50%; overflow: hidden; border-right: 1px solid #d1d9e0; }
+.onemark-editor-pane .cm-editor { height: 100%; }
+.onemark-preview-pane { flex: 1 1 50%; overflow: auto; padding: 16px 24px; box-sizing: border-box; }

@@ -13,7 +13,8 @@
  */
 
 import { beforeAll, describe, expect, it } from 'vitest';
-import { loadNodeEngine, GFM_OPTIONS, type MarkdownEngine } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { GFM_OPTIONS, type MarkdownEngine } from '@onemark/engine';
 import { renderToSafeHtml } from '../src/index.js';
 import { createSyntaxHighlighter, type SyntaxHighlighter } from '../src/highlight.js';
 

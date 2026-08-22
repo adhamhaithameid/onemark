@@ -11,7 +11,8 @@
 
 import { beforeAll, describe, expect, it } from 'vitest';
 
-import { GFM_OPTIONS, loadNodeEngine } from '@onemark/engine';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { GFM_OPTIONS } from '@onemark/engine';
 
 import { renderToUnsafeHtml } from '../src/index.js';
 
