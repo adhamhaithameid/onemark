@@ -307,6 +307,19 @@ function render(node: MarkdownNode, ctx: Ctx, ancestors: MarkdownNode[]): void {
 
     case 'code_block': {
       const lang = typeof attrs['lang'] === 'string' ? attrs['lang'] : '';
+
+      // Mermaid is client-side by nature: emit the source as inert text, the
+      // way GitHub's static HTML does, and let the app hydrate it with the
+      // bundled mermaid at securityLevel 'strict' (see mermaid.ts).
+      if (lang === 'mermaid') {
+        out.cr();
+        out.lit('<div class="onemark-mermaid">');
+        out.lit(escapeHtml(node.literal ?? ''));
+        out.lit('</div>');
+        out.cr();
+        break;
+      }
+
       out.cr();
       out.lit(lang ? `<pre><code class="language-${escapeHtml(lang)}">` : '<pre><code>');
       const highlighted =

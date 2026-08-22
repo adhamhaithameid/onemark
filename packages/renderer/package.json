@@ -7,9 +7,9 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "test": "vitest run --exclude '**/node_modules/**' --exclude '**/browser-security.test.ts' --exclude '**/theme-screenshot.test.ts'",
+    "test": "vitest run --exclude '**/node_modules/**' --exclude '**/browser-security.test.ts' --exclude '**/theme-screenshot.test.ts' --exclude '**/mermaid-browser.test.ts'",
     "typecheck": "tsc --noEmit",
-    "test:browser": "vitest run test/browser-security.test.ts",
+    "test:browser": "vitest run test/browser-security.test.ts test/mermaid-browser.test.ts",
     "test:visual": "vitest run test/theme-screenshot.test.ts"
   },
   "dependencies": {
