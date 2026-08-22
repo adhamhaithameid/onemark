@@ -14,10 +14,14 @@
   },
   "dependencies": {
     "@onemark/engine": "workspace:*",
-    "dompurify": "^3.4.14"
+    "dompurify": "^3.4.14",
+    "katex": "^0.18.4",
+    "mermaid": "^11.17.0",
+    "shiki": "^4.4.3"
   },
   "devDependencies": {
     "@types/jsdom": "^30.0.0",
+    "@types/katex": "^0.16.8",
     "@types/node": "^22.10.0",
     "@types/pngjs": "^6.0.5",
     "jsdom": "^30.0.1",
