@@ -11,6 +11,24 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 **M0 Foundation complete.** The architecture is proven end to end: TS → WASM → AST → TS, byte-identical to the native build.
 
+### Added — 2026-08-22 (M1a render layer complete: tasks 1.5–1.8)
+- **Task 1.5 — Shiki highlighting** (`src/highlight.ts`): grammars + github-light/dark
+  themes bundled statically; adapter handed to the renderer via options, so the
+  conformance path stays byte-exact. Token colours ship as `tk-*` classes plus a
+  generated stylesheet — inline styles would be stripped by the sanitiser allowlist
+- **Task 1.6 — KaTeX math**: renderer emits inert `onemark-math` placeholders;
+  `renderToSafeHtml` hydrates them with bundled KaTeX *after* sanitisation
+  (`trust: false`; hostile `\href` renders in KaTeX's error colour, never a live link)
+- **Task 1.7 — Mermaid**: ```mermaid fences render as inert escaped-text divs;
+  `hydrateMermaid()` runs the bundled mermaid at `securityLevel: 'strict'`.
+  Chromium test proves offline SVG with zero network requests
+- **Task 1.8 — GitHub specifics**: alert nodes emit `markdown-alert` divs matching the
+  vendored CSS; GitHub-style `user-content-` heading anchors on the safe path (raw
+  path stays byte-exact for conformance); gemoji shortcodes (1913) replaced in text
+  nodes only; flat YAML frontmatter renders as GitHub's key/value table
+- Screenshot baselines consciously re-baked ([ADR-0015](docs/adr/0015-present-layer-verified-by-assertions.md))
+  after 1.8: reference fixture now covers frontmatter table, styled alerts and emoji
+
 ### Added — 2026-08-22 (task 1.4 + open questions closed)
 - **Task 1.4 — GitHub Markdown CSS, light and dark** (`packages/renderer/css/`): vendored
   from `github-markdown-css@5.8.1` (MIT) via `scripts/vendor-github-css.mjs`
