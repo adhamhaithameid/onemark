@@ -1,3 +1,8 @@
+---
+title: OneMark reference document
+author: Adham Haitham Eid
+---
+
 # OneMark reference document
 
 Renders every construct the present layer styles, so a theme regression cannot hide
@@ -8,7 +13,8 @@ in an untested corner. Keep in sync with what tasks 1.4–1.8 cover.
 ### A third-level heading with `inline code`
 
 Body text with **bold**, *italic*, ~~strikethrough~~, a [link](https://example.com/docs),
-and an autolink: https://example.com — plus :tada: emoji once task 1.8 lands.
+and an autolink: https://example.com — plus :tada: emoji, rendered from the bundled
+gemoji map since task 1.8.
 
 > A blockquote quoting the done-line.
 >

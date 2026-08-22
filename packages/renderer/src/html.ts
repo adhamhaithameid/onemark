@@ -17,6 +17,7 @@
 import type { MarkdownNode } from '@onemark/engine';
 
 import { escapeHtml, escapeHref } from './escape.js';
+import { replaceEmoji } from './emoji.js';
 import type { SyntaxHighlighter } from './highlight.js';
 import { filterDisallowedTags } from './tagfilter.js';
 import { isSafeUrl } from './url-policy.js';
@@ -52,6 +53,14 @@ export interface RenderOptions {
 
   /** Which vendored theme token colours come from. Ignored without a highlighter. */
   theme?: 'light' | 'dark';
+
+  /**
+   * GitHub-style heading anchors (task 1.8): `user-content-` ids plus an
+   * empty `.anchor` link. **Off by default** on the raw path — the conformance
+   * suites compare byte-for-byte and the specs have no anchors. The safe path
+   * forces this on; a document viewer wants them.
+   */
+  headingAnchors?: boolean;
 }
 
 const DEFAULTS: RenderOptions = { tagfilter: true, urlPolicy: true };
@@ -69,6 +78,25 @@ interface Ctx {
    * it at parse time.
    */
   footnoteNumbers: Map<string, number>;
+  /** Slug → times seen, for GitHub's `-1`/`-2` heading-anchor dedup. */
+  slugCounts: Map<string, number>;
+}
+
+/**
+ * GitHub's slug rule: lowercase, drop punctuation (each removed character
+ * leaves its surrounding spaces intact — hence `install--setup` for
+ * "Install & Setup!"), then spaces become hyphens. Duplicates get `-1`, `-2`.
+ */
+function slugFor(text: string, ctx: Ctx): string {
+  const base =
+    text
+      .trim()
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}\s-]/gu, '')
+      .replace(/\s/g, '-') || 'section';
+  const seen = ctx.slugCounts.get(base) ?? 0;
+  ctx.slugCounts.set(base, seen + 1);
+  return seen === 0 ? base : `${base}-${seen}`;
 }
 
 /** Assigns footnote numbers by the order references first appear in the document. */
@@ -223,8 +251,15 @@ function render(node: MarkdownNode, ctx: Ctx, ancestors: MarkdownNode[]): void {
     case 'heading': {
       const level = typeof attrs['level'] === 'number' ? attrs['level'] : 1;
       out.cr();
-      out.lit(`<h${level}>`);
-      renderChildren(node, ctx, ancestors);
+      if (ctx.options.headingAnchors === true) {
+        const slug = slugFor(plainText(node), ctx);
+        out.lit(`<h${level} id="user-content-${escapeHtml(slug)}">`);
+        out.lit(`<a class="anchor" href="#${escapeHref(slug)}" aria-hidden="true"></a>`);
+        renderChildren(node, ctx, ancestors);
+      } else {
+        out.lit(`<h${level}>`);
+        renderChildren(node, ctx, ancestors);
+      }
       out.lit(`</h${level}>`);
       out.cr();
       break;
@@ -351,6 +386,57 @@ function render(node: MarkdownNode, ctx: Ctx, ancestors: MarkdownNode[]): void {
       break;
     }
 
+    case 'alert': {
+      // GitHub's alert structure — the vendored theme CSS keys on these exact
+      // classes. The octicon inside GitHub's title is presentational and is
+      // deliberately omitted (an empty title paragraph styles identically).
+      const kind = typeof attrs['alert_type'] === 'string' ? attrs['alert_type'] : 'note';
+      const title = kind.charAt(0).toUpperCase() + kind.slice(1);
+      out.cr();
+      out.lit(`<div class="markdown-alert markdown-alert-${escapeHtml(kind)}">`);
+      out.cr();
+      out.lit(`<p class="markdown-alert-title">${title}</p>`);
+      renderChildren(node, ctx, ancestors);
+      out.cr();
+      out.lit('</div>');
+      out.cr();
+      break;
+    }
+
+    case 'frontmatter': {
+      // GitHub renders YAML front matter in .md files as a key→value table.
+      // Flat `key: value` documents get that table; anything nested falls back
+      // to a visible pre block rather than pretending to parse YAML here.
+      const raw = node.literal ?? '';
+      const body = raw.replace(/^---\s*\n/, '').replace(/\n---\s*$/, '');
+      const lines = body.split('\n').filter((l) => l.trim().length > 0);
+      const flat = lines.filter((l) => /^[^\s:#][^:]*:\s+\S/.test(l));
+      out.cr();
+      if (lines.length > 0 && flat.length === lines.length) {
+        const rows = flat.map((l) => {
+          const i = l.indexOf(':');
+          return [l.slice(0, i).trim(), l.slice(i + 1).trim()] as const;
+        });
+        out.lit('<table>');
+        out.cr();
+        out.lit('<thead>');
+        for (const [key] of rows) out.lit(`<th>${escapeHtml(key)}</th>`);
+        out.lit('</thead>');
+        out.cr();
+        out.lit('<tbody><tr>');
+        for (const [, value] of rows) out.lit(`<td>${escapeHtml(value)}</td>`);
+        out.lit('</tr></tbody>');
+        out.cr();
+        out.lit('</table>');
+      } else {
+        out.lit('<pre class="onemark-frontmatter">');
+        out.lit(escapeHtml(body));
+        out.lit('</pre>');
+      }
+      out.cr();
+      break;
+    }
+
     case 'html_block':
       out.cr();
       out.lit(applyTagfilter(node.literal ?? '', ctx));
@@ -364,7 +450,7 @@ function render(node: MarkdownNode, ctx: Ctx, ancestors: MarkdownNode[]): void {
       break;
 
     case 'text':
-      out.lit(escapeHtml(node.literal ?? ''));
+      out.lit(escapeHtml(replaceEmoji(node.literal ?? '')));
       break;
 
     case 'soft_break':
@@ -526,6 +612,7 @@ export function renderToUnsafeHtml(root: MarkdownNode, options: Partial<RenderOp
     options: { ...DEFAULTS, ...options },
     alignments: [],
     footnoteNumbers: numberFootnotes(root),
+    slugCounts: new Map(),
   };
   render(root, ctx, []);
   return ctx.out.toString();
