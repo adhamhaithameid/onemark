@@ -1,0 +1,20 @@
+{
+  "name": "@onemark/bench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "LicenseRef-PolyForm-Noncommercial-1.0.0",
+  "scripts": {
+    "bench": "node transport.mjs",
+    "typecheck": "echo 'no TypeScript in bench'",
+    "render": "vitest run --exclude '**/node_modules/**'"
+  },
+  "dependencies": {
+    "@onemark/engine": "workspace:*",
+    "@onemark/renderer": "workspace:*"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1",
+    "vitest": "^3.0.5"
+  }
+}

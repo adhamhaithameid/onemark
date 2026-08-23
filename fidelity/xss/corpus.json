@@ -1,0 +1,374 @@
+[
+  {
+    "name": "raw script tag",
+    "markdown": "<script>alert(1)</script>"
+  },
+  {
+    "name": "raw script uppercase",
+    "markdown": "<SCRIPT>alert(1)</SCRIPT>"
+  },
+  {
+    "name": "nested script breakout",
+    "markdown": "<scr<script>ipt>alert(1)</scr</script>ipt>"
+  },
+  {
+    "name": "script with type attribute",
+    "markdown": "<script type=\"text/javascript\">alert(1)</script>"
+  },
+  {
+    "name": "img onerror bare",
+    "markdown": "<img src=x onerror=alert(1)>"
+  },
+  {
+    "name": "img onerror quoted",
+    "markdown": "<img src=\"x\" onerror=\"alert(1)\">"
+  },
+  {
+    "name": "img onerror mixed case",
+    "markdown": "<img src=x OnErRoR=alert(1)>"
+  },
+  {
+    "name": "img onerror split by newline",
+    "markdown": "<img src=x on\nerror=alert(1)>"
+  },
+  {
+    "name": "body onload",
+    "markdown": "<body onload=alert(1)>"
+  },
+  {
+    "name": "svg onload",
+    "markdown": "<svg onload=alert(1)>"
+  },
+  {
+    "name": "details ontoggle",
+    "markdown": "<details open ontoggle=alert(1)>"
+  },
+  {
+    "name": "input autofocus onfocus",
+    "markdown": "<input autofocus onfocus=alert(1)>"
+  },
+  {
+    "name": "video onerror source",
+    "markdown": "<video><source onerror=alert(1)></video>"
+  },
+  {
+    "name": "javascript url in markdown link",
+    "markdown": "[click](javascript:alert(1))"
+  },
+  {
+    "name": "javascript url mixed case",
+    "markdown": "[click](JaVaScRiPt:alert(1))"
+  },
+  {
+    "name": "javascript url with tab",
+    "markdown": "[click](java\tscript:alert(1))"
+  },
+  {
+    "name": "javascript url leading space",
+    "markdown": "[click](  javascript:alert(1))"
+  },
+  {
+    "name": "javascript url with entity",
+    "markdown": "[click](java&#115;cript:alert(1))"
+  },
+  {
+    "name": "javascript url in raw anchor",
+    "markdown": "<a href=\"javascript:alert(1)\">click</a>"
+  },
+  {
+    "name": "vbscript url",
+    "markdown": "[click](vbscript:msgbox(1))"
+  },
+  {
+    "name": "data html url in link",
+    "markdown": "[click](data:text/html,<script>alert(1)</script>)"
+  },
+  {
+    "name": "data html base64 in raw anchor",
+    "markdown": "<a href=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\">x</a>"
+  },
+  {
+    "name": "javascript url in markdown image",
+    "markdown": "![alt](javascript:alert(1))"
+  },
+  {
+    "name": "data html url in img src",
+    "markdown": "<img src=\"data:text/html,<script>alert(1)</script>\">"
+  },
+  {
+    "name": "iframe",
+    "markdown": "<iframe src=\"https://evil.example\"></iframe>"
+  },
+  {
+    "name": "iframe srcdoc",
+    "markdown": "<iframe srcdoc=\"<script>alert(1)</script>\"></iframe>"
+  },
+  {
+    "name": "object with javascript data",
+    "markdown": "<object data=\"javascript:alert(1)\"></object>"
+  },
+  {
+    "name": "embed with javascript src",
+    "markdown": "<embed src=\"javascript:alert(1)\">"
+  },
+  {
+    "name": "form and formaction",
+    "markdown": "<form action=\"javascript:alert(1)\"><button formaction=\"javascript:alert(1)\">go</button></form>"
+  },
+  {
+    "name": "base href hijack",
+    "markdown": "<base href=\"https://evil.example/\">"
+  },
+  {
+    "name": "meta refresh",
+    "markdown": "<meta http-equiv=\"refresh\" content=\"0;url=javascript:alert(1)\">"
+  },
+  {
+    "name": "link stylesheet",
+    "markdown": "<link rel=\"stylesheet\" href=\"https://evil.example/x.css\">"
+  },
+  {
+    "name": "style block with javascript url",
+    "markdown": "<style>body{background:url('javascript:alert(1)')}</style>"
+  },
+  {
+    "name": "style attribute with javascript url",
+    "markdown": "<p style=\"background:url('javascript:alert(1)')\">x</p>"
+  },
+  {
+    "name": "mXSS noscript title breakout",
+    "markdown": "<noscript><p title=\"</noscript><img src=x onerror=alert(1)>\"></noscript>"
+  },
+  {
+    "name": "mXSS svg foreignObject style",
+    "markdown": "<svg><foreignObject><p><style><!--</style><img src=x onerror=alert(1)>"
+  },
+  {
+    "name": "mXSS math mglyph style",
+    "markdown": "<math><mtext><table><mglyph><style><!--</style><img src=x onerror=alert(1)>"
+  },
+  {
+    "name": "svg use xlink href data uri",
+    "markdown": "<svg><use xlink:href=\"data:image/svg+xml;base64,PHN2ZyBpZD0neCc+PC9zdmc+#x\"></use></svg>"
+  },
+  {
+    "name": "svg embedded script",
+    "markdown": "<svg><script>alert(1)</script></svg>"
+  },
+  {
+    "name": "svg animate href",
+    "markdown": "<svg><a><animate attributeName=\"href\" values=\"javascript:alert(1)\"/><text>x</text></a></svg>"
+  },
+  {
+    "name": "comment breakout",
+    "markdown": "<!--><script>alert(1)</script>-->"
+  },
+  {
+    "name": "cdata breakout",
+    "markdown": "<![CDATA[<script>alert(1)</script>]]>"
+  },
+  {
+    "name": "template element",
+    "markdown": "<template><script>alert(1)</script></template>"
+  },
+  {
+    "name": "attribute injection via link title",
+    "markdown": "[x](https://ok.example \"a\\\" onmouseover=\\\"alert(1)\")"
+  },
+  {
+    "name": "attribute injection via image alt",
+    "markdown": "![a\" onerror=\"alert(1)](https://ok.example/i.png)"
+  },
+  {
+    "name": "attribute injection via fence info",
+    "markdown": "```js\" onload=\"alert(1)\nx\n```"
+  },
+  {
+    "name": "unclosed tag swallow",
+    "markdown": "<div><img src=x onerror=alert(1)"
+  },
+  {
+    "name": "spaced scheme",
+    "markdown": "<a href=\"java script:alert(1)\">x</a>"
+  },
+  {
+    "name": "protocol relative host",
+    "markdown": "<a href=\"//evil.example/x\">x</a>"
+  },
+  {
+    "name": "raw img data svg+xml",
+    "markdown": "<img src=\"data:image/svg+xml,%3Csvg onload%3Dalert(1)%3E\">"
+  },
+  {
+    "name": "raw img data svg+xml base64",
+    "markdown": "<img src=\"data:image/svg+xml;base64,PHN2ZyBvbmxvYWQ9YWxlcnQoMSk+\">"
+  },
+  {
+    "name": "raw svg image href data",
+    "markdown": "<svg><image href=\"data:image/svg+xml;base64,PHN2Zz4=\" /></svg>"
+  },
+  {
+    "name": "input type image remote",
+    "markdown": "<input type=\"image\" src=\"https://evil.example/i.png\">"
+  },
+  {
+    "name": "audio remote source",
+    "markdown": "<audio controls src=\"https://evil.example/a.mp3\"></audio>"
+  },
+  {
+    "name": "video remote source",
+    "markdown": "<video src=\"https://evil.example/v.mp4\"></video>"
+  },
+  {
+    "name": "video track remote",
+    "markdown": "<video><track src=\"https://evil.example/t.vtt\"></video>"
+  },
+  {
+    "name": "picture source srcset remote",
+    "markdown": "<picture><source srcset=\"https://evil.example/x.png\"></picture>"
+  },
+  {
+    "name": "anchor ping beacon",
+    "markdown": "<a href=\"https://ok.example\" ping=\"https://evil.example/track\">x</a>"
+  },
+  {
+    "name": "img srcset remote",
+    "markdown": "<img src=\"https://ok.example/i.png\" srcset=\"https://evil.example/2x.png 2x\">"
+  },
+  {
+    "name": "mXSS form math mtext",
+    "markdown": "<form><math><mtext></form><form><mglyph><style></math><img src onerror=alert(1)>"
+  },
+  {
+    "name": "mXSS svg style anchor id",
+    "markdown": "<svg></p><style><a id=\"</style><img src=1 onerror=alert(1)>\">"
+  },
+  {
+    "name": "mXSS noembed wrapper",
+    "markdown": "<noembed><img src=x onerror=alert(1)></noembed>"
+  },
+  {
+    "name": "mXSS listing wrapper",
+    "markdown": "<listing><img src=x onerror=alert(1)></listing>"
+  },
+  {
+    "name": "mXSS table caption svg style",
+    "markdown": "<table><caption><svg><style><img src=x onerror=alert(1)>"
+  },
+  {
+    "name": "mXSS select option style",
+    "markdown": "<select><option><style></select><img src=x onerror=alert(1)>"
+  },
+  {
+    "name": "mXSS annotation-xml html",
+    "markdown": "<math><annotation-xml encoding=\"text/html\"><img src=x onerror=alert(1)></annotation-xml></math>"
+  },
+  {
+    "name": "mXSS xmlns foreign",
+    "markdown": "<xml><x xmlns=\"http://www.w3.org/1999/xhtml\"><img src=x onerror=alert(1)/></x></xml>"
+  },
+  {
+    "name": "mXSS svg foreignObject div",
+    "markdown": "<svg><foreignObject><div xmlns=\"http://www.w3.org/1999/xhtml\"><img src=x onerror=alert(1)></div></foreignObject></svg>"
+  },
+  {
+    "name": "mXSS textarea breakout",
+    "markdown": "<textarea><img src=x onerror=alert(1)></textarea>"
+  },
+  {
+    "name": "mXSS iframe srcdoc entities",
+    "markdown": "<iframe srcdoc=\"&lt;script&gt;alert(1)&lt;/script&gt;\"></iframe>"
+  },
+  {
+    "name": "mXSS style comment breakout",
+    "markdown": "<style><!--</style><img src=x onerror=alert(1)>"
+  },
+  {
+    "name": "entity encoded onerror",
+    "markdown": "<img src=x &#111;nerror=alert(1)>"
+  },
+  {
+    "name": "entity encoded colon",
+    "markdown": "<a href=\"javascript&#58;alert(1)\">x</a>"
+  },
+  {
+    "name": "entity encoded js scheme",
+    "markdown": "<a href=\"&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;:alert(1)\">x</a>"
+  },
+  {
+    "name": "hex entity js scheme",
+    "markdown": "<a href=\"&#x6a;avascript:alert(1)\">x</a>"
+  },
+  {
+    "name": "newline entity in scheme",
+    "markdown": "<a href=\"java&#10;script:alert(1)\">x</a>"
+  },
+  {
+    "name": "tab entity in scheme",
+    "markdown": "<a href=\"java&#9;script:alert(1)\">x</a>"
+  },
+  {
+    "name": "overlong utf8 lookalike",
+    "markdown": "<a href=\"\\u0458avascript:alert(1)\">x</a>"
+  },
+  {
+    "name": "fullwidth scheme",
+    "markdown": "<a href=\"\uff4a\uff41\uff56\uff41\uff53\uff43\uff52\uff49\uff50\uff54:alert(1)\">x</a>"
+  },
+  {
+    "name": "unquoted attr with slash",
+    "markdown": "<img/src=\"x\"/onerror=\"alert(1)\">"
+  },
+  {
+    "name": "backtick attr",
+    "markdown": "<img src=`x` onerror=alert(1)>"
+  },
+  {
+    "name": "double open bracket",
+    "markdown": "<<img src=x onerror=alert(1)>"
+  },
+  {
+    "name": "null in tag name",
+    "markdown": "<img\\u0000 src=x onerror=alert(1)>"
+  },
+  {
+    "name": "attribute after slash",
+    "markdown": "<a href=\"https://ok.example\"/onmouseover=alert(1)>x</a>"
+  },
+  {
+    "name": "malformed close",
+    "markdown": "<img src=x onerror=alert(1)</img>"
+  },
+  {
+    "name": "uppercase tag lowercase attr",
+    "markdown": "<IMG SRC=x ONERROR=alert(1)>"
+  },
+  {
+    "name": "svg case variation",
+    "markdown": "<SvG oNlOaD=alert(1)>"
+  },
+  {
+    "name": "clobber document body",
+    "markdown": "<img name=\"body\">"
+  },
+  {
+    "name": "clobber form attributes",
+    "markdown": "<form><input name=\"attributes\"></form>"
+  },
+  {
+    "name": "clobber getElementById",
+    "markdown": "<a id=\"getElementById\">x</a>"
+  },
+  {
+    "name": "meta csp override",
+    "markdown": "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src *\">"
+  },
+  {
+    "name": "base target",
+    "markdown": "<base target=\"_blank\" href=\"https://evil.example/\">"
+  },
+  {
+    "name": "a target blank opener",
+    "markdown": "<a href=\"https://evil.example\" target=\"_blank\">x</a>"
+  }
+]

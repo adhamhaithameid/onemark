@@ -24,5 +24,6 @@ One file per decision. Each records **what was rejected and why** — that is th
 | [0013](0013-wrap-a-proven-html-sanitiser.md) | Wrap a proven HTML sanitiser; do not write one | Accepted |
 | [0014](0014-sanitiser-v2-profile-free-allowlist.md) | Sanitiser hardening: profile-free allowlist, URL policy on raw HTML, forced safe path | Accepted · supersedes 0013 |
 | [0015](0015-present-layer-verified-by-assertions.md) | Present-layer fidelity verified by structural/style/screenshot assertions, never by eye | Accepted |
+| [0016](0016-perf-budgets-arbitrated-in-browser.md) | M1a/M1b perf budgets arbitrated in a browser; Node stays a recorded floor | Accepted |
 
 [Template](0000-template.md)

@@ -58,9 +58,43 @@ importers:
         specifier: ^3.0.5
         version: 3.2.7(@types/node@26.2.0)(jsdom@30.0.1)
 
-  bench: {}
+  bench:
+    dependencies:
+      '@onemark/engine':
+        specifier: workspace:*
+        version: link:../packages/engine
+      '@onemark/renderer':
+        specifier: workspace:*
+        version: link:../packages/renderer
+    devDependencies:
+      jsdom:
+        specifier: ^30.0.1
+        version: 30.0.1
+      vitest:
+        specifier: ^3.0.5
+        version: 3.2.7(@types/node@26.2.0)(jsdom@30.0.1)
 
-  fidelity: {}
+  fidelity:
+    dependencies:
+      '@onemark/engine':
+        specifier: workspace:*
+        version: link:../packages/engine
+      '@onemark/renderer':
+        specifier: workspace:*
+        version: link:../packages/renderer
+    devDependencies:
+      '@types/jsdom':
+        specifier: ^30.0.0
+        version: 30.0.0
+      jsdom:
+        specifier: ^30.0.1
+        version: 30.0.1
+      parse5:
+        specifier: ^8.0.1
+        version: 8.0.1
+      vitest:
+        specifier: ^3.2.7
+        version: 3.2.7(@types/node@26.2.0)(jsdom@30.0.1)
 
   packages/engine:
     devDependencies:

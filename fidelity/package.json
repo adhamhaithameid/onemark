@@ -3,6 +3,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "spec": "node src/spec.mjs"
+    "spec": "node src/spec.mjs",
+    "test": "vitest run",
+    "typecheck": "echo ok"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^30.0.0",
+    "jsdom": "^30.0.1",
+    "parse5": "^8.0.1",
+    "vitest": "^3.2.7"
+  },
+  "dependencies": {
+    "@onemark/engine": "workspace:*",
+    "@onemark/renderer": "workspace:*"
   }
 }
