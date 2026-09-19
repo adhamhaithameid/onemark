@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Must match the `wasm-bindgen` crate version in Cargo.lock. `scripts/build-wasm.sh`
+  # re-checks this and fails loudly, because a mismatch produces bindings that break at
+  # runtime rather than at build time.
+  WASM_BINDGEN_VERSION: 0.2.127
+
+jobs:
+  rust:
+    name: Rust — fmt, clippy, tests, CommonMark gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.97.1"
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      # Includes the CommonMark suite, which fails the build below M3 (99%).
+      - name: Tests
+        run: cargo test --workspace -- --nocapture
+
+  web:
+    name: Web — WASM build, round-trip gate, TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.97.1"
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-bindgen-cli@0.2.127
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # If this fails, the architecture does not hold. Nothing else matters.
+      - name: Build the engine for WebAssembly
+        run: ./scripts/build-wasm.sh
+
+      - name: Report artefact size
+        run: ls -lh packages/engine/wasm/*/*.wasm
+
+      - run: pnpm -r typecheck
+
+      # Includes the M0.3 round-trip gate, the NFR-6 determinism assertions, the
+      # CommonMark/GFM conformance suites, the XSS corpus and the robustness
+      # suite (pathological nesting must not trap the wasm module).
+      - run: pnpm -r test
+
+  browser-security:
+    name: Security — real browser engines
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.97.1"
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-bindgen-cli@0.2.127
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: ./scripts/build-wasm.sh
+
+      # jsdom is not a browser, and mutation XSS lives in the gap between one
+      # HTML parser and another. WebKit is the primary engine here, not an
+      # extra: PRD §10 ships macOS and iOS inside WKWebView.
+      - name: Install browser engines
+        run: pnpm --filter @onemark/renderer exec playwright install --with-deps webkit chromium firefox
+
+      - name: XSS corpus against WebKit, Chromium and Gecko
+        run: pnpm --filter @onemark/renderer test:browser
+
+  contract:
+    name: Contract — AST fixtures match the engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.97.1"
+      - uses: Swatinem/rust-cache@v2
+
+      # The committed fixtures are what the TypeScript tests assert against, and what
+      # the WASM build is checked for byte-equality against. If the engine's output
+      # changes without the fixtures being regenerated, the two halves of the boundary
+      # have silently drifted and NFR-6 no longer means anything.
+      - name: Regenerate fixtures
+        run: cargo run -p onemark-engine --example dump_fixtures
+
+      - name: Fail if they differ from what is committed
+        run: git diff --exit-code -- packages/engine/test/fixtures
