@@ -45,6 +45,7 @@ pnpm-debug.log*
 # Agent tooling, not part of the project
 .claude/
 .mimosa/
+.zcode/
 
 # Beads / Dolt files (added by bd init)
 .dolt/
