@@ -1,0 +1,9 @@
+# Pinned so CI and every developer machine resolve the same compiler —
+# NFR-6 (determinism) starts there.
+#
+# Pinned to an exact version rather than "stable": a floating channel would mean
+# two machines on the same commit can disagree, which is the thing NFR-6 forbids.
+[toolchain]
+channel = "1.97.1"
+components = ["rustfmt", "clippy"]
+targets = ["wasm32-unknown-unknown"]
