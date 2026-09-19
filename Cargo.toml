@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/onemark-engine",
+    "crates/onemark-wasm",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "LicenseRef-PolyForm-Noncommercial-1.0.0"
+repository = "https://github.com/adhamhaithameid/onemark"
+
+[workspace.dependencies]
+comrak = { version = "0.49", default-features = false }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Native builds optimise for speed: the M1 latency budget is the binding constraint.
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+# The web build optimises for size instead: M6 caps the payload at 2 MB gzipped.
+[profile.release-wasm]
+inherits = "release"
+opt-level = "z"
+panic = "abort"
