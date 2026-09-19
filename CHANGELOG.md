@@ -11,6 +11,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 **M0 Foundation complete.** The architecture is proven end to end: TS → WASM → AST → TS, byte-identical to the native build.
 
+### Added — 2026-08-22 (M1b runner + gates)
+- **Normalizer R1–R6** (`fidelity/src/normalize.mjs`, OQ-2): parse5 structural diff;
+  12 tests, each rule named for its GitHub artifact
+- **M5 diff runner** (`fidelity/src/diff.mjs`): renders ours through the real safe path
+  (jsdom DOM supplied), normalizes both sides, ≥ 98% gate; mechanics proven offline
+- **Golden fetcher** (`fidelity/src/fetch-goldens.mjs`): `POST /markdown`, GITHUB_TOKEN
+  required, rate-limit-aware, manifest frozen at fetch — awaiting the author's corpus run
+- **Perf floor** (`bench/test/perf-floor.test.ts`) + **[ADR-0016](docs/adr/0016-perf-budgets-arbitrated-in-browser.md)**:
+  Node/jsdom cannot arbitrate M1a/M1b (~1.6 s @ 100 KB render+sanitise; super-linear
+  scaling; 250 KB OOMs a 2 GB heap). Budgets move to browser arbitration at deploy
+- **M6 bundle gate** (`scripts/check-bundle.mjs`): initial payload **0.67 MB / 2 MB** gzipped
+
 ### Added — 2026-08-22 (M1a render layer complete: tasks 1.5–1.8)
 - **Task 1.5 — Shiki highlighting** (`src/highlight.ts`): grammars + github-light/dark
   themes bundled statically; adapter handed to the renderer via options, so the
