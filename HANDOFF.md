@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Last updated | 2026-08-22 |
-| Phase | **M0 complete · M1a render layer complete (1.1–1.8)** — M3 100%, M4 100%, XSS 93/93, Shiki/KaTeX/Mermaid/CSS bundled & verified ([ADR-0015](docs/adr/0015-present-layer-verified-by-assertions.md)) |
+| Phase | **M1a render + M1c editor + gates complete** — only M1b goldens + deploy remain; both need author input (GITHUB_TOKEN, hosting choice) |
 | Repo | https://github.com/adhamhaithameid/onemark (public, nothing pushed) |
 | Local | `~/Desktop/code/OneMark` — git initialised, remote added, **2 local commits** (tooling only: beads init + graphify/session-log; all product code still untracked) |
 
@@ -53,39 +53,31 @@ The documentation is complete. **M0 is done** — the architecture is proven end
 
 ## Next action
 
-**M0 and M1a (tasks 1.1–1.8) are complete.** The render layer — the 80% of "looks like
-GitHub" — is built, bundled and assertion-verified. What remains of M1:
+**Everything buildable without the author is built.** M1 stands at: render layer done,
+editor shell done, bundle gate green (0.67 MB / 2 MB), perf floors recorded. What remains
+is blocked on two author inputs:
 
-- **M1c editor** (`OneMark-apc`): `apps/web` does not exist yet — CodeMirror split view,
-  scroll sync, OPFS recent-files store (OQ-5 resolution), themes, Web Worker. This is the
-  next build session: one milestone-sized chunk, shippable on its own.
-- **M1b golden corpus** (`OneMark-b5r`): OQ-1/OQ-2 rules are written (PRD §12); the
-  fetcher + normalizer + diff runner remain.
-- **Gates + deploy** (`OneMark-8b9`, `OneMark-0pr`): perf/budget gates need the app to
-  measure; deploy needs a hosting decision from the author.
+1. **GITHUB_TOKEN** → author `fidelity/corpus/manifest.json` (OQ-1 selection), run
+   `node fidelity/src/fetch-goldens.mjs`, then `pnpm --filter @onemark/fidelity exec node src/diff.mjs`
+   for the real M5 number (`OneMark-b5r`).
+2. **Hosting choice** → task 1.22 deploy; the deployed app then arbitrates M1a/M1b in a
+   real browser per **[ADR-0016](docs/adr/0016-perf-budgets-arbitrated-in-browser.md)**
+   (`OneMark-8b9`, `OneMark-0pr`).
 
-Task 1.4–1.8 verification lives in [ADR-0015](docs/adr/0015-present-layer-verified-by-assertions.md):
-structural + pinned-reference assertions in the default suite; screenshot pixel-diff
-opt-in via `pnpm --filter @onemark/renderer test:visual`; browser security/mermaid via
-`test:browser`.
+CI wiring for all gates lands with the first push (nothing has ever been pushed).
 
-**Carry forward on security:** `renderToSafeHtml` is the shipping path. KaTeX hydration
-and mermaid hydration are post-sanitisation program output by design (see
-[ADR-0014](docs/adr/0014-sanitiser-v2-profile-free-allowlist.md) and module docs in
-`safe.ts` / `mermaid.ts`) — keep that boundary when wiring the app.
+**Carry forward on security:** unchanged — safe path is the shipping path; hydration is
+post-sanitisation program output; parsing lives in the worker.
 
-### Verified state after M1a (2026-08-22)
+### Verified state after gates (2026-08-22)
 
 | | |
 |---|---|
 | fmt / clippy -D warnings | clean |
-| Rust tests | 17 passing |
-| TypeScript tests | 57 engine + 112 renderer (default) + 2 visual + browser suite green |
-| M3 CommonMark | 652/652 = 100.00% |
-| M4 GFM extensions | 22/22 = 100.00% |
-| XSS corpus | **93/93 blocked, 68/93 live unsanitised** |
-| Real browsers | WebKit/Chromium/Firefox sanitiser matrix green; mermaid offline SVG green |
-| WASM artefact | 455 KB rebuilt reproducibly (M6 budget 2 MB) |
+| Tests | 17 rust · 57 engine · 112 renderer · 14 storage · 14 fidelity · 6 web · 2 bench floor |
+| M3 / M4 | 652/652 · 22/22 (100%) |
+| Bundle | **0.67 MB / 2 MB** initial gzipped |
+| Perf | Node floor recorded (~1.2–2.3 s @ 100 KB); browser arbitration pending (ADR-0016) |
 
 ### What M0 delivered
 
@@ -142,3 +134,4 @@ The 70 ms of headroom in M1a is an assumption. It gets tested at task 1.20.
 | 2026-08-21 | Security audit | 4 defects fixed, ADR-0014, corpus 49→93, browser matrix green. [Log](docs/session-logs/2026-08-21-security-audit.md) |
 | 2026-08-22 | Records + task 1.4 | ADR-0015, CSS vendored+verified, OQ-1/2/5 resolved, work fully ticketed. [Log](docs/session-logs/2026-08-22-plan-completion.md) |
 | 2026-08-22 | M1a render complete | Tasks 1.5–1.8: Shiki/KaTeX/Mermaid/alerts/anchors/emoji/frontmatter. [Log](docs/session-logs/2026-08-22-m1a-render.md) |
+| 2026-08-22 | M1b runner + gates | Normalizer R1–R6, diff runner, perf floor + ADR-0016, bundle gate 0.67 MB. [Log](docs/session-logs/2026-08-22-gates.md) |
