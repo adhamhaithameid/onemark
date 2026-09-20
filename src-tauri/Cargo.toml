@@ -19,3 +19,7 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+# Task 2.2: the SAME engine the web build compiles to WASM, compiled native.
+# Determinism (NFR-6) is asserted by the test against the shared contract
+# fixtures the TypeScript side also asserts against.
+onemark-engine = { path = "../crates/onemark-engine" }
