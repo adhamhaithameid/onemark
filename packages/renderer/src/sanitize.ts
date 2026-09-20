@@ -145,13 +145,21 @@ export function createSanitizer(window: DomWindow): Sanitizer {
   return {
     sanitize(html: string): string {
       // Fail closed: DOMPurify silently returns its input when the DOM lacks
-      // what it needs (linkedom reports no support; happy-dom reports support
-      // yet mishandles parsing). A partial DOM must never reach the page as
-      // "sanitised" output — refusing to run is the only safe behaviour.
+      // what it needs (linkedom reports no support) and is WORSE on hosts that
+      // claim support — happy-dom passes script and encoded `javascript:`
+      // residues its own parser hides from inspection (found by guard tests,
+      // ADR-0022). A partial or quirky DOM must never reach the page as
+      // "sanitised" output: refusing to run is the only safe behaviour.
       if (!purify.isSupported) {
         throw new Error(
           'The provided window cannot host the sanitiser (DOMPurify reports no support). ' +
             'Refusing to emit unsanitised HTML: use a complete DOM (browser, jsdom).',
+        );
+      }
+      if ('happyDOM' in (window as unknown as Record<string, unknown>)) {
+        throw new Error(
+          'happy-dom is not a supported sanitiser host: its parser leaks executable ' +
+            'content past DOMPurify (ADR-0022). Use a complete DOM (browser, jsdom).',
         );
       }
       const sanitized = purify.sanitize(html, {
@@ -174,10 +182,12 @@ export function createSanitizer(window: DomWindow): Sanitizer {
       // Belt and braces for the half-supported case (happy-dom reports support
       // but passes scripts): re-parse the output with the host's own parser and
       // walk the real DOM — precise, immune to escaped text that merely looks
-      // like markup (corpus case: "attribute injection via link title").
+      // like markup (corpus case: "attribute injection via link title"). The
+      // walk covers the whole document, not just <body>: a host with a weak
+      // fragment parser can slot residue into <head>.
       if (typeof (window as { DOMParser?: unknown }).DOMParser === 'function') {
-        const parsed = new (window as unknown as { DOMParser: new () => { parseFromString(s: string, type: string): { body: { querySelectorAll(s: string): ArrayLike<Element> & Iterable<Element> } } } }).DOMParser().parseFromString(sanitized, 'text/html');
-        for (const element of parsed.body.querySelectorAll('*')) {
+        const parsed = new (window as unknown as { DOMParser: new () => { parseFromString(s: string, type: string): { documentElement: { querySelectorAll(s: string): ArrayLike<Element> & Iterable<Element> } } } }).DOMParser().parseFromString(sanitized, 'text/html');
+        for (const element of parsed.documentElement.querySelectorAll('*')) {
           const tag = element.tagName?.toLowerCase?.() ?? '';
           if (tag === 'script' || tag === 'iframe' || tag === 'object' || tag === 'embed') {
             throw new Error('Sanitiser invariant violated: forbidden element survived DOMPurify. Refusing to emit.');

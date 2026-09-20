@@ -14,12 +14,12 @@ import type { MarkdownEngine, MarkdownNode, ParseOptions } from '@onemark/engine
 interface Pending {
   resolve: (value: never) => void;
   reject: (error: Error) => void;
-  kind: 'ast' | 'html';
+  kind: 'ast' | 'blocks';
 }
 
 export interface WorkerEngine extends MarkdownEngine {
-  /** Rendered-but-unsanitised HTML from the worker (safe-path options forced). */
-  renderUnsafe(source: string, theme: 'light' | 'dark'): Promise<string>;
+  /** Rendered-but-unsanitised top-level blocks from the worker (safe-path options forced). */
+  renderUnsafeBlocks(source: string, theme: 'light' | 'dark'): Promise<string[]>;
 }
 
 export function startWorkerEngine(workerFactory?: () => Worker): WorkerEngine {
@@ -31,7 +31,7 @@ export function startWorkerEngine(workerFactory?: () => Worker): WorkerEngine {
   let nextId = 1;
 
   worker.onmessage = (event: MessageEvent) => {
-    const data = event.data as { id: number; ast?: MarkdownNode; html?: string; error?: string };
+    const data = event.data as { id: number; ast?: MarkdownNode; blocks?: string[]; error?: string };
     const entry = pending.get(data.id);
     if (!entry) return;
     pending.delete(data.id);
@@ -39,8 +39,8 @@ export function startWorkerEngine(workerFactory?: () => Worker): WorkerEngine {
       entry.reject(new Error(data.error));
     } else if (entry.kind === 'ast' && data.ast !== undefined) {
       entry.resolve(data.ast as never);
-    } else if (entry.kind === 'html' && data.html !== undefined) {
-      entry.resolve(data.html as never);
+    } else if (entry.kind === 'blocks' && data.blocks !== undefined) {
+      entry.resolve(data.blocks as never);
     } else {
       entry.reject(new Error('worker returned no payload for the request kind'));
     }
@@ -65,10 +65,10 @@ export function startWorkerEngine(workerFactory?: () => Worker): WorkerEngine {
         worker.postMessage({ id, source });
       });
     },
-    renderUnsafe(source: string, theme: 'light' | 'dark'): Promise<string> {
+    renderUnsafeBlocks(source: string, theme: 'light' | 'dark'): Promise<string[]> {
       const id = nextId++;
-      return new Promise<string>((resolve, reject) => {
-        pending.set(id, { resolve: resolve as never, reject, kind: 'html' });
+      return new Promise<string[]>((resolve, reject) => {
+        pending.set(id, { resolve: resolve as never, reject, kind: 'blocks' });
         worker.postMessage({ id, source, render: { theme } });
       });
     },

@@ -46,8 +46,13 @@ describe('fail-closed sanitisation on partial DOMs (ADR-0022)', () => {
     );
   });
 
-  it('happy-dom: renderToSafeHtml throws instead of emitting the residue', async () => {
-    await expect(renderWith(() => ({ window: new HappyWindow() }))).rejects.toThrow();
+  it('happy-dom: renderToSafeHtml refuses the host outright (parser leaks residue)', async () => {
+    // Guard-test history: happy-dom first passed whole-string residue, then —
+    // under chunked sanitisation — emitted a `javascript:` string past the
+    // DOM-walk in an encoded form. An uncertifiable host is refused by name.
+    await expect(renderWith(() => ({ window: new HappyWindow() }))).rejects.toThrow(
+      /happy-dom is not a supported sanitiser host/,
+    );
   });
 
   it('a complete DOM (jsdom) still sanitises correctly — the guard has no false positives', async () => {

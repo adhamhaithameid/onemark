@@ -16,7 +16,7 @@
  */
 
 import { loadWebEngine, GFM_OPTIONS } from '@onemark/engine';
-import { renderToUnsafeHtml, createSyntaxHighlighter } from '@onemark/renderer';
+import { renderToUnsafeBlocks, createSyntaxHighlighter } from '@onemark/renderer';
 
 const engine = await loadWebEngine();
 const highlighter = await createSyntaxHighlighter();
@@ -32,7 +32,7 @@ self.onmessage = async (
       return;
     }
     const ast = await engine.parse(source, GFM_OPTIONS);
-    const html = renderToUnsafeHtml(ast, {
+    const blocks = renderToUnsafeBlocks(ast, {
       // The exact forced options renderToSafeHtml applies before sanitising —
       // the main thread's sanitiser expects this shape.
       urlPolicy: true,
@@ -41,7 +41,7 @@ self.onmessage = async (
       highlighter,
       theme: render.theme,
     });
-    self.postMessage({ id, html });
+    self.postMessage({ id, blocks });
   } catch (error) {
     self.postMessage({ id, error: error instanceof Error ? error.message : String(error) });
   }
