@@ -23,3 +23,7 @@ serde_json = "1"
 # Determinism (NFR-6) is asserted by the test against the shared contract
 # fixtures the TypeScript side also asserts against.
 onemark-engine = { path = "../crates/onemark-engine" }
+# Tasks 2.3–2.4: folder picking (dialog) and folder read/write (fs). Files the
+# user picks through the dialog are auto-added to the fs scope at runtime.
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"

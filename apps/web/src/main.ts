@@ -7,10 +7,46 @@ import { MemoryStorage, OpfsStorage, openOpfsRoot, type StorageProvider } from '
 import { applyTheme, onSystemThemeChange, type ThemeChoice } from './theme.js';
 import { createWorkspace } from './workspace.js';
 import { startWorkerEngine, type WorkerEngine } from './worker-engine.js';
+import { TauriFolderStorage, type FolderAdapter } from './tauri-folder-storage.js';
 
 const THEME_CYCLE: ThemeChoice[] = ['system', 'light', 'dark'];
 
+/** True only inside the Tauri shell (M2 desktop build). */
+const IN_TAURI = '__TAURI_INTERNALS__' in window;
+
 async function pickStorage(): Promise<StorageProvider> {
+  if (IN_TAURI) {
+    // Desktop shell: a real folder on disk (tasks 2.3–2.4). The Tauri plugin
+    // APIs are dynamically imported so the web build never pulls them.
+    const [dialog, fs] = await Promise.all([
+      import('@tauri-apps/plugin-dialog'),
+      import('@tauri-apps/plugin-fs'),
+    ]);
+    const adapter: FolderAdapter = {
+      pickFolder: async () => {
+        const picked = await dialog.open({ directory: true, multiple: false, title: 'Open a folder' });
+        return typeof picked === 'string' ? picked : null;
+      },
+      readDir: async (path) =>
+        (await fs.readDir(path))
+          .filter((entry) => entry.isFile)
+          .map((entry) => entry.name),
+      exists: (path) => fs.exists(path),
+      stat: async (path) => {
+        const s = await fs.stat(path);
+        return {
+          size: Number(s.size),
+          modifiedAt: s.mtime ? s.mtime.getTime() : 0,
+        };
+      },
+      readTextFile: (path) => fs.readTextFile(path),
+      writeTextFile: (path, contents) => fs.writeTextFile(path, contents),
+      remove: (path) => fs.remove(path),
+      kvGet: async (key) => localStorage.getItem(key),
+      kvSet: async (key, value) => localStorage.setItem(key, value),
+    };
+    return new TauriFolderStorage(adapter);
+  }
   try {
     return new OpfsStorage(await openOpfsRoot());
   } catch {
@@ -31,6 +67,15 @@ async function boot(): Promise<void> {
   ]);
 
   const container = document.getElementById('app') as HTMLElement;
+
+  // Desktop-only affordance: folder open (tasks 2.3–2.4). Hidden on web.
+  const openFolderButton = document.getElementById('open-folder-button');
+  if (openFolderButton instanceof HTMLButtonElement) {
+    openFolderButton.hidden = !storage.capabilities.canOpenFolder;
+    openFolderButton.addEventListener('click', () => {
+      void (storage as TauriFolderStorage).openFolder();
+    });
+  }
 
   // Perf ladder rungs 1+2 (ADR-0019/0022): parse + render + highlight happen
   // in the worker as top-level blocks; the main thread sanitises the blocks
