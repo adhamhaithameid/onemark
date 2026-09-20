@@ -12,9 +12,11 @@
     "test": "pnpm -r test",
     "spec": "pnpm --filter @onemark/fidelity spec",
     "bench": "pnpm --filter @onemark/bench bench",
-    "build:wasm": "./scripts/build-wasm.sh"
+    "build:wasm": "./scripts/build-wasm.sh",
+    "determinism": "cargo run -q -p onemark-engine --example dump_corpus -- fidelity/corpus /tmp/native-dump && pnpm exec tsx scripts/corpus-determinism.mjs /tmp/native-dump fidelity/corpus"
   },
   "devDependencies": {
+    "tsx": "^4.23.13",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
   }
