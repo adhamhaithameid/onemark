@@ -15,6 +15,8 @@ importers:
         specifier: ^3.0.5
         version: 3.2.7(@types/node@26.2.0)(jsdom@30.0.1)
 
+  apps/analytics-worker: {}
+
   apps/web:
     dependencies:
       '@codemirror/commands':
@@ -96,6 +98,18 @@ importers:
         specifier: ^3.2.7
         version: 3.2.7(@types/node@26.2.0)(jsdom@30.0.1)
 
+  packages/design-tokens:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.20.1
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.5
+        version: 3.2.7(@types/node@22.20.1)(jsdom@30.0.1)
+
   packages/engine:
     devDependencies:
       '@types/node':
@@ -158,6 +172,18 @@ importers:
         version: 3.2.7(@types/node@22.20.1)(jsdom@30.0.1)
 
   packages/storage:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.20.1
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.5
+        version: 3.2.7(@types/node@22.20.1)(jsdom@30.0.1)
+
+  packages/sync:
     devDependencies:
       '@types/node':
         specifier: ^22.10.0
