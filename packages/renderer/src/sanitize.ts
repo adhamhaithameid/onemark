@@ -144,7 +144,17 @@ export function createSanitizer(window: DomWindow): Sanitizer {
 
   return {
     sanitize(html: string): string {
-      return purify.sanitize(html, {
+      // Fail closed: DOMPurify silently returns its input when the DOM lacks
+      // what it needs (linkedom reports no support; happy-dom reports support
+      // yet mishandles parsing). A partial DOM must never reach the page as
+      // "sanitised" output — refusing to run is the only safe behaviour.
+      if (!purify.isSupported) {
+        throw new Error(
+          'The provided window cannot host the sanitiser (DOMPurify reports no support). ' +
+            'Refusing to emit unsanitised HTML: use a complete DOM (browser, jsdom).',
+        );
+      }
+      const sanitized = purify.sanitize(html, {
         ALLOWED_TAGS,
         ALLOWED_ATTR,
         FORBID_TAGS,
@@ -161,6 +171,29 @@ export function createSanitizer(window: DomWindow): Sanitizer {
         // ALLOWED_TAGS/ALLOWED_ATTR and replaces both, silently disabling the
         // allowlist above. `allowlist.test.ts` fails if that happens again.
       }) as unknown as string;
+      // Belt and braces for the half-supported case (happy-dom reports support
+      // but passes scripts): re-parse the output with the host's own parser and
+      // walk the real DOM — precise, immune to escaped text that merely looks
+      // like markup (corpus case: "attribute injection via link title").
+      if (typeof (window as { DOMParser?: unknown }).DOMParser === 'function') {
+        const parsed = new (window as unknown as { DOMParser: new () => { parseFromString(s: string, type: string): { body: { querySelectorAll(s: string): ArrayLike<Element> & Iterable<Element> } } } }).DOMParser().parseFromString(sanitized, 'text/html');
+        for (const element of parsed.body.querySelectorAll('*')) {
+          const tag = element.tagName?.toLowerCase?.() ?? '';
+          if (tag === 'script' || tag === 'iframe' || tag === 'object' || tag === 'embed') {
+            throw new Error('Sanitiser invariant violated: forbidden element survived DOMPurify. Refusing to emit.');
+          }
+          for (const attr of Array.from(element.attributes)) {
+            const name = attr.name.toLowerCase();
+            if (name.startsWith('on')) {
+              throw new Error('Sanitiser invariant violated: inline event handler survived DOMPurify. Refusing to emit.');
+            }
+            if ((name === 'href' || name === 'src') && /^\s*javascript:/i.test(attr.value)) {
+              throw new Error('Sanitiser invariant violated: javascript: URL survived DOMPurify. Refusing to emit.');
+            }
+          }
+        }
+      }
+      return sanitized;
     },
   };
 }

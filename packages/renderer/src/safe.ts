@@ -91,5 +91,23 @@ export function renderToSafeHtml(root: MarkdownNode, options: SafeRenderOptions 
     headingAnchors: renderOptions.headingAnchors ?? true,
     softBreakAsBr: renderOptions.softBreakAsBr ?? true,
   });
-  return hydrateMath(sanitizerFor(window ?? defaultWindow()).sanitize(html));
+  return hydrateMathInHtml(sanitiseHtml(html, window ? { window } : {}));
+}
+
+/**
+ * Sanitises a rendered-HTML string against the allowlist. Exposed as its own
+ * step so the render worker path can compose it: the worker renders and
+ * highlights (no DOM needed), the main thread sanitises on its complete DOM
+ * (ADR-0022 — the sanitiser refuses partial DOMs, fail-closed).
+ */
+export function sanitiseHtml(html: string, options: { window?: DomWindow } = {}): string {
+  return sanitizerFor(options.window ?? defaultWindow()).sanitize(html);
+}
+
+/**
+ * Hydrates math placeholders with KaTeX output. Runs **after** sanitisation;
+ * string-level, so it works on either side of the worker boundary.
+ */
+export function hydrateMathInHtml(html: string): string {
+  return hydrateMath(html);
 }

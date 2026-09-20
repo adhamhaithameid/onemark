@@ -1,6 +1,6 @@
 export { renderToUnsafeHtml } from './html.js';
 export type { RenderOptions } from './html.js';
-export { renderToSafeHtml } from './safe.js';
+export { renderToSafeHtml, sanitiseHtml, hydrateMathInHtml } from './safe.js';
 export type { SafeRenderOptions } from './safe.js';
 export { createSanitizer, defaultWindow } from './sanitize.js';
 export type { DomWindow, Sanitizer } from './sanitize.js';
