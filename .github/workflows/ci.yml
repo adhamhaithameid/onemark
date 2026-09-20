@@ -72,6 +72,14 @@ jobs:
       # suite (pathological nesting must not trap the wasm module).
       - run: pnpm -r test
 
+      # M6 gate: initial payload < 2 MB gzipped (ADR-0012-era budget; see
+      # scripts/check-bundle.mjs). Blocks CI, and deploy.yml re-runs it so a
+      # bundle regression can never reach Pages.
+      - name: Build the web app
+        run: pnpm --filter @onemark/web build
+      - name: Bundle budget gate (M6)
+        run: node scripts/check-bundle.mjs
+
   browser-security:
     name: Security — real browser engines
     runs-on: ubuntu-latest
