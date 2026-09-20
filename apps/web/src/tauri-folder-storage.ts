@@ -31,6 +31,12 @@ export interface FolderAdapter {
   /** Simple string key-value persistence (localStorage in the shell). */
   kvGet(key: string): Promise<string | null>;
   kvSet(key: string, value: string): Promise<void>;
+  /**
+   * Task 2.6: watch a file for external changes (tauri-plugin-fs watch).
+   * Optional: the provider advertises canWatch only when present. Returns
+   * the unwatch function.
+   */
+  watchFile?(path: string, onChange: () => void): Promise<() => void>;
 }
 
 const ROOT_KEY = 'onemark.folder.root';
@@ -38,11 +44,27 @@ const MD_RE = /\.md$/i;
 
 export class TauriFolderStorage implements StorageProvider {
   readonly id = 'folder' as const;
-  readonly capabilities = { canOpenFolder: true, canWrite: true, canWatch: false };
 
   private root: string | null = null;
 
-  constructor(private readonly adapter: FolderAdapter) {}
+  constructor(
+    private readonly adapter: FolderAdapter,
+    private readonly watchSupported = typeof adapter.watchFile === 'function',
+  ) {}
+
+  get capabilities(): { canOpenFolder: boolean; canWrite: boolean; canWatch: boolean } {
+    return { canOpenFolder: true, canWrite: true, canWatch: this.watchSupported };
+  }
+
+  /**
+   * Task 2.6: observes a document for external changes (e.g. a `git pull` in
+   * another terminal). The callback fires debounced by the adapter; the
+   * caller decides whether to reload (typically: only when not dirty).
+   */
+  async watch(ref: DocumentRef, onChange: () => void): Promise<() => void> {
+    if (!this.adapter.watchFile) throw new Error('this adapter does not support watching');
+    return this.adapter.watchFile(ref.path, onChange);
+  }
 
   /** Restores the remembered folder, if any. Call once at boot. */
   async restore(): Promise<boolean> {

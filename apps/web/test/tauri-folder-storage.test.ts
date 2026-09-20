@@ -131,4 +131,25 @@ describe('TauriFolderStorage (tasks 2.3–2.4)', () => {
     const storage = new TauriFolderStorage(fakeAdapter().adapter);
     expect(storage.capabilities).toEqual({ canOpenFolder: true, canWrite: true, canWatch: false });
   });
+
+  it('task 2.6: watches a document through the adapter and unwatches', async () => {
+    const watched: string[] = [];
+    const h = fakeAdapter({ [`${REPO}/README.md`]: 'v1' });
+    h.adapter.watchFile = async (path, onChange) => {
+      watched.push(path);
+      h.files.set(`${REPO}/README.md`, 'v2 (git pull)');
+      onChange();
+      return () => watched.push('unwatch:' + path);
+    };
+    const storage = new TauriFolderStorage(h.adapter);
+    expect(storage.capabilities.canWatch).toBe(true);
+    let fired = 0;
+    const unwatch = await storage.watch(
+      { id: `${REPO}/README.md`, name: 'README.md', path: `${REPO}/README.md`, size: 2, modifiedAt: 1 },
+      () => fired++,
+    );
+    expect(fired).toBe(1);
+    unwatch();
+    expect(watched).toContain('unwatch:/Users/me/notes-repo/README.md');
+  });
 });
