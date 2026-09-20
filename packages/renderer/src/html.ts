@@ -627,3 +627,62 @@ export function renderToUnsafeHtml(root: MarkdownNode, options: Partial<RenderOp
   render(root, ctx, []);
   return ctx.out.toString();
 }
+
+/**
+ * Renders the document as an array of **top-level block** HTML strings —
+ * the sanitiser-chunked render path (perf ladder rung 2). DOMPurify's cost is
+ * super-linear in input size, so sanitising N small blocks beats sanitising
+ * one large string.
+ *
+ * Equivalence with `renderToUnsafeHtml` is a tested invariant: concatenating
+ * the blocks reproduces the whole-document render byte-for-byte across the
+ * CommonMark and GFM corpora (`test/chunked.test.ts`). Footnote definitions —
+ * which the document renderer collects into one trailing section — stay one
+ * block so the section is never split.
+ */
+export function renderToUnsafeBlocks(root: MarkdownNode, options: Partial<RenderOptions> = {}): string[] {
+  const ctx: Ctx = {
+    out: new Emitter(),
+    options: { ...DEFAULTS, ...options },
+    alignments: [],
+    footnoteNumbers: numberFootnotes(root),
+    slugCounts: new Map(),
+  };
+  const kids = root.children ?? [];
+  const definitions = kids.filter((c) => c.type === 'footnote_definition');
+  const body = kids.filter((c) => c.type !== 'footnote_definition');
+  const next = [...ancestorsOf(root), root];
+
+  const blocks: string[] = [];
+  for (const child of body) {
+    ctx.out = new Emitter();
+    render(child, ctx, next);
+    blocks.push(ctx.out.toString());
+  }
+  if (definitions.length > 0) {
+    ctx.out = new Emitter();
+    renderFootnoteSection(definitions, ctx, next);
+    blocks.push(ctx.out.toString());
+  }
+  return blocks;
+}
+
+/** The document node itself contributes no ancestors beyond itself. */
+function ancestorsOf(root: MarkdownNode): MarkdownNode[] {
+  return root.type === 'document' ? [] : [];
+}
+
+/**
+ * Concatenates rendered blocks exactly as the whole-document renderer would:
+ * a newline between blocks only when the preceding one did not already end
+ * with one (the `cr()` discipline). `joinBlocks(renderToUnsafeBlocks(root))`
+ * is byte-equal to `renderToUnsafeHtml(root)` — tested across the corpora.
+ */
+export function joinBlocks(blocks: string[]): string {
+  let out = '';
+  for (const block of blocks) {
+    if (out.length > 0 && !out.endsWith('\n')) out += '\n';
+    out += block;
+  }
+  return out;
+}

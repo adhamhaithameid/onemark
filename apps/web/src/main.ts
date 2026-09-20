@@ -32,12 +32,12 @@ async function boot(): Promise<void> {
 
   const container = document.getElementById('app') as HTMLElement;
 
-  // Perf ladder rung 1 (ADR-0019/0022): parse + render + highlight happen in
-  // the worker; the main thread sanitises with its complete DOM (fail-closed)
-  // and hydrates math. The highlighter stays on the main thread only for the
-  // token stylesheet below.
-  const renderHtml = (source: string, theme: 'light' | 'dark'): Promise<string> =>
-    (engine as WorkerEngine).renderUnsafe(source, theme);
+  // Perf ladder rungs 1+2 (ADR-0019/0022): parse + render + highlight happen
+  // in the worker as top-level blocks; the main thread sanitises the blocks
+  // (chunked, linear) with its complete DOM (fail-closed) and hydrates math.
+  // The highlighter stays on the main thread only for the token stylesheet.
+  const renderHtml = (source: string, theme: 'light' | 'dark'): Promise<string[]> =>
+    (engine as WorkerEngine).renderUnsafeBlocks(source, theme);
 
   const workspace = createWorkspace({ engine, container, storage, renderHtml });
 

@@ -11,7 +11,7 @@ import katex from 'katex';
 
 import type { MarkdownNode } from '@onemark/engine';
 
-import { renderToUnsafeHtml, type RenderOptions } from './html.js';
+import { renderToUnsafeBlocks, joinBlocks, type RenderOptions } from './html.js';
 import { createSanitizer, defaultWindow, type DomWindow, type Sanitizer } from './sanitize.js';
 
 /**
@@ -85,13 +85,17 @@ export function renderToSafeHtml(root: MarkdownNode, options: SafeRenderOptions 
   // Forced, not defaulted: a caller casting past the type still gets the policy.
   // `headingAnchors` and `softBreakAsBr` are likewise viewer behaviours —
   // GitHub .md rendering — on unless explicitly off.
-  const html = renderToUnsafeHtml(root, {
+  const blocks = renderToUnsafeBlocks(root, {
     ...renderOptions,
     urlPolicy: true,
     headingAnchors: renderOptions.headingAnchors ?? true,
     softBreakAsBr: renderOptions.softBreakAsBr ?? true,
   });
-  return hydrateMathInHtml(sanitiseHtml(html, window ? { window } : {}));
+  // Perf ladder rung 2 (ADR-0019/0022): sanitise per top-level block —
+  // DOMPurify's cost becomes linear in blocks instead of super-linear in the
+  // whole document. Byte-equivalence with whole-string sanitisation is tested
+  // across the corpora in test/chunked.test.ts.
+  return hydrateMath(sanitiseBlocks(blocks, window ? { window } : {}));
 }
 
 /**
@@ -105,6 +109,16 @@ export function sanitiseHtml(html: string, options: { window?: DomWindow } = {})
   // GitHub's pipeline strips C0 control characters (except tab/newline, which
   // are structural in HTML); they render as nothing or as replacement glyphs.
   return sanitized.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
+}
+
+/**
+ * Chunked sanitisation: sanitises each block independently (linear cost) and
+ * reassembles with the renderer's block discipline. Blocks are sanitised
+ * individually precisely because top-level blocks are independent — no valid
+ * document has markup straddling a top-level block boundary.
+ */
+export function sanitiseBlocks(blocks: string[], options: { window?: DomWindow } = {}): string {
+  return joinBlocks(blocks.map((block) => sanitiseHtml(block, options)));
 }
 
 /**

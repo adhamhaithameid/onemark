@@ -34,16 +34,25 @@ the exact reason the project demands proof over assumption.
    happy-dom. Guard tests pin both behaviors, plus the jsdom false-positive
    check, in `packages/renderer/test/linkedom.test.ts`.
 3. **Ladder revision.**
-   - Rung 1 (this session): render + Shiki highlighting move to the worker;
-     sanitisation and math hydration stay on the main thread behind the
-     fail-closed guard. This is an M1c (non-blocking UI) win: on a 1 MB
-     document the main thread now only waits, it no longer renders.
-   - Rung 2 (unchanged in intent, new shape): attack the sanitisation parse
-     itself — chunked sanitisation at block boundaries on the main thread, or
-     a per-block worker pipeline where each block's output is sanitised in the
-     **main process DOM**… (kept for measurement; the real candidate is
-     chunked main-thread sanitisation with `requestIdleCallback` slicing).
-   - Rungs 3+ (lazy grammars, preview virtualisation) unchanged.
+   - Rung 1 (shipped 2026-09-20): render + Shiki highlighting move to the
+     worker; sanitisation and math hydration stay on the main thread behind
+     the fail-closed guard. M1c win: the main thread no longer renders.
+   - **Rung 2 (shipped 2026-09-21): chunked sanitisation.** The renderer emits
+     top-level blocks (`renderToUnsafeBlocks`); each block is sanitised
+     independently and the output reassembled with the renderer's own block
+     discipline (`joinBlocks`). Byte-equivalence with whole-string
+     sanitisation is proven across the ENTIRE CommonMark + GFM corpora
+     (`test/chunked.test.ts`). Arbitrated on the deployed app:
+
+     | Tier | Before rung 2 | After rung 2 |
+     |---|---|---|
+     | Real workload (20 KB) | 87 ms adj ✅ | 95 ms adj ✅ |
+     | M1a (100 KB, <100 ms) | 411 ms adj ❌ | **310 ms adj ❌ (−25%)** |
+     | M1b (1 MB, <500 ms) | 27.4 s adj ❌ | **9.5 s adj ❌ (−65%)** |
+
+     The super-linear term is broken (M1b improved ~3× while M1a improved
+     ~1.3×). Raw samples: `docs/perf/2026-09-21-rung2.json`.
+   - Rungs 3+ (lazy per-language grammars, preview virtualisation) unchanged.
 
 ## Rejected alternatives
 
