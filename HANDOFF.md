@@ -4,135 +4,91 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-09-20 |
-| Phase | **Campaign running** — P0 backup + P1 baseline complete (first push in history, CI green); P2 design system · P3 corpus · P7 sync · P9 analytics · P10 Tauri spike in flight; next: P4 deploy + v0.1.0 |
-| Repo | https://github.com/adhamhaithameid/onemark (public, nothing pushed) |
-| Local | `~/Desktop/code/OneMark` — git initialised, remote added, **2 local commits** (tooling only: beads init + graphify/session-log; all product code still untracked) |
+| Last updated | 2026-09-20 (campaign session) |
+| Phase | **v0.1.0 shipped** — app + marketing LIVE on Pages; corpus frozen with M5 at 100% gated; design system, sync v1, analytics worker landed. Open: P5 perf ladder, P6 E2E/coverage |
+| Live | https://adhamhaithameid.github.io/onemark/ (site) · [/app/](https://adhamhaithameid.github.io/onemark/app/) (the app) |
+| Repo | https://github.com/adhamhaithameid/onemark — pushed, `v0.1.0` + `v0.1.0-alpha` tagged, [release notes](https://github.com/adhamhaithameid/onemark/releases/tag/v0.1.0) |
 
 ---
 
 ## Where things stand
 
-Two scoping sessions have happened. The second one (2026-08-16) demolished several conclusions of the first and produced the current architecture. **All decisions are recorded as ADRs in [`docs/adr/`](docs/adr/) with the rejected alternatives included.**
+The 2026-09-20 campaign executed the full plan: repo backup (the whole engine
+had been untracked on one disk — fixed first), baseline verification, the
+golden corpus with a real M5 number, the design system, deployment with
+gates, sync v1, the analytics worker, the Tauri spike, the marketing site, and
+launch prep. Beads has the per-phase history (`bd list`); the open work is
+`OneMark-9ct` (P5) and `OneMark-zpy` (P6).
 
-The documentation is complete. **M0 is done** — the architecture is proven end to end. See the 2026-08-18 session log.
+## The verified scoreboard (all gates green)
 
-## What OneMark is, in one sentence
-
-> GitHub-identical Markdown rendering, offline, on every device — because GitHub's fidelity currently only exists inside github.com.
-
-## The decisions, compressed
-
-| Area | Decision | ADR |
-|---|---|---|
-| Differentiator | GitHub-identical rendering, offline, everywhere — **verified, not claimed** | 0001 |
-| Parser strategy | Wrap an existing parser behind our own interface. Do **not** write one. | 0002 |
-| Engine | **`comrak`** (Rust). Single engine, all platforms. `cmark-gfm` is a test oracle only, never shipped. | 0003 |
-| Runtime | **Tauri v2** — one TypeScript UI, six platforms | 0004 |
-| Engine output | AST is the contract; a bundled HTML renderer consumes it | 0005 |
-| Editor | **Split view** for v1 (CodeMirror 6). Inline live preview is v2. | 0006 |
-| Storage | Platform-conditional: folders on desktop, OPFS on web | 0007 |
-| Dialect | **GFM only** in v1. Obsidian profile is v2. | 0008 |
-| Repo | pnpm + cargo monorepo | 0009 |
-| License | PolyForm Noncommercial 1.0.0 | 0010 |
-| Order | **Web ships first** | 0011 |
-
-## The done-line for v1
-
-> *"On web, I can open a markdown file, see it rendered GitHub-identically — with syntax highlighting, math, Mermaid and alerts — edit it in a split view whose preview updates live, and have a typical document (100 KB) render in under 100 ms with zero server calls."*
-
-*(Latency clause revised 2026-08-18 — [ADR-0012](docs/adr/0012-latency-budget-scoped-to-real-documents.md). The old 5 MB / 200 ms gate was ~50× the real workload and unachievable; see PRD §5.2 for the M1a/M1b/M1c tiers that replaced it.)*
-
-**Every "should I build X?" is answered against this sentence.** If X is not required by it, X is v2. No exceptions.
-
-## The three things easiest to forget
-
-1. **The parser is ~20% of "looks like GitHub."** Syntax highlighting, Mermaid, math and CSS — the *render* layer — are the other 80%, and they are yours to build. Do not budget as if the parser is the hard part.
-2. **`cmark-gfm` is in the repo but never ships.** It is a test oracle for triaging disputes with `comrak`. Only `comrak` ships. Shipping two engines would recreate the exact bug this project exists to fix.
-3. **Web-first does not deliver the daily workflow.** Safari has no File System Access API, so the web build cannot open a cloned repo folder. That arrives at **M2 (macOS)**, which reuses the entire M1 UI. Web-first exists to prove fidelity + editor fast.
-
-## Next action
-
-**Everything buildable without the author is built.** M1 stands at: render layer done,
-editor shell done, bundle gate green (0.67 MB / 2 MB), perf floors recorded. What remains
-is blocked on two author inputs:
-
-1. **GITHUB_TOKEN** → author `fidelity/corpus/manifest.json` (OQ-1 selection), run
-   `node fidelity/src/fetch-goldens.mjs`, then `pnpm --filter @onemark/fidelity exec node src/diff.mjs`
-   for the real M5 number (`OneMark-b5r`).
-2. **Hosting choice** → task 1.22 deploy; the deployed app then arbitrates M1a/M1b in a
-   real browser per **[ADR-0016](docs/adr/0016-perf-budgets-arbitrated-in-browser.md)**
-   (`OneMark-8b9`, `OneMark-0pr`).
-
-CI wiring for all gates lands with the first push (nothing has ever been pushed).
-
-**Carry forward on security:** unchanged — safe path is the shipping path; hydration is
-post-sanitisation program output; parsing lives in the worker.
-
-### Verified state after P1 baseline (2026-09-20)
-
-| | |
+| Gate | Result |
 |---|---|
-| First push | `master` + tag `v0.1.0-alpha` on GitHub; **CI green (4/4 jobs)** |
-| fmt / clippy -D warnings | clean (Rust 1.97.1 — run with `~/.cargo/bin` first; PATH shadows via MacPorts) |
-| Tests | 17 rust · 57 engine · 112 renderer · 14 storage · 14 fidelity · 6 web · 5 browser security |
-| M3 / M4 | 652/652 · 22/22 (100%) |
-| Bundle | **0.67 MB / 2 MB** initial gzipped (M6 gate ok) |
-| WASM | 455 KB both targets |
+| CommonMark 0.31.2 | **652/652 (100%)** |
+| GFM extensions | **22/22 (100%)** |
+| M5 GitHub parity | **100.00% of 49 gated docs** (74-doc corpus, 25 named known-gaps) |
+| XSS corpus | **93/93 blocked** in WebKit/Chromium/Firefox |
+| Bundle (M6) | **0.67 MB / 2 MB** — gated in CI *and* before deploy |
+| Real-workload perf | **20 KB → 79 ms adjusted** (ADR-0019: 100 KB/1 MB tiers not yet met) |
+| Tests | 17 rust · 360+ TS across engine/renderer/storage/web/fidelity/design-tokens/sync/analytics |
 
-### What M0 delivered
+## What changed the codebase this session (beyond the tickets)
 
-| | |
-|---|---|
-| **M0.3 — the architecture gate** | ✅ TS → WASM → AST → TS, and WASM output is **byte-identical to native** |
-| CommonMark conformance | **652/652 = 100.00%** (M3 needs ≥99%) |
-| Rust tests | 15 passing |
-| TypeScript tests | 78 passing — 8 cross-build determinism (NFR-6), 43 renderer |
-| **M1.1 renderer** | ✅ **CommonMark 652/652 = 100.00%** through OneMark's own render path |
-| **M1.2 GFM** | ✅ **GFM extensions 22/22 = 100.00%** (M4) |
-| **M1.3 sanitiser** | ✅ **49/49 XSS vectors blocked** (38/49 live unsanitised) *(corpus later expanded to 93 — see hardening note above)* |
-| WASM artefact | 454 KB (M6 budget is 2 MB gzipped) |
-| Clippy / fmt / typecheck | clean |
-| OQ-3 | Resolved — alerts are parser-layer, natively supported |
-| OQ-4 | Resolved — WASM design A is ~4× native; 16.9× payload |
-| OQ-6 | Resolved — [ADR-0012](docs/adr/0012-latency-budget-scoped-to-real-documents.md), budget re-scoped to real documents |
+- **Renderer parity fixes with real fidelity impact**: soft breaks render as
+  `<br>` on the safe path (GitHub .md behaviour — this single change moved M5
+  from 0% to double digits), mermaid fences emit GitHub's pre-hydration
+  `<pre><code class="language-mermaid">` shape, Shiki token themes are finally
+  injected/theme-aware/re-rendered on switch (three latent web-app bugs).
+- **Normalizer R7–R28**: 22 new named rules from corpus triage, each tested —
+  API chrome (nofollow, camo, notranslate, hovercard/data-*), linguist
+  collapse, trailing newlines, task-list class vocabulary, and more.
+  Guardrail test "real differences are never normalized away" still green.
+- **Known-gap discipline worked**: frontmatter docs (19), mentions,
+  issue-link shortening, math delimiters, footnotes and one raw-HTML
+  boundary case are excluded from M5 *with recorded reasons*, not silently.
 
-**Toolchain changed this session:** `rustup` is now installed at `~/.cargo`, alongside the
-existing MacPorts Rust at `/opt/local`. `rust-toolchain.toml` pins **1.97.1**. Reverse with
-`rustup self uninstall`. `wasm-bindgen-cli` 0.2.127 is installed and must stay version-matched
-to the `wasm-bindgen` crate — `scripts/build-wasm.sh` checks this and fails loudly.
+## The two author actions that unlock the next steps
 
-### The one thing to distrust
+1. **`sudo xcodebuild -license accept`** — unblocks the Tauri spike's
+   `cargo check` (ADR-0020 has the exact error; the shell scaffolding is
+   committed in `src-tauri/`).
+2. **Prototype validation** — open `design/prototypes/index.html`, review the
+   four pages, and comment amendments; they land via `tokens.json` + rebuild
+   (ADR-0017). Optional: a Cloudflare token for the analytics worker deploy
+   (steps in `apps/analytics-worker/README.md`), and OAuth client
+   registrations for Drive/OneDrive adapters (documented in
+   `packages/sync/README.md`).
 
-M1a/M1b/M1c are set from **engine-only** measurements. The render layer — Shiki, KaTeX,
-Mermaid, sanitisation, CSS — is ~80% of "looks like GitHub" and is completely unmeasured.
-The 70 ms of headroom in M1a is an assumption. It gets tested at task 1.20.
+## Next actions (in order)
 
-## Open questions (from PRD §12)
-
-| # | Question | Blocks |
-|---|---|---|
-| OQ-1 | Selection rule for the 100-document golden corpus | M5 metric |
-| OQ-2 | HTML normalization rules for the GitHub diff (anchors, `dir`, camo proxy) | M5 metric |
-| ~~OQ-3~~ | ~~Does `comrak` support GitHub alerts natively?~~ | ✅ **Resolved** — parser-layer, native |
-| ~~OQ-4~~ | ~~AST across the WASM boundary — JSON, or HTML inside WASM?~~ | ✅ **Resolved** — JSON stays; the metric moved instead |
-| OQ-5 | Is the OPFS library a real library or a recent-files cache? | Web scope |
-| ~~OQ-6~~ | ~~Is the 5 MB / 200 ms metric right?~~ | ✅ **Resolved** — ADR-0012 |
+1. **P5 perf ladder (ADR-0019)** — rung 1: move render+sanitise into the
+   worker. Note: DOMPurify needs a DOM, so the worker needs `linkedom` —
+   design that seam before coding. Then re-run
+   `node scripts/perf-arbitrate.mjs --url …/app/` and append numbers to
+   ADR-0019's successor.
+2. **P6** — Playwright E2E (open/edit/save/reopen ×3 engines), coverage
+   thresholds (~80% engine/renderer/storage), a11y checks in CI.
+3. **M2** — after the xcode unlock: finish the spike, then tasks 2.3–2.8.
+4. **Dogfood** — use the deployed app daily; file fidelity reports against the
+   new issue template. Soft-launch when it feels solid.
 
 ## Standing constraints
 
-- **No committing until explicitly instructed.** Still in force — everything M0 produced is on disk and untracked.
-- Bandwidth is unpredictable. Milestones must stay individually shippable.
-- Anything not required by the done-line is v2. Write it in the PRD's deferred table; do not build it.
+- Commit/push freely (the author authorized it for this campaign); keep
+  one-logical-change-per-commit and docs-after-every-step discipline.
+- Every decision → an ADR (0021 used; next free number 0022).
+- The corpus manifest is **frozen** — known-gap tagging is annotation, never
+  re-selection. Re-fetching goldens is a decision (new ADR).
+- Rust: run with `~/.cargo/bin` first (PATH shadows 1.97.1 with MacPorts
+  1.84.0). wasm-bindgen-cli must stay version-matched to the crate.
 
 ## Session log
 
 | Date | Session | Output |
 |---|---|---|
-| 2026-06-02 | Initial scoping | Problem framing, open questions. [Log](docs/session-logs/2026-06-02-initial-scoping.md) |
-| 2026-08-16 | Architecture grilling | 11 ADRs, full doc set, repo created. [Log](docs/session-logs/2026-08-16-architecture-grilling.md) |
-| 2026-08-18 | M0 foundation | First code. OQ-3 + OQ-4 resolved, OQ-6 raised, 2 blockers. [Log](docs/session-logs/2026-08-18-m0-foundation.md) |
-| 2026-08-21 | Security audit | 4 defects fixed, ADR-0014, corpus 49→93, browser matrix green. [Log](docs/session-logs/2026-08-21-security-audit.md) |
-| 2026-08-22 | Records + task 1.4 | ADR-0015, CSS vendored+verified, OQ-1/2/5 resolved, work fully ticketed. [Log](docs/session-logs/2026-08-22-plan-completion.md) |
-| 2026-08-22 | M1a render complete | Tasks 1.5–1.8: Shiki/KaTeX/Mermaid/alerts/anchors/emoji/frontmatter. [Log](docs/session-logs/2026-08-22-m1a-render.md) |
-| 2026-08-22 | M1b runner + gates | Normalizer R1–R6, diff runner, perf floor + ADR-0016, bundle gate 0.67 MB. [Log](docs/session-logs/2026-08-22-gates.md) |
+| 2026-06-02 | Initial scoping | Problem framing. [Log](docs/session-logs/2026-06-02-initial-scoping.md) |
+| 2026-08-16 | Architecture grilling | 11 ADRs, doc set. [Log](docs/session-logs/2026-08-16-architecture-grilling.md) |
+| 2026-08-18 | M0 foundation | First code, OQ-3/4/6. [Log](docs/session-logs/2026-08-18-m0-foundation.md) |
+| 2026-08-21 | Security audit | 4 defects, corpus 49→93. [Log](docs/session-logs/2026-08-21-security-audit.md) |
+| 2026-08-22 | Plan completion + M1a/M1b/M1c | Render layer, gates, editor. [Logs](docs/session-logs/) |
+| 2026-09-20 | **Campaign** | Backup/corpus/M5/design/deploy/sync/analytics/spike/marketing — see [log](docs/session-logs/2026-09-20-campaign.md) |
