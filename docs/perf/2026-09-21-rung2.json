@@ -1,0 +1,52 @@
+{
+  "url": "https://adhamhaithameid.github.io/onemark/app/",
+  "generatedAt": "2026-09-20T21:44:18.335Z",
+  "debounceMs": 150,
+  "tiers": {
+    "real-workload": {
+      "bytes": 20480,
+      "budgetMs": 100,
+      "informational": true,
+      "samples": [
+        224,
+        226,
+        245,
+        254,
+        324
+      ],
+      "medianMs": 245,
+      "adjustedMs": 95,
+      "pass": true
+    },
+    "M1a": {
+      "bytes": 102400,
+      "budgetMs": 100,
+      "informational": false,
+      "samples": [
+        436,
+        460,
+        460,
+        526,
+        558
+      ],
+      "medianMs": 460,
+      "adjustedMs": 310,
+      "pass": false
+    },
+    "M1b": {
+      "bytes": 1048576,
+      "budgetMs": 500,
+      "informational": false,
+      "samples": [
+        7726,
+        8578,
+        9650,
+        10577,
+        11338
+      ],
+      "medianMs": 9650,
+      "adjustedMs": 9500,
+      "pass": false
+    }
+  }
+}
