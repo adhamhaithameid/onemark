@@ -8,6 +8,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "test": "vitest run --exclude '**/node_modules/**' --exclude '**/browser-security.test.ts' --exclude '**/theme-screenshot.test.ts' --exclude '**/mermaid-browser.test.ts'",
+    "test:coverage": "vitest run --coverage --exclude '**/node_modules/**' --exclude '**/browser-security.test.ts' --exclude '**/theme-screenshot.test.ts' --exclude '**/mermaid-browser.test.ts'",
     "typecheck": "tsc --noEmit",
     "test:browser": "vitest run test/browser-security.test.ts test/mermaid-browser.test.ts",
     "test:visual": "vitest run test/theme-screenshot.test.ts"
@@ -24,7 +25,10 @@
     "@types/katex": "^0.16.8",
     "@types/node": "^22.10.0",
     "@types/pngjs": "^6.0.5",
+    "@vitest/coverage-v8": "^3.2.7",
+    "happy-dom": "^20.14.5",
     "jsdom": "^30.0.1",
+    "linkedom": "^0.18.13",
     "pixelmatch": "^7.2.0",
     "playwright": "^1.62.1",
     "pngjs": "^7.0.0",

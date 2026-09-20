@@ -1,942 +1,1755 @@
 {
-  "seedDescription": "mulberry32(28494); trees of 30 repos; band 5-200KB; per-repo caps; path-rule strata",
-  "generatedAt": "2026-09-20T00:45:31.837Z",
+  "seedDescription": "mulberry32(28494); trees of 55 repos; band 5-200KB; per-repo caps; path-rule strata",
+  "generatedAt": "2026-09-20T01:01:00.024Z",
   "counts": {
-    "readme_majority": 25,
-    "longform_docs": 60,
-    "gfm_rich": 60,
-    "adversarial": 10
+    "readme_majority": 44,
+    "longform_docs": 118,
+    "gfm_rich": 79,
+    "adversarial": 8
   },
   "pool": [
     [
       "node-readme",
       "nodejs/node",
-      "src/README.md",
-      "readme_majority"
+      "deps/LIEF/third-party/spdlog/README.md",
+      "readme_majority",
+      18547
     ],
     [
       "node-readme",
       "nodejs/node",
-      "deps/npm/node_modules/@npmcli/config/README.md",
-      "readme_majority"
+      "benchmark/README.md",
+      "readme_majority",
+      7182
     ],
     [
       "node-readme",
       "nodejs/node",
-      "deps/npm/node_modules/semver/README.md",
-      "readme_majority"
+      "deps/openssl/openssl/fuzz/README.md",
+      "readme_majority",
+      7385
     ],
     [
-      "go-readme",
-      "golang/go",
-      "src/cmd/compile/README.md",
-      "readme_majority"
+      "electron-readme",
+      "electron/electron",
+      "docs/README.md",
+      "readme_majority",
+      5748
     ],
     [
       "go-readme",
       "golang/go",
       "src/cmd/compile/internal/ssa/README.md",
-      "readme_majority"
+      "readme_majority",
+      9142
+    ],
+    [
+      "go-readme",
+      "golang/go",
+      "src/cmd/compile/README.md",
+      "readme_majority",
+      18090
+    ],
+    [
+      "go-readme",
+      "golang/go",
+      "src/cmd/vendor/golang.org/x/sys/unix/README.md",
+      "readme_majority",
+      8686
+    ],
+    [
+      "deno-readme",
+      "denoland/deno",
+      "tools/startup_order/README.md",
+      "readme_majority",
+      7844
     ],
     [
       "next-js-readme",
       "vercel/next.js",
-      "bench/render-pipeline/README.md",
-      "readme_majority"
+      "examples/with-supabase/README.md",
+      "readme_majority",
+      5332
     ],
     [
       "next-js-readme",
       "vercel/next.js",
-      "examples/cms-graphcms/README.md",
-      "readme_majority"
+      "examples/prisma-postgres/README.md",
+      "readme_majority",
+      7538
     ],
     [
       "katex-readme",
       "KaTeX/KaTeX",
       "README.md",
-      "readme_majority"
+      "readme_majority",
+      6503
     ],
     [
       "ollama-readme",
       "ollama/ollama",
       "llama/compat/README.md",
-      "readme_majority"
-    ],
-    [
-      "tauri-readme",
-      "tauri-apps/tauri",
-      "crates/tauri-bundler/README.md",
-      "readme_majority"
+      "readme_majority",
+      9470
     ],
     [
       "ohmyzsh-readme",
       "ohmyzsh/ohmyzsh",
-      "plugins/juju/README.md",
-      "readme_majority"
+      "plugins/emoji/README.md",
+      "readme_majority",
+      5776
     ],
     [
       "ohmyzsh-readme",
       "ohmyzsh/ohmyzsh",
       "plugins/xcode/README.md",
-      "readme_majority"
+      "readme_majority",
+      5470
     ],
     [
       "ohmyzsh-readme",
       "ohmyzsh/ohmyzsh",
-      "plugins/jj/README.md",
-      "readme_majority"
+      "plugins/ubuntu/README.md",
+      "readme_majority",
+      6604
     ],
     [
-      "systemd-readme",
-      "systemd/systemd",
-      "test/integration-tests/README.md",
-      "readme_majority"
-    ],
-    [
-      "helm-readme",
-      "helm/helm",
-      "pkg/action/testdata/charts/chart-with-uncompressed-dependencies/charts/mariadb/README.md",
-      "readme_majority"
-    ],
-    [
-      "helm-readme",
-      "helm/helm",
-      "pkg/cmd/testdata/testcharts/chart-with-template-lib-dep/charts/common/README.md",
-      "readme_majority"
+      "ohmyzsh-readme",
+      "ohmyzsh/ohmyzsh",
+      "plugins/zsh-navigation-tools/README.md",
+      "readme_majority",
+      9835
     ],
     [
       "helm-readme",
       "helm/helm",
       "pkg/cmd/testdata/testcharts/lib-chart/README.md",
-      "readme_majority"
+      "readme_majority",
+      20934
     ],
     [
-      "istio-readme",
-      "istio/istio",
-      "samples/ambient-argo/README.md",
-      "readme_majority"
+      "helm-readme",
+      "helm/helm",
+      "pkg/cmd/testdata/testcharts/chart-with-template-lib-dep/charts/common/README.md",
+      "readme_majority",
+      20197
+    ],
+    [
+      "helm-readme",
+      "helm/helm",
+      "pkg/action/testdata/charts/chart-with-uncompressed-dependencies/charts/mariadb/README.md",
+      "readme_majority",
+      13998
     ],
     [
       "istio-readme",
       "istio/istio",
       "pkg/kube/krt/README.md",
-      "readme_majority"
+      "readme_majority",
+      12085
     ],
     [
       "istio-readme",
       "istio/istio",
+      "samples/security/spire-trust-domain-federation/README.md",
+      "readme_majority",
+      8062
+    ],
+    [
+      "istio-readme",
+      "istio/istio",
+      "tools/istio-iptables/pkg/README.md",
+      "readme_majority",
+      10053
+    ],
+    [
+      "istio-readme",
+      "istio/istio",
+      "releasenotes/README.md",
+      "readme_majority",
+      5211
+    ],
+    [
+      "prometheus-readme",
+      "prometheus/prometheus",
+      "web/ui/module/codemirror-promql/README.md",
+      "readme_majority",
+      8967
+    ],
+    [
+      "prometheus-readme",
+      "prometheus/prometheus",
+      "web/ui/README.md",
+      "readme_majority",
+      7558
+    ],
+    [
+      "prometheus-readme",
+      "prometheus/prometheus",
       "README.md",
-      "readme_majority"
+      "readme_majority",
+      9689
+    ],
+    [
+      "grafana-readme",
+      "grafana/grafana",
+      "pkg/services/authz/zanzana/README.md",
+      "readme_majority",
+      10234
+    ],
+    [
+      "ansible-readme",
+      "ansible/ansible",
+      "README.md",
+      "readme_majority",
+      6154
     ],
     [
       "ansible-readme",
       "ansible/ansible",
       "hacking/azp/README.md",
-      "readme_majority"
-    ],
-    [
-      "ansible-readme",
-      "ansible/ansible",
-      "README.md",
-      "readme_majority"
-    ],
-    [
-      "yt-dlp-readme",
-      "yt-dlp/yt-dlp",
-      "yt_dlp/extractor/youtube/pot/README.md",
-      "readme_majority"
+      "readme_majority",
+      6001
     ],
     [
       "yt-dlp-readme",
       "yt-dlp/yt-dlp",
       "yt_dlp/extractor/youtube/jsc/README.md",
-      "readme_majority"
+      "readme_majority",
+      5991
     ],
     [
       "yt-dlp-readme",
       "yt-dlp/yt-dlp",
       "README.md",
-      "readme_majority"
+      "readme_majority",
+      179196
+    ],
+    [
+      "yt-dlp-readme",
+      "yt-dlp/yt-dlp",
+      "yt_dlp/extractor/youtube/pot/README.md",
+      "readme_majority",
+      13004
+    ],
+    [
+      "webpack-readme",
+      "webpack/webpack",
+      "examples/extra-async-chunk/README.md",
+      "readme_majority",
+      14700
+    ],
+    [
+      "webpack-readme",
+      "webpack/webpack",
+      "README.md",
+      "readme_majority",
+      79636
+    ],
+    [
+      "webpack-readme",
+      "webpack/webpack",
+      "examples/dll-app-and-vendor/1-app/README.md",
+      "readme_majority",
+      5653
+    ],
+    [
+      "webpack-readme",
+      "webpack/webpack",
+      "examples/worker/README.md",
+      "readme_majority",
+      26056
+    ],
+    [
+      "tensorflow-readme",
+      "tensorflow/tensorflow",
+      "tensorflow/examples/custom_ops_doc/multiplex_2/README.md",
+      "readme_majority",
+      16710
+    ],
+    [
+      "airflow-readme",
+      "apache/airflow",
+      "providers/google/tests/system/google/resources_cleanup/README.md",
+      "readme_majority",
+      5898
+    ],
+    [
+      "grpc-readme",
+      "grpc/grpc",
+      "third_party/README.md",
+      "readme_majority",
+      9796
+    ],
+    [
+      "grpc-readme",
+      "grpc/grpc",
+      "examples/python/flow_control/README.md",
+      "readme_majority",
+      6126
+    ],
+    [
+      "git-readme",
+      "git/git",
+      "git-gui/README.md",
+      "readme_majority",
+      6255
+    ],
+    [
+      "libuv-readme",
+      "libuv/libuv",
+      "README.md",
+      "readme_majority",
+      9972
+    ],
+    [
+      "pyenv-readme",
+      "pyenv/pyenv",
+      "plugins/python-build/README.md",
+      "readme_majority",
+      16302
+    ],
+    [
+      "vim-plug-readme",
+      "junegunn/vim-plug",
+      "README.md",
+      "readme_majority",
+      16052
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/web/css/reference/selectors/attribute_selectors/index.md",
-      "longform_docs"
+      "longform_docs",
+      7951
+    ],
+    [
+      "content-index",
+      "mdn/content",
+      "files/en-us/web/css/guides/multicol_layout/basic_concepts/index.md",
+      "longform_docs",
+      8030
+    ],
+    [
+      "content-index",
+      "mdn/content",
+      "files/en-us/web/html/reference/elements/input/color/index.md",
+      "longform_docs",
+      10742
     ],
     [
       "react-dev-act",
       "reactjs/react.dev",
       "src/content/reference/react/act.md",
-      "longform_docs"
+      "longform_docs",
+      5924
     ],
     [
       "react-dev-suspense",
       "reactjs/react.dev",
       "src/content/reference/react/Suspense.md",
-      "longform_docs"
+      "longform_docs",
+      81943
     ],
     [
       "react-dev-prerendertonodestream",
       "reactjs/react.dev",
       "src/content/reference/react-dom/static/prerenderToNodeStream.md",
-      "longform_docs"
+      "longform_docs",
+      15916
     ],
     [
       "react-dev-useoptimistic",
       "reactjs/react.dev",
       "src/content/reference/react/useOptimistic.md",
-      "longform_docs"
+      "longform_docs",
+      34085
     ],
     [
       "react-dev-your-first-component",
       "reactjs/react.dev",
       "src/content/learn/your-first-component.md",
-      "longform_docs"
+      "longform_docs",
+      13259
     ],
     [
       "react-dev-createroot",
       "reactjs/react.dev",
       "src/content/reference/react-dom/client/createRoot.md",
-      "longform_docs"
+      "longform_docs",
+      20525
     ],
     [
       "react-dev-you-might-not-need-an-effect",
       "reactjs/react.dev",
       "src/content/learn/you-might-not-need-an-effect.md",
-      "longform_docs"
+      "longform_docs",
+      61408
     ],
     [
       "react-dev-browser",
       "reactjs/react.dev",
       "src/content/reference/react-dom/browser.md",
-      "longform_docs"
+      "longform_docs",
+      13817
     ],
     [
       "react-dev-purecomponent",
       "reactjs/react.dev",
       "src/content/reference/react/PureComponent.md",
-      "longform_docs"
+      "longform_docs",
+      5902
     ],
     [
       "react-dev-useformstatus",
       "reactjs/react.dev",
       "src/content/reference/react-dom/hooks/useFormStatus.md",
-      "longform_docs"
+      "longform_docs",
+      6898
     ],
     [
-      "node-advocacy-ambassador-program",
+      "react-dev-children",
+      "reactjs/react.dev",
+      "src/content/reference/react/Children.md",
+      "longform_docs",
+      25956
+    ],
+    [
+      "react-dev-index",
+      "reactjs/react.dev",
+      "src/content/reference/react-dom/components/index.md",
+      "longform_docs",
+      19958
+    ],
+    [
+      "node-changelog-v010",
       "nodejs/node",
-      "doc/contributing/advocacy-ambassador-program.md",
-      "longform_docs"
+      "doc/changelogs/CHANGELOG_V010.md",
+      "longform_docs",
+      53328
     ],
     [
-      "node-releases",
+      "node-connectexample",
       "nodejs/node",
-      "doc/contributing/releases.md",
-      "longform_docs"
+      "deps/npm/node_modules/socks/docs/examples/javascript/connectExample.md",
+      "longform_docs",
+      7567
     ],
     [
-      "node-gypvscmake",
+      "node-npm-dist-tag",
       "nodejs/node",
-      "tools/gyp/docs/GypVsCMake.md",
-      "longform_docs"
+      "deps/npm/docs/content/commands/npm-dist-tag.md",
+      "longform_docs",
+      5170
     ],
     [
-      "node-maintaining-types-for-nodejs",
+      "node-inputformatreference",
       "nodejs/node",
-      "doc/contributing/maintaining/maintaining-types-for-nodejs.md",
-      "longform_docs"
+      "deps/npm/node_modules/node-gyp/gyp/docs/InputFormatReference.md",
+      "longform_docs",
+      39057
     ],
     [
-      "node-languagespecification",
-      "nodejs/node",
-      "tools/gyp/docs/LanguageSpecification.md",
-      "longform_docs"
-    ],
-    [
-      "electron-screen",
+      "electron-notification",
       "electron/electron",
-      "docs/api/screen.md",
-      "longform_docs"
+      "docs/api/notification.md",
+      "longform_docs",
+      18548
     ],
     [
-      "electron-tray",
+      "electron-automated-testing",
       "electron/electron",
-      "docs/api/tray.md",
-      "longform_docs"
+      "docs/tutorial/automated-testing.md",
+      "longform_docs",
+      14594
     ],
     [
-      "electron-global-shortcut",
+      "electron-why-electron",
       "electron/electron",
-      "docs/api/global-shortcut.md",
-      "longform_docs"
+      "docs/why-electron.md",
+      "longform_docs",
+      15548
+    ],
+    [
+      "electron-api-history-migration-guide",
+      "electron/electron",
+      "docs/development/api-history-migration-guide.md",
+      "longform_docs",
+      6476
+    ],
+    [
+      "electron-tutorial-3-preload",
+      "electron/electron",
+      "docs/tutorial/tutorial-3-preload.md",
+      "longform_docs",
+      9590
     ],
     [
       "typescript-contributing",
       "microsoft/TypeScript",
       "CONTRIBUTING.md",
-      "longform_docs"
+      "longform_docs",
+      8334
     ],
     [
-      "react-46-validatenosetstateineffects",
+      "deno-package-management",
+      "denoland/deno",
+      "doc/package-management.md",
+      "longform_docs",
+      7017
+    ],
+    [
+      "deno-architecture",
+      "denoland/deno",
+      "doc/architecture.md",
+      "longform_docs",
+      6163
+    ],
+    [
+      "deno-desktop-architecture",
+      "denoland/deno",
+      "doc/desktop-architecture.md",
+      "longform_docs",
+      8716
+    ],
+    [
+      "react-36-outlinejsx",
       "facebook/react",
-      "compiler/packages/babel-plugin-react-compiler/docs/passes/46-validateNoSetStateInEffects.md",
-      "longform_docs"
+      "compiler/packages/babel-plugin-react-compiler/docs/passes/36-outlineJSX.md",
+      "longform_docs",
+      5911
     ],
     [
-      "docs-custom-directives",
+      "react-53-validatepreservedmanualmemoization",
+      "facebook/react",
+      "compiler/packages/babel-plugin-react-compiler/docs/passes/53-validatePreservedManualMemoization.md",
+      "longform_docs",
+      5845
+    ],
+    [
+      "react-21-buildreactivefunction",
+      "facebook/react",
+      "compiler/packages/babel-plugin-react-compiler/docs/passes/21-buildReactiveFunction.md",
+      "longform_docs",
+      6920
+    ],
+    [
+      "docs-watchers",
       "vuejs/docs",
-      "src/guide/reusability/custom-directives.md",
-      "longform_docs"
+      "src/guide/essentials/watchers.md",
+      "longform_docs",
+      19607
     ],
     [
-      "docs-async",
+      "docs-state-management",
       "vuejs/docs",
-      "src/guide/components/async.md",
-      "longform_docs"
+      "src/guide/scaling-up/state-management.md",
+      "longform_docs",
+      8181
     ],
     [
-      "kit-30-migrating-to-sveltekit-2",
-      "sveltejs/kit",
-      "documentation/docs/60-appendix/30-migrating-to-sveltekit-2.md",
-      "longform_docs"
+      "docs-provide-inject",
+      "vuejs/docs",
+      "src/guide/components/provide-inject.md",
+      "longform_docs",
+      12934
     ],
     [
-      "kit-60-adapter-cloudflare",
-      "sveltejs/kit",
-      "documentation/docs/25-build-and-deploy/60-adapter-cloudflare.md",
-      "longform_docs"
+      "docs-introduction",
+      "vuejs/docs",
+      "src/guide/introduction.md",
+      "longform_docs",
+      11950
     ],
     [
-      "kit-30-project-structure",
-      "sveltejs/kit",
-      "documentation/docs/10-getting-started/30-project-structure.md",
-      "longform_docs"
+      "docs-render-function",
+      "vuejs/docs",
+      "src/guide/extras/render-function.md",
+      "longform_docs",
+      22122
     ],
     [
-      "kit-40-page-options",
-      "sveltejs/kit",
-      "documentation/docs/20-core-concepts/40-page-options.md",
-      "longform_docs"
+      "docs-quick-start",
+      "vuejs/docs",
+      "src/guide/quick-start.md",
+      "longform_docs",
+      16107
     ],
     [
-      "kit-30-form-actions",
+      "kit-45-adapter-bun",
       "sveltejs/kit",
-      "documentation/docs/20-core-concepts/30-form-actions.md",
-      "longform_docs"
+      "documentation/docs/25-build-and-deploy/45-adapter-bun.md",
+      "longform_docs",
+      10621
+    ],
+    [
+      "kit-contributing",
+      "sveltejs/kit",
+      "CONTRIBUTING.md",
+      "longform_docs",
+      8014
+    ],
+    [
+      "kit-70-environment-variables",
+      "sveltejs/kit",
+      "documentation/docs/20-core-concepts/70-environment-variables.md",
+      "longform_docs",
+      6382
+    ],
+    [
+      "kit-07-images",
+      "sveltejs/kit",
+      "documentation/docs/40-best-practices/07-images.md",
+      "longform_docs",
+      11172
+    ],
+    [
+      "kit-70-packaging",
+      "sveltejs/kit",
+      "documentation/docs/30-advanced/70-packaging.md",
+      "longform_docs",
+      15208
+    ],
+    [
+      "katex-autorender",
+      "KaTeX/KaTeX",
+      "docs/autorender.md",
+      "longform_docs",
+      6388
+    ],
+    [
+      "katex-browser",
+      "KaTeX/KaTeX",
+      "docs/browser.md",
+      "longform_docs",
+      10622
     ],
     [
       "katex-support-table",
       "KaTeX/KaTeX",
       "docs/support_table.md",
-      "longform_docs"
-    ],
-    [
-      "katex-supported",
-      "KaTeX/KaTeX",
-      "docs/supported.md",
-      "longform_docs"
+      "longform_docs",
+      52570
     ],
     [
       "katex-contributing",
       "KaTeX/KaTeX",
       "CONTRIBUTING.md",
-      "longform_docs"
-    ],
-    [
-      "katex-options",
-      "KaTeX/KaTeX",
-      "docs/options.md",
-      "longform_docs"
-    ],
-    [
-      "ollama-development",
-      "ollama/ollama",
-      "docs/development.md",
-      "longform_docs"
+      "longform_docs",
+      7303
     ],
     [
       "ollama-api",
       "ollama/ollama",
       "docs/api.md",
-      "longform_docs"
+      "longform_docs",
+      53559
+    ],
+    [
+      "ollama-development",
+      "ollama/ollama",
+      "docs/development.md",
+      "longform_docs",
+      5853
     ],
     [
       "tauri-changelog",
       "tauri-apps/tauri",
       "crates/tauri-utils/CHANGELOG.md",
-      "longform_docs"
+      "longform_docs",
+      96821
     ],
     [
       "tauri-changelog",
       "tauri-apps/tauri",
       "crates/tauri-runtime-wry/CHANGELOG.md",
-      "longform_docs"
+      "longform_docs",
+      124134
     ],
     [
-      "systemd-portable-services",
-      "systemd/systemd",
-      "docs/PORTABLE_SERVICES.md",
-      "longform_docs"
+      "tauri-changelog",
+      "tauri-apps/tauri",
+      "packages/api/CHANGELOG.md",
+      "longform_docs",
+      99294
     ],
     [
-      "systemd-random-seeds",
-      "systemd/systemd",
-      "docs/RANDOM_SEEDS.md",
-      "longform_docs"
+      "tauri-changelog",
+      "tauri-apps/tauri",
+      "crates/tauri-codegen/CHANGELOG.md",
+      "longform_docs",
+      39300
     ],
     [
-      "systemd-converting-to-homed",
+      "systemd-user-names",
       "systemd/systemd",
-      "docs/CONVERTING_TO_HOMED.md",
-      "longform_docs"
+      "docs/USER_NAMES.md",
+      "longform_docs",
+      8542
     ],
     [
-      "systemd-syslog",
+      "systemd-network-online",
       "systemd/systemd",
-      "docs/SYSLOG.md",
-      "longform_docs"
+      "docs/NETWORK_ONLINE.md",
+      "longform_docs",
+      13544
+    ],
+    [
+      "systemd-temporary-directories",
+      "systemd/systemd",
+      "docs/TEMPORARY_DIRECTORIES.md",
+      "longform_docs",
+      12895
+    ],
+    [
+      "systemd-coredump",
+      "systemd/systemd",
+      "docs/COREDUMP.md",
+      "longform_docs",
+      6702
+    ],
+    [
+      "systemd-contributing",
+      "systemd/systemd",
+      "docs/CONTRIBUTING.md",
+      "longform_docs",
+      9624
     ],
     [
       "helm-contributing",
       "helm/helm",
       "CONTRIBUTING.md",
-      "longform_docs"
+      "longform_docs",
+      19822
     ],
     [
-      "istio-operator",
-      "istio/istio",
-      "architecture/environments/operator.md",
-      "longform_docs"
-    ],
-    [
-      "prometheus-functions",
+      "prometheus-template-reference",
       "prometheus/prometheus",
-      "docs/querying/functions.md",
-      "longform_docs"
-    ],
-    [
-      "prometheus-promtool",
-      "prometheus/prometheus",
-      "docs/command-line/promtool.md",
-      "longform_docs"
-    ],
-    [
-      "prometheus-operators",
-      "prometheus/prometheus",
-      "docs/querying/operators.md",
-      "longform_docs"
+      "docs/configuration/template_reference.md",
+      "longform_docs",
+      7393
     ],
     [
       "grafana-index",
       "grafana/grafana",
-      "docs/sources/alerting/set-up/configure-roles/index.md",
-      "longform_docs"
+      "docs/sources/datasources/zipkin/query-editor/index.md",
+      "longform_docs",
+      6789
     ],
     [
       "grafana-index",
       "grafana/grafana",
-      "docs/sources/datasources/google-cloud-monitoring/_index.md",
-      "longform_docs"
+      "docs/sources/visualizations/dashboards/build-dashboards/filter-group-by/index.md",
+      "longform_docs",
+      12610
     ],
     [
-      "grafana-index",
+      "grafana-trace-integration",
       "grafana/grafana",
-      "docs/sources/administration/roles-and-permissions/access-control/rbac-for-app-plugins/index.md",
-      "longform_docs"
+      "docs/sources/visualizations/explore/trace-integration.md",
+      "longform_docs",
+      12299
     ],
     [
-      "grafana-index",
-      "grafana/grafana",
-      "docs/sources/setup-grafana/configure-access/configure-authentication/saml/saml-file/_index.md",
-      "longform_docs"
-    ],
-    [
-      "cargo-build-script-examples",
+      "cargo-overriding-dependencies",
       "rust-lang/cargo",
-      "doc/book/src/reference/build-script-examples.md",
-      "longform_docs"
+      "doc/book/src/reference/overriding-dependencies.md",
+      "longform_docs",
+      14403
     ],
     [
-      "cargo-build-scripts",
+      "cargo-cargo-clean",
       "rust-lang/cargo",
-      "doc/book/src/reference/build-scripts.md",
-      "longform_docs"
+      "doc/book/src/commands/cargo-clean.md",
+      "longform_docs",
+      11216
     ],
     [
-      "cargo-cargo-report",
+      "cargo-cargo-init",
       "rust-lang/cargo",
-      "doc/book/src/commands/cargo-report.md",
-      "longform_docs"
+      "doc/book/src/commands/cargo-init.md",
+      "longform_docs",
+      7661
     ],
     [
-      "cargo-cargo-owner",
+      "cargo-rust-version",
       "rust-lang/cargo",
-      "doc/book/src/commands/cargo-owner.md",
-      "longform_docs"
+      "doc/book/src/reference/rust-version.md",
+      "longform_docs",
+      8871
     ],
     [
-      "docs-genai-video-bot",
+      "docs-docker-compose",
       "docker/docs",
-      "content/guides/genai-video-bot.md",
-      "longform_docs"
+      "content/guides/docker-compose.md",
+      "longform_docs",
+      6771
     ],
     [
-      "docs-testcontainers-java-aws-localstack",
+      "docs-index",
       "docker/docs",
-      "content/guides/testcontainers-java-aws-localstack.md",
-      "longform_docs"
+      "_vendor/github.com/docker/docker-agent/docs/configuration/tools/index.md",
+      "longform_docs",
+      24996
     ],
     [
-      "docs-traefik",
+      "docs-index",
       "docker/docs",
-      "content/guides/traefik.md",
-      "longform_docs"
+      "_vendor/github.com/docker/docker-agent/docs/tools/mcp-catalog/index.md",
+      "longform_docs",
+      8521
     ],
     [
-      "docs-testcontainers-java-keycloak-spring-boot",
-      "docker/docs",
-      "content/guides/testcontainers-java-keycloak-spring-boot.md",
-      "longform_docs"
+      "website-kubelet-integration",
+      "kubernetes/website",
+      "content/en/docs/setup/production-environment/tools/kubeadm/kubelet-integration.md",
+      "longform_docs",
+      11725
+    ],
+    [
+      "website-kubectl-create-secret-generic",
+      "kubernetes/website",
+      "content/zh-cn/docs/reference/kubectl/generated/kubectl_create/kubectl_create_secret_generic.md",
+      "longform_docs",
+      21257
+    ],
+    [
+      "website-volume-snapshots",
+      "kubernetes/website",
+      "content/ja/docs/concepts/storage/volume-snapshots.md",
+      "longform_docs",
+      14199
     ],
     [
       "website-index",
       "kubernetes/website",
-      "content/zh-cn/docs/reference/kubectl/generated/kubectl_kustomize/_index.md",
-      "longform_docs"
+      "content/en/docs/tasks/debug/_index.md",
+      "longform_docs",
+      6943
     ],
     [
       "website-logging-elasticsearch-kibana",
       "kubernetes/website",
       "content/es/docs/tasks/debug/debug-cluster/logging-elasticsearch-kibana.md",
-      "longform_docs"
+      "longform_docs",
+      5903
     ],
     [
-      "website-pod-condition",
+      "website-resource-quotas",
       "kubernetes/website",
-      "content/en/docs/concepts/workloads/pods/pod-condition.md",
-      "longform_docs"
+      "content/en/docs/concepts/policy/resource-quotas.md",
+      "longform_docs",
+      31090
+    ],
+    [
+      "website-index",
+      "kubernetes/website",
+      "content/bn/docs/concepts/containers/_index.md",
+      "longform_docs",
+      5684
+    ],
+    [
+      "website-storage-version",
+      "kubernetes/website",
+      "content/en/docs/concepts/overview/working-with-objects/storage-version.md",
+      "longform_docs",
+      7446
+    ],
+    [
+      "website-system-traces",
+      "kubernetes/website",
+      "content/en/docs/concepts/cluster-administration/system-traces.md",
+      "longform_docs",
+      6219
+    ],
+    [
+      "eslint-function-paren-newline",
+      "eslint/eslint",
+      "docs/src/rules/function-paren-newline.md",
+      "longform_docs",
+      5379
+    ],
+    [
+      "eslint-keyword-spacing",
+      "eslint/eslint",
+      "docs/src/rules/keyword-spacing.md",
+      "longform_docs",
+      6830
+    ],
+    [
+      "eslint-camelcase",
+      "eslint/eslint",
+      "docs/src/rules/camelcase.md",
+      "longform_docs",
+      7881
+    ],
+    [
+      "eslint-key-spacing",
+      "eslint/eslint",
+      "docs/src/rules/key-spacing.md",
+      "longform_docs",
+      8483
+    ],
+    [
+      "vitest-vitest-5",
+      "vitest-dev/vitest",
+      "docs/blog/vitest-5.md",
+      "longform_docs",
+      18873
+    ],
+    [
+      "vitest-commands",
+      "vitest-dev/vitest",
+      "docs/api/browser/commands.md",
+      "longform_docs",
+      8420
+    ],
+    [
+      "vitest-vue",
+      "vitest-dev/vitest",
+      "docs/api/browser/vue.md",
+      "longform_docs",
+      7709
+    ],
+    [
+      "hugo-batch",
+      "gohugoio/hugo",
+      "docs/content/en/functions/js/Batch.md",
+      "longform_docs",
+      11636
+    ],
+    [
+      "hugo-shortcode",
+      "gohugoio/hugo",
+      "docs/content/en/templates/shortcode.md",
+      "longform_docs",
+      13983
+    ],
+    [
+      "hugo-license",
+      "gohugoio/hugo",
+      "docs/content/en/about/license.md",
+      "longform_docs",
+      9405
+    ],
+    [
+      "hugo-module",
+      "gohugoio/hugo",
+      "docs/content/en/configuration/module.md",
+      "longform_docs",
+      7977
+    ],
+    [
+      "prettier-configuration",
+      "prettier/prettier",
+      "docs/configuration.md",
+      "longform_docs",
+      6839
+    ],
+    [
+      "prettier-contributing",
+      "prettier/prettier",
+      "CONTRIBUTING.md",
+      "longform_docs",
+      8486
+    ],
+    [
+      "pytorch-distributed-autograd",
+      "pytorch/pytorch",
+      "docs/source/rpc/distributed_autograd.md",
+      "longform_docs",
+      15026
+    ],
+    [
+      "pytorch-index",
+      "pytorch/pytorch",
+      "docs/cpp/source/index.md",
+      "longform_docs",
+      7908
+    ],
+    [
+      "pytorch-cuda",
+      "pytorch/pytorch",
+      "docs/source/notes/cuda.md",
+      "longform_docs",
+      80783
+    ],
+    [
+      "pytorch-contribution-guide",
+      "pytorch/pytorch",
+      "docs/source/community/contribution_guide.md",
+      "longform_docs",
+      16000
+    ],
+    [
+      "airflow-0002-implement-standalone-python-command",
+      "apache/airflow",
+      "dev/breeze/doc/adr/0002-implement-standalone-python-command.md",
+      "longform_docs",
+      8389
+    ],
+    [
+      "json-operator-",
+      "nlohmann/json",
+      "docs/mkdocs/docs/api/basic_json/operator[].md",
+      "longform_docs",
+      9925
+    ],
+    [
+      "json-migration-guide",
+      "nlohmann/json",
+      "docs/mkdocs/docs/integration/migration_guide.md",
+      "longform_docs",
+      8145
+    ],
+    [
+      "json-at",
+      "nlohmann/json",
+      "docs/mkdocs/docs/api/basic_json/at.md",
+      "longform_docs",
+      7795
+    ],
+    [
+      "googletest-gmock-cook-book",
+      "google/googletest",
+      "docs/gmock_cook_book.md",
+      "longform_docs",
+      152129
+    ],
+    [
+      "googletest-mocking",
+      "google/googletest",
+      "docs/reference/mocking.md",
+      "longform_docs",
+      21135
+    ],
+    [
+      "googletest-gmock-faq",
+      "google/googletest",
+      "docs/gmock_faq.md",
+      "longform_docs",
+      14980
+    ],
+    [
+      "grpc-contributing",
+      "grpc/grpc",
+      "src/python/CONTRIBUTING.md",
+      "longform_docs",
+      5676
+    ],
+    [
+      "envoy-stats",
+      "envoyproxy/envoy",
+      "source/docs/stats.md",
+      "longform_docs",
+      17091
+    ],
+    [
+      "elasticsearch-sort-search-results",
+      "elastic/elasticsearch",
+      "docs/reference/elasticsearch/rest-apis/sort-search-results.md",
+      "longform_docs",
+      17056
+    ],
+    [
+      "elasticsearch-esql-views",
+      "elastic/elasticsearch",
+      "docs/reference/query-languages/esql/esql-views.md",
+      "longform_docs",
+      11775
+    ],
+    [
+      "elasticsearch-rerank",
+      "elastic/elasticsearch",
+      "docs/reference/query-languages/esql/_snippets/commands/layout/rerank.md",
+      "longform_docs",
+      5978
+    ],
+    [
+      "elasticsearch-sql-syntax-show-functions",
+      "elastic/elasticsearch",
+      "docs/reference/query-languages/sql/sql-syntax-show-functions.md",
+      "longform_docs",
+      5776
+    ],
+    [
+      "runtime-project-guidelines",
+      "dotnet/runtime",
+      "docs/coding-guidelines/project-guidelines.md",
+      "longform_docs",
+      16531
+    ],
+    [
+      "runtime-runtimetypesystem",
+      "dotnet/runtime",
+      "docs/design/datacontracts/RuntimeTypeSystem.md",
+      "longform_docs",
+      123776
+    ],
+    [
+      "runtime-porting-ryujit",
+      "dotnet/runtime",
+      "docs/design/coreclr/jit/porting-ryujit.md",
+      "longform_docs",
+      11228
+    ],
+    [
+      "libuv-contributing",
+      "libuv/libuv",
+      "CONTRIBUTING.md",
+      "longform_docs",
+      5740
+    ],
+    [
+      "kafka-listener-configuration",
+      "apache/kafka",
+      "docs/security/listener-configuration.md",
+      "longform_docs",
+      7306
+    ],
+    [
+      "kafka-internal-api-checker",
+      "apache/kafka",
+      "docs/apis/internal-api-checker.md",
+      "longform_docs",
+      7989
+    ],
+    [
+      "kafka-tutorial",
+      "apache/kafka",
+      "docs/streams/tutorial.md",
+      "longform_docs",
+      25268
+    ],
+    [
+      "nvm-contributing",
+      "nvm-sh/nvm",
+      "CONTRIBUTING.md",
+      "longform_docs",
+      5817
+    ],
+    [
+      "asdf-getting-started",
+      "asdf-vm/asdf",
+      "docs/guide/getting-started.md",
+      "longform_docs",
+      13713
+    ],
+    [
+      "asdf-core",
+      "asdf-vm/asdf",
+      "docs/ja-jp/contribute/core.md",
+      "longform_docs",
+      7960
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/web/api/web_periodic_background_synchronization_api/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      5496
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/mozilla/add-ons/webextensions/work_with_documentid/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      9881
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/learn_web_development/core/scripting/build_your_own_function/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      16336
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/mdn/writing_guidelines/criteria_for_inclusion/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      12300
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/games/tutorials/2d_breakout_game_phaser/player_paddle_and_controls/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      8264
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/learn_web_development/core/accessibility/tooling/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      30278
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/learn_web_development/core/frameworks_libraries/react_components/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      19218
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/web/api/web_storage_api/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      7056
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/games/publishing_games/game_promotion/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      10139
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/learn_web_development/howto/web_mechanics/file_browser_bugs/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      8668
     ],
     [
       "content-index",
       "mdn/content",
       "files/en-us/mdn/writing_guidelines/page_structures/code_examples/index.md",
-      "gfm_rich"
+      "gfm_rich",
+      7812
     ],
     [
-      "book-ch18-01-what-is-oo",
-      "rust-lang/book",
-      "src/ch18-01-what-is-oo.md",
-      "gfm_rich"
+      "content-index",
+      "mdn/content",
+      "files/en-us/learn_web_development/extensions/server-side/index.md",
+      "gfm_rich",
+      5242
     ],
     [
-      "book-ch09-01-unrecoverable-errors-with-panic",
-      "rust-lang/book",
-      "src/ch09-01-unrecoverable-errors-with-panic.md",
-      "gfm_rich"
+      "content-index",
+      "mdn/content",
+      "files/en-us/learn_web_development/getting_started/soft_skills/workflows_and_processes/index.md",
+      "gfm_rich",
+      17351
     ],
     [
-      "book-ch15-01-box",
-      "rust-lang/book",
-      "src/ch15-01-box.md",
-      "gfm_rich"
+      "reference-literal-expr",
+      "rust-lang/reference",
+      "src/expressions/literal-expr.md",
+      "gfm_rich",
+      21527
     ],
     [
-      "book-ch16-04-extensible-concurrency-sync-and-send",
-      "rust-lang/book",
-      "src/ch16-04-extensible-concurrency-sync-and-send.md",
-      "gfm_rich"
+      "reference-abi",
+      "rust-lang/reference",
+      "src/abi.md",
+      "gfm_rich",
+      6618
     ],
     [
-      "book-ch08-01-vectors",
-      "rust-lang/book",
-      "src/ch08-01-vectors.md",
-      "gfm_rich"
+      "reference-expressions",
+      "rust-lang/reference",
+      "src/expressions.md",
+      "gfm_rich",
+      18226
     ],
     [
-      "book-ch16-01-threads",
-      "rust-lang/book",
-      "src/ch16-01-threads.md",
-      "gfm_rich"
+      "reference-struct-expr",
+      "rust-lang/reference",
+      "src/expressions/struct-expr.md",
+      "gfm_rich",
+      5358
     ],
     [
-      "book-ch04-02-references-and-borrowing",
-      "rust-lang/book",
-      "src/ch04-02-references-and-borrowing.md",
-      "gfm_rich"
+      "reference-testing",
+      "rust-lang/reference",
+      "src/attributes/testing.md",
+      "gfm_rich",
+      6612
     ],
     [
-      "book-ch20-05-macros",
+      "reference-attributes",
+      "rust-lang/reference",
+      "dev-guide/src/attributes.md",
+      "gfm_rich",
+      5663
+    ],
+    [
+      "reference-functions",
+      "rust-lang/reference",
+      "src/items/functions.md",
+      "gfm_rich",
+      28223
+    ],
+    [
+      "reference-inline-assembly",
+      "rust-lang/reference",
+      "src/inline-assembly.md",
+      "gfm_rich",
+      74833
+    ],
+    [
+      "reference-array-expr",
+      "rust-lang/reference",
+      "src/expressions/array-expr.md",
+      "gfm_rich",
+      5654
+    ],
+    [
+      "reference-enumerations",
+      "rust-lang/reference",
+      "src/items/enumerations.md",
+      "gfm_rich",
+      10735
+    ],
+    [
+      "book-ch17-01-futures-and-syntax",
       "rust-lang/book",
-      "src/ch20-05-macros.md",
-      "gfm_rich"
+      "src/ch17-01-futures-and-syntax.md",
+      "gfm_rich",
+      19958
+    ],
+    [
+      "book-ch12-03-improving-error-handling-and-modularity",
+      "rust-lang/book",
+      "src/ch12-03-improving-error-handling-and-modularity.md",
+      "gfm_rich",
+      25414
+    ],
+    [
+      "book-ch17-04-streams",
+      "rust-lang/book",
+      "src/ch17-04-streams.md",
+      "gfm_rich",
+      5159
+    ],
+    [
+      "book-ch15-05-interior-mutability",
+      "rust-lang/book",
+      "src/ch15-05-interior-mutability.md",
+      "gfm_rich",
+      18548
+    ],
+    [
+      "book-ch07-05-separating-modules-into-different-files",
+      "rust-lang/book",
+      "src/ch07-05-separating-modules-into-different-files.md",
+      "gfm_rich",
+      6077
+    ],
+    [
+      "book-ch12-04-testing-the-librarys-functionality",
+      "rust-lang/book",
+      "src/ch12-04-testing-the-librarys-functionality.md",
+      "gfm_rich",
+      9800
+    ],
+    [
+      "book-ch20-04-advanced-functions-and-closures",
+      "rust-lang/book",
+      "src/ch20-04-advanced-functions-and-closures.md",
+      "gfm_rich",
+      8215
+    ],
+    [
+      "book-ch11-03-test-organization",
+      "rust-lang/book",
+      "src/ch11-03-test-organization.md",
+      "gfm_rich",
+      12716
+    ],
+    [
+      "async-book-concurrency-primitives",
+      "rust-lang/async-book",
+      "src/part-guide/concurrency-primitives.md",
+      "gfm_rich",
+      20382
     ],
     [
       "async-book-02-why-async",
       "rust-lang/async-book",
       "src/01_getting_started/02_why_async.md",
-      "gfm_rich"
+      "gfm_rich",
+      6120
     ],
     [
-      "async-book-00-chapter",
+      "async-book-pinning",
       "rust-lang/async-book",
-      "src/08_ecosystem/00_chapter.md",
-      "gfm_rich"
+      "src/part-reference/pinning.md",
+      "gfm_rich",
+      42943
     ],
     [
-      "async-book-io",
+      "async-book-structured",
       "rust-lang/async-book",
-      "src/part-guide/io.md",
-      "gfm_rich"
+      "src/part-reference/structured.md",
+      "gfm_rich",
+      19454
     ],
     [
-      "async-book-async-await",
-      "rust-lang/async-book",
-      "src/part-guide/async-await.md",
-      "gfm_rich"
+      "node-notes-unix",
+      "nodejs/node",
+      "deps/openssl/openssl/NOTES-UNIX.md",
+      "gfm_rich",
+      5685
     ],
     [
-      "electron-phase-one-commit-guidelines",
-      "electron/electron",
-      ".claude/skills/electron-node-upgrade/references/phase-one-commit-guidelines.md",
-      "gfm_rich"
+      "node-readme-fips",
+      "nodejs/node",
+      "deps/openssl/openssl/README-FIPS.md",
+      "gfm_rich",
+      8744
     ],
     [
-      "electron-skill",
-      "electron/electron",
-      ".claude/skills/chrome-release-cls/SKILL.md",
-      "gfm_rich"
+      "node-release-notes",
+      "nodejs/node",
+      "deps/npm/node_modules/diff/release-notes.md",
+      "gfm_rich",
+      39064
     ],
     [
-      "typescript-matching-algorithm",
+      "typescript-replay-minimizer",
       "microsoft/TypeScript",
-      "tsc/internal/vfs/vfsmatch/MATCHING_ALGORITHM.md",
-      "gfm_rich"
+      ".github/agents/replay-minimizer.md",
+      "gfm_rich",
+      8130
     ],
     [
-      "typescript-copilot-instructions",
+      "typescript-skill",
       "microsoft/TypeScript",
-      ".github/copilot-instructions.md",
-      "gfm_rich"
-    ],
-    [
-      "typescript-changes",
-      "microsoft/TypeScript",
-      "tsc/internal/fswatch/CHANGES.md",
-      "gfm_rich"
+      ".github/skills/security-report-check/SKILL.md",
+      "gfm_rich",
+      7135
     ],
     [
       "typescript-changes",
       "microsoft/TypeScript",
       "tsc/CHANGES.md",
-      "gfm_rich"
+      "gfm_rich",
+      17102
     ],
     [
-      "go-hacking",
-      "golang/go",
-      "src/runtime/HACKING.md",
-      "gfm_rich"
+      "typescript-copilot-instructions",
+      "microsoft/TypeScript",
+      ".github/copilot-instructions.md",
+      "gfm_rich",
+      5551
     ],
     [
       "go-abi-internal",
       "golang/go",
       "src/cmd/compile/abi-internal.md",
-      "gfm_rich"
+      "gfm_rich",
+      42786
     ],
     [
       "deno-skill",
       "denoland/deno",
-      ".claude/skills/review-pr/SKILL.md",
-      "gfm_rich"
+      ".claude/skills/issue-triage/SKILL.md",
+      "gfm_rich",
+      10063
     ],
     [
-      "deno-skill",
-      "denoland/deno",
-      ".claude/skills/node-compat/SKILL.md",
-      "gfm_rich"
-    ],
-    [
-      "deno-copilot-instructions",
-      "denoland/deno",
-      ".github/copilot-instructions.md",
-      "gfm_rich"
-    ],
-    [
-      "deno-valid-args",
-      "denoland/deno",
-      "libs/ops/op2/valid_args.md",
-      "gfm_rich"
-    ],
-    [
-      "deno-claude",
-      "denoland/deno",
-      "CLAUDE.md",
-      "gfm_rich"
-    ],
-    [
-      "react-error-todo-hir-silent-rust-fail-expect",
+      "react-overview",
       "facebook/react",
-      "compiler/packages/babel-plugin-react-compiler/src/__tests__/fixtures/compiler/error.todo-hir_silent_rust_fail.expect.md",
-      "gfm_rich"
-    ],
-    [
-      "react-name-anonymous-functions-expect",
-      "facebook/react",
-      "compiler/packages/babel-plugin-react-compiler/src/__tests__/fixtures/compiler/name-anonymous-functions.expect.md",
-      "gfm_rich"
-    ],
-    [
-      "react-error-invalid-exhaustive-deps-expect",
-      "facebook/react",
-      "compiler/packages/babel-plugin-react-compiler/src/__tests__/fixtures/compiler/exhaustive-deps/error.invalid-exhaustive-deps.expect.md",
-      "gfm_rich"
-    ],
-    [
-      "next-js-test-template",
-      "vercel/next.js",
-      "skills/next-cache-components-optimizer/test-template.md",
-      "gfm_rich"
-    ],
-    [
-      "next-js-output",
-      "vercel/next.js",
-      "turbopack/crates/turbopack-ecmascript/tests/tree-shaker/analyzer/shared-regression/output.md",
-      "gfm_rich"
+      "packages/react-devtools/OVERVIEW.md",
+      "gfm_rich",
+      15352
     ],
     [
       "next-js-skill",
       "vercel/next.js",
-      ".agents/skills/write-api-reference/SKILL.md",
-      "gfm_rich"
+      "skills/next-partial-prefetching-optimizer/SKILL.md",
+      "gfm_rich",
+      11432
     ],
     [
-      "docs-ssr",
-      "vuejs/docs",
-      "src/api/ssr.md",
-      "gfm_rich"
+      "next-js-skill",
+      "vercel/next.js",
+      ".agents/skills/write-guide/SKILL.md",
+      "gfm_rich",
+      6357
     ],
     [
-      "docs-options-state",
-      "vuejs/docs",
-      "src/api/options-state.md",
-      "gfm_rich"
-    ],
-    [
-      "docs-composition-api-setup",
-      "vuejs/docs",
-      "src/api/composition-api-setup.md",
-      "gfm_rich"
-    ],
-    [
-      "docs-application",
-      "vuejs/docs",
-      "src/api/application.md",
-      "gfm_rich"
-    ],
-    [
-      "tauri-code-of-conduct",
-      "tauri-apps/tauri",
-      ".github/CODE_OF_CONDUCT.md",
-      "gfm_rich"
-    ],
-    [
-      "ohmyzsh-manual",
-      "ohmyzsh/ohmyzsh",
-      "plugins/z/MANUAL.md",
-      "gfm_rich"
-    ],
-    [
-      "prometheus-agents",
-      "prometheus/prometheus",
-      "AGENTS.md",
-      "gfm_rich"
+      "next-js-troubleshooting",
+      "vercel/next.js",
+      ".agents/skills/gh-stack/references/troubleshooting.md",
+      "gfm_rich",
+      6712
     ],
     [
       "ansible-agents",
       "ansible/ansible",
       "AGENTS.md",
-      "gfm_rich"
+      "gfm_rich",
+      7212
     ],
     [
-      "rustc-dev-guide-opaque-types",
+      "rustc-dev-guide-stability",
       "rust-lang/rustc-dev-guide",
-      "src/solve/opaque-types.md",
-      "gfm_rich"
+      "src/stability.md",
+      "gfm_rich",
+      10341
     ],
     [
-      "rustc-dev-guide-llvm-coverage-instrumentation",
+      "rustc-dev-guide-with-perf",
       "rust-lang/rustc-dev-guide",
-      "src/llvm-coverage-instrumentation.md",
-      "gfm_rich"
+      "src/profiling/with-perf.md",
+      "gfm_rich",
+      12659
     ],
     [
-      "rustc-dev-guide-closure",
+      "rustc-dev-guide-pat-exhaustive-checking",
       "rust-lang/rustc-dev-guide",
-      "src/closure.md",
-      "gfm_rich"
+      "src/pat-exhaustive-checking.md",
+      "gfm_rich",
+      8923
     ],
     [
-      "rustc-dev-guide-member-constraints",
+      "rustc-dev-guide-query",
       "rust-lang/rustc-dev-guide",
-      "src/borrow-check/region-inference/member-constraints.md",
-      "gfm_rich"
+      "src/query.md",
+      "gfm_rich",
+      16426
     ],
     [
-      "website-bringing-end-to-end-kubernetes-testing-to-azure-2",
-      "kubernetes/website",
-      "content/en/blog/_posts/2016/bringing-end-to-end-kubernetes-testing-to-azure-2.md",
-      "gfm_rich"
+      "rustc-dev-guide-construction",
+      "rust-lang/rustc-dev-guide",
+      "src/mir/construction.md",
+      "gfm_rich",
+      6116
     ],
     [
-      "website-kubernetes-and-openstack-at-yahoo-japan",
-      "kubernetes/website",
-      "content/en/blog/_posts/2016/kubernetes-and-openstack-at-yahoo-japan.md",
-      "gfm_rich"
+      "docs-rhel",
+      "docker/docs",
+      "content/manuals/engine/install/rhel.md",
+      "gfm_rich",
+      8736
     ],
     [
       "website-index",
       "kubernetes/website",
-      "content/en/blog/_posts/2026/kubernetes-dashboard-to-headlamp/index.md",
-      "gfm_rich"
+      "content/en/blog/_posts/2026/gateway-api-v1-6-release/index.md",
+      "gfm_rich",
+      9954
     ],
     [
-      "website-make-kubernetes-production-grade-anywhere",
+      "website-kubernetes-cloud-native-and-the-future-of-software",
       "kubernetes/website",
-      "content/en/blog/_posts/2018/make-kubernetes-production-grade-anywhere.md",
-      "gfm_rich"
+      "content/en/blog/_posts/2019/kubernetes-cloud-native-and-the-future-of-software.md",
+      "gfm_rich",
+      7078
     ],
     [
-      "website-index",
+      "website-unhealthy-pod-eviction-policy-for-pdb",
       "kubernetes/website",
-      "content/en/blog/_posts/2026/headlamp-cluster-api-plugin/index.md",
-      "gfm_rich"
+      "content/ja/blog/_posts/2023/unhealthy-pod-eviction-policy-for-pdb.md",
+      "gfm_rich",
+      7360
     ],
     [
       "yt-dlp-supportedsites",
       "yt-dlp/yt-dlp",
       "supportedsites.md",
-      "gfm_rich"
+      "gfm_rich",
+      55704
     ],
     [
-      "electron-security",
-      "electron/electron",
-      "docs/tutorial/security.md",
-      "adversarial"
+      "vitest-vitest-test-writer",
+      "vitest-dev/vitest",
+      ".claude/agents/vitest-test-writer.md",
+      "gfm_rich",
+      6077
+    ],
+    [
+      "prettier-2020-03-21-2-0-0",
+      "prettier/prettier",
+      "website/blog/2020-03-21-2.0.0.md",
+      "gfm_rich",
+      59864
+    ],
+    [
+      "tensorflow-cmdline-examples",
+      "tensorflow/tensorflow",
+      "tensorflow/lite/g3doc/r1/convert/cmdline_examples.md",
+      "gfm_rich",
+      14982
+    ],
+    [
+      "tensorflow-gpu-supported-ops",
+      "tensorflow/tensorflow",
+      "tensorflow/compiler/tf2xla/g3doc/gpu_supported_ops.md",
+      "gfm_rich",
+      22196
+    ],
+    [
+      "airflow-skill",
+      "apache/airflow",
+      ".agents/skills/aip-user-stories/SKILL.md",
+      "gfm_rich",
+      9993
+    ],
+    [
+      "airflow-readme-release-providers",
+      "apache/airflow",
+      "dev/README_RELEASE_PROVIDERS.md",
+      "gfm_rich",
+      101982
+    ],
+    [
+      "grpc-agents",
+      "grpc/grpc",
+      "src/core/ext/transport/chttp2/AGENTS.md",
+      "gfm_rich",
+      16781
+    ],
+    [
+      "envoy-release",
+      "envoyproxy/envoy",
+      "maintainer/RELEASE.md",
+      "gfm_rich",
+      10081
+    ],
+    [
+      "envoy-developer",
+      "envoyproxy/envoy",
+      "bazel/DEVELOPER.md",
+      "gfm_rich",
+      6803
+    ],
+    [
+      "envoy-dependency-policy",
+      "envoyproxy/envoy",
+      "DEPENDENCY_POLICY.md",
+      "gfm_rich",
+      9206
+    ],
+    [
+      "quarkus-skill",
+      "quarkusio/quarkus",
+      ".agents/skills/deprecation-cleanup/SKILL.md",
+      "gfm_rich",
+      9250
+    ],
+    [
+      "quarkus-troubleshooting",
+      "quarkusio/quarkus",
+      "TROUBLESHOOTING.md",
+      "gfm_rich",
+      11664
+    ],
+    [
+      "quarkus-actions",
+      "quarkusio/quarkus",
+      "ACTIONS.md",
+      "gfm_rich",
+      5418
+    ],
+    [
+      "quarkus-quarkus-skill",
+      "quarkusio/quarkus",
+      "extensions/opentelemetry/deployment/src/main/resources/META-INF/quarkus-skill.md",
+      "gfm_rich",
+      6218
+    ],
+    [
+      "runtime-proposal-examples",
+      "dotnet/runtime",
+      ".github/skills/api-proposal/references/proposal-examples.md",
+      "gfm_rich",
+      6683
+    ],
+    [
+      "git-code-of-conduct",
+      "git/git",
+      "CODE_OF_CONDUCT.md",
+      "gfm_rich",
+      5989
+    ],
+    [
+      "git-agents",
+      "git/git",
+      "po/AGENTS.md",
+      "gfm_rich",
+      35367
+    ],
+    [
+      "libuv-links",
+      "libuv/libuv",
+      "LINKS.md",
+      "gfm_rich",
+      7739
+    ],
+    [
+      "nvm-agents",
+      "nvm-sh/nvm",
+      "AGENTS.md",
+      "gfm_rich",
+      17433
+    ],
+    [
+      "pyenv-commands",
+      "pyenv/pyenv",
+      "COMMANDS.md",
+      "gfm_rich",
+      11758
     ],
     [
       "go-calibrate",
       "golang/go",
       "src/math/big/calibrate.md",
-      "adversarial"
+      "adversarial",
+      10464
     ],
     [
-      "mermaid-changelog",
+      "mermaid-radar",
       "mermaid-js/mermaid",
-      "packages/mermaid-layout-elk/CHANGELOG.md",
-      "adversarial"
+      "packages/mermaid/src/docs/syntax/radar.md",
+      "adversarial",
+      6620
     ],
     [
-      "mermaid-classdiagram",
+      "mermaid-adding-new-shape",
       "mermaid-js/mermaid",
-      "docs/syntax/classDiagram.md",
-      "adversarial"
+      "packages/mermaid/src/docs/adding-new-shape.md",
+      "adversarial",
+      7184
     ],
     [
-      "mermaid-cynefin",
+      "mermaid-zenuml",
       "mermaid-js/mermaid",
-      "docs/syntax/cynefin.md",
-      "adversarial"
+      "packages/mermaid/src/docs/syntax/zenuml.md",
+      "adversarial",
+      6149
     ],
     [
-      "mermaid-packet",
+      "mermaid-wardley",
       "mermaid-js/mermaid",
-      "docs/syntax/packet.md",
-      "adversarial"
+      "packages/mermaid/src/docs/syntax/wardley.md",
+      "adversarial",
+      11109
     ],
     [
-      "mermaid-contributing",
+      "mermaid-timeline",
       "mermaid-js/mermaid",
-      "packages/mermaid/src/docs/community/contributing.md",
-      "adversarial"
+      "packages/mermaid/src/docs/syntax/timeline.md",
+      "adversarial",
+      11710
     ],
     [
-      "mermaid-flowchart",
+      "mermaid-new-diagram-jison",
       "mermaid-js/mermaid",
-      "packages/mermaid/src/docs/syntax/flowchart.md",
-      "adversarial"
+      "packages/mermaid/src/docs/community/new-diagram-jison.md",
+      "adversarial",
+      8700
     ],
     [
       "cargo-security",
       "rust-lang/cargo",
       "doc/contrib/src/process/security.md",
-      "adversarial"
-    ],
-    [
-      "rustc-dev-guide-debugging-bootstrap",
-      "rust-lang/rustc-dev-guide",
-      "src/building/bootstrapping/debugging-bootstrap.md",
-      "adversarial"
+      "adversarial",
+      10719
     ]
   ]
 }

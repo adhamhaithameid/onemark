@@ -8,11 +8,13 @@
   "types": "./src/index.ts",
   "scripts": {
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "build:wasm": "../../scripts/build-wasm.sh"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "^3.2.7",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
   },

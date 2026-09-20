@@ -1,0 +1,14 @@
+{
+  "name": "@onemark/analytics-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "LicenseRef-PolyForm-Noncommercial-1.0.0",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "node --check src/index.mjs && node --check src/validate.mjs && node --check src/client.mjs"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.5"
+  }
+}

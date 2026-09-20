@@ -29,6 +29,7 @@ docs/fidelity/.cache/
 .env
 .env.local
 .env.*.local
+.dev.vars
 
 # Editor / OS
 .DS_Store
@@ -52,3 +53,6 @@ pnpm-debug.log*
 *.db
 .beads-credential-key
 .beads/proxieddb/
+apps/marketing/app/tokens.css
+
+*.tsbuildinfo

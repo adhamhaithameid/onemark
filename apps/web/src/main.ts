@@ -6,7 +6,7 @@ import { MemoryStorage, OpfsStorage, openOpfsRoot, type StorageProvider } from '
 
 import { applyTheme, onSystemThemeChange, type ThemeChoice } from './theme.js';
 import { createWorkspace } from './workspace.js';
-import { startWorkerEngine } from './worker-engine.js';
+import { startWorkerEngine, type WorkerEngine } from './worker-engine.js';
 
 const THEME_CYCLE: ThemeChoice[] = ['system', 'light', 'dark'];
 
@@ -31,7 +31,15 @@ async function boot(): Promise<void> {
   ]);
 
   const container = document.getElementById('app') as HTMLElement;
-  const workspace = createWorkspace({ engine, container, storage, highlighter });
+
+  // Perf ladder rung 1 (ADR-0019/0022): parse + render + highlight happen in
+  // the worker; the main thread sanitises with its complete DOM (fail-closed)
+  // and hydrates math. The highlighter stays on the main thread only for the
+  // token stylesheet below.
+  const renderHtml = (source: string, theme: 'light' | 'dark'): Promise<string> =>
+    (engine as WorkerEngine).renderUnsafe(source, theme);
+
+  const workspace = createWorkspace({ engine, container, storage, renderHtml });
 
   // Shiki token colours: the adapter emits theme-prefixed `.tk-*` classes, so
   // both sheets can live in one style node and only the rendered spans'

@@ -1,33 +1,47 @@
 /// <reference lib='webworker' />
 /**
- * Parse worker (task 1.19, NFR-3): comrak never runs on the UI thread.
+ * Render worker (task 1.19 + perf ladder rung 1, ADR-0019/0022): comrak AND
+ * the render+highlight pass never run on the UI thread.
  *
- * The worker owns the WASM engine and answers parse requests with AST JSON;
- * the main thread validates and renders. Protocol is deliberately trivial:
- * `{ id, source }` in, `{ id, ast }` or `{ id, error }` out.
+ * The worker owns the WASM engine, the Shiki adapter and the string renderer.
+ * It answers two messages:
+ *   `{ id, source }`                    → `{ id, ast }`        (parse only)
+ *   `{ id, source, render: { theme } }` → `{ id, html }`       (render unsafe HTML)
+ *
+ * Deliberately NOT here: sanitisation. DOMPurify needs a complete DOM and
+ * fails closed on shims (ADR-0022) — the main thread sanitises with its real
+ * DOM through `sanitiseHtml` + `hydrateMathInHtml`. What crosses the boundary
+ * is rendered-but-unsanitised HTML, exactly the string `renderToSafeHtml`
+ * would sanitise internally, with the same forced safe-path options.
  */
 
-import { loadWebEngine } from '@onemark/engine';
+import { loadWebEngine, GFM_OPTIONS } from '@onemark/engine';
+import { renderToUnsafeHtml, createSyntaxHighlighter } from '@onemark/renderer';
 
 const engine = await loadWebEngine();
+const highlighter = await createSyntaxHighlighter();
 
-self.onmessage = async (event: MessageEvent<{ id: number; source: string }>): Promise<void> => {
-  const { id, source } = event.data;
+self.onmessage = async (
+  event: MessageEvent<{ id: number; source: string; render?: { theme: 'light' | 'dark' } }>,
+): Promise<void> => {
+  const { id, source, render } = event.data;
   try {
-    const ast = await engine.parse(source, {
-      dialect: 'gfm',
-      extensions: {
-        tables: true,
-        strikethrough: true,
-        autolink: true,
-        taskList: true,
-        footnotes: true,
-        alerts: true,
-        math: true,
-        frontmatter: true,
-      },
+    if (!render) {
+      const ast = await engine.parse(source, GFM_OPTIONS);
+      self.postMessage({ id, ast });
+      return;
+    }
+    const ast = await engine.parse(source, GFM_OPTIONS);
+    const html = renderToUnsafeHtml(ast, {
+      // The exact forced options renderToSafeHtml applies before sanitising —
+      // the main thread's sanitiser expects this shape.
+      urlPolicy: true,
+      headingAnchors: true,
+      softBreakAsBr: true,
+      highlighter,
+      theme: render.theme,
     });
-    self.postMessage({ id, ast });
+    self.postMessage({ id, html });
   } catch (error) {
     self.postMessage({ id, error: error instanceof Error ? error.message : String(error) });
   }

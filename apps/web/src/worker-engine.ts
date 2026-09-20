@@ -1,19 +1,28 @@
 /**
- * The worker-backed engine handle for the main thread (task 1.19).
+ * The worker-backed engine handle for the main thread (task 1.19 + rung 1).
  *
- * Satisfies the same `MarkdownEngine` interface the direct WASM binding does
- * (ADR-0002 seam) — the workspace cannot tell the difference, which is the
- * point: parsing moves off the main thread without touching any other layer.
+ * `parse` satisfies the same `MarkdownEngine` interface the direct WASM
+ * binding does (ADR-0002 seam). `renderUnsafe` additionally renders in the
+ * worker — parse + string render + Shiki highlighting off the UI thread
+ * (ADR-0019 rung 1) — returning the *unsanitised* HTML the main thread then
+ * pushes through `sanitiseHtml` + `hydrateMathInHtml` (ADR-0022: sanitisation
+ * requires a complete DOM and always fails closed).
  */
 
 import type { MarkdownEngine, MarkdownNode, ParseOptions } from '@onemark/engine';
 
 interface Pending {
-  resolve: (ast: MarkdownNode) => void;
+  resolve: (value: never) => void;
   reject: (error: Error) => void;
+  kind: 'ast' | 'html';
 }
 
-export function startWorkerEngine(workerFactory?: () => Worker): MarkdownEngine {
+export interface WorkerEngine extends MarkdownEngine {
+  /** Rendered-but-unsanitised HTML from the worker (safe-path options forced). */
+  renderUnsafe(source: string, theme: 'light' | 'dark'): Promise<string>;
+}
+
+export function startWorkerEngine(workerFactory?: () => Worker): WorkerEngine {
   const worker =
     workerFactory?.() ??
     (new Worker(new URL('./parse.worker.ts', import.meta.url), { type: 'module' }) as Worker);
@@ -22,14 +31,18 @@ export function startWorkerEngine(workerFactory?: () => Worker): MarkdownEngine 
   let nextId = 1;
 
   worker.onmessage = (event: MessageEvent) => {
-    const data = event.data as { id: number; ast?: MarkdownNode; error?: string };
+    const data = event.data as { id: number; ast?: MarkdownNode; html?: string; error?: string };
     const entry = pending.get(data.id);
     if (!entry) return;
     pending.delete(data.id);
-    if (data.error !== undefined || data.ast === undefined) {
-      entry.reject(new Error(data.error ?? 'worker returned no AST'));
+    if (data.error !== undefined) {
+      entry.reject(new Error(data.error));
+    } else if (entry.kind === 'ast' && data.ast !== undefined) {
+      entry.resolve(data.ast as never);
+    } else if (entry.kind === 'html' && data.html !== undefined) {
+      entry.resolve(data.html as never);
     } else {
-      entry.resolve(data.ast);
+      entry.reject(new Error('worker returned no payload for the request kind'));
     }
   };
 
@@ -41,15 +54,22 @@ export function startWorkerEngine(workerFactory?: () => Worker): MarkdownEngine 
 
   return {
     id: 'comrak-wasm-worker',
-    version: 'worker-1',
+    version: 'worker-2',
     parse(source: string, options: ParseOptions): Promise<MarkdownNode> {
       // Options are locked to GFM at the worker; kept in the signature so the
       // seam stays identical to the direct engine (ADR-0002).
       void options;
       const id = nextId++;
       return new Promise<MarkdownNode>((resolve, reject) => {
-        pending.set(id, { resolve, reject });
+        pending.set(id, { resolve: resolve as never, reject, kind: 'ast' });
         worker.postMessage({ id, source });
+      });
+    },
+    renderUnsafe(source: string, theme: 'light' | 'dark'): Promise<string> {
+      const id = nextId++;
+      return new Promise<string>((resolve, reject) => {
+        pending.set(id, { resolve: resolve as never, reject, kind: 'html' });
+        worker.postMessage({ id, source, render: { theme } });
       });
     },
   };

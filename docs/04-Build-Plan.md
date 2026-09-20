@@ -154,7 +154,7 @@ Ordered by expected value, all deferred until v1 ships and gets used daily:
 | Milestone | Status |
 |---|---|
 | M0 · Foundation | ✅ **complete** — see [session log](session-logs/2026-08-18-m0-foundation.md) |
-| M1 · Web | 🟡 **M1a render (1.1–1.8) · M1c editor+gates (1.14–1.21) done** — M3/M4 100%, XSS 93/93, bundle 0.67 MB. Remaining: M1b corpus fetch (needs GITHUB_TOKEN) + diff run, deploy (1.22, needs hosting choice + browser perf arbitration per [ADR-0016](adr/0016-perf-budgets-arbitrated-in-browser.md)) |
-| M2 · macOS | ⬜ not started |
+| M1 · Web | ✅ **v0.1.0 shipped + deployed** — [app](https://adhamhaithameid.github.io/onemark/app/); M3/M4 100%, M5 100% gated, M6 0.95 MB; perf ladder rung 1 done ([ADR-0019](adr/0019-browser-perf-arbitration-results.md)) |
+| M2 · macOS | 🟡 **started** — spike GO + task 2.1/2.2 done (shell compiles, native comrak behind the same interface, determinism proven in-shell; [ADR-0020](adr/0020-tauri-v2-spike-gonogo.md)); 2.3–2.8 ticketed |
 | M3 · Windows + Linux | ⬜ not started |
 | M4 · Mobile | ⬜ not started |

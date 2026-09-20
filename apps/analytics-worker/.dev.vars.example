@@ -1,0 +1,5 @@
+# Local development for the analytics worker (wrangler dev).
+# Copy to `.dev.vars` (gitignored) and adjust. Never commit real secrets.
+
+ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:4173
+ADMIN_TOKEN=dev-only-token
