@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* The tokens drive the brand; Tailwind utilities do layout. Components bind
+   them via CSS custom properties (var(--om-*)) in @theme so Tailwind classes
+   like bg-primary work while the values stay token-owned. */
+@theme {
+  --color-primary: var(--om-color-primary-500);
+  --color-primary-hover: var(--om-color-primary-600);
+  --color-bg: var(--om-bg);
+  --color-surface: var(--om-surface);
+  --color-raised: var(--om-surface-raised);
+  --color-edge: var(--om-border);
+  --color-ink: var(--om-text);
+  --color-ink-muted: var(--om-text-muted);
+  --color-ink-subtle: var(--om-text-subtle);
+  --font-ui: var(--om-font-ui);
+  --font-mono: var(--om-font-mono);
+  --radius-card: var(--om-radius-lg);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--om-bg);
+  color: var(--om-text);
+  font-family: var(--om-font-ui);
+  font-size: var(--om-font-size-base);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--om-primary) 25%, transparent);
+}

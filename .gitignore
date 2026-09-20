@@ -53,3 +53,4 @@ pnpm-debug.log*
 *.db
 .beads-credential-key
 .beads/proxieddb/
+apps/marketing/app/tokens.css

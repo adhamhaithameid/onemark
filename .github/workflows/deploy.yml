@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - 'apps/web/**'
+      - 'apps/marketing/**'
       - 'packages/**'
       - 'crates/**'
       - 'scripts/**'
@@ -59,19 +60,22 @@ jobs:
       - name: Bundle budget gate (M6, <2 MB gzipped)
         run: node scripts/check-bundle.mjs
 
-      # Pages publishes the artifact at the site root — stage the app under
-      # app/ so its base path holds, plus a root redirect until P8 lands.
+      # Pages publishes the artifact at the site root: the marketing site
+      # (Next.js static export) owns the root, the app lives under app/.
+      - name: Build the marketing site
+        run: pnpm --filter @onemark/marketing build
+
+      - name: M6 gate for the marketing bundle
+        run: node scripts/check-marketing.mjs
+
       - name: Stage site layout
         run: |
           mkdir -p staging/app
+          cp -R apps/marketing/out/. staging/
+          rm -f staging/app
           cp -R apps/web/dist/. staging/app/
-          cat > staging/index.html << 'HTML'
-          <!doctype html>
-          <meta charset="utf-8">
-          <title>OneMark</title>
-          <meta http-equiv="refresh" content="0; url=./app/">
-          <p><a href="./app/">Open OneMark</a></p>
-          HTML
+          # The marketing site links to the app relatively ("app/"), which
+          # resolves correctly at /onemark/app/.
 
       - uses: actions/upload-pages-artifact@v3
         with:
