@@ -15,7 +15,13 @@ import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 
 import type { MarkdownEngine, MarkdownNode } from '@onemark/engine';
 import { GFM_OPTIONS } from '@onemark/engine';
-import { renderToSafeHtml, hydrateMermaid, type SyntaxHighlighter } from '@onemark/renderer';
+import {
+  renderToSafeHtml,
+  sanitiseHtml,
+  hydrateMathInHtml,
+  hydrateMermaid,
+  type SyntaxHighlighter,
+} from '@onemark/renderer';
 import type { DocumentRef, StorageProvider } from '@onemark/storage';
 
 import { applyTheme, type ThemeChoice } from './theme.js';
@@ -25,6 +31,14 @@ export interface WorkspaceOptions {
   container: HTMLElement;
   storage?: StorageProvider;
   highlighter?: SyntaxHighlighter;
+  /**
+   * Off-main-thread render seam (perf ladder rung 1, ADR-0019/0022): given a
+   * source and the resolved theme, return rendered-but-UNSANITISED HTML from
+   * the worker. The workspace sanitises + hydrates math on the main thread —
+   * the sanitiser demands a complete DOM and fails closed (ADR-0022). When
+   * omitted, rendering happens inline (the integration tests' path).
+   */
+  renderHtml?: (source: string, theme: 'light' | 'dark') => Promise<string>;
   /** Tests pass 0 to skip debounce waits. Default 150 ms (task 1.15). */
   debounceMs?: number;
   prefersDark?: boolean;
@@ -60,12 +74,16 @@ export function createWorkspace(options: WorkspaceOptions): Workspace {
   let dirty = false;
 
   async function renderPreview(source: string): Promise<void> {
-    const ast: MarkdownNode = await engine.parse(source, GFM_OPTIONS);
     const theme = document.documentElement.dataset['theme'] === 'dark' ? 'dark' : 'light';
-    previewPane.innerHTML = renderToSafeHtml(
-      ast,
-      highlighter ? { highlighter, theme } : {},
-    );
+    if (options.renderHtml) {
+      // Worker path: parse+render+highlight happened off-thread; sanitise and
+      // hydrate math here, on the main thread's complete DOM (fail-closed).
+      const unsafe = await options.renderHtml(source, theme);
+      previewPane.innerHTML = hydrateMathInHtml(sanitiseHtml(unsafe));
+    } else {
+      const ast: MarkdownNode = await engine.parse(source, GFM_OPTIONS);
+      previewPane.innerHTML = renderToSafeHtml(ast, highlighter ? { highlighter, theme } : {});
+    }
     await hydrateMermaid(previewPane);
   }
 
