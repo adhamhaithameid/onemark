@@ -1,0 +1,134 @@
+<h1>Rust Version</h1>
+<p>The <code class="notranslate">rust-version</code> field is an optional key that tells cargo what version of the<br>
+Rust toolchain you support for your package.</p>
+<div class="highlight highlight-source-toml"><pre class="notranslate">[<span class="pl-en">package</span>]
+<span class="pl-c"><span class="pl-c">#</span> ...</span>
+<span class="pl-smi">rust-version</span> = <span class="pl-s"><span class="pl-pds">"</span>1.56<span class="pl-pds">"</span></span></pre></div>
+<p>The Rust version must be a bare version number with at least one component; it<br>
+cannot include semver operators or pre-release identifiers. Compiler pre-release<br>
+identifiers such as -nightly will be ignored while checking the Rust version.</p>
+<blockquote>
+<p><strong>MSRV:</strong> Respected as of 1.56</p>
+</blockquote>
+<h2>Uses</h2>
+<p><strong>Diagnostics:</strong></p>
+<p>When your package is compiled on an unsupported toolchain, Cargo will report that as an error to the user. This makes the support expectations clear and avoids reporting a less direct diagnostic like invalid syntax or missing functionality<br>
+in the standard library. This affects all <a href="cargo-targets.md">Cargo targets</a> in the<br>
+package, including binaries, examples, test suites, benchmarks, etc.<br>
+A user can opt-in to an unsupported build of a package with the <code class="notranslate">--ignore-rust-version</code> flag.</p>
+<p><strong>Development aid:</strong></p>
+<p><code class="notranslate">cargo add</code> will auto-select the dependency's version requirement to be the latest version compatible with your <code class="notranslate">rust-version</code>.<br>
+If that isn't the latest version, <code class="notranslate">cargo add</code> will inform users so they can make the choice on whether to keep it or update your <code class="notranslate">rust-version</code>.</p>
+<p>The <a href="resolver.md#rust-version">resolver</a> may take Rust version into account when picking dependencies.</p>
+<p>Other tools may also take advantage of it, like <code class="notranslate">cargo clippy</code>'s<br>
+<a href="https://rust-lang.github.io/rust-clippy/stable/index.html#incompatible_msrv" rel="nofollow"><code class="notranslate">incompatible_msrv</code> lint</a>.</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>The <code class="notranslate">rust-version</code> may be ignored using the <code class="notranslate">--ignore-rust-version</code> option.</p>
+</div>
+<h2>Support Expectations</h2>
+<p>These are general expectations; some packages may document when they do not follow these.</p>
+<p><strong>Complete:</strong></p>
+<p>All functionality, including binaries and API, are available on the supported Rust versions under every <a href="features.md">feature</a>.</p>
+<p><strong>Verified:</strong></p>
+<p>A package's functionality is verified on its supported Rust versions, including automated testing.<br>
+See also our<br>
+<a href="../guide/continuous-integration.md#verifying-rust-version">Rust version CI guide</a>.</p>
+<p><strong>Patchable:</strong></p>
+<p>When licenses allow it,<br>
+users can <a href="overriding-dependencies.md">override their local dependency</a> with a fork of your package.<br>
+In this situation, Cargo may load the entire workspace for the patched dependency which should work on the supported Rust versions, even if other packages in the workspace have different supported Rust versions.</p>
+<p><strong>Dependency Support:</strong></p>
+<p>In support of the above,<br>
+it is expected that each dependency's version-requirement supports at least one version compatible with your <code class="notranslate">rust-version</code>.<br>
+However,<br>
+it is <strong>not</strong> expected that the dependency specification excludes versions incompatible with your <code class="notranslate">rust-version</code>.<br>
+In fact, supporting both allows you to balance the needs of users that support older Rust versions with those that don't.</p>
+<h2>Setting and Updating Rust Version</h2>
+<p>What Rust versions to support is a trade off between</p>
+<ul>
+<li>Costs for the maintainer in not using newer features of the Rust toolchain or their dependencies</li>
+<li>Costs to users who would benefit from a package using newer features of a toolchain, e.g. reducing build times by migrating to a feature in the standard library from a polyfill</li>
+<li>Availability of a package to users supporting older Rust versions</li>
+</ul>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p><a href="semver.md#env-new-rust">Changing <code class="notranslate">rust-version</code></a> is assumed to be a minor incompatibility</p>
+</div>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>Choose a policy for what Rust versions to support and when that is changed so users can compare it with their own policy and,<br>
+if it isn't compatible,<br>
+decide whether the loss of general improvements or the risk of a blocking bug that won't be fixed is acceptable or not.</p>
+<p>The simplest policy to support is to always use the latest Rust version.</p>
+<p>Depending on your risk profile, the next simplest approach is to continue to support old major or minor versions of your package that support older Rust versions.</p>
+</div>
+<h3>Selecting supported Rust versions</h3>
+<p>Users of your package are most likely to track their supported Rust versions to:</p>
+<ul>
+<li>Their Rust toolchain vendor's support policy, e.g. The Rust Project or a Linux distribution
+<ul>
+<li>Note: the Rust Project only offers bug fixes and security updates for the latest version.</li>
+</ul>
+</li>
+<li>A fixed schedule for users to re-verify their packages with the new toolchain, e.g. the first release of the year, every 5 releases.</li>
+</ul>
+<p>In addition, users are unlikely to be using the new Rust version immediately but need time to notice and re-verify or might not be aligned on the exact same schedule..</p>
+<p>Example version policies:</p>
+<ul>
+<li>"N-2", meaning "latest version with a 2 release grace window for updating"</li>
+<li>Every even release with a 2 release grace window for updating</li>
+<li>Every version from this calendar year with a one year grace window for updating</li>
+</ul>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>To find the minimum <code class="notranslate">rust-version</code> compatible with your project as-is, you can use third-party tools like <a href="https://crates.io/crates/cargo-msrv" rel="nofollow"><code class="notranslate">cargo-msrv</code></a>.</p>
+</div>
+<h3>Update timeline</h3>
+<p>When your policy specifies you no longer need to support a Rust version, you can update <code class="notranslate">rust-version</code> immediately or when needed.</p>
+<p>By allowing <code class="notranslate">rust-version</code> to drift from your policy,<br>
+you offer users more of a grace window for upgrading.<br>
+However, this is too unpredictable to be relied on for aligning with the Rust version users track.</p>
+<p>The further <code class="notranslate">rust-version</code> drifts from your specified policy,<br>
+the more likely users are to infer a policy you did not intend,<br>
+leading to frustration at the unmet expectations.</p>
+<p>When drift is allowed,<br>
+there is the question of what is "justifiable enough" to drop supported Versions.<br>
+Each person can come to a reasonably different justification;<br>
+working through that discussion can be frustrating for the involved parties.<br>
+This will disempower those who would want to avoid that type of conflict,<br>
+which is particularly the case for new or casual contributors who either<br>
+feel that they are not in a position to raise the question or<br>
+that the conflict may hurt the chance of their change being merged.</p>
+<h3>Multiple Policies in a Workspace</h3>
+<p>Cargo allows supporting multiple policies within one workspace.</p>
+<p>Verifying specific packages under specific Rust versions can get complicated.<br>
+Tools like <a href="https://crates.io/crates/cargo-hack" rel="nofollow"><code class="notranslate">cargo-hack</code></a> can help.</p>
+<p>For any dependency shared across policies,<br>
+the lowest common versions must be used as Cargo<br>
+<a href="resolver.md#semver-compatibility">unifies SemVer-compatible versions</a>,<br>
+potentially limiting access to features of the shared dependency for the workspace member with the higher <code class="notranslate">rust-version</code>.</p>
+<p>To allow users to patch a dependency on one of your workspace members,<br>
+every package in the workspace would need to be loadable in the oldest Rust version supported by the workspace.</p>
+<p>When using <a href="config.md#resolverincompatible-rust-versions"><code class="notranslate">incompatible-rust-versions = "fallback"</code></a>,<br>
+the Rust version of one package can affect dependency versions selected for another package with a different Rust version.<br>
+See the <a href="resolver.md#rust-version">resolver</a> chapter for more details.</p>
+<h3>One or More Policies</h3>
+<p>One way to mitigate the downsides of supporting older Rust versions is to apply your policy to older major or minor versions of your package that you continue to support.<br>
+You likely still need a policy for what Rust versions the development branch support compared to the release branches for those major or minor versions.</p>
+<p>Only updating the development branch when "needed"' can help reduce the number of supported release branches.</p>
+<p>There is the question of what can be backported into these release branches.<br>
+By backporting new functionality between minor versions,<br>
+the next available version would be missing it which could be considered a breaking change, violating SemVer.<br>
+Backporting changes also comes with the risk of introducing bugs.</p>
+<p>Supporting older versions comes at a cost.<br>
+This cost is dependent on the risk and impact of bugs within the package and what is acceptable for backporting.<br>
+Creating the release branches on-demand and putting the backport burden on the community are ways to balance this cost.</p>
+<p>There is not yet a way for dependency management tools to report that a non-latest version is still supported,<br>
+shifting the responsibility to users to notice this in documentation.</p>
+<p>For example, a Rust version support policy could look like:</p>
+<ul>
+<li>The development branch tracks to the latest stable release from the Rust Project, updated when needed
+<ul>
+<li>The minor version will be raised when changing <code class="notranslate">rust-version</code></li>
+</ul>
+</li>
+<li>The project supports every version for this calendar year, with another year grace window
+<ul>
+<li>The last minor version that supports a supported Rust version will receive community provided bug fixes</li>
+<li>Fixes must be backported to all supported minor releases between the development branch and the needed supported Rust version</li>
+</ul>
+</li>
+</ul>

@@ -1,0 +1,377 @@
+<h1><a href="https://comrak.ee/" rel="nofollow">Comrak</a></h1>
+<p><a href="https://github.com/kivikakk/comrak/actions/workflows/rust.yml"><img src="https://github.com/kivikakk/comrak/actions/workflows/rust.yml/badge.svg" alt="Build status" style="max-width: 100%;"></a><br>
+<a href="https://github.com/commonmark/commonmark-spec/blob/9103e341a973013013bb1a80e13567007c5cef6f/spec.txt"><img src="https://camo.githubusercontent.com/4a5e55c0560ed26dcc1c1e9b7b8ffb9f3d95cf0f6be37df409e2525c7bc7ecf7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636f6d6d6f6e6d61726b2d3635322532463635322d627269676874677265656e2e737667" alt="CommonMark: 652/652" data-canonical-src="https://img.shields.io/badge/commonmark-652%2F652-brightgreen.svg" style="max-width: 100%;"></a><br>
+<a href="https://github.com/kivikakk/cmark-gfm/blob/2f13eeedfe9906c72a1843b03552550af7bee29a/test/spec.txt"><img src="https://camo.githubusercontent.com/90b760d268acc622909b19665bb286c9554c97c59cb7497376b540b1f28110cf/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f67666d2d3637302532463637302d627269676874677265656e2e737667" alt="GFM: 670/670" data-canonical-src="https://img.shields.io/badge/gfm-670%2F670-brightgreen.svg" style="max-width: 100%;"></a><br>
+<a href="https://crates.io/crates/comrak" rel="nofollow"><img src="https://camo.githubusercontent.com/5d51151578780ffe32d49c0af7c72a4e71b89c226b31eac8352e86e64de75067/68747470733a2f2f696d672e736869656c64732e696f2f6372617465732f762f636f6d72616b2e737667" alt="crates.io version" data-canonical-src="https://img.shields.io/crates/v/comrak.svg" style="max-width: 100%;"></a><br>
+<a href="https://docs.rs/comrak" rel="nofollow"><img src="https://camo.githubusercontent.com/fd00ff8e600c95ce3aafe9175ccecc39389d056285107d5eabc608b2536bb3cb/68747470733a2f2f646f63732e72732f636f6d72616b2f62616467652e737667" alt="docs.rs" data-canonical-src="https://docs.rs/comrak/badge.svg" style="max-width: 100%;"></a><br>
+<a href="https://www.bestpractices.dev/projects/11796" rel="nofollow"><img src="https://camo.githubusercontent.com/1eae98dfe05d770ca3aed5ab5d24c38faafe491d14d95d93021edc3532c7e3ce/68747470733a2f2f7777772e626573747072616374696365732e6465762f70726f6a656374732f31313739362f6261646765" alt="OpenSSF Best Practices" data-canonical-src="https://www.bestpractices.dev/projects/11796/badge" style="max-width: 100%;"></a></p>
+<p><a href="https://comrak.ee/" rel="nofollow">Comrak</a> is a <a href="https://commonmark.org/" rel="nofollow">CommonMark</a> and <a href="https://github.github.com/gfm/">GitHub Flavored Markdown</a> compatible parser and renderer, written in Rust.</p>
+<p>Compliant with <a href="https://spec.commonmark.org/0.31.2/" rel="nofollow">CommonMark 0.31.2</a> by default.</p>
+<h2>Installation</h2>
+<p>Specify it as a requirement in <code class="notranslate">Cargo.toml</code>:</p>
+<div class="highlight highlight-source-toml"><pre class="notranslate">[<span class="pl-en">dependencies</span>]
+<span class="pl-smi">comrak</span> = <span class="pl-s"><span class="pl-pds">"</span>0.55<span class="pl-pds">"</span></span></pre></div>
+<p>Comrak's library supports Rust <span>1.85</span>+.</p>
+<h3>CLI</h3>
+<ul>
+<li>Anywhere with a Rust toolchain:
+<ul>
+<li><code class="notranslate">cargo install comrak</code></li>
+<li><code class="notranslate"><a href="https://github.com/cargo-bins/cargo-binstall">cargo binstall</a> comrak</code></li>
+</ul>
+</li>
+<li>Many Unix distributions:
+<ul>
+<li><code class="notranslate">pacman -S comrak</code></li>
+<li><code class="notranslate">brew install comrak</code></li>
+<li><code class="notranslate">dnf install comrak</code></li>
+<li><code class="notranslate">nix run nixpkgs#comrak</code></li>
+</ul>
+</li>
+<li>Windows:
+<ul>
+<li><code class="notranslate"><a href="https://scoop.sh/" rel="nofollow">scoop</a> install comrak</code></li>
+</ul>
+</li>
+</ul>
+<p>You can also find builds I've published in <a href="https://github.com/kivikakk/comrak/releases">GitHub Releases</a>, but they're limited to machines I have access to at the time of making them! <a href="https://webinstall.dev/comrak/" rel="nofollow">webinstall.dev</a> offers <code class="notranslate">curl | shell</code>-style installation of the latest of these for your OS, including Windows.</p>
+<h2>Usage</h2>
+<details>
+<summary>Click to expand the CLI <code class="notranslate">--help</code> output.
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">comrak --help</span></pre></div>
+</summary>
+<pre class="notranslate"><code class="notranslate">A 100% CommonMark-compatible GitHub Flavored Markdown parser and formatter
+
+Usage: comrak [OPTIONS] [FILE]...
+
+Arguments:
+  [FILE]...
+          CommonMark file(s) to parse; or standard input if none passed
+
+Options:
+  -c, --config-file &lt;PATH&gt;
+          Path to config file containing command-line arguments, or 'none'
+          
+          [default: /home/runner/.config/comrak/config]
+
+  -i, --inplace
+          Reformat CommonMark files in-place
+
+      --hardbreaks
+          Treat newlines as hard line breaks
+
+      --smart
+          Replace punctuation like "this" with smart punctuation like “this”
+
+      --github-pre-lang
+          Use GitHub-style "&lt;pre lang&gt;" for code blocks
+
+      --full-info-string
+          Include words following the code block info string in a data-meta attribute
+
+      --gfm
+          Enable GitHub-flavored markdown extensions: strikethrough, tagfilter, table, autolink, and
+          tasklist. Also enables --github-pre-lang and --gfm-quirks
+
+      --gfm-quirks
+          Use GFM-style quirks in output HTML, such as not nesting &lt;strong&gt; tags, which otherwise
+          breaks CommonMark compatibility
+
+      --relaxed-tasklist-character
+          Permit any character inside a tasklist item, not just " ", "x" or "X"
+
+      --relaxed-autolinks
+          Relax autolink parsing: allows links to be recognised when in brackets, permits all URL
+          schemes, and permits domains without a TLD (like "http://localhost")
+
+      --tasklist-classes
+          Include "task-list-item" and "task-list-item-checkbox" classes on
+
+      --default-info-string &lt;INFO&gt;
+          Default value for fenced code block's info strings if none is given
+
+      --unsafe
+          Allow inline and block HTML (unless --escape is given), and permit
+
+      --gemoji
+          Translate gemoji like ":thumbsup:" into Unicode emoji like "👍"
+
+      --escape
+          Escape raw HTML, instead of clobbering it; takes precedence over --unsafe
+
+      --escaped-char-spans
+          Wrap escaped Markdown characters in "&lt;span data-escaped-char&gt;" in HTML
+
+  -e, --extension &lt;EXTENSION&gt;
+          Specify extensions to use
+          
+          Multiple extensions can be delimited with ",", e.g. '--extension strikethrough,table', or
+          you can pass --extension/-e multiple times
+          
+          [possible values: strikethrough, tagfilter, table, autolink, tasklist, superscript,
+          footnotes, inline-footnotes, description-lists, multiline-block-quotes, math-dollars,
+          math-latex, math-code, wikilinks-title-after-pipe, wikilinks-title-before-pipe, underline,
+          subscript, spoiler, greentext, alerts, cjk-friendly-emphasis, subtext, highlight, insert,
+          phoenix-heex, block-directive, header-attributes, fenced-code-attributes,
+          inline-code-attributes, link-attributes]
+
+  -t, --to &lt;FORMAT&gt;
+          Specify output format
+          
+          [default: html]
+          [possible values: html, xml, commonmark]
+
+  -o, --output &lt;FILE&gt;
+          Write output to FILE instead of stdout
+
+      --width &lt;WIDTH&gt;
+          Specify wrap width for output CommonMark, or '0' to disable wrapping
+          
+          [default: 0]
+
+      --header-id-prefix &lt;PREFIX&gt;
+          Use the Comrak header IDs extension, with the given ID prefix
+
+      --header-id-prefix-in-href
+          Apply the header ID prefix to the href anchor as well
+
+      --front-matter-delimiter &lt;DELIMITER&gt;
+          Detect frontmatter that starts and ends with the given string, and do not include it in
+          the resulting document
+
+      --syntax-highlighting &lt;THEME&gt;
+          Syntax highlighting for fenced code blocks; 'css' for CSS classes (default), a theme name
+          for inline styles, or 'none' to disable
+          
+          [default: css]
+
+      --list-style &lt;LIST_STYLE&gt;
+          Specify bullet character for lists ("-", "+", "*") in CommonMark output
+          
+          [default: dash]
+          [possible values: dash, plus, star]
+
+      --alert-style &lt;ALERT_STYLE&gt;
+          Specify alert style (&lt;div&gt; vs &lt;aside&gt;) in HTML output
+          
+          [default: specific]
+          [possible values: specific, semantic]
+
+      --sourcepos
+          Include source position attributes in HTML and XML output
+
+      --ignore-setext
+          Do not parse setext headers
+
+      --ignore-empty-links
+          Do not parse empty links
+
+      --sourcepos-chars
+          Report column positions in sourcepos as a Unicode character count rather than UTF-8 byte
+          offsets
+
+      --experimental-minimize-commonmark
+          Minimise escapes in CommonMark output using a trial-and-error algorithm
+
+      --compact
+          Suppress pretty-printing newlines between block-level HTML elements
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
+
+By default, Comrak will attempt to read command-line options from a config file specified by
+--config-file. This behaviour can be disabled by passing --config-file none. It is not an error if
+the file does not exist.
+</code></pre>
+</details>
+<p>And there's a Rust interface. You can use <code class="notranslate">comrak::markdown_to_html</code> directly:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">use</span> comrak<span class="pl-kos">::</span><span class="pl-kos">{</span>markdown_to_html<span class="pl-kos">,</span> <span class="pl-v">Options</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+<span class="pl-en">assert_eq</span><span class="pl-en">!</span><span class="pl-kos">(</span>
+    markdown_to_html<span class="pl-kos">(</span><span class="pl-s">"¡Olá, **世界**!"</span><span class="pl-kos">,</span> <span class="pl-c1">&amp;</span><span class="pl-v">Options</span><span class="pl-kos">::</span><span class="pl-k">default</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-s">"&lt;p&gt;¡Olá, &lt;strong&gt;世界&lt;/strong&gt;!&lt;/p&gt;<span class="pl-cce">\n</span>"</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>Or you can parse the input into an AST yourself, manipulate it, and then use your desired formatter:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">use</span> comrak<span class="pl-kos">::</span>nodes<span class="pl-kos">::</span><span class="pl-v">NodeValue</span><span class="pl-kos">;</span>
+<span class="pl-k">use</span> comrak<span class="pl-kos">::</span><span class="pl-kos">{</span>format_html<span class="pl-kos">,</span> parse_document<span class="pl-kos">,</span> <span class="pl-v">Arena</span><span class="pl-kos">,</span> <span class="pl-v">Options</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">fn</span> <span class="pl-en">replace_text</span><span class="pl-kos">(</span><span class="pl-s1">document</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-smi">str</span><span class="pl-kos">,</span> <span class="pl-s1">orig_string</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-smi">str</span><span class="pl-kos">,</span> <span class="pl-s1">replacement</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-smi">str</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">String</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// The returned nodes are created in the supplied Arena, and are bound by its lifetime.</span>
+    <span class="pl-k">let</span> arena = <span class="pl-smi">Arena</span><span class="pl-kos">::</span><span class="pl-en">new</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-c">// Parse the document into a root `AstNode`</span>
+    <span class="pl-k">let</span> root = <span class="pl-en">parse_document</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span>arena<span class="pl-kos">,</span> document<span class="pl-kos">,</span> <span class="pl-c1">&amp;</span><span class="pl-smi">Options</span><span class="pl-kos">::</span><span class="pl-en">default</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-c">// Iterate over all the descendants of root.</span>
+    <span class="pl-k">for</span> node <span class="pl-k">in</span> root<span class="pl-kos">.</span><span class="pl-en">descendants</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-k">if</span> <span class="pl-k">let</span> <span class="pl-smi">NodeValue</span><span class="pl-kos">::</span><span class="pl-v">Text</span><span class="pl-kos">(</span><span class="pl-k">ref</span> <span class="pl-k">mut</span> text<span class="pl-kos">)</span> = node<span class="pl-kos">.</span><span class="pl-en">data_mut</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">value</span> <span class="pl-kos">{</span>
+            <span class="pl-c">// If the node is a text node, perform the string replacement.</span>
+            <span class="pl-c1">*</span>text = text<span class="pl-kos">.</span><span class="pl-en">to_mut</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span>orig_string<span class="pl-kos">,</span> replacement<span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">into</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+        <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span>
+
+    <span class="pl-k">let</span> <span class="pl-k">mut</span> html = <span class="pl-smi">String</span><span class="pl-kos">::</span><span class="pl-en">new</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-en">format_html</span><span class="pl-kos">(</span>root<span class="pl-kos">,</span> <span class="pl-c1">&amp;</span><span class="pl-smi">Options</span><span class="pl-kos">::</span><span class="pl-en">default</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> html<span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">unwrap</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    html
+<span class="pl-kos">}</span>
+
+<span class="pl-k">fn</span> <span class="pl-en">main</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">let</span> doc = <span class="pl-s">"Hello, pretty world!<span class="pl-cce">\n</span><span class="pl-cce">\n</span>1. Do you like [pretty](#) paintings?<span class="pl-cce">\n</span>2. Or *pretty* music?<span class="pl-cce">\n</span>"</span><span class="pl-kos">;</span>
+    <span class="pl-k">let</span> orig = <span class="pl-s">"pretty"</span><span class="pl-kos">;</span>
+    <span class="pl-k">let</span> repl = <span class="pl-s">"beautiful"</span><span class="pl-kos">;</span>
+    <span class="pl-k">let</span> html = <span class="pl-en">replace_text</span><span class="pl-kos">(</span>doc<span class="pl-kos">,</span> orig<span class="pl-kos">,</span> repl<span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-en">println</span><span class="pl-en">!</span><span class="pl-kos">(</span><span class="pl-s">"{}"</span><span class="pl-kos">,</span> html<span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-c">// Output:</span>
+    <span class="pl-c">//</span>
+    <span class="pl-c">// &lt;p&gt;Hello, beautiful world!&lt;/p&gt;</span>
+    <span class="pl-c">// &lt;ol&gt;</span>
+    <span class="pl-c">// &lt;li&gt;Do you like &lt;a href="#"&gt;beautiful&lt;/a&gt; paintings?&lt;/li&gt;</span>
+    <span class="pl-c">// &lt;li&gt;Or &lt;em&gt;beautiful&lt;/em&gt; music?&lt;/li&gt;</span>
+    <span class="pl-c">// &lt;/ol&gt;</span>
+<span class="pl-kos">}</span></pre></div>
+<p>For a slightly more real-world example, see how I <a href="https://github.com/kivikakk/kivikakk">generate my GitHub user README</a> from a base document with embedded YAML, which itself has embedded Markdown, or<br>
+<a href="https://crates.io/crates/comrak/reverse_dependencies" rel="nofollow">check out some of Comrak's dependents on crates.io</a> or <a href="https://github.com/kivikakk/comrak/network/dependents">on GitHub</a>.</p>
+<h2>Security</h2>
+<p>As with <a href="https://github.com/commonmark/cmark"><code class="notranslate">cmark</code></a> and <a href="https://github.com/github/cmark-gfm#security"><code class="notranslate">cmark-gfm</code></a>,<br>
+Comrak will scrub raw HTML and potentially dangerous links. This change was introduced in Comrak 0.4.0 in support of a<br>
+safe-by-default posture, and later adopted by our contemporaries. :)</p>
+<p>To allow these, use the <code class="notranslate">r#unsafe</code> option (or <code class="notranslate">--unsafe</code> with the command line program). If doing so, we recommend the<br>
+use of a sanitisation library like <a href="https://github.com/notriddle/ammonia"><code class="notranslate">ammonia</code></a> configured specific to your needs.</p>
+<h2>Extensions</h2>
+<p>Comrak supports the five extensions to CommonMark defined in the <a href="https://github.github.com/gfm/">GitHub Flavored Markdown<br>
+Spec</a>:</p>
+<ul>
+<li><a href="https://github.github.com/gfm/#tables-extension-">Tables</a></li>
+<li><a href="https://github.github.com/gfm/#task-list-items-extension-">Task list items</a></li>
+<li><a href="https://github.github.com/gfm/#strikethrough-extension-">Strikethrough</a></li>
+<li><a href="https://github.github.com/gfm/#autolinks-extension-">Autolinks</a></li>
+<li><a href="https://github.github.com/gfm/#disallowed-raw-html-extension-">Disallowed Raw HTML</a></li>
+</ul>
+<p>Comrak additionally supports its own extensions, which are yet to be specced out (PRs welcome!):</p>
+<ul>
+<li>Superscript</li>
+<li>Header IDs</li>
+<li>Footnotes</li>
+<li>Inline footnotes</li>
+<li>Description lists</li>
+<li>Front matter</li>
+<li>Multi-line blockquotes</li>
+<li>Math</li>
+<li>Emoji shortcodes</li>
+<li>Wikilinks</li>
+<li>Underline</li>
+<li>Spoiler text</li>
+<li>"Greentext"</li>
+<li>Alerts</li>
+<li><a href="https://github.com/tats-u/markdown-cjk-friendly">CJK friendly emphasis</a></li>
+</ul>
+<p>By default none are enabled; they are individually enabled with each parse by setting the appropriate values in the<br>
+<a href="https://docs.rs/comrak/latest/comrak/options/struct.Extension.html" rel="nofollow"><code class="notranslate">options::Extension</code> struct</a>.</p>
+<h2>Custom formatting</h2>
+<p>The default HTML formatter can be partially specialised, to<br>
+allow customising the output for certain node types without<br>
+having to reimplement a whole formatter.  See the docs for<br>
+<a href="https://docs.rs/comrak/latest/comrak/macro.create_formatter.html" rel="nofollow"><code class="notranslate">comrak::create_formatter</code></a><br>
+for details.</p>
+<h2>Plugins</h2>
+<h3>Fenced code block syntax highlighting</h3>
+<p>You can provide your own syntax highlighting engine.</p>
+<p>Create an implementation of the <code class="notranslate">SyntaxHighlighterAdapter</code> trait, and then provide an instance of such adapter to<br>
+<code class="notranslate">Plugins.render.codefence_syntax_highlighter</code>. For formatting a Markdown document with plugins, use the<br>
+<code class="notranslate">markdown_to_html_with_plugins</code> function, which accepts your plugins object as a parameter.</p>
+<p>See the <code class="notranslate">syntax_highlighter.rs</code> and <code class="notranslate">syntect.rs</code> examples for more details.</p>
+<h4>Syntect</h4>
+<p><a href="https://github.com/trishume/syntect"><code class="notranslate">syntect</code></a> is a syntax highlighting library for Rust. By default, <code class="notranslate">comrak</code> offers<br>
+a plugin for it. In order to utilize it, create an instance of <code class="notranslate">plugins::syntect::SyntectAdapter</code> and use it in your<br>
+<code class="notranslate">Plugins</code> option.</p>
+<h2>Related projects</h2>
+<p>Comrak's original design goal was to model the upstream<br>
+<a href="https://github.com/github/cmark-gfm"><code class="notranslate">cmark-gfm</code></a> as closely as possible in<br>
+terms of code structure. Many years have passed since its inception, and the codebases<br>
+have since grown considerably apart. It does remain the case, though, that there<br>
+are bugs in <code class="notranslate">cmark-gfm</code> that are likely in Comrak too, as a result.</p>
+<p>Over the years, we have increasingly opted to fix such bugs, rather than<br>
+maintain upstream compatibility at all costs.  <code class="notranslate">cmark-gfm</code> no longer appears to<br>
+be under active maintenance, but Comrak is a living and growing project.</p>
+<p>This library offers an AST backed by<br>
+<a href="https://github.com/thomcc/rust-typed-arena"><code class="notranslate">typed_arena</code></a>, with extensive<br>
+use of <code class="notranslate">RefCell</code> in the core node type to provide mutable access with<br>
+parent/sibling/child pointers.  This can produce non-idiomatic-looking code,<br>
+though in practice it has proven very usable.</p>
+<p>For whatever reason, Comrak may not meet your requirements. Here are some<br>
+projects and resources to also consider:</p>
+<ul>
+<li><a href="https://github.com/raphlinus">Raph Levien</a>'s <a href="https://github.com/google/pulldown-cmark"><code class="notranslate">pulldown-cmark</code></a>. It's<br>
+very fast, uses a novel parsing algorithm, and doesn't construct an AST (but you can use it to make one if you<br>
+want). <code class="notranslate">cargo doc</code> uses this, as do many other projects in the ecosystem.</li>
+<li><a href="https://github.com/wooorm/markdown-rs">markdown-rs</a> looks really promising.</li>
+<li><a href="https://github.com/markdown-it-rust/markdown-it">markdown-it</a> is a port of JavaScript's <a href="https://github.com/markdown-it/markdown-it">markdown-it.js</a>.</li>
+<li><a href="https://babelmark.github.io/" rel="nofollow">babelmark</a> lets you compare many implementations at once, including the above.</li>
+<li>Know of another library? Please open a PR to add it!</li>
+</ul>
+<h3>Bindings</h3>
+<ul>
+<li><a href="https://github.com/gjtorikian/commonmarker">Commonmarker</a> — Ruby bindings for this library built with Magnus/rb-sys.<br>
+Available on RubyGems as <a href="https://rubygems.org/gems/commonmarker" rel="nofollow"><code class="notranslate">commonmarker</code></a>.</li>
+<li><a href="https://github.com/leandrocp/mdex">MDEx</a> — Elixir bindings for this library built with Rustler.<br>
+Available on Hex as <a href="https://hex.pm/packages/mdex" rel="nofollow"><code class="notranslate">mdex</code></a>.</li>
+<li><a href="https://github.com/lmmx/comrak">comrak</a> — Python bindings for this library built with PyO3.<br>
+Available on PyPI as <a href="https://pypi.org/project/comrak" rel="nofollow"><code class="notranslate">comrak</code></a>, benchmarked at 15-60x faster than pure Python alternatives.</li>
+<li><a href="https://github.com/Martin005/comrak-ext">comrak-ext</a> — Python bindings; fork of <code class="notranslate">comrak</code> with additional APIs exposed, including the AST.<br>
+Available on PyPI as <a href="https://pypi.org/project/comrak-ext" rel="nofollow"><code class="notranslate">comrak-ext</code></a>.</li>
+<li><a href="https://github.com/nberlette/comrak-wasm">comrak-wasm</a> — TypeScript bindings for this library, built with WebAssembly.<br>
+Available on JSR as <a href="https://jsr.io/@nick/comrak" rel="nofollow"><code class="notranslate">@nick/comrak</code></a>.</li>
+</ul>
+<h3>Users</h3>
+<p>Comrak is used in a few Rust-y places, and more beyond:</p>
+<ul>
+<li><a href="https://crates.io" rel="nofollow">crates.io</a>, <a href="https://docs.rs" rel="nofollow">docs.rs</a> and <a href="https://lib.rs" rel="nofollow">lib.rs</a> use Comrak to render README Markdown faithfully.</li>
+<li><a href="https://gitlab.com" rel="nofollow">GitLab</a> uses Comrak to render Markdown documents, issues, comments, and more.</li>
+<li><a href="https://deno.com" rel="nofollow">Deno</a> uses Comrak to render documentation in <a href="https://github.com/denoland/deno_doc"><code class="notranslate">deno_doc</code></a>.</li>
+<li><a href="https://reddit.com" rel="nofollow">Reddit</a>'s new-style site uses a Comrak fork<sup><a href="#user-content-fn-reddit-09808b19900a4fe631e430c590e6d202" id="user-content-fnref-reddit-09808b19900a4fe631e430c590e6d202" data-footnote-ref="" aria-describedby="footnote-label">1</a></sup>.</li>
+<li><a href="https://lockbook.net/" rel="nofollow">Lockbook</a> is a Markdown-based secure notebook with native apps. It looks really neat!!</li>
+<li><a href="https://github.com/kivikakk/comrak/network/dependents">many</a> <a href="https://crates.io/crates/comrak/reverse_dependencies" rel="nofollow">more!</a></li>
+</ul>
+<p>I'd be really happy to add your site or app here, just open a PR or issue. :)</p>
+<h2>Benchmarking</h2>
+<p>We offer some tools to perform stdin-to-stdout benchmarking of Comrak with its contemporaries.  In this respect, Comrak is not and will not be the fastest: some alternatives do not construct an AST in this scenario.</p>
+<p>You'll need to <a href="https://github.com/sharkdp/hyperfine#installation">install hyperfine</a>, and CMake if you want to compare against <code class="notranslate">cmark-gfm</code>.</p>
+<p>If you want to just run the benchmark for the <code class="notranslate">comrak</code> binary itself, run:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">make bench-comrak</pre></div>
+<p>This will build Comrak in release mode, and run benchmark on it. You will see the time measurements as reported by hyperfine in the console.</p>
+<p>The <code class="notranslate">Makefile</code> also provides a way to run benchmarks for <code class="notranslate">comrak</code> current state (with your changes), <code class="notranslate">comrak</code> main branch, <a href="https://github.com/github/cmark-gfm"><code class="notranslate">cmark-gfm</code></a>, <a href="https://github.com/raphlinus/pulldown-cmark"><code class="notranslate">pulldown-cmark</code></a> and <a href="https://github.com/rlidwka/markdown-it.rs"><code class="notranslate">markdown-it.rs</code></a>. You'll need CMake, and ensure <a href="https://stackoverflow.com/a/10168693/499609" rel="nofollow">submodules are prepared</a>.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">make bench-all</pre></div>
+<p>This will build and run benchmarks across all, and report the time taken by each as well as relative time.</p>
+
+
+<h2>Contributing</h2>
+<p>Contributions are <strong>highly encouraged</strong>; if you'd like to assist, consider checking out the <a href="https://github.com/kivikakk/comrak/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><code class="notranslate">good first issue</code> label</a>! I'm happy to help provide direction and guidance throughout, even if (especially if!) you're new to Rust or open source.</p>
+<p>Where possible I practice <a href="http://hintjens.com/blog:106" rel="nofollow">Optimistic Merging</a> as described by Peter Hintjens. Please keep the <a href="CODE_OF_CONDUCT.md">code of conduct</a> in mind too.</p>
+<p>Thank you to Comrak's many contributors for PRs and issues opened!</p>
+<h3>Vulnerabilities</h3>
+<p>Please report security issues to the author at &lt;<a href="mailto:ashe@kivikakk.ee">ashe@kivikakk.ee</a>&gt;.  If you<br>
+have a GitHub account, you are welcome to use its interface to <a href="https://github.com/kivikakk/comrak/security/advisories/new">privately report<br>
+security issues</a>.</p>
+<h3>Policy on LLM contributions</h3>
+<p>This policy is based on and inspired by <a href="https://book.servo.org/contributing/getting-started.html#ai-contributions" rel="nofollow">Servo's AI contributions policy</a> (<a href="https://archive.is/7LLb2#ai-contributions" rel="nofollow">permalink</a>) and <a href="https://github.com/qemu/qemu/blob/667e1fff878326c35c7f5146072e60a63a9a41c8/docs/devel/code-provenance.rst#use-of-ai-generated-content">QEMU's Use of AI-generated content policy</a>.  Please see those links for a more detailed analysis.</p>
+<p>Contributions must not include content generated by large language models or other probabilistic tools, including but not limited to Copilot or ChatGPT. This policy covers code, documentation, pull requests, issues, comments, and any other contributions to Comrak.</p>
+<h2>Contributors</h2>
+<p><a href="https://github.com/kivikakk/comrak/graphs/contributors"><img src="https://camo.githubusercontent.com/46ba48cdfe3d3703f50185a15a8a02ab53216352ca5f85524c6ea083602ee639/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f636f6d72616b2f636f6e7472696275746f72732e7376673f77696474683d38393026627574746f6e3d66616c7365" alt="Small chart showing Comrak contributors." data-canonical-src="https://opencollective.com/comrak/contributors.svg?width=890&amp;button=false" style="max-width: 100%;"></a></p>
+<h2>Contact</h2>
+<p>Asherah Connor &lt;<a href="mailto:ashe@kivikakk.ee">ashe@kivikakk.ee</a>&gt;</p>
+<h2>Legal</h2>
+<p>Copyright (c) 2017–2026, Comrak contributors. Licensed under<br>
+the <a href="https://opensource.org/licenses/BSD-2-Clause" rel="nofollow">2-Clause BSD License</a>.</p>
+<p><code class="notranslate">cmark</code> itself is is copyright (c) 2014, John MacFarlane.</p>
+<p>See <a href="COPYING">COPYING</a> for all the details.</p>
+<section data-footnotes="" class="footnotes"><h2 id="footnote-label" class="sr-only">Footnotes</h2>
+<ol>
+<li id="user-content-fn-reddit-09808b19900a4fe631e430c590e6d202">
+<p>And they contributed some really nice changes, years back. Then management went and sold their user base and all their credibility. What can you do. <a href="#user-content-fnref-reddit-09808b19900a4fe631e430c590e6d202" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>

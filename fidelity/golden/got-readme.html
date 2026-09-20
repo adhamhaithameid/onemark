@@ -1,0 +1,540 @@
+<div align="center">
+	<br>
+	<br>
+	<a target="_blank" rel="noopener noreferrer" href="media/logo.svg"><img width="360" src="media/logo.svg" alt="Got" style="max-width: 100%;"></a>
+	<br>
+	<br>
+	<br>
+	<br>
+	<hr>
+	<p>
+		</p><p>
+			<sup>
+				Sindre's open source work is supported by the community.<br>Special thanks to:
+			</sup>
+		</p>
+		<br>
+		<br>
+		<a href="https://www.fame.fi#gh-light-mode-only" rel="nofollow">
+			<img src="https://camo.githubusercontent.com/530e38a7caeab62ae80ce5023709b94b8a21b7171b3b1ebf0eb8e383a6c8ce06/68747470733a2f2f73696e647265736f726875732e636f6d2f6173736574732f7468616e6b732f66616d652d6c6f676f2d6c696768742e737667" width="200" alt="Fame Helsinki" data-canonical-src="https://sindresorhus.com/assets/thanks/fame-logo-light.svg" style="max-width: 100%;">
+		</a>
+		<a href="https://www.fame.fi#gh-dark-mode-only" rel="nofollow">
+			<img src="https://camo.githubusercontent.com/0a5384dc3674f4dc52b0ef9d83caa40b5554e203d9b10c9644d184819f947d0c/68747470733a2f2f73696e647265736f726875732e636f6d2f6173736574732f7468616e6b732f66616d652d6c6f676f2d6461726b2e737667" width="200" alt="Fame Helsinki" data-canonical-src="https://sindresorhus.com/assets/thanks/fame-logo-dark.svg" style="max-width: 100%;">
+		</a>
+		<br>
+		<br>
+		<br>
+		<br>
+		<a href="https://depot.dev?utm_source=github&amp;utm_medium=sindresorhus" rel="nofollow">
+			<div>
+				<themed-picture data-catalyst-inline="true"><picture>
+					<source width="180" media="(prefers-color-scheme: dark)" srcset="https://camo.githubusercontent.com/b9249d6f8f652f4b10c183bd3cfe26eb721981f739228cb4f0b289f34380ddae/68747470733a2f2f73696e647265736f726875732e636f6d2f6173736574732f7468616e6b732f6465706f742d6c6f676f2d6461726b2e737667" data-canonical-src="https://sindresorhus.com/assets/thanks/depot-logo-dark.svg">
+					<source width="180" media="(prefers-color-scheme: light)" srcset="https://camo.githubusercontent.com/ab8813a90486b6a95520d3d2d7516eaeadac9fa75678b60f7d497140e4d5eba3/68747470733a2f2f73696e647265736f726875732e636f6d2f6173736574732f7468616e6b732f6465706f742d6c6f676f2d6c696768742e737667" data-canonical-src="https://sindresorhus.com/assets/thanks/depot-logo-light.svg">
+					<img width="180" src="https://camo.githubusercontent.com/ab8813a90486b6a95520d3d2d7516eaeadac9fa75678b60f7d497140e4d5eba3/68747470733a2f2f73696e647265736f726875732e636f6d2f6173736574732f7468616e6b732f6465706f742d6c6f676f2d6c696768742e737667" alt="Depot logo" data-canonical-src="https://sindresorhus.com/assets/thanks/depot-logo-light.svg">
+				</picture></themed-picture>
+			</div>
+			<b>Fast remote container builds and GitHub Actions runners.</b>
+		</a>
+		<br>
+		<br>
+		<br>
+	<p></p>
+	<hr>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+</div>
+<blockquote>
+<p>Human-friendly and powerful HTTP request library for Node.js</p>
+</blockquote>
+
+<p><a href="https://npmjs.com/got" rel="nofollow"><img src="https://camo.githubusercontent.com/74af4af3816fa55f69762e1fb3764d7ea2c7618cda842b21235b00aa2c76ef7d/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f676f742e737667" alt="Downloads" data-canonical-src="https://img.shields.io/npm/dm/got.svg" style="max-width: 100%;"></a><br>
+<a href="https://packagephobia.com/result?p=got" rel="nofollow"><img src="https://camo.githubusercontent.com/58a14825cc0941aee0f10c9e03d22736239362e705bd47b5128db35d86a854c7/68747470733a2f2f7061636b61676570686f6269612e636f6d2f62616467653f703d676f74" alt="Install size" data-canonical-src="https://packagephobia.com/badge?p=got" style="max-width: 100%;"></a></p>
+<p><a href="#comparison">See how Got compares to other HTTP libraries</a></p>
+<hr>
+<p><strong>You probably want <a href="https://github.com/sindresorhus/ky">Ky</a> instead, by the same people. It's smaller, works in the browser too, and is more stable since it's built on <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="nofollow"><code class="notranslate">Fetch</code></a>. Or <a href="https://github.com/sindresorhus/fetch-extras">fetch-extras</a> for simple needs.</strong></p>
+<hr>
+<p><strong>Support questions should be asked <a href="https://github.com/sindresorhus/got/discussions">here</a>.</strong></p>
+<h2>Install</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install got</pre></div>
+<p><strong>Warning:</strong> This package is native <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" rel="nofollow">ESM</a> and no longer provides a CommonJS export. If your project uses CommonJS, you will have to <a href="https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c">convert to ESM</a>. Please don't open issues for questions regarding CommonJS / ESM.</p>
+<p><strong>Got v11 is no longer maintained and we will not accept any backport requests.</strong></p>
+<h2>Take a peek</h2>
+<p><strong>A <a href="documentation/quick-start.md">quick start</a> guide is available.</strong></p>
+<h3>JSON mode</h3>
+<p>Got has a dedicated option for handling JSON payload.<br>
+Furthermore, the promise exposes a <code class="notranslate">.json&lt;T&gt;()</code> function that returns <code class="notranslate">Promise&lt;T&gt;</code>.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">got</span> <span class="pl-k">from</span> <span class="pl-s">'got'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-kos">{</span>data<span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">got</span><span class="pl-kos">.</span><span class="pl-en">post</span><span class="pl-kos">(</span><span class="pl-s">'https://httpbin.org/anything'</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+	<span class="pl-c1">json</span>: <span class="pl-kos">{</span>
+		<span class="pl-c1">hello</span>: <span class="pl-s">'world'</span>
+	<span class="pl-kos">}</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">json</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-c">//=&gt; {"hello": "world"}</span></pre></div>
+<p>For advanced JSON usage, check out the <a href="documentation/2-options.md#parsejson"><code class="notranslate">parseJson</code></a> and <a href="documentation/2-options.md#stringifyjson"><code class="notranslate">stringifyJson</code></a> options.</p>
+<p><strong>For more useful tips like this, visit the <a href="documentation/tips.md">Tips</a> page.</strong></p>
+<h2>Highlights</h2>
+<ul>
+<li><a href="https://github.com/sindresorhus/got/network/dependents">Used by 10K+ packages and 5M+ repos</a></li>
+<li><a href="https://github.com/sindresorhus/got/graphs/contributors">Actively maintained</a></li>
+<li><a href="#widely-used">Trusted by many companies</a></li>
+</ul>
+<h2>Documentation</h2>
+<p>By default, Got will retry on failure. To disable this option, set <a href="documentation/7-retry.md#retry"><code class="notranslate">options.retry.limit</code></a> to 0.</p>
+<h4>Main API</h4>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/1-promise.md">Promise API</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/2-options.md">Options</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/3-streams.md">Stream API</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/4-pagination.md">Pagination API</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/5-https.md">Advanced HTTPS API</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/2-options.md#http2">HTTP/2 support</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/3-streams.md#response-2"><code class="notranslate">Response</code> class</a></li>
+</ul>
+<h4>Timeouts and retries</h4>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/6-timeout.md">Advanced timeout handling</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/7-retry.md">Retries on failure</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/8-errors.md">Errors with metadata</a></li>
+</ul>
+<h4>Advanced creation</h4>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/9-hooks.md">Hooks</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/10-instances.md">Instances</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/3-streams.md#events">Progress events &amp; other events</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/lets-make-a-plugin.md">Plugins</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/examples/advanced-creation.js">Compose</a></li>
+</ul>
+<h4>Cache, Proxy and UNIX sockets</h4>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/cache.md">RFC 7234 compliant caching</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/tips.md#proxying">Proxy support</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/2-options.md#enableunixsockets">Unix Domain Sockets</a></li>
+</ul>
+<h4>Integration</h4>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/diagnostics-channel.md">Diagnostics Channel</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/typescript.md">TypeScript support</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/tips.md#aws">AWS</a></li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <a href="documentation/tips.md#testing">Testing</a></li>
+</ul>
+<hr>
+<h3>Migration guides</h3>
+<ul>
+<li><a href="documentation/migration-guides/request.md">Request migration guide</a>
+<ul>
+<li><a href="https://github.com/request/request/issues/3142" data-hovercard-type="issue" data-hovercard-url="/request/request/issues/3142/hovercard"><em>(Note that Request is unmaintained)</em></a></li>
+</ul>
+</li>
+<li><a href="documentation/migration-guides/axios.md">Axios</a></li>
+<li><a href="documentation/migration-guides/nodejs.md">Node.js</a></li>
+</ul>
+<h2>Got plugins</h2>
+<ul>
+<li><a href="https://github.com/SamVerschueren/got4aws"><code class="notranslate">got4aws</code></a> - Got convenience wrapper to interact with AWS v4 signed APIs</li>
+<li><a href="https://github.com/sindresorhus/gh-got"><code class="notranslate">gh-got</code></a> - Got convenience wrapper to interact with the GitHub API</li>
+<li><a href="https://github.com/singapore/gl-got"><code class="notranslate">gl-got</code></a> - Got convenience wrapper to interact with the GitLab API</li>
+<li><a href="https://github.com/khaosdoctor/gotql"><code class="notranslate">gotql</code></a> - Got convenience wrapper to interact with GraphQL using JSON-parsed queries instead of strings</li>
+<li><a href="https://github.com/alexghr/got-fetch"><code class="notranslate">got-fetch</code></a> - Got with a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" rel="nofollow"><code class="notranslate">fetch</code></a> interface</li>
+<li><a href="https://github.com/apify/got-scraping"><code class="notranslate">got-scraping</code></a> - Got wrapper specifically designed for web scraping purposes</li>
+<li><a href="https://github.com/JaneJeon/got-ssrf"><code class="notranslate">got-ssrf</code></a> - Got wrapper to protect server-side requests against SSRF attacks</li>
+</ul>
+<h2>Comparison</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th></th>
+<th align="center"><code class="notranslate">got</code></th>
+<th align="center"><a href="https://github.com/node-fetch/node-fetch"><code class="notranslate">node-fetch</code></a></th>
+<th align="center"><a href="https://github.com/sindresorhus/ky"><code class="notranslate">ky</code></a></th>
+<th align="center"><a href="https://github.com/axios/axios"><code class="notranslate">axios</code></a></th>
+<th align="center"><a href="https://github.com/visionmedia/superagent"><code class="notranslate">superagent</code></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP/2 support</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️**</td>
+</tr>
+<tr>
+<td>Browser support</td>
+<td align="center">❌</td>
+<td align="center">✔️*</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Promise API</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Stream API</td>
+<td align="center">✔️</td>
+<td align="center">Node.js only</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Pagination API</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>Request aborting</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>RFC 7234 caching</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>Cookies (out-of-the-box)</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>Follows redirects</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Retries on failure</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Progress events</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+<td align="center">Browser only</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Handles gzip/deflate</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Advanced timeouts</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>Timings</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>Errors with metadata</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>JSON mode</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Custom defaults</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>Composable</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+</tr>
+<tr>
+<td>Hooks</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+<td align="center">✔️</td>
+<td align="center">✔️</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>Issues open</td>
+<td align="center"><a href="https://github.com/sindresorhus/got/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/23fcde8973555a0416382f23996050a1fdffb022506fd87d32f984d5202932e2/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f73696e647265736f726875732f676f743f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/sindresorhus/got?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/bitinn/node-fetch/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/181e3e055ed28175b5b37d9e76f79c589963447367dc89a07cdfe3ec866358dc/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f626974696e6e2f6e6f64652d66657463683f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/bitinn/node-fetch?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/sindresorhus/ky/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/390925910016565e94ef4b39e9393562a4073a77f3b9f33dfaae01925bcaf0af/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f73696e647265736f726875732f6b793f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/sindresorhus/ky?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/axios/axios/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/d7e2e54537f5c40eaae5b1655a7e64a352e51b88fea4e94756e74f7162bb6aaf/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f6178696f732f6178696f733f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/axios/axios?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/visionmedia/superagent/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/1cf73396ea916c0e4b28d50ad4572dd48513eaae0d532e7aa977d21f2183b783/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f766973696f6e6d656469612f73757065726167656e743f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/visionmedia/superagent?color=gray&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Issues closed</td>
+<td align="center"><a href="https://github.com/sindresorhus/got/issues?q=is%3Aissue+is%3Aclosed+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/fa0c411610167b901e360d1b13a3e350659fe53aea9330828715287ec33ed793/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d636c6f7365642d7261772f73696e647265736f726875732f676f743f636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-closed-raw/sindresorhus/got?color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/bitinn/node-fetch/issues?q=is%3Aissue+is%3Aclosed+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/3594e995854262043f2faf2262651edd527dc6173dcaa3b0b724132dadd400b0/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d636c6f7365642d7261772f626974696e6e2f6e6f64652d66657463683f636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-closed-raw/bitinn/node-fetch?color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/sindresorhus/ky/issues?q=is%3Aissue+is%3Aclosed+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/a318affa1092fbad41722bdf3b02943accd3724bdab67a3af5a610e15c9973ff/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d636c6f7365642d7261772f73696e647265736f726875732f6b793f636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-closed-raw/sindresorhus/ky?color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/axios/axios/issues?q=is%3Aissue+is%3Aclosed+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/6589c0df4bca9c6ee4f08434ff19cf2ea905f1cfcc07ace803bd970bdf26c371/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d636c6f7365642d7261772f6178696f732f6178696f733f636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-closed-raw/axios/axios?color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/visionmedia/superagent/issues?q=is%3Aissue+is%3Aclosed+sort%3Aupdated-desc"><img src="https://camo.githubusercontent.com/bb0c744f5268b217efda6e6f2e0c7f79d177fed1136f3731e234d464ab2b992d/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d636c6f7365642d7261772f766973696f6e6d656469612f73757065726167656e743f636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-closed-raw/visionmedia/superagent?color=blue&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Downloads</td>
+<td align="center"><a href="https://www.npmjs.com/package/got" rel="nofollow"><img src="https://camo.githubusercontent.com/36d5c899ab1d7339943801120795799f910fd6da3dcff9df1c37b1ac591c16e9/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f676f743f636f6c6f723d6461726b677265656e266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/dm/got?color=darkgreen&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/node-fetch" rel="nofollow"><img src="https://camo.githubusercontent.com/7bcac941aae8467c031934b9a0501c9735957f51487120692c302eb451693372/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6e6f64652d66657463683f636f6c6f723d6461726b677265656e266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/dm/node-fetch?color=darkgreen&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/ky" rel="nofollow"><img src="https://camo.githubusercontent.com/72089f28849a575a70421618e2241536014a5ad4f6b31e0b2ee269d31f0b8fdd/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6b793f636f6c6f723d6461726b677265656e266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/dm/ky?color=darkgreen&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/axios" rel="nofollow"><img src="https://camo.githubusercontent.com/9b5e4555beb1ae83f679f6abd717848e6363b07155a96f74e5a6d3580a585301/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6178696f733f636f6c6f723d6461726b677265656e266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/dm/axios?color=darkgreen&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/superagent" rel="nofollow"><img src="https://camo.githubusercontent.com/7ddd3bbb5f33899f7c256e0de84e5de30266c92ffe9f34b7943c17cb6cd9180e/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f73757065726167656e743f636f6c6f723d6461726b677265656e266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/dm/superagent?color=darkgreen&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Coverage</td>
+<td align="center">TBD</td>
+<td align="center"><a href="https://coveralls.io/github/bitinn/node-fetch" rel="nofollow"><img src="https://camo.githubusercontent.com/70162760c27bad7a0160753e264a4b43e3ab04294cb963ebe653999dd668b32a/68747470733a2f2f696d672e736869656c64732e696f2f636f766572616c6c732f6769746875622f626974696e6e2f6e6f64652d66657463683f636f6c6f723d306239303632266c6162656c" alt="" data-canonical-src="https://img.shields.io/coveralls/github/bitinn/node-fetch?color=0b9062&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://codecov.io/gh/sindresorhus/ky" rel="nofollow"><img src="https://camo.githubusercontent.com/e55e6bbad94ead20e9bd719874c501551ddbb0cb94206fb0acd4ffd3e3e012cb/68747470733a2f2f696d672e736869656c64732e696f2f636f6465636f762f632f6769746875622f73696e647265736f726875732f6b793f636f6c6f723d306239303632266c6162656c" alt="" data-canonical-src="https://img.shields.io/codecov/c/github/sindresorhus/ky?color=0b9062&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://coveralls.io/github/mzabriskie/axios" rel="nofollow"><img src="https://camo.githubusercontent.com/e783b180bf0a5f3028cba764441628301619f55e8e1106fd3d2ac5c6880cb505/68747470733a2f2f696d672e736869656c64732e696f2f636f766572616c6c732f6769746875622f6d7a61627269736b69652f6178696f733f636f6c6f723d306239303632266c6162656c" alt="" data-canonical-src="https://img.shields.io/coveralls/github/mzabriskie/axios?color=0b9062&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://codecov.io/gh/visionmedia/superagent" rel="nofollow"><img src="https://camo.githubusercontent.com/63636b8ece2273fbf5c2b4a7e841ada74e1e6e0b8c7d775d89b48ce2237cdc69/68747470733a2f2f696d672e736869656c64732e696f2f636f6465636f762f632f6769746875622f766973696f6e6d656469612f73757065726167656e743f636f6c6f723d306239303632266c6162656c" alt="" data-canonical-src="https://img.shields.io/codecov/c/github/visionmedia/superagent?color=0b9062&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Build</td>
+<td align="center"><a href="https://github.com/sindresorhus/got/actions/workflows/main.yml"><img src="https://github.com/sindresorhus/got/actions/workflows/main.yml/badge.svg" alt="" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://travis-ci.org/github/bitinn/node-fetch" rel="nofollow"><img src="https://camo.githubusercontent.com/7755461741b909e5f76d53bbcc4adf8efebeee85c0ca317684a828f5dfab1e57/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f626974696e6e2f6e6f64652d66657463683f6c6162656c" alt="" data-canonical-src="https://img.shields.io/travis/bitinn/node-fetch?label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/sindresorhus/ky/actions/workflows/main.yml"><img src="https://github.com/sindresorhus/ky/actions/workflows/main.yml/badge.svg" alt="" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://travis-ci.org/github/axios/axios" rel="nofollow"><img src="https://camo.githubusercontent.com/5624cd98f2ceae6f1d3d749691a5a84681388d7c7bb3937fca2c6e0abb257b0d/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f6178696f732f6178696f733f6c6162656c" alt="" data-canonical-src="https://img.shields.io/travis/axios/axios?label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://travis-ci.org/github/visionmedia/superagent" rel="nofollow"><img src="https://camo.githubusercontent.com/5557644f6ee53d0dd3c1caffca2a3b404f326dd2d9fe8ee68849bb23898d3cbb/68747470733a2f2f696d672e736869656c64732e696f2f7472617669732f766973696f6e6d656469612f73757065726167656e743f6c6162656c" alt="" data-canonical-src="https://img.shields.io/travis/visionmedia/superagent?label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Bugs</td>
+<td align="center"><a href="https://github.com/sindresorhus/got/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3Abug"><img src="https://camo.githubusercontent.com/e4dae1769b95d12e2271f08a79600d9bb3492d550a4f705a9de2701d293e0ea8/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f73696e647265736f726875732f676f742f6275673f636f6c6f723d6461726b726564266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/sindresorhus/got/bug?color=darkred&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/bitinn/node-fetch/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3Abug"><img src="https://camo.githubusercontent.com/2a3d12e57d2bbb8fb595c77e7dbbe1ffacbe23489de795f3aeb8f5849c40c41e/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f626974696e6e2f6e6f64652d66657463682f6275673f636f6c6f723d6461726b726564266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/bitinn/node-fetch/bug?color=darkred&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/sindresorhus/ky/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3Abug"><img src="https://camo.githubusercontent.com/495c7ef549f39cc144b3c87ba0256ef6a7d25ab117ad21b7151e28ec084f4b5d/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f73696e647265736f726875732f6b792f6275673f636f6c6f723d6461726b726564266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/sindresorhus/ky/bug?color=darkred&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/axios/axios/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3A%22bug-fix%22"><img src="https://camo.githubusercontent.com/7e604234a43188c0229a0fa2f3914e0bf14fe01f79e0a886117dcff438091703/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f6178696f732f6178696f732f6275672d6669783f636f6c6f723d6461726b726564266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/axios/axios/bug-fix?color=darkred&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/visionmedia/superagent/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3ABug"><img src="https://camo.githubusercontent.com/55166cbeb1e8235b401f74918c40991aa90ef352011057ada6e1e0b2bd619dd7/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732d7261772f766973696f6e6d656469612f73757065726167656e742f4275673f636f6c6f723d6461726b726564266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/issues-raw/visionmedia/superagent/Bug?color=darkred&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Dependents</td>
+<td align="center"><a href="https://www.npmjs.com/package/got?activeTab=dependents" rel="nofollow"><img src="https://camo.githubusercontent.com/eeb67cf2a70f5237a7771f20c9702db4aba1bf6b78ff3aae16aee2a11181c0ec/68747470733a2f2f62616467656e2e6e65742f6e706d2f646570656e64656e74732f676f743f636f6c6f723d6f72616e6765266c6162656c" alt="" data-canonical-src="https://badgen.net/npm/dependents/got?color=orange&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/node-fetch?activeTab=dependents" rel="nofollow"><img src="https://camo.githubusercontent.com/56fc3a0b0920e51fbe817559b95f24f41f369b513cb593047ec8d4db284b7e6d/68747470733a2f2f62616467656e2e6e65742f6e706d2f646570656e64656e74732f6e6f64652d66657463683f636f6c6f723d6f72616e6765266c6162656c" alt="" data-canonical-src="https://badgen.net/npm/dependents/node-fetch?color=orange&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/ky?activeTab=dependents" rel="nofollow"><img src="https://camo.githubusercontent.com/eed356badb359f05bea36bb9614118f76c8d73b12a0f230569d0da4e87e89f51/68747470733a2f2f62616467656e2e6e65742f6e706d2f646570656e64656e74732f6b793f636f6c6f723d6f72616e6765266c6162656c" alt="" data-canonical-src="https://badgen.net/npm/dependents/ky?color=orange&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/axios?activeTab=dependents" rel="nofollow"><img src="https://camo.githubusercontent.com/5a587d4251b61922e0cbc77a82434fa4ccb038b2b1bbb792ca88d712d025878f/68747470733a2f2f62616467656e2e6e65742f6e706d2f646570656e64656e74732f6178696f733f636f6c6f723d6f72616e6765266c6162656c" alt="" data-canonical-src="https://badgen.net/npm/dependents/axios?color=orange&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://www.npmjs.com/package/visionmedia?activeTab=dependents" rel="nofollow"><img src="https://camo.githubusercontent.com/46dc48c33c0e208bb7ddf76bb079866a8e5029c1e902299780b6fd11a8e0b8ac/68747470733a2f2f62616467656e2e6e65742f6e706d2f646570656e64656e74732f73757065726167656e743f636f6c6f723d6f72616e6765266c6162656c" alt="" data-canonical-src="https://badgen.net/npm/dependents/superagent?color=orange&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Install size</td>
+<td align="center"><a href="https://packagephobia.com/result?p=got" rel="nofollow"><img src="https://camo.githubusercontent.com/58a14825cc0941aee0f10c9e03d22736239362e705bd47b5128db35d86a854c7/68747470733a2f2f7061636b61676570686f6269612e636f6d2f62616467653f703d676f74" alt="" data-canonical-src="https://packagephobia.com/badge?p=got" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://packagephobia.com/result?p=node-fetch" rel="nofollow"><img src="https://camo.githubusercontent.com/8afc7893afe80b7af8ba72f1ec396dfe31d4e25f52076ce31aad1bfae5ef3e86/68747470733a2f2f7061636b61676570686f6269612e636f6d2f62616467653f703d6e6f64652d6665746368" alt="" data-canonical-src="https://packagephobia.com/badge?p=node-fetch" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://packagephobia.com/result?p=ky" rel="nofollow"><img src="https://camo.githubusercontent.com/8988eac12b02328a1f4d0ef2481ebf8aea68bb691c4dfee7b5fc236ad4b33132/68747470733a2f2f7061636b61676570686f6269612e636f6d2f62616467653f703d6b79" alt="" data-canonical-src="https://packagephobia.com/badge?p=ky" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://packagephobia.com/result?p=axios" rel="nofollow"><img src="https://camo.githubusercontent.com/14437a1c82e4c67810749e6aafc192024b0d8122b5e0731fc1d9dea87640b59e/68747470733a2f2f7061636b61676570686f6269612e636f6d2f62616467653f703d6178696f73" alt="" data-canonical-src="https://packagephobia.com/badge?p=axios" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://packagephobia.com/result?p=superagent" rel="nofollow"><img src="https://camo.githubusercontent.com/e28ab21c13084f07db07581d7affd7c3b75e7dc86dfa9c970e2d7aa914b8bb34/68747470733a2f2f7061636b61676570686f6269612e636f6d2f62616467653f703d73757065726167656e74" alt="" data-canonical-src="https://packagephobia.com/badge?p=superagent" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>GitHub stars</td>
+<td align="center"><a href="https://github.com/sindresorhus/got"><img src="https://camo.githubusercontent.com/e56622cffe94371be63f70f3d6305329b11b46752f81f4fb1a43f63e93d6f439/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f73746172732f73696e647265736f726875732f676f743f636f6c6f723d7768697465266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/stars/sindresorhus/got?color=white&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/node-fetch/node-fetch"><img src="https://camo.githubusercontent.com/a17e1ff4b71460420703eb58f28e2dd58fa66c44c96a4e89f6c6738d71fb0209/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f73746172732f626974696e6e2f6e6f64652d66657463683f636f6c6f723d7768697465266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/stars/bitinn/node-fetch?color=white&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/sindresorhus/ky"><img src="https://camo.githubusercontent.com/d22f707a573f9c310bdf749d6d88ccc1ffabc3cb47cf88c31b549681bb6b60f5/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f73746172732f73696e647265736f726875732f6b793f636f6c6f723d7768697465266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/stars/sindresorhus/ky?color=white&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/axios/axios"><img src="https://camo.githubusercontent.com/f25d0d5791c7f3dbe59474765b9614fe2da99c2375f825d1d85246d0022bd683/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f73746172732f6178696f732f6178696f733f636f6c6f723d7768697465266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/stars/axios/axios?color=white&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/visionmedia/superagent"><img src="https://camo.githubusercontent.com/6bc5fd3a8c330a4eb5c67f508ebbeff8c1ecb82a56be2776322af71af0886e6c/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f73746172732f766973696f6e6d656469612f73757065726167656e743f636f6c6f723d7768697465266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/stars/visionmedia/superagent?color=white&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>TypeScript support</td>
+<td align="center"><a href="https://github.com/sindresorhus/got"><img src="https://camo.githubusercontent.com/a408eb9f0a71000ab636d2f423d0cba699647b8f6b53b449ef581bbeca2d8c83/68747470733a2f2f62616467656e2e6e65742f6e706d2f74797065732f676f743f6c6162656c" alt="" data-canonical-src="https://badgen.net/npm/types/got?label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/node-fetch/node-fetch"><img src="https://camo.githubusercontent.com/a9891d9141423bfe0512713a8ae7c5f9ea8f99c16bf575d2e4d9d43bd665d4e5/68747470733a2f2f62616467656e2e6e65742f6e706d2f74797065732f6e6f64652d66657463683f6c6162656c" alt="" data-canonical-src="https://badgen.net/npm/types/node-fetch?label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/sindresorhus/ky"><img src="https://camo.githubusercontent.com/2e692b25767a8f5f8617abdaddb6a9d8ae5d26e383639597df2377094efa1428/68747470733a2f2f62616467656e2e6e65742f6e706d2f74797065732f6b793f6c6162656c" alt="" data-canonical-src="https://badgen.net/npm/types/ky?label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/axios/axios"><img src="https://camo.githubusercontent.com/9ae928e3e78c2816e82329b793b7076ae7898e4941273ee02be1ad9970261b9d/68747470733a2f2f62616467656e2e6e65742f6e706d2f74797065732f6178696f733f6c6162656c" alt="" data-canonical-src="https://badgen.net/npm/types/axios?label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/visionmedia/superagent/commits"><img src="https://camo.githubusercontent.com/23f0f52636ece7c490adfa79ac4f5170954784eeddfb95449f02acae6bbc5ef4/68747470733a2f2f62616467656e2e6e65742f6e706d2f74797065732f73757065726167656e743f6c6162656c" alt="" data-canonical-src="https://badgen.net/npm/types/superagent?label" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td>Last commit</td>
+<td align="center"><a href="https://github.com/sindresorhus/got/commits"><img src="https://camo.githubusercontent.com/77b1cd6cb804c400804ca9b435dbc43ac425959fd7103d23643ee6ea7e58cd1e/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6173742d636f6d6d69742f73696e647265736f726875732f676f743f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/last-commit/sindresorhus/got?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/node-fetch/node-fetch/commits"><img src="https://camo.githubusercontent.com/40391a42cf8beb91d7d7b82a5c3b97fa8f660fbc8747423573c79d2794fd0eba/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6173742d636f6d6d69742f626974696e6e2f6e6f64652d66657463683f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/last-commit/bitinn/node-fetch?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/sindresorhus/ky/commits"><img src="https://camo.githubusercontent.com/0a20f5d047b8b35b64ecb73704462eca998f8ab1fa9867ae3319710ca30d420e/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6173742d636f6d6d69742f73696e647265736f726875732f6b793f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/last-commit/sindresorhus/ky?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/axios/axios/commits"><img src="https://camo.githubusercontent.com/34db78649fa3f6f57c4224b15221390491eb60cb6e2c50438cdf75849877db70/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6173742d636f6d6d69742f6178696f732f6178696f733f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/last-commit/axios/axios?color=gray&amp;label" style="max-width: 100%;"></a></td>
+<td align="center"><a href="https://github.com/visionmedia/superagent/commits"><img src="https://camo.githubusercontent.com/ab78d71c95a053068d7db929474bc50ed6388509fdeff4f64deb882ec86cb4a2/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6173742d636f6d6d69742f766973696f6e6d656469612f73757065726167656e743f636f6c6f723d67726179266c6162656c" alt="" data-canonical-src="https://img.shields.io/github/last-commit/visionmedia/superagent?color=gray&amp;label" style="max-width: 100%;"></a></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>* It's almost API compatible with the browser <code class="notranslate">fetch</code> API.<br>
+** Need to switch the protocol manually. Doesn't accept PUSH streams and doesn't reuse HTTP/2 sessions.<br>
+❇️ Almost-stable feature, but the API may change. Don't hesitate to try it out!<br>
+❔ Feature in early stage of development. Very experimental.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+<p><a href="https://packagephobia.com/result?p=@sindresorhus/is@8.0.0,byte-counter@0.1.0,cacheable-request@13.0.18,chunk-data@0.1.0,decompress-response@10.0.0,keyv@5.6.0,lowercase-keys@4.0.1,responselike@4.0.2,type-fest@5.6.0,uint8array-extras@1.5.0" rel="nofollow">Click here</a> to see the install size of the Got dependencies.</p>
+<h2>Maintainers</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th><a href="https://sindresorhus.com" rel="nofollow"><img src="https://github.com/sindresorhus.png?size=100" alt="Sindre Sorhus" style="max-width: 100%;"></a></th>
+<th><a href="https://github.com/szmarczak"><img src="https://github.com/szmarczak.png?size=100" alt="Szymon Marczak" style="max-width: 100%;"></a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://sindresorhus.com" rel="nofollow">Sindre Sorhus</a></td>
+<td><a href="https://github.com/szmarczak">Szymon Marczak</a></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p><a name="user-content-widely-used"></a></p>
+<h2>These amazing companies are using Got</h2>
+<markdown-accessiblity-table><table role="table">
+<tbody>
+	<tr>
+		<td align="center">
+			<a href="https://segment.com" rel="nofollow">
+				<img width="90" valign="middle" src="https://user-images.githubusercontent.com/697676/47693700-ddb62500-dbb7-11e8-8332-716a91010c2d.png" style="max-width: 100%;">
+			</a>
+		</td>
+		<td align="center">
+			<a href="https://antora.org" rel="nofollow">
+				<img width="100" valign="middle" src="https://user-images.githubusercontent.com/79351/47706840-d874cc80-dbef-11e8-87c6-5f0c60cbf5dc.png" style="max-width: 100%;">
+			</a>
+		</td>
+		<td align="center">
+			<a href="https://getvoip.com" rel="nofollow">
+				<img width="150" valign="middle" src="https://user-images.githubusercontent.com/10832620/47869404-429e9480-dddd-11e8-8a7a-ca43d7f06020.png" style="max-width: 100%;">
+			</a>
+		</td>
+		<td align="center">
+			<a href="https://github.com/exoframejs/exoframe">
+				<img width="150" valign="middle" src="https://user-images.githubusercontent.com/365944/47791460-11a95b80-dd1a-11e8-9070-e8f2a215e03a.png" style="max-width: 100%;">
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<a href="http://karaokes.moe" rel="nofollow">
+				<img width="140" valign="middle" src="https://camo.githubusercontent.com/5c6e13f92213f667eae770572e9faed84f3a8af14900f2884c7acde9220cc7f0/68747470733a2f2f6b6172616f6b65732e6d6f652f6173736574732f696d616765732f696e6465782e706e67" data-canonical-src="https://karaokes.moe/assets/images/index.png" style="max-width: 100%;">
+			</a>
+		</td>
+		<td align="center">
+			<a href="https://github.com/renovatebot/renovate">
+				<img width="150" valign="middle" src="https://avatars.githubusercontent.com/u/38656520?s=200&amp;v=4" style="max-width: 100%;">
+			</a>
+		</td>
+		<td align="center">
+			<a href="https://resist.bot" rel="nofollow">
+				<img width="150" valign="middle" src="https://user-images.githubusercontent.com/3322287/51992724-28736180-2473-11e9-9764-599cfda4b012.png" style="max-width: 100%;">
+			</a>
+		</td>
+		<td align="center">
+			<a href="https://www.naturalcycles.com" rel="nofollow">
+				<img width="150" valign="middle" src="https://user-images.githubusercontent.com/170270/92244143-d0a8a200-eec2-11ea-9fc0-1c07f90b2113.png" style="max-width: 100%;">
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<a href="https://microlink.io" rel="nofollow">
+				<img width="150" valign="middle" src="https://user-images.githubusercontent.com/36894700/91992974-1cc5dc00-ed35-11ea-9d04-f58b42ce6a5e.png" style="max-width: 100%;">
+			</a>
+		</td>
+		<td align="center">
+			<a href="https://radity.com" rel="nofollow">
+				<img width="150" valign="middle" src="https://user-images.githubusercontent.com/29518613/91814036-97fb9500-ec44-11ea-8c6c-d198cc23ca29.png" style="max-width: 100%;">
+			</a>
+		</td>
+	</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+
+
+<br>
+<blockquote>
+<p>Segment is a happy user of Got! Got powers the main backend API that our app talks to. It's used by our in-house RPC client that we use to communicate with all microservices.</p>
+<p>— <a href="https://github.com/vadimdemedes">Vadim Demedes</a></p>
+</blockquote>
+<blockquote>
+<p>Antora, a static site generator for creating documentation sites, uses Got to download the UI bundle. In Antora, the UI bundle (aka theme) is maintained as a separate project. That project exports the UI as a zip file we call the UI bundle. The main site generator downloads that UI from a URL using Got and streams it to vinyl-zip to extract the files. Those files go on to be used to create the HTML pages and supporting assets.</p>
+<p>— <a href="https://github.com/mojavelinux">Dan Allen</a></p>
+</blockquote>
+<blockquote>
+<p>GetVoIP is happily using Got in production. One of the unique capabilities of Got is the ability to handle Unix sockets which enables us to build a full control interfaces for our docker stack.</p>
+<p>— <a href="https://github.com/danielkalen">Daniel Kalen</a></p>
+</blockquote>
+<blockquote>
+<p>We're using Got inside of Exoframe to handle all the communication between CLI and server. Exoframe is a self-hosted tool that allows simple one-command deployments using Docker.</p>
+<p>— <a href="https://github.com/yamalight">Tim Ermilov</a></p>
+</blockquote>
+<blockquote>
+<p>Karaoke Mugen uses Got to fetch content updates from its online server.</p>
+<p>— <a href="https://github.com/AxelTerizaki">Axel Terizaki</a></p>
+</blockquote>
+<blockquote>
+<p>Renovate uses Got, gh-got and gl-got to send millions of queries per day to GitHub, GitLab, npmjs, PyPi, Packagist, Docker Hub, Terraform, CircleCI, and more.</p>
+<p>— <a href="https://github.com/rarkins">Rhys Arkins</a></p>
+</blockquote>
+<blockquote>
+<p>Resistbot uses Got to communicate from the API frontend where all correspondence ingresses to the officials lookup database in back.</p>
+<p>— <a href="https://github.com/chris-erickson">Chris Erickson</a></p>
+</blockquote>
+<blockquote>
+<p>Natural Cycles is using Got to communicate with all kinds of 3rd-party REST APIs (over 9000!).</p>
+<p>— <a href="https://github.com/kirillgroshkov">Kirill Groshkov</a></p>
+</blockquote>
+<blockquote>
+<p>Microlink is a cloud browser as an API service that uses Got widely as the main HTTP client, serving ~22M requests a month, every time a network call needs to be performed.</p>
+<p>— <a href="https://github.com/Kikobeats">Kiko Beats</a></p>
+</blockquote>
+<blockquote>
+<p>We’re using Got at Radity. Thanks for such an amazing work!</p>
+<p>— <a href="https://github.com/MirzayevFarid">Mirzayev Farid</a></p>
+</blockquote>

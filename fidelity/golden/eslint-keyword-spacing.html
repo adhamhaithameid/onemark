@@ -1,0 +1,251 @@
+<hr>
+<h2>title: keyword-spacing<br>
+rule_type: layout</h2>
+<p>Keywords are syntax elements of JavaScript, such as <code class="notranslate">try</code> and <code class="notranslate">if</code>.<br>
+These keywords have special meaning to the language and so often appear in a different color in code editors.<br>
+As an important part of the language, style guides often refer to the spacing that should be used around keywords.<br>
+For example, you might have a style guide that says keywords should be always surrounded by spaces, which would mean <code class="notranslate">if-else</code> statements must look like this:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// ...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// ...</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Of course, you could also have a style guide that disallows spaces around keywords.</p>
+<p>However, if you want to enforce the style of spacing between the <code class="notranslate">function</code> keyword and the following opening parenthesis, please refer to <a href="space-before-function-paren">space-before-function-paren</a>.</p>
+<h2>Rule Details</h2>
+<p>This rule enforces consistent spacing around keywords and keyword-like tokens: <code class="notranslate">as</code> (in module declarations), <code class="notranslate">async</code> (of async functions), <code class="notranslate">await</code> (of await expressions), <code class="notranslate">break</code>, <code class="notranslate">case</code>, <code class="notranslate">catch</code>, <code class="notranslate">class</code>, <code class="notranslate">const</code>, <code class="notranslate">continue</code>, <code class="notranslate">debugger</code>, <code class="notranslate">default</code>, <code class="notranslate">delete</code>, <code class="notranslate">do</code>, <code class="notranslate">else</code>, <code class="notranslate">export</code>, <code class="notranslate">extends</code>, <code class="notranslate">finally</code>, <code class="notranslate">for</code>, <code class="notranslate">from</code> (in module declarations), <code class="notranslate">function</code>, <code class="notranslate">get</code> (of getters), <code class="notranslate">if</code>, <code class="notranslate">import</code>, <code class="notranslate">in</code> (in for-in statements), <code class="notranslate">let</code>, <code class="notranslate">new</code>, <code class="notranslate">of</code> (in for-of statements), <code class="notranslate">return</code>, <code class="notranslate">set</code> (of setters), <code class="notranslate">static</code>, <code class="notranslate">super</code>, <code class="notranslate">switch</code>, <code class="notranslate">this</code>, <code class="notranslate">throw</code>, <code class="notranslate">try</code>, <code class="notranslate">typeof</code>, <code class="notranslate">var</code>, <code class="notranslate">void</code>, <code class="notranslate">while</code>, <code class="notranslate">with</code>, and <code class="notranslate">yield</code>. This rule is designed carefully not to conflict with other spacing rules: it does not apply to spacing where other rules report problems.</p>
+<h2>Options</h2>
+<p>This rule has an object option:</p>
+<ul>
+<li><code class="notranslate">"before": true</code> (default) requires at least one space before keywords</li>
+<li><code class="notranslate">"before": false</code> disallows spaces before keywords</li>
+<li><code class="notranslate">"after": true</code> (default) requires at least one space after keywords</li>
+<li><code class="notranslate">"after": false</code> disallows spaces after keywords</li>
+<li><code class="notranslate">"overrides"</code> allows overriding spacing style for specified keywords</li>
+</ul>
+<h3>before</h3>
+<p>Examples of <strong>incorrect</strong> code for this rule with the default <code class="notranslate">{ "before": true }</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "before": true }]*/</span>
+
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span><span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span><span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the default <code class="notranslate">{ "before": true }</code> option:</p>
+<p>::: correct { "parserOptions": { "ecmaFeatures": { "jsx": true } } }</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "before": true }]*/</span>
+
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `array-bracket-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">a</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-smi">this</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+<span class="pl-k">let</span> <span class="pl-s1">b</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `arrow-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-en">c</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-c1">=&gt;</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `block-spacing`</span>
+<span class="pl-kos">{</span><span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `comma-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">d</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-c1">100</span><span class="pl-kos">,</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">,</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">bar</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `computed-property-spacing`</span>
+<span class="pl-s1">obj</span><span class="pl-kos">[</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `generator-star-spacing`</span>
+<span class="pl-k">function</span> <span class="pl-c1">*</span><span class="pl-s1">bar</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `key-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">obj1</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+    <span class="pl-en">foo</span>:<span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `object-curly-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">obj2</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span><span class="pl-c1">foo</span>: <span class="pl-smi">this</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `semi-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">e</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">;</span><span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `space-in-parens`</span>
+<span class="pl-kos">(</span><span class="pl-k">function</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `space-infix-ops`</span>
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s">"foo"</span><span class="pl-k">in</span> <span class="pl-kos">{</span><span class="pl-c1">foo</span>: <span class="pl-c1">0</span><span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">10</span><span class="pl-c1">+</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-c1">&lt;=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `jsx-curly-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">f</span> <span class="pl-c1">=</span> <span class="pl-c1">&lt;</span><span class="pl-v">A</span> <span class="pl-c1">foo</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">}</span> <span class="pl-c1">bar</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>incorrect</strong> code for this rule with the <code class="notranslate">{ "before": false }</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "before": false }]*/</span>
+
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the <code class="notranslate">{ "before": false }</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "before": false }]*/</span>
+
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span><span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span><span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span></pre></div>
+<p>:::</p>
+<h3>after</h3>
+<p>Examples of <strong>incorrect</strong> code for this rule with the default <code class="notranslate">{ "after": true }</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "after": true }]*/</span>
+
+<span class="pl-k">if</span><span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span><span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the default <code class="notranslate">{ "after": true }</code> option:</p>
+<p>::: correct { "parserOptions": { "ecmaFeatures": { "jsx": true } } }</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "after": true }]*/</span>
+
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `array-bracket-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">a</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-smi">this</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `arrow-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-en">b</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-c1">=&gt;</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `comma-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">c</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-c1">100</span><span class="pl-kos">,</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">,</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">bar</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `computed-property-spacing`</span>
+<span class="pl-s1">obj</span><span class="pl-kos">[</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `generator-star-spacing`</span>
+<span class="pl-k">function</span><span class="pl-c1">*</span> <span class="pl-s1">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `key-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">obj1</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+    <span class="pl-en">foo</span>:<span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `func-call-spacing`</span>
+<span class="pl-k">class</span> <span class="pl-v">A</span> <span class="pl-k">extends</span> <span class="pl-v">B</span> <span class="pl-kos">{</span>
+    <span class="pl-en">constructor</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-smi">super</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `object-curly-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">obj2</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span><span class="pl-c1">foo</span>: <span class="pl-smi">this</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `semi-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">d</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">;</span><span class="pl-k">function</span> <span class="pl-en">bar</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `space-before-function-paren`</span>
+<span class="pl-kos">(</span><span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Avoid conflict with `space-infix-ops`</span>
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s">"foo"</span><span class="pl-k">in</span><span class="pl-kos">{</span><span class="pl-c1">foo</span>: <span class="pl-c1">0</span><span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">10</span><span class="pl-c1">+</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-c1">&lt;=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `space-unary-ops`</span>
+<span class="pl-k">function</span><span class="pl-c1">*</span> <span class="pl-s1">baz</span><span class="pl-kos">(</span><span class="pl-s1">a</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-k">yield</span><span class="pl-c1">+</span><span class="pl-s1">a</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `yield-star-spacing`</span>
+<span class="pl-k">function</span><span class="pl-c1">*</span> <span class="pl-s1">qux</span><span class="pl-kos">(</span><span class="pl-s1">a</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-k">yield</span><span class="pl-c1">*</span> <span class="pl-s1">a</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-c">// Avoid conflict with `jsx-curly-spacing`</span>
+<span class="pl-k">let</span> <span class="pl-s1">e</span> <span class="pl-c1">=</span> <span class="pl-c1">&lt;</span><span class="pl-v">A</span> <span class="pl-c1">foo</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">foo</span><span class="pl-kos">}</span> <span class="pl-c1">bar</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>incorrect</strong> code for this rule with the <code class="notranslate">{ "after": false }</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "after": false }]*/</span>
+
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the <code class="notranslate">{ "after": false }</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "after": false }]*/</span>
+
+<span class="pl-k">if</span><span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span><span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span></pre></div>
+<p>:::</p>
+<h3>overrides</h3>
+<p>Examples of <strong>correct</strong> code for this rule with the <code class="notranslate">{ "overrides": { "if": { "after": false }, "for": { "after": false }, "while": { "after": false }, "static": { "after": false }, "as": { "after": false } } }</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/*eslint keyword-spacing: ["error", { "overrides": {</span>
+<span class="pl-c">  "if": { "after": false },</span>
+<span class="pl-c">  "for": { "after": false },</span>
+<span class="pl-c">  "while": { "after": false },</span>
+<span class="pl-c">  "static": { "after": false },</span>
+<span class="pl-c">  "as": { "after": false }</span>
+<span class="pl-c">}<span class="pl-smi"> </span>}]*/</span>
+
+<span class="pl-k">if</span><span class="pl-kos">(</span><span class="pl-s1">foo</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">for</span><span class="pl-kos">(</span><span class="pl-kos">;</span><span class="pl-kos">;</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-k">while</span><span class="pl-kos">(</span><span class="pl-c1">true</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">//...</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">class</span> <span class="pl-v">C</span> <span class="pl-kos">{</span>
+    <span class="pl-k">static</span><span class="pl-kos">{</span>
+        <span class="pl-c">//...</span>
+    <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">export</span> <span class="pl-kos">{</span> <span class="pl-v">C</span> <span class="pl-k">as</span><span class="pl-s">"my class"</span> <span class="pl-kos">}</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<h2>When Not To Use It</h2>
+<p>If you don't want to enforce consistency on keyword spacing, then it's safe to disable this rule.</p>

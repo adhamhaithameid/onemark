@@ -1,0 +1,573 @@
+<hr>
+<h2>title: Thinking in React</h2>
+
+<p>React can change how you think about the designs you look at and the apps you build. When you build a user interface with React, you will first break it apart into pieces called <em>components</em>. Then, you will describe the different visual states for each of your components. Finally, you will connect your components together so that the data flows through them. In this tutorial, we’ll guide you through the thought process of building a searchable product data table with React.</p>
+
+<h2>Start with the mockup {/<em>start-with-the-mockup</em>/}</h2>
+<p>Imagine that you already have a JSON API and a mockup from a designer.</p>
+<p>The JSON API returns some data that looks like this:</p>
+<div class="highlight highlight-source-json"><pre class="notranslate">[
+  { <span class="pl-ii">category: "Fruits", price: "$1", stocked: true, name: "Apple" </span>},
+  { <span class="pl-ii">category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" </span>},
+  { <span class="pl-ii">category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" </span>},
+  { <span class="pl-ii">category: "Vegetables", price: "$2", stocked: true, name: "Spinach" </span>},
+  { <span class="pl-ii">category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" </span>},
+  { <span class="pl-ii">category: "Vegetables", price: "$1", stocked: true, name: "Peas" </span>}
+]</pre></div>
+<p>The mockup looks like this:</p>
+<p>&lt;img src="/images/docs/s_thinking-in-react_ui.png" width="300" style={{margin: '0 auto'}} /&gt;</p>
+<p>To implement a UI in React, you will usually follow the same five steps.</p>
+<h2>Step 1: Break the UI into a component hierarchy {/<em>step-1-break-the-ui-into-a-component-hierarchy</em>/}</h2>
+<p>Start by drawing boxes around every component and subcomponent in the mockup and naming them. If you work with a designer, they may have already named these components in their design tool. Ask them!</p>
+<p>Depending on your background, you can think about splitting up a design into components in different ways:</p>
+<ul>
+<li><strong>Programming</strong>--use the same techniques for deciding if you should create a new function or object. One such technique is the <a href="https://en.wikipedia.org/wiki/Separation_of_concerns" rel="nofollow">separation of concerns</a>, that is, a component should ideally only be concerned with one thing. If it ends up growing, it should be decomposed into smaller subcomponents.</li>
+<li><strong>CSS</strong>--consider what you would make class selectors for. (However, components are a bit less granular.)</li>
+<li><strong>Design</strong>--consider how you would organize the design's layers.</li>
+</ul>
+<p>If your JSON is well-structured, you'll often find that it naturally maps to the component structure of your UI. That's because UI and data models often have the same information architecture--that is, the same shape. Separate your UI into components, where each component matches one piece of your data model.</p>
+<p>There are five components on this screen:</p>
+
+
+<p>&lt;img src="/images/docs/s_thinking-in-react_ui_outline.png" width="500" style={{margin: '0 auto'}} /&gt;</p>
+<ol>
+<li><code class="notranslate">FilterableProductTable</code> (grey) contains the entire app.</li>
+<li><code class="notranslate">SearchBar</code> (blue) receives the user input.</li>
+<li><code class="notranslate">ProductTable</code> (lavender) displays and filters the list according to the user input.</li>
+<li><code class="notranslate">ProductCategoryRow</code> (green) displays a heading for each category.</li>
+<li><code class="notranslate">ProductRow</code>	(yellow) displays a row for each product.</li>
+</ol>
+
+
+<p>If you look at <code class="notranslate">ProductTable</code> (lavender), you'll see that the table header (containing the "Name" and "Price" labels) isn't its own component. This is a matter of preference, and you could go either way. For this example, it is a part of <code class="notranslate">ProductTable</code> because it appears inside the <code class="notranslate">ProductTable</code>'s list. However, if this header grows to be complex (e.g., if you add sorting), you can move it into its own <code class="notranslate">ProductTableHeader</code> component.</p>
+<p>Now that you've identified the components in the mockup, arrange them into a hierarchy. Components that appear within another component in the mockup should appear as a child in the hierarchy:</p>
+<ul>
+<li><code class="notranslate">FilterableProductTable</code>
+<ul>
+<li><code class="notranslate">SearchBar</code></li>
+<li><code class="notranslate">ProductTable</code>
+<ul>
+<li><code class="notranslate">ProductCategoryRow</code></li>
+<li><code class="notranslate">ProductRow</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Step 2: Build a static version in React {/<em>step-2-build-a-static-version-in-react</em>/}</h2>
+<p>Now that you have your component hierarchy, it's time to implement your app. The most straightforward approach is to build a version that renders the UI from your data model without adding any interactivity... yet! It's often easier to build the static version first and add interactivity later. Building a static version requires a lot of typing and no thinking, but adding interactivity requires a lot of thinking and not a lot of typing.</p>
+<p>To build a static version of your app that renders your data model, you'll want to build <a href="/learn/your-first-component">components</a> that reuse other components and pass data using <a href="/learn/passing-props-to-a-component">props.</a> Props are a way of passing data from parent to child. (If you're familiar with the concept of <a href="/learn/state-a-components-memory">state</a>, don't use state at all to build this static version. State is reserved only for interactivity, that is, data that changes over time. Since this is a static version of the app, you don't need it.)</p>
+<p>You can either build "top down" by starting with building the components higher up in the hierarchy (like <code class="notranslate">FilterableProductTable</code>) or "bottom up" by working from components lower down (like <code class="notranslate">ProductRow</code>). In simpler examples, it’s usually easier to go top-down, and on larger projects, it’s easier to go bottom-up.</p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">function</span> <span class="pl-v">ProductCategoryRow</span><span class="pl-kos">(</span><span class="pl-kos">{</span> category <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">th</span> <span class="pl-c1">colSpan</span><span class="pl-c1">=</span><span class="pl-s">"2"</span><span class="pl-c1">&gt;</span>
+        <span class="pl-kos">{</span><span class="pl-s1">category</span><span class="pl-kos">}</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductRow</span><span class="pl-kos">(</span><span class="pl-kos">{</span> product <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">name</span> <span class="pl-c1">=</span> <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">stocked</span> ? <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span> :
+    <span class="pl-c1">&lt;</span><span class="pl-s1">span</span> <span class="pl-c1">style</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">{</span> <span class="pl-c1">color</span>: <span class="pl-s">'red'</span> <span class="pl-kos">}</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span>
+      <span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">span</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">price</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">rows</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+  <span class="pl-k">let</span> <span class="pl-s1">lastCategory</span> <span class="pl-c1">=</span> <span class="pl-c1">null</span><span class="pl-kos">;</span>
+
+  <span class="pl-s1">products</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">product</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span> <span class="pl-c1">!==</span> <span class="pl-s1">lastCategory</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">rows</span><span class="pl-kos">.</span><span class="pl-en">push</span><span class="pl-kos">(</span>
+        <span class="pl-c1">&lt;</span><span class="pl-v">ProductCategoryRow</span>
+          <span class="pl-c1">category</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">}</span>
+          <span class="pl-c1">key</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-s1">rows</span><span class="pl-kos">.</span><span class="pl-en">push</span><span class="pl-kos">(</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">ProductRow</span>
+        <span class="pl-c1">product</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">}</span>
+        <span class="pl-c1">key</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">lastCategory</span> <span class="pl-c1">=</span> <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">table</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">thead</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+          <span class="pl-c1">&lt;</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>Name<span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+          <span class="pl-c1">&lt;</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>Price<span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+        <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">thead</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">tbody</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">rows</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">tbody</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">table</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">SearchBar</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"text"</span> <span class="pl-c1">placeholder</span><span class="pl-c1">=</span><span class="pl-s">"Search..."</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"checkbox"</span> <span class="pl-kos">/&gt;</span>
+        <span class="pl-kos">{</span><span class="pl-s">' '</span><span class="pl-kos">}</span>
+        Only show products in stock
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">FilterableProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">SearchBar</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">ProductTable</span> <span class="pl-c1">products</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">products</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">const</span> <span class="pl-c1">PRODUCTS</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Apple"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Dragonfruit"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$2"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Passionfruit"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$2"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Spinach"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$4"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Pumpkin"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Peas"</span><span class="pl-kos">}</span>
+<span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-k">function</span> <span class="pl-v">App</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-v">FilterableProductTable</span> <span class="pl-c1">products</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-c1">PRODUCTS</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-ent">body</span> {
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>
+}
+<span class="pl-ent">label</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> block;
+  <span class="pl-c1">margin-top</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>;
+}
+<span class="pl-ent">th</span> {
+  <span class="pl-c1">padding-top</span><span class="pl-kos">:</span> <span class="pl-c1">10<span class="pl-smi">px</span></span>;
+}
+<span class="pl-ent">td</span> {
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">2<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">padding-right</span><span class="pl-kos">:</span> <span class="pl-c1">40<span class="pl-smi">px</span></span>;
+}</pre></div>
+
+<p>(If this code looks intimidating, go through the <a href="/learn/">Quick Start</a> first!)</p>
+<p>After building your components, you'll have a library of reusable components that render your data model. Because this is a static app, the components will only return JSX. The component at the top of the hierarchy (<code class="notranslate">FilterableProductTable</code>) will take your data model as a prop. This is called <em>one-way data flow</em> because the data flows down from the top-level component to the ones at the bottom of the tree.</p>
+
+<p>At this point, you should not be using any state values. That’s for the next step!</p>
+
+<h2>Step 3: Find the minimal but complete representation of UI state {/<em>step-3-find-the-minimal-but-complete-representation-of-ui-state</em>/}</h2>
+<p>To make the UI interactive, you need to let users change your underlying data model. You will use <em>state</em> for this.</p>
+<p>Think of state as the minimal set of changing data that your app needs to remember. The most important principle for structuring state is to keep it <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" rel="nofollow">DRY (Don't Repeat Yourself).</a> Figure out the absolute minimal representation of the state your application needs and compute everything else on-demand. For example, if you're building a shopping list, you can store the items as an array in state. If you want to also display the number of items in the list, don't store the number of items as another state value--instead, read the length of your array.</p>
+<p>Now think of all of the pieces of data in this example application:</p>
+<ol>
+<li>The original list of products</li>
+<li>The search text the user has entered</li>
+<li>The value of the checkbox</li>
+<li>The filtered list of products</li>
+</ol>
+<p>Which of these are state? Identify the ones that are not:</p>
+<ul>
+<li>Does it <strong>remain unchanged</strong> over time? If so, it isn't state.</li>
+<li>Is it <strong>passed in from a parent</strong> via props? If so, it isn't state.</li>
+<li><strong>Can you compute it</strong> based on existing state or props in your component? If so, it <em>definitely</em> isn't state!</li>
+</ul>
+<p>What's left is probably state.</p>
+<p>Let's go through them one by one again:</p>
+<ol>
+<li>The original list of products is <strong>passed in as props, so it's not state.</strong></li>
+<li>The search text seems to be state since it changes over time and can't be computed from anything.</li>
+<li>The value of the checkbox seems to be state since it changes over time and can't be computed from anything.</li>
+<li>The filtered list of products <strong>isn't state because it can be computed</strong> by taking the original list of products and filtering it according to the search text and value of the checkbox.</li>
+</ol>
+<p>This means only the search text and the value of the checkbox are state! Nicely done!</p>
+
+<h4>Props vs State {/<em>props-vs-state</em>/}</h4>
+<p>There are two types of "model" data in React: props and state. The two are very different:</p>
+<ul>
+<li><a href="/learn/passing-props-to-a-component"><strong>Props</strong> are like arguments you pass</a> to a function. They let a parent component pass data to a child component and customize its appearance. For example, a <code class="notranslate">Form</code> can pass a <code class="notranslate">color</code> prop to a <code class="notranslate">Button</code>.</li>
+<li><a href="/learn/state-a-components-memory"><strong>State</strong> is like a component’s memory.</a> It lets a component keep track of some information and change it in response to interactions. For example, a <code class="notranslate">Button</code> might keep track of <code class="notranslate">isHovered</code> state.</li>
+</ul>
+<p>Props and state are different, but they work together. A parent component will often keep some information in state (so that it can change it), and <em>pass it down</em> to child components as their props. It's okay if the difference still feels fuzzy on the first read. It takes a bit of practice for it to really stick!</p>
+
+<h2>Step 4: Identify where your state should live {/<em>step-4-identify-where-your-state-should-live</em>/}</h2>
+<p>After identifying your app’s minimal state data, you need to identify which component is responsible for changing this state, or <em>owns</em> the state. Remember: React uses one-way data flow, passing data down the component hierarchy from parent to child component. It may not be immediately clear which component should own what state. This can be challenging if you’re new to this concept, but you can figure it out by following these steps!</p>
+<p>For each piece of state in your application:</p>
+<ol>
+<li>Identify <em>every</em> component that renders something based on that state.</li>
+<li>Find their closest common parent component--a component above them all in the hierarchy.</li>
+<li>Decide where the state should live:
+<ol>
+<li>Often, you can put the state directly into their common parent.</li>
+<li>You can also put the state into some component above their common parent.</li>
+<li>If you can't find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common parent component.</li>
+</ol>
+</li>
+</ol>
+<p>In the previous step, you found two pieces of state in this application: the search input text, and the value of the checkbox. In this example, they always appear together, so it makes sense to put them into the same place.</p>
+<p>Now let's run through our strategy for them:</p>
+<ol>
+<li><strong>Identify components that use state:</strong>
+<ul>
+<li><code class="notranslate">ProductTable</code> needs to filter the product list based on that state (search text and checkbox value).</li>
+<li><code class="notranslate">SearchBar</code> needs to display that state (search text and checkbox value).</li>
+</ul>
+</li>
+<li><strong>Find their common parent:</strong> The first parent component both components share is <code class="notranslate">FilterableProductTable</code>.</li>
+<li><strong>Decide where the state lives</strong>: We'll keep the filter text and checked state values in <code class="notranslate">FilterableProductTable</code>.</li>
+</ol>
+<p>So the state values will live in <code class="notranslate">FilterableProductTable</code>.</p>
+<p>Add state to the component with the <a href="/reference/react/useState"><code class="notranslate">useState()</code> Hook.</a> Hooks are special functions that let you "hook into" React. Add two state variables at the top of <code class="notranslate">FilterableProductTable</code> and specify their initial state:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">function</span> <span class="pl-v">FilterableProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">filterText</span><span class="pl-kos">,</span> <span class="pl-s1">setFilterText</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">,</span> <span class="pl-s1">setInStockOnly</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-c1">false</span><span class="pl-kos">)</span><span class="pl-kos">;</span><span class="pl-kos"></span></pre></div>
+<p>Then, pass <code class="notranslate">filterText</code> and <code class="notranslate">inStockOnly</code> to <code class="notranslate">ProductTable</code> and <code class="notranslate">SearchBar</code> as props:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c1">&lt;</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+  <span class="pl-c1">&lt;</span><span class="pl-v">SearchBar</span>
+    <span class="pl-c1">filterText</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+    <span class="pl-c1">inStockOnly</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+  <span class="pl-c1">&lt;</span><span class="pl-v">ProductTable</span>
+    <span class="pl-c1">products</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">products</span><span class="pl-kos">}</span>
+    <span class="pl-c1">filterText</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+    <span class="pl-c1">inStockOnly</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span></pre></div>
+<p>You can start seeing how your application will behave. Edit the <code class="notranslate">filterText</code> initial value from <code class="notranslate">useState('')</code> to <code class="notranslate">useState('fruit')</code> in the sandbox code below. You'll see both the search input text and the table update:</p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">useState</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">function</span> <span class="pl-v">FilterableProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">filterText</span><span class="pl-kos">,</span> <span class="pl-s1">setFilterText</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">,</span> <span class="pl-s1">setInStockOnly</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-c1">false</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">SearchBar</span>
+        <span class="pl-c1">filterText</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">inStockOnly</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">ProductTable</span>
+        <span class="pl-c1">products</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">products</span><span class="pl-kos">}</span>
+        <span class="pl-c1">filterText</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">inStockOnly</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductCategoryRow</span><span class="pl-kos">(</span><span class="pl-kos">{</span> category <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">th</span> <span class="pl-c1">colSpan</span><span class="pl-c1">=</span><span class="pl-s">"2"</span><span class="pl-c1">&gt;</span>
+        <span class="pl-kos">{</span><span class="pl-s1">category</span><span class="pl-kos">}</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductRow</span><span class="pl-kos">(</span><span class="pl-kos">{</span> product <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">name</span> <span class="pl-c1">=</span> <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">stocked</span> ? <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span> :
+    <span class="pl-c1">&lt;</span><span class="pl-s1">span</span> <span class="pl-c1">style</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">{</span> <span class="pl-c1">color</span>: <span class="pl-s">'red'</span> <span class="pl-kos">}</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span>
+      <span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">span</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">price</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products<span class="pl-kos">,</span> filterText<span class="pl-kos">,</span> inStockOnly <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">rows</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+  <span class="pl-k">let</span> <span class="pl-s1">lastCategory</span> <span class="pl-c1">=</span> <span class="pl-c1">null</span><span class="pl-kos">;</span>
+
+  <span class="pl-s1">products</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">product</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span>
+      <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">.</span><span class="pl-en">toLowerCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">indexOf</span><span class="pl-kos">(</span>
+        <span class="pl-s1">filterText</span><span class="pl-kos">.</span><span class="pl-en">toLowerCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+      <span class="pl-kos">)</span> <span class="pl-c1">===</span> <span class="pl-c1">-</span><span class="pl-c1">1</span>
+    <span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-k">return</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">inStockOnly</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-c1">!</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">stocked</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-k">return</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span> <span class="pl-c1">!==</span> <span class="pl-s1">lastCategory</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">rows</span><span class="pl-kos">.</span><span class="pl-en">push</span><span class="pl-kos">(</span>
+        <span class="pl-c1">&lt;</span><span class="pl-v">ProductCategoryRow</span>
+          <span class="pl-c1">category</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">}</span>
+          <span class="pl-c1">key</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-s1">rows</span><span class="pl-kos">.</span><span class="pl-en">push</span><span class="pl-kos">(</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">ProductRow</span>
+        <span class="pl-c1">product</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">}</span>
+        <span class="pl-c1">key</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">lastCategory</span> <span class="pl-c1">=</span> <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">table</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">thead</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+          <span class="pl-c1">&lt;</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>Name<span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+          <span class="pl-c1">&lt;</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>Price<span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+        <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">thead</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">tbody</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">rows</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">tbody</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">table</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">SearchBar</span><span class="pl-kos">(</span><span class="pl-kos">{</span> filterText<span class="pl-kos">,</span> inStockOnly <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">input</span>
+        <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"text"</span>
+        <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">placeholder</span><span class="pl-c1">=</span><span class="pl-s">"Search..."</span><span class="pl-kos">/&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span>
+          <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"checkbox"</span>
+          <span class="pl-c1">checked</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+        <span class="pl-kos">{</span><span class="pl-s">' '</span><span class="pl-kos">}</span>
+        Only show products in stock
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">const</span> <span class="pl-c1">PRODUCTS</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Apple"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Dragonfruit"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$2"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Passionfruit"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$2"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Spinach"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$4"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Pumpkin"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Peas"</span><span class="pl-kos">}</span>
+<span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-k">function</span> <span class="pl-v">App</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-v">FilterableProductTable</span> <span class="pl-c1">products</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-c1">PRODUCTS</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-ent">body</span> {
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>
+}
+<span class="pl-ent">label</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> block;
+  <span class="pl-c1">margin-top</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>;
+}
+<span class="pl-ent">th</span> {
+  <span class="pl-c1">padding-top</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>;
+}
+<span class="pl-ent">td</span> {
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">2<span class="pl-smi">px</span></span>;
+}</pre></div>
+
+<p>Notice that editing the form doesn't work yet. There is a console error in the sandbox above explaining why:</p>
+
+<p>You provided a `value` prop to a form field without an `onChange` handler. This will render a read-only field.</p>
+
+<p>In the sandbox above, <code class="notranslate">ProductTable</code> and <code class="notranslate">SearchBar</code> read the <code class="notranslate">filterText</code> and <code class="notranslate">inStockOnly</code> props to render the table, the input, and the checkbox. For example, here is how <code class="notranslate">SearchBar</code> populates the input value:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">function</span> <span class="pl-v">SearchBar</span><span class="pl-kos">(</span><span class="pl-kos">{</span> filterText<span class="pl-kos">,</span> inStockOnly <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">input</span>
+        <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"text"</span>
+        <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">placeholder</span><span class="pl-c1">=</span><span class="pl-s">"Search..."</span><span class="pl-kos">/&gt;</span></pre></div>
+<p>However, you haven't added any code to respond to the user actions like typing yet. This will be your final step.</p>
+<h2>Step 5: Add inverse data flow {/<em>step-5-add-inverse-data-flow</em>/}</h2>
+<p>Currently your app renders correctly with props and state flowing down the hierarchy. But to change the state according to user input, you will need to support data flowing the other way: the form components deep in the hierarchy need to update the state in <code class="notranslate">FilterableProductTable</code>.</p>
+<p>React makes this data flow explicit, but it requires a little more typing than two-way data binding. If you try to type or check the box in the example above, you'll see that React ignores your input. This is intentional. By writing <code class="notranslate">&lt;input value={filterText} /&gt;</code>, you've set the <code class="notranslate">value</code> prop of the <code class="notranslate">input</code> to always be equal to the <code class="notranslate">filterText</code> state passed in from <code class="notranslate">FilterableProductTable</code>. Since <code class="notranslate">filterText</code> state is never set, the input never changes.</p>
+<p>You want to make it so whenever the user changes the form inputs, the state updates to reflect those changes. The state is owned by <code class="notranslate">FilterableProductTable</code>, so only it can call <code class="notranslate">setFilterText</code> and <code class="notranslate">setInStockOnly</code>. To let <code class="notranslate">SearchBar</code> update the <code class="notranslate">FilterableProductTable</code>'s state, you need to pass these functions down to <code class="notranslate">SearchBar</code>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">function</span> <span class="pl-v">FilterableProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">filterText</span><span class="pl-kos">,</span> <span class="pl-s1">setFilterText</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">,</span> <span class="pl-s1">setInStockOnly</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-c1">false</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">SearchBar</span>
+        <span class="pl-c1">filterText</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">inStockOnly</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span>
+        <span class="pl-c1">onFilterTextChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">setFilterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">onInStockOnlyChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">setInStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span></pre></div>
+<p>Inside the <code class="notranslate">SearchBar</code>, you will add the <code class="notranslate">onChange</code> event handlers and set the parent state from them:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">function</span> <span class="pl-v">SearchBar</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+  filterText<span class="pl-kos">,</span>
+  inStockOnly<span class="pl-kos">,</span>
+  onFilterTextChange<span class="pl-kos">,</span>
+  onInStockOnlyChange
+<span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">input</span>
+        <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"text"</span>
+        <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">placeholder</span><span class="pl-c1">=</span><span class="pl-s">"Search..."</span>
+        <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">onFilterTextChange</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span>
+      <span class="pl-kos">/&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span>
+          <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"checkbox"</span>
+          <span class="pl-c1">checked</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span>
+          <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">onInStockOnlyChange</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">checked</span><span class="pl-kos">)</span><span class="pl-kos">}</span></pre></div>
+<p>Now the application fully works!</p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">useState</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">function</span> <span class="pl-v">FilterableProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">filterText</span><span class="pl-kos">,</span> <span class="pl-s1">setFilterText</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">,</span> <span class="pl-s1">setInStockOnly</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-c1">false</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">SearchBar</span>
+        <span class="pl-c1">filterText</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">inStockOnly</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span>
+        <span class="pl-c1">onFilterTextChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">setFilterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">onInStockOnlyChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">setInStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">ProductTable</span>
+        <span class="pl-c1">products</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">products</span><span class="pl-kos">}</span>
+        <span class="pl-c1">filterText</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span>
+        <span class="pl-c1">inStockOnly</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">div</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductCategoryRow</span><span class="pl-kos">(</span><span class="pl-kos">{</span> category <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">th</span> <span class="pl-c1">colSpan</span><span class="pl-c1">=</span><span class="pl-s">"2"</span><span class="pl-c1">&gt;</span>
+        <span class="pl-kos">{</span><span class="pl-s1">category</span><span class="pl-kos">}</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductRow</span><span class="pl-kos">(</span><span class="pl-kos">{</span> product <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">name</span> <span class="pl-c1">=</span> <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">stocked</span> ? <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span> :
+    <span class="pl-c1">&lt;</span><span class="pl-s1">span</span> <span class="pl-c1">style</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">{</span> <span class="pl-c1">color</span>: <span class="pl-s">'red'</span> <span class="pl-kos">}</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span>
+      <span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">span</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">price</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">td</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">ProductTable</span><span class="pl-kos">(</span><span class="pl-kos">{</span> products<span class="pl-kos">,</span> filterText<span class="pl-kos">,</span> inStockOnly <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">rows</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+  <span class="pl-k">let</span> <span class="pl-s1">lastCategory</span> <span class="pl-c1">=</span> <span class="pl-c1">null</span><span class="pl-kos">;</span>
+
+  <span class="pl-s1">products</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">product</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span>
+      <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">.</span><span class="pl-en">toLowerCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">indexOf</span><span class="pl-kos">(</span>
+        <span class="pl-s1">filterText</span><span class="pl-kos">.</span><span class="pl-en">toLowerCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+      <span class="pl-kos">)</span> <span class="pl-c1">===</span> <span class="pl-c1">-</span><span class="pl-c1">1</span>
+    <span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-k">return</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">inStockOnly</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-c1">!</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">stocked</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-k">return</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span> <span class="pl-c1">!==</span> <span class="pl-s1">lastCategory</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">rows</span><span class="pl-kos">.</span><span class="pl-en">push</span><span class="pl-kos">(</span>
+        <span class="pl-c1">&lt;</span><span class="pl-v">ProductCategoryRow</span>
+          <span class="pl-c1">category</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">}</span>
+          <span class="pl-c1">key</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-s1">rows</span><span class="pl-kos">.</span><span class="pl-en">push</span><span class="pl-kos">(</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">ProductRow</span>
+        <span class="pl-c1">product</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">}</span>
+        <span class="pl-c1">key</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">lastCategory</span> <span class="pl-c1">=</span> <span class="pl-s1">product</span><span class="pl-kos">.</span><span class="pl-c1">category</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">table</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">thead</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+          <span class="pl-c1">&lt;</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>Name<span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+          <span class="pl-c1">&lt;</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>Price<span class="pl-kos">&lt;/</span><span class="pl-s1">th</span><span class="pl-c1">&gt;</span>
+        <span class="pl-kos">&lt;/</span><span class="pl-s1">tr</span><span class="pl-c1">&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">thead</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">tbody</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">rows</span><span class="pl-kos">}</span><span class="pl-kos">&lt;/</span><span class="pl-s1">tbody</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">table</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">SearchBar</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+  filterText<span class="pl-kos">,</span>
+  inStockOnly<span class="pl-kos">,</span>
+  onFilterTextChange<span class="pl-kos">,</span>
+  onInStockOnlyChange
+<span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">input</span>
+        <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"text"</span>
+        <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">filterText</span><span class="pl-kos">}</span> <span class="pl-c1">placeholder</span><span class="pl-c1">=</span><span class="pl-s">"Search..."</span>
+        <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">onFilterTextChange</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span>
+          <span class="pl-c1">type</span><span class="pl-c1">=</span><span class="pl-s">"checkbox"</span>
+          <span class="pl-c1">checked</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">inStockOnly</span><span class="pl-kos">}</span>
+          <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">onInStockOnlyChange</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">checked</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+        <span class="pl-kos">{</span><span class="pl-s">' '</span><span class="pl-kos">}</span>
+        Only show products in stock
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-s1">form</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">const</span> <span class="pl-c1">PRODUCTS</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Apple"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Dragonfruit"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Fruits"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$2"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Passionfruit"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$2"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Spinach"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$4"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Pumpkin"</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span><span class="pl-c1">category</span>: <span class="pl-s">"Vegetables"</span><span class="pl-kos">,</span> <span class="pl-c1">price</span>: <span class="pl-s">"$1"</span><span class="pl-kos">,</span> <span class="pl-c1">stocked</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">name</span>: <span class="pl-s">"Peas"</span><span class="pl-kos">}</span>
+<span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-k">function</span> <span class="pl-v">App</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-v">FilterableProductTable</span> <span class="pl-c1">products</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-c1">PRODUCTS</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-ent">body</span> {
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>
+}
+<span class="pl-ent">label</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> block;
+  <span class="pl-c1">margin-top</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">5<span class="pl-smi">px</span></span>;
+}
+<span class="pl-ent">th</span> {
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">4<span class="pl-smi">px</span></span>;
+}
+<span class="pl-ent">td</span> {
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">2<span class="pl-smi">px</span></span>;
+}</pre></div>
+
+<p>You can learn all about handling events and updating state in the <a href="/learn/adding-interactivity">Adding Interactivity</a> section.</p>
+<h2>Where to go from here {/<em>where-to-go-from-here</em>/}</h2>
+<p>This was a very brief introduction to how to think about building components and applications with React. You can <a href="/learn/installation">start a React project</a> right now or <a href="/learn/describing-the-ui">dive deeper on all the syntax</a> used in this tutorial.</p>

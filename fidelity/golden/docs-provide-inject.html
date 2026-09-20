@@ -1,0 +1,251 @@
+<h1>Provide / Inject {#provide-inject}</h1>
+<blockquote>
+<p>This page assumes you've already read the <a href="/guide/essentials/component-basics">Components Basics</a>. Read that first if you are new to components.</p>
+</blockquote>
+<h2>Prop Drilling {#prop-drilling}</h2>
+<p>Usually, when we need to pass data from the parent to a child component, we use <a href="/guide/components/props">props</a>. However, imagine the case where we have a large component tree, and a deeply nested component needs something from a distant ancestor component. With only props, we would have to pass the same prop across the entire parent chain:</p>
+<p><a target="_blank" rel="noopener noreferrer" href="./images/prop-drilling.png"><img src="./images/prop-drilling.png" alt="Diagram showing props being passed through multiple levels of components just to reach a deeply nested child" style="max-width: 100%;"></a></p>
+
+<p>Notice although the <code class="notranslate">&lt;Footer&gt;</code> component may not care about these props at all, it still needs to declare and pass them along just so <code class="notranslate">&lt;DeepChild&gt;</code> can access them. If there is a longer parent chain, more components would be affected along the way. This is called "props drilling" and definitely isn't fun to deal with.</p>
+<p>We can solve props drilling with <code class="notranslate">provide</code> and <code class="notranslate">inject</code>. A parent component can serve as a <strong>dependency provider</strong> for all its descendants. Any component in the descendant tree, regardless of how deep it is, can <strong>inject</strong> dependencies provided by components up in its parent chain.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="./images/provide-inject.png"><img src="./images/provide-inject.png" alt="Diagram showing the provide/inject mechanism where a parent component provides a dependency that can be directly injected by a deeply nested child, bypassing intermediate components" style="max-width: 100%;"></a></p>
+
+<h2>Provide {#provide}</h2>
+<div>
+<p>To provide data to a component's descendants, use the <a href="/api/composition-api-dependency-injection#provide"><code class="notranslate">provide()</code></a> function:</p>
+<div class="highlight highlight-text-html-vue"><pre class="notranslate">&lt;<span class="pl-ent">script</span> setup&gt;<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">import</span> { <span class="pl-smi">provide</span> } <span class="pl-k">from</span> <span class="pl-s"><span class="pl-pds">'</span>vue<span class="pl-pds">'</span></span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-en">provide</span>(<span class="pl-c"><span class="pl-c">/*</span> key <span class="pl-c">*/</span></span> <span class="pl-s"><span class="pl-pds">'</span>message<span class="pl-pds">'</span></span>, <span class="pl-c"><span class="pl-c">/*</span> value <span class="pl-c">*/</span></span> <span class="pl-s"><span class="pl-pds">'</span>hello!<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1"></span>&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+<p>If not using <code class="notranslate">&lt;script setup&gt;</code>, make sure <code class="notranslate">provide()</code> is called synchronously inside <code class="notranslate">setup()</code>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">provide</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'vue'</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-en">setup</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-en">provide</span><span class="pl-kos">(</span><span class="pl-c">/* key */</span> <span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-c">/* value */</span> <span class="pl-s">'hello!'</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>The <code class="notranslate">provide()</code> function accepts two arguments. The first argument is called the <strong>injection key</strong>, which can be a string or a <code class="notranslate">Symbol</code>. The injection key is used by descendant components to lookup the desired value to inject. A single component can call <code class="notranslate">provide()</code> multiple times with different injection keys to provide different values.</p>
+<p>The second argument is the provided value. The value can be of any type, including reactive state such as refs:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">ref</span><span class="pl-kos">,</span> <span class="pl-s1">provide</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'vue'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">count</span> <span class="pl-c1">=</span> <span class="pl-en">ref</span><span class="pl-kos">(</span><span class="pl-c1">0</span><span class="pl-kos">)</span>
+<span class="pl-en">provide</span><span class="pl-kos">(</span><span class="pl-s">'key'</span><span class="pl-kos">,</span> <span class="pl-s1">count</span><span class="pl-kos">)</span></pre></div>
+<p>Providing reactive values allows the descendant components using the provided value to establish a reactive connection to the provider component.</p>
+</div>
+<div>
+<p>To provide data to a component's descendants, use the <a href="/api/options-composition#provide"><code class="notranslate">provide</code></a> option:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">provide</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">message</span>: <span class="pl-s">'hello!'</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>For each property in the <code class="notranslate">provide</code> object, the key is used by child components to locate the correct value to inject, while the value is what ends up being injected.</p>
+<p>If we need to provide per-instance state, for example data declared via the <code class="notranslate">data()</code>, then <code class="notranslate">provide</code> must use a function value:</p>
+<pre lang="js{7-12}" class="notranslate"><code class="notranslate">export default {
+  data() {
+    return {
+      message: 'hello!'
+    }
+  },
+  provide() {
+    // use function syntax so that we can access `this`
+    return {
+      message: this.message
+    }
+  }
+}
+</code></pre>
+<p>However, do note this does <strong>not</strong> make the injection reactive. We will discuss <a href="#working-with-reactivity">making injections reactive</a> below.</p>
+</div>
+<h2>App-level Provide {#app-level-provide}</h2>
+<p>In addition to providing data in a component, we can also provide at the app level:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">createApp</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'vue'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">app</span> <span class="pl-c1">=</span> <span class="pl-en">createApp</span><span class="pl-kos">(</span><span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+<span class="pl-s1">app</span><span class="pl-kos">.</span><span class="pl-en">provide</span><span class="pl-kos">(</span><span class="pl-c">/* key */</span> <span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-c">/* value */</span> <span class="pl-s">'hello!'</span><span class="pl-kos">)</span></pre></div>
+<p>App-level provides are available to all components rendered in the app. This is especially useful when writing <a href="/guide/reusability/plugins">plugins</a>, as plugins typically wouldn't be able to provide values using components.</p>
+<h2>Inject {#inject}</h2>
+<div>
+<p>To inject data provided by an ancestor component, use the <a href="/api/composition-api-dependency-injection#inject"><code class="notranslate">inject()</code></a> function:</p>
+<div class="highlight highlight-text-html-vue"><pre class="notranslate">&lt;<span class="pl-ent">script</span> setup&gt;<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">import</span> { <span class="pl-smi">inject</span> } <span class="pl-k">from</span> <span class="pl-s"><span class="pl-pds">'</span>vue<span class="pl-pds">'</span></span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">const</span> <span class="pl-c1">message</span> <span class="pl-k">=</span> <span class="pl-en">inject</span>(<span class="pl-s"><span class="pl-pds">'</span>message<span class="pl-pds">'</span></span>)</span>
+<span class="pl-s1"></span>&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+<p>If multiple parents provide data with the same key, inject will resolve to the value from the closest parent in component's parent chain.</p>
+<p>If the provided value is a ref, it will be injected as-is and will <strong>not</strong> be automatically unwrapped. This allows the injector component to retain the reactivity connection to the provider component.</p>
+<p><a href="https://play.vuejs.org/#eNqFUUFugzAQ/MrKF1IpxfeIVKp66Kk/8MWFDXYFtmUbpArx967BhURRU9/WOzO7MzuxV+fKcUB2YlWovXYRAsbBvQije2d9hAk8Xo7gvB11gzDDxdseCuIUG+ZN6a7JjZIvVRIlgDCcw+d3pmvTglz1okJ499I0C3qB1dJQT9YRooVaSdNiACWdQ5OICj2WwtTWhAg9hiBbhHNSOxQKu84WT8LkNQ9FBhTHXyg1K75aJHNUROxdJyNSBVBp44YI43NvG+zOgmWWYGt7dcipqPhGZEe2ef07wN3lltD+lWN6tNkV/37+rdKjK2rzhRTt7f3u41xhe37/xJZGAL2PLECXa9NKdD/a6QTTtGnP88LgiXJtYv4BaLHhvg==" rel="nofollow">Full provide + inject Example with Reactivity</a></p>
+<p>Again, if not using <code class="notranslate">&lt;script setup&gt;</code>, <code class="notranslate">inject()</code> should only be called synchronously inside <code class="notranslate">setup()</code>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">inject</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'vue'</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-en">setup</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">message</span> <span class="pl-c1">=</span> <span class="pl-en">inject</span><span class="pl-kos">(</span><span class="pl-s">'message'</span><span class="pl-kos">)</span>
+    <span class="pl-k">return</span> <span class="pl-kos">{</span> message <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+</div>
+<div>
+<p>To inject data provided by an ancestor component, use the <a href="/api/options-composition#inject"><code class="notranslate">inject</code></a> option:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">inject</span>: <span class="pl-kos">[</span><span class="pl-s">'message'</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-en">created</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">message</span><span class="pl-kos">)</span> <span class="pl-c">// injected value</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Injections are resolved <strong>before</strong> the component's own state, so you can access injected properties in <code class="notranslate">data()</code>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">inject</span>: <span class="pl-kos">[</span><span class="pl-s">'message'</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-en">data</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-kos">{</span>
+      <span class="pl-c">// initial data based on injected value</span>
+      <span class="pl-c1">fullMessage</span>: <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">message</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>If multiple parents provide data with the same key, inject will resolve to the value from the closest parent in component's parent chain.</p>
+<p><a href="https://play.vuejs.org/#eNqNkcFqwzAQRH9l0EUthOhuRKH00FO/oO7B2JtERZaEvA4F43+vZCdOTAIJCImRdpi32kG8h7A99iQKobs6msBvpTNt8JHxcTC2wS76FnKrJpVLZelKR39TSUO7qreMoXRA7ZPPkeOuwHByj5v8EqI/moZeXudCIBL30Z0V0FLXVXsqIA9krU8R+XbMR9rS0mqhS4KpDbZiSgrQc5JKQqvlRWzEQnyvuc9YuWbd4eXq+TZn0IvzOeKr8FvsNcaK/R6Ocb9Uc4FvefpE+fMwP0wH8DU7wB77nIo6x6a2hvNEME5D0CpbrjnHf+8excI=" rel="nofollow">Full provide + inject example</a></p>
+<h3>Injection Aliasing * {#injection-aliasing}</h3>
+<p>When using the array syntax for <code class="notranslate">inject</code>, the injected properties are exposed on the component instance using the same key. In the example above, the property was provided under the key <code class="notranslate">"message"</code>, and injected as <code class="notranslate">this.message</code>. The local key is the same as the injection key.</p>
+<p>If we want to inject the property using a different local key, we need to use the object syntax for the <code class="notranslate">inject</code> option:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">inject</span>: <span class="pl-kos">{</span>
+    <span class="pl-c">/* local key */</span> <span class="pl-c1">localMessage</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">from</span>: <span class="pl-c">/* injection key */</span> <span class="pl-s">'message'</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Here, the component will locate a property provided with the key <code class="notranslate">"message"</code>, and then expose it as <code class="notranslate">this.localMessage</code>.</p>
+</div>
+<h3>Injection Default Values {#injection-default-values}</h3>
+<p>By default, <code class="notranslate">inject</code> assumes that the injected key is provided somewhere in the parent chain. In the case where the key is not provided, there will be a runtime warning.</p>
+<p>If we want to make an injected property work with optional providers, we need to declare a default value, similar to props:</p>
+<div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// `value` will be "default value"</span>
+<span class="pl-c">// if no data matching "message" was provided</span>
+<span class="pl-k">const</span> <span class="pl-s1">value</span> <span class="pl-c1">=</span> <span class="pl-en">inject</span><span class="pl-kos">(</span><span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-s">'default value'</span><span class="pl-kos">)</span></pre></div>
+<p>In some cases, the default value may need to be created by calling a function or instantiating a new class. To avoid unnecessary computation or side effects in case the optional value is not used, we can use a factory function for creating the default value:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">value</span> <span class="pl-c1">=</span> <span class="pl-en">inject</span><span class="pl-kos">(</span><span class="pl-s">'key'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-k">new</span> <span class="pl-v">ExpensiveClass</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-c1">true</span><span class="pl-kos">)</span></pre></div>
+<p>The third parameter indicates the default value should be treated as a factory function.</p>
+</div>
+<div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// object syntax is required</span>
+  <span class="pl-c">// when declaring default values for injections</span>
+  <span class="pl-c1">inject</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">message</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">from</span>: <span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-c">// this is optional if using the same key for injection</span>
+      <span class="pl-c1">default</span>: <span class="pl-s">'default value'</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-c1">user</span>: <span class="pl-kos">{</span>
+      <span class="pl-c">// use a factory function for non-primitive values that are expensive</span>
+      <span class="pl-c">// to create, or ones that should be unique per component instance.</span>
+      <span class="pl-en">default</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">name</span>: <span class="pl-s">'John'</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+</div>
+<h2>Working with Reactivity {#working-with-reactivity}</h2>
+<div>
+<p>When using reactive provide / inject values, <strong>it is recommended to keep any mutations to reactive state inside of the <em>provider</em> whenever possible</strong>. This ensures that the provided state and its possible mutations are co-located in the same component, making it easier to maintain in the future.</p>
+<p>There may be times when we need to update the data from an injector component. In such cases, we recommend providing a function that is responsible for mutating the state:</p>
+<pre lang="vue{7-9,13}" class="notranslate"><code class="notranslate">&lt;!-- inside provider component --&gt;
+&lt;script setup&gt;
+import { provide, ref } from 'vue'
+
+const location = ref('North Pole')
+
+function updateLocation() {
+  location.value = 'South Pole'
+}
+
+provide('location', {
+  location,
+  updateLocation
+})
+&lt;/script&gt;
+</code></pre>
+<pre lang="vue{5}" class="notranslate"><code class="notranslate">&lt;!-- in injector component --&gt;
+&lt;script setup&gt;
+import { inject } from 'vue'
+
+const { location, updateLocation } = inject('location')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;button @click="updateLocation"&gt;{{ location }}&lt;/button&gt;
+&lt;/template&gt;
+</code></pre>
+<p>Finally, you can wrap the provided value with <a href="/api/reactivity-core#readonly"><code class="notranslate">readonly()</code></a> if you want to ensure that the data passed through <code class="notranslate">provide</code> cannot be mutated by the injector component.</p>
+<div class="highlight highlight-text-html-vue"><pre class="notranslate">&lt;<span class="pl-ent">script</span> setup&gt;<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">import</span> { <span class="pl-smi">ref</span>, <span class="pl-smi">provide</span>, <span class="pl-smi">readonly</span> } <span class="pl-k">from</span> <span class="pl-s"><span class="pl-pds">'</span>vue<span class="pl-pds">'</span></span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">const</span> <span class="pl-c1">count</span> <span class="pl-k">=</span> <span class="pl-en">ref</span>(<span class="pl-c1">0</span>)</span>
+<span class="pl-s1"><span class="pl-en">provide</span>(<span class="pl-s"><span class="pl-pds">'</span>read-only-count<span class="pl-pds">'</span></span>, <span class="pl-en">readonly</span>(count))</span>
+<span class="pl-s1"></span>&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+</div>
+<div>
+<p>In order to make injections reactively linked to the provider, we need to provide a computed property using the <a href="/api/reactivity-core#computed">computed()</a> function:</p>
+<pre lang="js{12}" class="notranslate"><code class="notranslate">import { computed } from 'vue'
+
+export default {
+  data() {
+    return {
+      message: 'hello!'
+    }
+  },
+  provide() {
+    return {
+      // explicitly provide a computed property
+      message: computed(() =&gt; this.message)
+    }
+  }
+}
+</code></pre>
+<p><a href="https://play.vuejs.org/#eNqNUctqwzAQ/JVFFyeQxnfjBEoPPfULqh6EtYlV9EKWTcH43ytZtmPTQA0CsdqZ2dlRT16tPXctkoKUTeWE9VeqhbLGeXirheRwc0ZBds7HKkKzBdBDZZRtPXIYJlzqU40/I4LjjbUyIKmGEWw0at8UgZrUh1PscObZ4ZhQAA596/RcAShsGnbHArIapTRBP74O8Up060wnOO5QmP0eAvZyBV+L5jw1j2tZqsMp8yWRUHhUVjKPoQIohQ460L0ow1FeKJlEKEnttFweijJfiORElhCf5f3umObb0B9PU/I7kk17PJj7FloN/2t7a2Pj/Zkdob+x8gV8ZlMs2de/8+14AXwkBngD9zgVqjg2rNXPvwjD+EdlHilrn8MvtvD1+Q==" rel="nofollow">Full provide + inject Example with Reactivity</a></p>
+<p>The <code class="notranslate">computed()</code> function is typically used in Composition API components, but can also be used to complement certain use cases in Options API. You can learn more about its usage by reading the <a href="/guide/essentials/reactivity-fundamentals">Reactivity Fundamentals</a> and <a href="/guide/essentials/computed">Computed Properties</a> with the API Preference set to Composition API.</p>
+</div>
+<h2>Working with Symbol Keys {#working-with-symbol-keys}</h2>
+<p>So far, we have been using string injection keys in the examples. If you are working in a large application with many dependency providers, or you are authoring components that are going to be used by other developers, it is best to use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol" rel="nofollow">Symbol</a> injection keys to avoid potential collisions.</p>
+<p>It's recommended to export the Symbols in a dedicated file:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">const</span> <span class="pl-s1">myInjectionKey</span> <span class="pl-c1">=</span> <span class="pl-v">Symbol</span><span class="pl-kos">(</span><span class="pl-kos">)</span></pre></div>
+<div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// in provider component</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">provide</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'vue'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">myInjectionKey</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./keys.js'</span>
+
+<span class="pl-en">provide</span><span class="pl-kos">(</span><span class="pl-s1">myInjectionKey</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+  <span class="pl-c">/* data to provide */</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// in injector component</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">inject</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'vue'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">myInjectionKey</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./keys.js'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">injected</span> <span class="pl-c1">=</span> <span class="pl-en">inject</span><span class="pl-kos">(</span><span class="pl-s1">myInjectionKey</span><span class="pl-kos">)</span></pre></div>
+<p>See also: <a href="/guide/typescript/composition-api#typing-provide-inject">Typing Provide / Inject</a> <sup></sup></p>
+</div>
+<div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// in provider component</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">myInjectionKey</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./keys.js'</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-en">provide</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-kos">{</span>
+      <span class="pl-kos">[</span><span class="pl-s1">myInjectionKey</span><span class="pl-kos">]</span>: <span class="pl-kos">{</span>
+        <span class="pl-c">/* data to provide */</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// in injector component</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">myInjectionKey</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./keys.js'</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">inject</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">injected</span>: <span class="pl-kos">{</span> <span class="pl-c1">from</span>: <span class="pl-s1">myInjectionKey</span> <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+</div>

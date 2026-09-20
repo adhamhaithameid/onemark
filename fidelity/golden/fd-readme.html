@@ -1,0 +1,514 @@
+<h1>fd</h1>
+<p><a href="https://github.com/sharkdp/fd/actions/workflows/CICD.yml"><img src="https://github.com/sharkdp/fd/actions/workflows/CICD.yml/badge.svg" alt="CICD" style="max-width: 100%;"></a><br>
+<a href="https://crates.io/crates/fd-find" rel="nofollow"><img src="https://camo.githubusercontent.com/a573a1c19c66928b7a2513b320ccb0d5b947a213d4b376f1b2d8cec16bd4ca7b/68747470733a2f2f696d672e736869656c64732e696f2f6372617465732f762f66642d66696e642e737667" alt="Version info" data-canonical-src="https://img.shields.io/crates/v/fd-find.svg" style="max-width: 100%;"></a><br>
+[<a href="https://github.com/cha0ran/fd-zh">中文</a>]<br>
+[<a href="https://github.com/spearkkk/fd-kor">한국어</a>]</p>
+<p><code class="notranslate">fd</code> is a program to find entries in your filesystem.<br>
+It is a simple, fast and user-friendly alternative to <a href="https://www.gnu.org/software/findutils/" rel="nofollow"><code class="notranslate">find</code></a>.<br>
+While it does not aim to support all of <code class="notranslate">find</code>'s powerful functionality, it provides sensible<br>
+(opinionated) defaults for a majority of use cases.</p>
+<p><a href="#installation">Installation</a> • <a href="#how-to-use">How to use</a> • <a href="#troubleshooting">Troubleshooting</a></p>
+<h2>Features</h2>
+<ul>
+<li>Intuitive syntax: <code class="notranslate">fd PATTERN</code> instead of <code class="notranslate">find -iname '*PATTERN*'</code>.</li>
+<li>Regular expression (default) and glob-based patterns.</li>
+<li><a href="#benchmark">Very fast</a> due to parallelized directory traversal.</li>
+<li>Uses colors to highlight different file types (same as <code class="notranslate">ls</code>).</li>
+<li>Supports <a href="#command-execution">parallel command execution</a></li>
+<li>Smart case: the search is case-insensitive by default. It switches to<br>
+case-sensitive if the pattern contains an uppercase<br>
+character<a href="http://vimdoc.sourceforge.net/htmldoc/options.html#'smartcase'" rel="nofollow">*</a>.</li>
+<li>Ignores hidden directories and files, by default.</li>
+<li>Ignores patterns from your <code class="notranslate">.gitignore</code>, by default.</li>
+<li>The command name is <em>50%</em> shorter<a href="https://github.com/ggreer/the_silver_searcher">*</a> than<br>
+<code class="notranslate">find</code> :-).</li>
+</ul>
+<h2>Demo</h2>
+<p><a target="_blank" rel="noopener noreferrer" href="doc/screencast.svg"><img src="doc/screencast.svg" alt="Demo" style="max-width: 100%;"></a></p>
+<h2>How to use</h2>
+<p>First, to get an overview of all available command line options, you can either run<br>
+<a href="#command-line-options"><code class="notranslate">fd -h</code></a> for a concise help message or <code class="notranslate">fd --help</code> for a more detailed<br>
+version.</p>
+<h3>Simple search</h3>
+<p><em>fd</em> is designed to find entries in your filesystem. The most basic search you can perform is to<br>
+run <em>fd</em> with a single argument: the search pattern. For example, assume that you want to find an<br>
+old script of yours (the name included <code class="notranslate">netflix</code>):</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd netfl
+Software/python/imdb-ratings/netflix-details.py</pre></div>
+<p>If called with just a single argument like this, <em>fd</em> searches the current directory recursively<br>
+for any entries that <em>contain</em> the pattern <code class="notranslate">netfl</code>.</p>
+<h3>Regular expression search</h3>
+<p>The search pattern is treated as a regular expression. Here, we search for entries that start<br>
+with <code class="notranslate">x</code> and end with <code class="notranslate">rc</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> <span class="pl-c1">cd</span> /etc
+<span class="pl-k">&gt;</span> fd <span class="pl-s"><span class="pl-pds">'</span>^x.*rc$<span class="pl-pds">'</span></span>
+X11/xinit/xinitrc
+X11/xinit/xserverrc</pre></div>
+<p>The regular expression syntax used by <code class="notranslate">fd</code> is <a href="https://docs.rs/regex/latest/regex/#syntax" rel="nofollow">documented here</a>.</p>
+<h3>Specifying the root directory</h3>
+<p>If we want to search a specific directory, it can be given as a second argument to <em>fd</em>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd passwd /etc
+/etc/default/passwd
+/etc/pam.d/passwd
+/etc/passwd</pre></div>
+<h3>List all files, recursively</h3>
+<p><em>fd</em> can be called with no arguments. This is very useful to get a quick overview of all entries<br>
+in the current directory, recursively (similar to <code class="notranslate">ls -R</code>):</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> <span class="pl-c1">cd</span> fd/tests
+<span class="pl-k">&gt;</span> fd
+testenv
+testenv/mod.rs
+tests.rs</pre></div>
+<p>If you want to use this functionality to list all files in a given directory, you have to use<br>
+a catch-all pattern such as <code class="notranslate">.</code> or <code class="notranslate">^</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd <span class="pl-c1">.</span> fd/tests/
+testenv
+testenv/mod.rs
+tests.rs</pre></div>
+<h3>Searching for a particular file extension</h3>
+<p>Often, we are interested in all files of a particular type. This can be done with the <code class="notranslate">-e</code> (or<br>
+<code class="notranslate">--extension</code>) option. Here, we search for all Markdown files in the fd repository:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> <span class="pl-c1">cd</span> fd
+<span class="pl-k">&gt;</span> fd -e md
+CONTRIBUTING.md
+README.md</pre></div>
+<p>The <code class="notranslate">-e</code> option can be used in combination with a search pattern:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -e rs mod
+src/fshelper/mod.rs
+src/lscolors/mod.rs
+tests/testenv/mod.rs</pre></div>
+<h3>Searching for a particular file name</h3>
+<p>To find files with exactly the provided search pattern, use the <code class="notranslate">-g</code> (or <code class="notranslate">--glob</code>) option:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -g libc.so /usr
+/usr/lib32/libc.so
+/usr/lib/libc.so</pre></div>
+<h3>Hidden and ignored files</h3>
+<p>By default, <em>fd</em> does not search hidden directories and does not show hidden files in the<br>
+search results. To disable this behavior, we can use the <code class="notranslate">-H</code> (or <code class="notranslate">--hidden</code>) option:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd pre-commit
+<span class="pl-k">&gt;</span> fd -H pre-commit
+.git/hooks/pre-commit.sample</pre></div>
+<p>If we work in a directory that is a Git repository (or includes Git repositories), <em>fd</em> does not<br>
+search folders (and does not show files) that match one of the <code class="notranslate">.gitignore</code> patterns. To disable<br>
+this behavior, we can use the <code class="notranslate">-I</code> (or <code class="notranslate">--no-ignore</code>) option:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd num_cpu
+<span class="pl-k">&gt;</span> fd -I num_cpu
+target/debug/deps/libnum_cpus-f5ce7ef99006aa05.rlib</pre></div>
+<p>To really search <em>all</em> files and directories, simply combine the hidden and ignore features to show<br>
+everything (<code class="notranslate">-HI</code>) or use <code class="notranslate">-u</code>/<code class="notranslate">--unrestricted</code>.</p>
+<h3>Matching the full path</h3>
+<p>By default, <em>fd</em> only matches the filename of each file. However, using the <code class="notranslate">--full-path</code> or <code class="notranslate">-p</code> option,<br>
+you can match against the full path.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -u -p -g <span class="pl-s"><span class="pl-pds">'</span>**/.git/config<span class="pl-pds">'</span></span>
+<span class="pl-k">&gt;</span> fd -p <span class="pl-s"><span class="pl-pds">'</span>.*/lesson-\d+/[a-z]+.(jpg|png)<span class="pl-pds">'</span></span></pre></div>
+<h3>Command execution</h3>
+<p>Instead of just showing the search results, you often want to <em>do something</em> with them. <code class="notranslate">fd</code><br>
+provides two ways to execute external commands for each of your search results:</p>
+<ul>
+<li>The <code class="notranslate">-x</code>/<code class="notranslate">--exec</code> option runs an external command <em>for each of the search results</em> (in parallel).</li>
+<li>The <code class="notranslate">-X</code>/<code class="notranslate">--exec-batch</code> option launches the external command once, with <em>all search results as arguments</em>.</li>
+</ul>
+<h4>Examples</h4>
+<p>Recursively find all zip archives and unpack them:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd -e zip -x unzip</pre></div>
+<p>If there are two such files, <code class="notranslate">file1.zip</code> and <code class="notranslate">backup/file2.zip</code>, this would execute<br>
+<code class="notranslate">unzip file1.zip</code> and <code class="notranslate">unzip backup/file2.zip</code>. The two <code class="notranslate">unzip</code> processes run in parallel<br>
+(if the files are found fast enough).</p>
+<p>Find all <code class="notranslate">*.h</code> and <code class="notranslate">*.cpp</code> files and auto-format them inplace with <code class="notranslate">clang-format -i</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd -e h -e cpp -x clang-format -i</pre></div>
+<p>Note how the <code class="notranslate">-i</code> option to <code class="notranslate">clang-format</code> can be passed as a separate argument. This is why<br>
+we put the <code class="notranslate">-x</code> option last.</p>
+<p>Any positional arguments after <code class="notranslate">-x</code> belong to the command template, not to <code class="notranslate">fd</code> itself. If you<br>
+also want to pass a pattern or search path, put <code class="notranslate">-x</code> last:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd pattern path -x <span class="pl-c1">echo</span></pre></div>
+<p>Find all <code class="notranslate">test_*.py</code> files and open them in your favorite editor:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd -g <span class="pl-s"><span class="pl-pds">'</span>test_*.py<span class="pl-pds">'</span></span> -X vim</pre></div>
+<p>Note that we use capital <code class="notranslate">-X</code> here to open a single <code class="notranslate">vim</code> instance. If there are two such files,<br>
+<code class="notranslate">test_basic.py</code> and <code class="notranslate">lib/test_advanced.py</code>, this will run <code class="notranslate">vim test_basic.py lib/test_advanced.py</code>.</p>
+<p>To see details like file permissions, owners, file sizes etc., you can tell <code class="notranslate">fd</code> to show them<br>
+by running <code class="notranslate">ls</code> for each result:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd … -X ls -lhd --color=always</pre></div>
+<p>This pattern is so useful that <code class="notranslate">fd</code> provides a shortcut. You can use the <code class="notranslate">-l</code>/<code class="notranslate">--list-details</code><br>
+option to execute <code class="notranslate">ls</code> in this way: <code class="notranslate">fd … -l</code>.</p>
+<p>The <code class="notranslate">-X</code> option is also useful when combining <code class="notranslate">fd</code> with <a href="https://github.com/BurntSushi/ripgrep/">ripgrep</a> (<code class="notranslate">rg</code>) in order to search within a certain class of files, like all C++ source files:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd -e cpp -e cxx -e h -e hpp -X rg <span class="pl-s"><span class="pl-pds">'</span>std::cout<span class="pl-pds">'</span></span></pre></div>
+<p>Convert all <code class="notranslate">*.jpg</code> files to <code class="notranslate">*.png</code> files:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd -e jpg -x convert {} {.}.png</pre></div>
+<p>Here, <code class="notranslate">{}</code> is a placeholder for the search result. <code class="notranslate">{.}</code> is the same, without the file extension.<br>
+See below for more details on the placeholder syntax.</p>
+<p>The terminal output of commands run from parallel threads using <code class="notranslate">-x</code> will not be interlaced or garbled,<br>
+so <code class="notranslate">fd -x</code> can be used to rudimentarily parallelize a task run over many files.<br>
+An example of this is calculating the checksum of each individual file within a directory.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd -tf -x md5sum <span class="pl-k">&gt;</span> file_checksums.txt</pre></div>
+<h4>Placeholder syntax</h4>
+<p>The <code class="notranslate">-x</code> and <code class="notranslate">-X</code> options take a <em>command template</em> as a series of arguments (instead of a single string).<br>
+If you want to add additional options to <code class="notranslate">fd</code> after the command template, you can terminate it with a <code class="notranslate">\;</code>.</p>
+<p>For example, <code class="notranslate">fd -x echo \; pattern path</code> treats <code class="notranslate">pattern path</code> as <code class="notranslate">fd</code> arguments instead of<br>
+passing them to <code class="notranslate">echo</code>. In practice, it is often clearer to write <code class="notranslate">fd pattern path -x echo</code>.</p>
+<p>The syntax for generating commands is similar to that of <a href="https://www.gnu.org/software/parallel/" rel="nofollow">GNU Parallel</a>:</p>
+<ul>
+<li><code class="notranslate">{}</code>: A placeholder token that will be replaced with the path of the search result<br>
+(<code class="notranslate">documents/images/party.jpg</code>).</li>
+<li><code class="notranslate">{.}</code>: Like <code class="notranslate">{}</code>, but without the file extension (<code class="notranslate">documents/images/party</code>).</li>
+<li><code class="notranslate">{/}</code>: A placeholder that will be replaced by the basename of the search result (<code class="notranslate">party.jpg</code>).</li>
+<li><code class="notranslate">{//}</code>: The parent of the discovered path (<code class="notranslate">documents/images</code>).</li>
+<li><code class="notranslate">{/.}</code>: The basename, with the extension removed (<code class="notranslate">party</code>).</li>
+</ul>
+<p>If you do not include a placeholder, <em>fd</em> automatically adds a <code class="notranslate">{}</code> at the end.</p>
+<h4>Parallel vs. serial execution</h4>
+<p>For <code class="notranslate">-x</code>/<code class="notranslate">--exec</code>, you can control the number of parallel jobs by using the <code class="notranslate">-j</code>/<code class="notranslate">--threads</code> option.<br>
+Use <code class="notranslate">--threads=1</code> for serial execution.</p>
+<h3>Excluding specific files or directories</h3>
+<p>Sometimes we want to ignore search results from a specific subdirectory. For example, we might<br>
+want to search all hidden files and directories (<code class="notranslate">-H</code>) but exclude all matches from <code class="notranslate">.git</code><br>
+directories. We can use the <code class="notranslate">-E</code> (or <code class="notranslate">--exclude</code>) option for this. It takes an arbitrary glob<br>
+pattern as an argument:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -H -E .git …</pre></div>
+<p>We can also use this to skip mounted directories:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -E /mnt/external-drive …</pre></div>
+<p>.. or to skip certain file types:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -E <span class="pl-s"><span class="pl-pds">'</span>*.bak<span class="pl-pds">'</span></span> …</pre></div>
+<p>To make exclude-patterns like these permanent, you can create a <code class="notranslate">.fdignore</code> file. They work like<br>
+<code class="notranslate">.gitignore</code> files, but are specific to <code class="notranslate">fd</code>. For example:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> cat <span class="pl-k">~</span>/.fdignore
+/mnt/external-drive
+<span class="pl-k">*</span>.bak</pre></div>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p><code class="notranslate">fd</code> also supports <code class="notranslate">.ignore</code> files that are used by other programs such as <code class="notranslate">rg</code> or <code class="notranslate">ag</code>.</p>
+</div>
+<p>If you want <code class="notranslate">fd</code> to ignore these patterns globally, you can put them in <code class="notranslate">fd</code>'s global ignore file.<br>
+This is usually located in <code class="notranslate">~/.config/fd/ignore</code> in macOS or Linux, and <code class="notranslate">%APPDATA%\fd\ignore</code> in<br>
+Windows.</p>
+<p>You may wish to include <code class="notranslate">.git/</code> in your <code class="notranslate">fd/ignore</code> file so that <code class="notranslate">.git</code> directories, and their contents<br>
+are not included in output if you use the <code class="notranslate">--hidden</code> option.</p>
+<h3>Deleting files</h3>
+<p>You can use <code class="notranslate">fd</code> to remove all files and directories that are matched by your search pattern.<br>
+If you only want to remove files, you can use the <code class="notranslate">--exec-batch</code>/<code class="notranslate">-X</code> option to call <code class="notranslate">rm</code>. For<br>
+example, to recursively remove all <code class="notranslate">.DS_Store</code> files, run:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -H <span class="pl-s"><span class="pl-pds">'</span>^\.DS_Store$<span class="pl-pds">'</span></span> -tf -X rm</pre></div>
+<p>If you are unsure, always call <code class="notranslate">fd</code> without <code class="notranslate">-X rm</code> first. Alternatively, use <code class="notranslate">rm</code>s "interactive"<br>
+option:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -H <span class="pl-s"><span class="pl-pds">'</span>^\.DS_Store$<span class="pl-pds">'</span></span> -tf -X rm -i</pre></div>
+<p>If you also want to remove a certain class of directories, you can use the same technique. You will<br>
+have to use <code class="notranslate">rm</code>s <code class="notranslate">--recursive</code>/<code class="notranslate">-r</code> flag to remove directories.</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>There are scenarios where using <code class="notranslate">fd … -X rm -r</code> can cause race conditions: if you have a<br>
+path like <code class="notranslate">…/foo/bar/foo/…</code> and want to remove all directories named <code class="notranslate">foo</code>, you can end up in a<br>
+situation where the outer <code class="notranslate">foo</code> directory is removed first, leading to (harmless) <em>"'foo/bar/foo':<br>
+No such file or directory"</em> errors in the <code class="notranslate">rm</code> call.</p>
+</div>
+<h3>Command-line options</h3>
+<p>This is the output of <code class="notranslate">fd -h</code>. To see the full set of command-line options, use <code class="notranslate">fd --help</code> which<br>
+also includes a much more detailed help text.</p>
+<pre class="notranslate"><code class="notranslate">Usage: fd [OPTIONS] [pattern [path]...]
+
+Arguments:
+  [pattern]  the search pattern (a regular expression, unless '--glob' is used; optional)
+  [path]...  the root directories for the filesystem search (optional)
+
+Options:
+  -H, --hidden                     Search hidden files and directories
+  -I, --no-ignore                  Do not respect .(git|fd)ignore files
+  -s, --case-sensitive             Case-sensitive search (default: smart case)
+  -i, --ignore-case                Case-insensitive search (default: smart case)
+  -g, --glob                       Glob-based search (default: regular expression)
+  -a, --absolute-path              Show absolute instead of relative paths
+  -l, --list-details               Use a long listing format with file metadata
+  -L, --follow                     Follow symbolic links
+  -p, --full-path                  Search full abs. path (default: filename only)
+  -d, --max-depth &lt;depth&gt;          Set maximum search depth (default: none)
+  -E, --exclude &lt;glob&gt;             Exclude entries that match the given glob pattern
+  -t, --type &lt;filetype&gt;            Filter by type: file (f), directory (d/dir), symlink (l),
+                                   executable (x), empty (e), socket (s), pipe (p), char-device
+                                   (c), block-device (b)
+  -e, --extension &lt;ext&gt;            Filter by extension
+  -S, --size &lt;size&gt;                Limit results based on the size of files
+      --changed-within &lt;date|dur&gt;  Filter by file modification time (newer than)
+      --changed-before &lt;date|dur&gt;  Filter by file modification time (older than)
+  -o, --owner &lt;user:group&gt;         Filter by owning user and/or group
+      --format &lt;fmt&gt;               Print results according to template
+  -x, --exec &lt;cmd&gt;...              Execute a command for each search result
+  -X, --exec-batch &lt;cmd&gt;...        Execute a command with all search results at once
+  -c, --color &lt;when&gt;               When to use colors [default: auto] [possible values: auto,
+                                   always, never]
+      --hyperlink[=&lt;when&gt;]         Add hyperlinks to output paths [default: never] [possible
+                                   values: auto, always, never]
+      --ignore-contain &lt;name&gt;      Ignore directories containing the named entry
+  -h, --help                       Print help (see more with '--help')
+  -V, --version                    Print version
+</code></pre>
+<p>Note that options can be given after the pattern and/or path as well.</p>
+<h2>Benchmark</h2>
+<p>Let's search my home folder for files that end in <code class="notranslate">[0-9].jpg</code>. It contains ~750,000<br>
+subdirectories and about a 4 million files. For averaging and statistical analysis, I'm using<br>
+<a href="https://github.com/sharkdp/hyperfine">hyperfine</a>. The following benchmarks are performed<br>
+with a "warm"/pre-filled disk-cache (results for a "cold" disk-cache show the same trends).</p>
+<p>Let's start with <code class="notranslate">find</code>:</p>
+<pre class="notranslate"><code class="notranslate">Benchmark 1: find ~ -iregex '.*[0-9]\.jpg$'
+  Time (mean ± σ):     19.922 s ±  0.109 s
+  Range (min … max):   19.765 s … 20.065 s
+</code></pre>
+<p><code class="notranslate">find</code> is much faster if it does not need to perform a regular-expression search:</p>
+<pre class="notranslate"><code class="notranslate">Benchmark 2: find ~ -iname '*[0-9].jpg'
+  Time (mean ± σ):     11.226 s ±  0.104 s
+  Range (min … max):   11.119 s … 11.466 s
+</code></pre>
+<p>Now let's try the same for <code class="notranslate">fd</code>. Note that <code class="notranslate">fd</code> performs a regular expression<br>
+search by default. The options <code class="notranslate">-u</code>/<code class="notranslate">--unrestricted</code> option is needed here for<br>
+a fair comparison. Otherwise <code class="notranslate">fd</code> does not have to traverse hidden folders and<br>
+ignored paths (see below):</p>
+<pre class="notranslate"><code class="notranslate">Benchmark 3: fd -u '[0-9]\.jpg$' ~
+  Time (mean ± σ):     854.8 ms ±  10.0 ms
+  Range (min … max):   839.2 ms … 868.9 ms
+</code></pre>
+<p>For this particular example, <code class="notranslate">fd</code> is approximately <strong>23 times faster</strong> than <code class="notranslate">find -iregex</code><br>
+and about <strong>13 times faster</strong> than <code class="notranslate">find -iname</code>. By the way, both tools found the exact<br>
+same 546 files 😄.</p>
+<p><strong>Note</strong>: This is <em>one particular</em> benchmark on <em>one particular</em> machine. While we have<br>
+performed a lot of different tests (and found consistent results), things might<br>
+be different for you! We encourage everyone to try it out on their own. See<br>
+<a href="https://github.com/sharkdp/fd-benchmarks">this repository</a> for all necessary scripts.</p>
+<p>Concerning <em>fd</em>'s speed, a lot of credit goes to the <code class="notranslate">regex</code> and <code class="notranslate">ignore</code> crates that are<br>
+also used in <a href="https://github.com/BurntSushi/ripgrep">ripgrep</a> (check it out!).</p>
+<h2>Troubleshooting</h2>
+<h3><code class="notranslate">fd</code> does not find my file!</h3>
+<p>Remember that <code class="notranslate">fd</code> ignores hidden directories and files by default. It also ignores patterns<br>
+from <code class="notranslate">.gitignore</code> files. If you want to make sure to find absolutely every possible file, always<br>
+use the options <code class="notranslate">-u</code>/<code class="notranslate">--unrestricted</code> option (or <code class="notranslate">-HI</code> to enable hidden and ignored files):</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -u …</pre></div>
+<p>Also remember that by default, <code class="notranslate">fd</code> only searches based on the filename and<br>
+doesn't compare the pattern to the full path. If you want to search based on the<br>
+full path (similar to the <code class="notranslate">-path</code> option of <code class="notranslate">find</code>) you need to use the <code class="notranslate">--full-path</code><br>
+(or <code class="notranslate">-p</code>) option.</p>
+<h3>Colorized output</h3>
+<p><code class="notranslate">fd</code> can colorize files by extension, just like <code class="notranslate">ls</code>. In order for this to work, the environment<br>
+variable <a href="https://linux.die.net/man/5/dir_colors" rel="nofollow"><code class="notranslate">LS_COLORS</code></a> has to be set. Typically, the value<br>
+of this variable is set by the <code class="notranslate">dircolors</code> command which provides a convenient configuration format<br>
+to define colors for different file formats.<br>
+On most distributions, <code class="notranslate">LS_COLORS</code> should be set already. If you are on Windows or if you are looking<br>
+for alternative, more complete (or more colorful) variants, see <a href="https://github.com/sharkdp/vivid">here</a>,<br>
+<a href="https://github.com/seebi/dircolors-solarized">here</a> or<br>
+<a href="https://github.com/trapd00r/LS_COLORS">here</a>.</p>
+<p><code class="notranslate">fd</code> also honors the <a href="https://no-color.org/" rel="nofollow"><code class="notranslate">NO_COLOR</code></a> environment variable.</p>
+<h3><code class="notranslate">fd</code> doesn't seem to interpret my regex pattern correctly</h3>
+<p>A lot of special regex characters (like <code class="notranslate">[]</code>, <code class="notranslate">^</code>, <code class="notranslate">$</code>, ..) are also special characters in your<br>
+shell. If in doubt, always make sure to put single quotes around the regex pattern:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd <span class="pl-s"><span class="pl-pds">'</span>^[A-Z][0-9]+$<span class="pl-pds">'</span></span></pre></div>
+<p>If your pattern starts with a dash, you have to add <code class="notranslate">--</code> to signal the end of command line<br>
+options. Otherwise, the pattern will be interpreted as a command-line option. Alternatively,<br>
+use a character class with a single hyphen character:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -- <span class="pl-s"><span class="pl-pds">'</span>-pattern<span class="pl-pds">'</span></span>
+<span class="pl-k">&gt;</span> fd <span class="pl-s"><span class="pl-pds">'</span>[-]pattern<span class="pl-pds">'</span></span></pre></div>
+<h3>"Command not found" for <code class="notranslate">alias</code>es or shell functions</h3>
+<p>Shell <code class="notranslate">alias</code>es and shell functions can not be used for command execution via <code class="notranslate">fd -x</code> or<br>
+<code class="notranslate">fd -X</code>. In <code class="notranslate">zsh</code>, you can make the alias global via <code class="notranslate">alias -g myalias="…"</code>. In <code class="notranslate">bash</code>,<br>
+you can use <code class="notranslate">export -f my_function</code> to make available to child processes. You would still<br>
+need to call <code class="notranslate">fd -x bash -c 'my_function "$1"' bash</code>. For other use cases or shells, use<br>
+a (temporary) shell script.</p>
+<h3>Placeholders in <code class="notranslate">-x</code>/<code class="notranslate">-X</code></h3>
+<p>Depending on your shell, you may need to quote the placeholders (<code class="notranslate">{}</code>, <code class="notranslate">{/}</code>, <code class="notranslate">{//}</code>,<br>
+<code class="notranslate">{.}</code>, <code class="notranslate">{/.}</code>) to prevent the shell from interpreting them before <code class="notranslate">fd</code> sees them.</p>
+<h2>Integration with other programs</h2>
+<h3>Using fd with <code class="notranslate">fzf</code></h3>
+<p>You can use <em>fd</em> to generate input for the command-line fuzzy finder <a href="https://github.com/junegunn/fzf">fzf</a>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">export</span> FZF_DEFAULT_COMMAND=<span class="pl-s"><span class="pl-pds">'</span>fd --type file<span class="pl-pds">'</span></span>
+<span class="pl-k">export</span> FZF_CTRL_T_COMMAND=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$FZF_DEFAULT_COMMAND</span><span class="pl-pds">"</span></span></pre></div>
+<p>Then, you can type <code class="notranslate">vim &lt;Ctrl-T&gt;</code> on your terminal to open fzf and search through the fd-results.</p>
+<p>Alternatively, you might like to follow symbolic links and include hidden files (but exclude <code class="notranslate">.git</code> folders):</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">export</span> FZF_DEFAULT_COMMAND=<span class="pl-s"><span class="pl-pds">'</span>fd --type file --follow --hidden --exclude .git<span class="pl-pds">'</span></span></pre></div>
+<p>You can even use fd's colored output inside fzf by setting:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">export</span> FZF_DEFAULT_COMMAND=<span class="pl-s"><span class="pl-pds">"</span>fd --type file --color=always<span class="pl-pds">"</span></span>
+<span class="pl-k">export</span> FZF_DEFAULT_OPTS=<span class="pl-s"><span class="pl-pds">"</span>--ansi<span class="pl-pds">"</span></span></pre></div>
+<p>For more details, see the <a href="https://github.com/junegunn/fzf#tips">Tips section</a> of the fzf README.</p>
+<h3>Using fd with <code class="notranslate">rofi</code></h3>
+<p><a href="https://github.com/davatorium/rofi"><em>rofi</em></a> is a graphical launch menu application that is able to create menus by reading from <em>stdin</em>. Piping <code class="notranslate">fd</code> output into <code class="notranslate">rofi</code>s <code class="notranslate">-dmenu</code> mode creates fuzzy-searchable lists of files and directories.</p>
+<h4>Example</h4>
+<p>Create a case-insensitive searchable multi-select list of <em>PDF</em> files under your <code class="notranslate">$HOME</code> directory and open the selection with your configured PDF viewer. To list all file types, drop the <code class="notranslate">-e pdf</code> argument.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">fd --type f -e pdf <span class="pl-c1">.</span> <span class="pl-smi">$HOME</span> <span class="pl-k">|</span> rofi -keep-right -dmenu -i -p FILES -multi-select <span class="pl-k">|</span> xargs -I {} xdg-open {}</pre></div>
+<p>To modify the list that is presented by rofi, add arguments to the <code class="notranslate">fd</code> command. To modify the search behaviour of rofi, add arguments to the <code class="notranslate">rofi</code> command.</p>
+<h3>Using fd with <code class="notranslate">emacs</code></h3>
+<p>The emacs package <a href="https://github.com/technomancy/find-file-in-project">find-file-in-project</a> can<br>
+use <em>fd</em> to find files.</p>
+<p>After installing <code class="notranslate">find-file-in-project</code>, add the line <code class="notranslate">(setq ffip-use-rust-fd t)</code> to your<br>
+<code class="notranslate">~/.emacs</code> or <code class="notranslate">~/.emacs.d/init.el</code> file.</p>
+<p>In emacs, run <code class="notranslate">M-x find-file-in-project-by-selected</code> to find matching files. Alternatively, run<br>
+<code class="notranslate">M-x find-file-in-project</code> to list all available files in the project.</p>
+<h3>Printing the output as a tree</h3>
+<p>To format the output of <code class="notranslate">fd</code> as a file-tree you can use the <code class="notranslate">tree</code> command with<br>
+<code class="notranslate">--fromfile</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">❯ fd <span class="pl-k">|</span> tree --fromfile</pre></div>
+<p>This can be more useful than running <code class="notranslate">tree</code> by itself because <code class="notranslate">tree</code> does not<br>
+ignore any files by default, nor does it support as rich a set of options as<br>
+<code class="notranslate">fd</code> does to control what to print:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">❯ fd --extension rs <span class="pl-k">|</span> tree --fromfile
+<span class="pl-c1">.</span>
+├── build.rs
+└── src
+    ├── app.rs
+    └── error.rs</pre></div>
+<p>On bash and similar you can simply create an alias:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">❯ <span class="pl-c1">alias</span> as-tree=<span class="pl-s"><span class="pl-pds">'</span>tree --fromfile<span class="pl-pds">'</span></span></pre></div>
+<h3>Using fd with <code class="notranslate">xargs</code> or <code class="notranslate">parallel</code></h3>
+<p>Note that <code class="notranslate">fd</code> has a builtin feature for <a href="#command-execution">command execution</a> with<br>
+its <code class="notranslate">-x</code>/<code class="notranslate">--exec</code> and <code class="notranslate">-X</code>/<code class="notranslate">--exec-batch</code> options. If you prefer, you can still use<br>
+it in combination with <code class="notranslate">xargs</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-k">&gt;</span> fd -0 -e rs <span class="pl-k">|</span> xargs -0 wc -l</pre></div>
+<p>Here, the <code class="notranslate">-0</code> option tells <em>fd</em> to separate search results by the NULL character (instead of<br>
+newlines). In the same way, the <code class="notranslate">-0</code> option of <code class="notranslate">xargs</code> tells it to read the input in this way.</p>
+<h2>Installation</h2>
+<p><a href="https://repology.org/project/fd-find/versions" rel="nofollow"><img src="https://camo.githubusercontent.com/9bfbc6151829466a02676b5e04980e541c2f6a19abc00bf4c0557200feb86c3c/68747470733a2f2f7265706f6c6f67792e6f72672f62616467652f766572746963616c2d616c6c7265706f732f66642d66696e642e737667" alt="Packaging status" data-canonical-src="https://repology.org/badge/vertical-allrepos/fd-find.svg" style="max-width: 100%;"></a></p>
+<h3>On Ubuntu</h3>
+<p><em>... and other Debian-based Linux distributions.</em></p>
+<p>If you run Ubuntu 19.04 (Disco Dingo) or newer, you can install the<br>
+<a href="https://packages.ubuntu.com/fd-find" rel="nofollow">officially maintained package</a>:</p>
+<pre class="notranslate"><code class="notranslate">apt install fd-find
+</code></pre>
+<p>Note that the binary is called <code class="notranslate">fdfind</code> as the binary name <code class="notranslate">fd</code> is already used by another package.<br>
+It is recommended that after installation, you add a link to <code class="notranslate">fd</code> by executing command<br>
+<code class="notranslate">ln -s $(which fdfind) ~/.local/bin/fd</code>, in order to use <code class="notranslate">fd</code> in the same way as in this documentation.<br>
+Make sure that <code class="notranslate">$HOME/.local/bin</code> is in your <code class="notranslate">$PATH</code>.</p>
+<p>If you use an older version of Ubuntu, you can download the latest <code class="notranslate">.deb</code> package from the<br>
+<a href="https://github.com/sharkdp/fd/releases">release page</a> and install it via:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">dpkg -i fd_9.0.0_amd64.deb <span class="pl-c"><span class="pl-c">#</span> adapt version number and architecture</span></pre></div>
+<p>Note that the .deb packages on the release page for this project still name the executable <code class="notranslate">fd</code>.</p>
+<h3>On Debian</h3>
+<p>If you run Debian Buster or newer, you can install the<br>
+<a href="https://tracker.debian.org/pkg/rust-fd-find" rel="nofollow">officially maintained Debian package</a>:</p>
+<pre class="notranslate"><code class="notranslate">apt-get install fd-find
+</code></pre>
+<p>Note that the binary is called <code class="notranslate">fdfind</code> as the binary name <code class="notranslate">fd</code> is already used by another package.<br>
+It is recommended that after installation, you add a link to <code class="notranslate">fd</code> by executing command<br>
+<code class="notranslate">ln -s $(which fdfind) ~/.local/bin/fd</code>, in order to use <code class="notranslate">fd</code> in the same way as in this documentation.<br>
+Make sure that <code class="notranslate">$HOME/.local/bin</code> is in your <code class="notranslate">$PATH</code>.</p>
+<p>Note that the .deb packages on the release page for this project still name the executable <code class="notranslate">fd</code>.</p>
+<h3>On Fedora</h3>
+<p>Starting with Fedora 28, you can install <code class="notranslate">fd</code> from the official package sources:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">dnf install fd-find</pre></div>
+<h3>On Alpine Linux</h3>
+<p>You can install <a href="https://pkgs.alpinelinux.org/packages?name=fd" rel="nofollow">the fd package</a><br>
+from the official sources, provided you have the appropriate repository enabled:</p>
+<pre class="notranslate"><code class="notranslate">apk add fd
+</code></pre>
+<h3>On Arch Linux</h3>
+<p>You can install <a href="https://www.archlinux.org/packages/extra/x86_64/fd/" rel="nofollow">the fd package</a> from the official repos:</p>
+<pre class="notranslate"><code class="notranslate">pacman -S fd
+</code></pre>
+<p>You can also install fd <a href="https://aur.archlinux.org/packages/fd-git" rel="nofollow">from the AUR</a>.</p>
+<h3>On Gentoo Linux</h3>
+<p>You can use <a href="https://packages.gentoo.org/packages/sys-apps/fd" rel="nofollow">the fd ebuild</a> from the official repo:</p>
+<pre class="notranslate"><code class="notranslate">emerge -av fd
+</code></pre>
+<h3>On openSUSE Linux</h3>
+<p>You can install <a href="https://software.opensuse.org/package/fd" rel="nofollow">the fd package</a> from the official repo:</p>
+<pre class="notranslate"><code class="notranslate">zypper in fd
+</code></pre>
+<h3>On Void Linux</h3>
+<p>You can install <code class="notranslate">fd</code> via xbps-install:</p>
+<pre class="notranslate"><code class="notranslate">xbps-install -S fd
+</code></pre>
+<h3>On ALT Linux</h3>
+<p>You can install <a href="https://packages.altlinux.org/en/sisyphus/srpms/fd/" rel="nofollow">the fd package</a> from the official repo:</p>
+<pre class="notranslate"><code class="notranslate">apt-get install fd
+</code></pre>
+<h3>On Solus</h3>
+<p>You can install <a href="https://github.com/getsolus/packages/tree/main/packages/f/fd">the fd package</a> from the official repo:</p>
+<pre class="notranslate"><code class="notranslate">eopkg install fd
+</code></pre>
+<h3>On RedHat Enterprise Linux (RHEL) 8/9/10, Almalinux 8/9/10, EuroLinux 8/9 or Rocky Linux 8/9/10</h3>
+<p>You can install <a href="https://copr.fedorainfracloud.org/coprs/tkbcopr/fd/" rel="nofollow">the <code class="notranslate">fd</code> package</a> from Fedora Copr.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">dnf copr <span class="pl-c1">enable</span> tkbcopr/fd
+dnf install fd</pre></div>
+<p>A different version using the <a href="https://github.com/sharkdp/fd/pull/481#issuecomment-534494592" data-hovercard-type="pull_request" data-hovercard-url="/sharkdp/fd/pull/481/hovercard">slower</a> malloc <a href="https://bugzilla.redhat.com/show_bug.cgi?id=2216193#c1" rel="nofollow">instead of jemalloc</a> is also available from the EPEL8/9 repo as the package <code class="notranslate">fd-find</code>.</p>
+<h3>On macOS</h3>
+<p>You can install <code class="notranslate">fd</code> with <a href="https://formulae.brew.sh/formula/fd" rel="nofollow">Homebrew</a>:</p>
+<pre class="notranslate"><code class="notranslate">brew install fd
+</code></pre>
+<p>… or with MacPorts:</p>
+<pre class="notranslate"><code class="notranslate">port install fd
+</code></pre>
+<h3>On Windows</h3>
+<p>You can download pre-built binaries from the <a href="https://github.com/sharkdp/fd/releases">release page</a>.</p>
+<p>Alternatively, you can install <code class="notranslate">fd</code> via <a href="http://scoop.sh" rel="nofollow">Scoop</a>:</p>
+<pre class="notranslate"><code class="notranslate">scoop install fd
+</code></pre>
+<p>Or via <a href="https://chocolatey.org" rel="nofollow">Chocolatey</a>:</p>
+<pre class="notranslate"><code class="notranslate">choco install fd
+</code></pre>
+<p>Or via <a href="https://learn.microsoft.com/en-us/windows/package-manager/" rel="nofollow">Winget</a>:</p>
+<pre class="notranslate"><code class="notranslate">winget install sharkdp.fd
+</code></pre>
+<h3>On GuixOS</h3>
+<p>You can install <a href="https://guix.gnu.org/en/packages/fd-8.1.1/" rel="nofollow">the fd package</a> from the official repo:</p>
+<pre class="notranslate"><code class="notranslate">guix install fd
+</code></pre>
+<h3>On Mise</h3>
+<p>You can use <a href="https://github.com/jdx/mise">mise</a> to install <code class="notranslate">fd</code> with a command like this:</p>
+<pre class="notranslate"><code class="notranslate">mise use -g fd@latest
+</code></pre>
+<h3>On NixOS / via Nix</h3>
+<p>You can use the <a href="https://nixos.org/nix/" rel="nofollow">Nix package manager</a> to install <code class="notranslate">fd</code>:</p>
+<pre class="notranslate"><code class="notranslate">nix-env -i fd
+</code></pre>
+<h3>Via Flox</h3>
+<p>You can use <a href="https://flox.dev" rel="nofollow">Flox</a> to install <code class="notranslate">fd</code> into a Flox environment:</p>
+<pre class="notranslate"><code class="notranslate">flox install fd
+</code></pre>
+<h3>On FreeBSD</h3>
+<p>You can install <a href="https://www.freshports.org/sysutils/fd" rel="nofollow">the fd-find package</a> from the official repo:</p>
+<pre class="notranslate"><code class="notranslate">pkg install fd-find
+</code></pre>
+<h3>From npm</h3>
+<p>On Linux and macOS, you can install the <a href="https://npm.im/fd-find" rel="nofollow">fd-find</a> package:</p>
+<pre class="notranslate"><code class="notranslate">npm install -g fd-find
+</code></pre>
+<h3>From source</h3>
+<p>With Rust's package manager <a href="https://github.com/rust-lang/cargo">cargo</a>, you can install <em>fd</em> via:</p>
+<pre class="notranslate"><code class="notranslate">cargo install fd-find
+</code></pre>
+<p>Note that rust version <em>1.90.0</em> or later is required.</p>
+<p><code class="notranslate">make</code> is also needed for the build.</p>
+<h3>From binaries</h3>
+<p>The <a href="https://github.com/sharkdp/fd/releases">release page</a> includes precompiled binaries for Linux, macOS and Windows. Statically-linked binaries are also available: look for archives with <code class="notranslate">musl</code> in the file name.</p>
+<h2>Development</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">git clone https://github.com/sharkdp/fd
+
+<span class="pl-c"><span class="pl-c">#</span> Build</span>
+<span class="pl-c1">cd</span> fd
+cargo build
+
+<span class="pl-c"><span class="pl-c">#</span> Run unit tests and integration tests</span>
+cargo <span class="pl-c1">test</span>
+
+<span class="pl-c"><span class="pl-c">#</span> Install</span>
+cargo install --path <span class="pl-c1">.</span></pre></div>
+<h3>Completions</h3>
+<h4>From Release Archives</h4>
+<p>Pre-built completion files are included in the release archives (<code class="notranslate">.tar.gz</code>/<code class="notranslate">.zip</code>) on the<br>
+<a href="https://github.com/sharkdp/fd/releases">Releases page</a>, in the <code class="notranslate">autocomplete</code> directory.<br>
+To use these completions:</p>
+<ul>
+<li><strong>bash</strong>: Source the <code class="notranslate">fd.bash</code> file in your <code class="notranslate">~/.bashrc</code>, or place it in a directory that gets sourced automatically.</li>
+<li><strong>zsh</strong>: Move <code class="notranslate">_fd</code> to a directory in your <code class="notranslate">fpath</code> (e.g., <code class="notranslate">~/.zfunc</code>).</li>
+<li><strong>fish</strong>: Copy <code class="notranslate">fd.fish</code> to <code class="notranslate">~/.config/fish/completions/</code>.</li>
+<li><strong>powershell</strong>: Source <code class="notranslate">_fd.ps1</code> from one of your <a href="https://learn.microsoft.com/en-us/powershell/scripting/learn/shell/creating-profiles?view=powershell-7.5" rel="nofollow">profile scripts</a>.</li>
+</ul>
+<h4>Generate from fd</h4>
+<p>You can also generate completions directly using <code class="notranslate">fd --gen-completions &lt;shell&gt;</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Bash</span>
+fd --gen-completions bash <span class="pl-k">&gt;</span> <span class="pl-k">~</span>/.local/share/bash-completion/completions/fd
+
+<span class="pl-c"><span class="pl-c">#</span> Zsh (ensure ~/.zfunc is in your fpath)</span>
+fd --gen-completions zsh <span class="pl-k">&gt;</span> <span class="pl-k">~</span>/.zfunc/_fd
+
+<span class="pl-c"><span class="pl-c">#</span> Fish</span>
+fd --gen-completions fish <span class="pl-k">&gt;</span> <span class="pl-k">~</span>/.config/fish/completions/fd.fish
+
+<span class="pl-c"><span class="pl-c">#</span> PowerShell</span>
+fd --gen-completions powershell <span class="pl-k">&gt;&gt;</span> <span class="pl-smi">$PROFILE</span></pre></div>
+<h2>Maintainers</h2>
+<ul>
+<li><a href="https://github.com/sharkdp">sharkdp</a></li>
+<li><a href="https://github.com/tmccombs">tmccombs</a></li>
+<li><a href="https://github.com/tavianator">tavianator</a></li>
+</ul>
+<h2>License</h2>
+<p><code class="notranslate">fd</code> is distributed under the terms of both the MIT License and the Apache License 2.0.</p>
+<p>See the <a href="LICENSE-APACHE">LICENSE-APACHE</a> and <a href="LICENSE-MIT">LICENSE-MIT</a> files for license details.</p>

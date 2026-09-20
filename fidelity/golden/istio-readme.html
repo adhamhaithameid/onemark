@@ -1,0 +1,195 @@
+<h1><code class="notranslate">krt</code>: <strong>K</strong>ubernetes Declarative Controller <strong>R</strong>un<strong>t</strong>ime</h1>
+<p><code class="notranslate">krt</code> provides a framework for building <em>declarative</em> controllers.<br>
+See the <a href="https://docs.google.com/document/d/1-ywpCnOfubqg7WAXSPf4YgbaFDBEU9HIqMWcxZLhzwE/edit#heading=h.ffjmk8byb9gt" rel="nofollow">design doc</a> and <a href="https://sched.co/1R2oY" rel="nofollow">KubeCon talk</a> for more background.</p>
+<p>The framework aims to solve a few problems with writing controllers:</p>
+<ul>
+<li>Operate on any types, from any source. Kubernetes provides informers, but these only work on Kubernetes types read from Kubernetes objects.
+<ul>
+<li><code class="notranslate">krt</code> can accept any object type, from any source, and handle them the same.</li>
+</ul>
+</li>
+<li>Provide high level abstractions.
+<ul>
+<li>Controller authors can write simple transformation functions from <code class="notranslate">Input</code> -&gt; <code class="notranslate">Output</code> (with dependencies); the framework handles all the state automatically.</li>
+</ul>
+</li>
+</ul>
+<h2>Key Primitives</h2>
+<p>The most important primitive provided is the <code class="notranslate">Collection</code> interface.<br>
+This is basically an <code class="notranslate">Informer</code>, but not tied to Kubernetes.</p>
+<p>Currently, there are three ways to build a <code class="notranslate">Collection</code>:</p>
+<ul>
+<li>Built from an <code class="notranslate">Informer</code> with <code class="notranslate">WrapClient</code> or <code class="notranslate">NewInformer</code>.</li>
+<li>Statically configured with <code class="notranslate">NewStatic</code>.</li>
+<li>Derived from other collections (more information on this below).</li>
+</ul>
+<p>Unlike <code class="notranslate">Informers</code>, these primitives work on arbitrary objects.<br>
+However, these objects are expected to have some properties, depending on their usage.<br>
+These are <em>not</em> expressed as generic constraints due to limitations in Go's type system.</p>
+<ul>
+<li>Each object <code class="notranslate">T</code> must have a unique <code class="notranslate">Key[T]</code> (which is just a typed wrapper around <code class="notranslate">string</code>) that uniquely identifies the object.<br>
+Default implementations exist for Kubernetes objects, Istio <code class="notranslate">config.Config</code> objects, and <code class="notranslate">ResourceName() string</code> implementations.</li>
+<li><code class="notranslate">Equals(k K) bool</code> may be implemented to provide custom implementations to compare objects. Comparison is done to detect if changes were made.<br>
+Default implementations are available for Kubernetes and protobuf objects, and will fallback to <code class="notranslate">reflect.DeepEqual</code>.</li>
+<li>A <code class="notranslate">Name</code>, <code class="notranslate">Namespace</code>, <code class="notranslate">Labels</code>, and <code class="notranslate">LabelSelector</code> may optionally be included, for use with filters (see below).</li>
+</ul>
+<h2>Derived Collections</h2>
+<p>The core of the framework is in the ability to derive collections from others.</p>
+<p>In general, these are built by providing some <code class="notranslate">func(inputs...) outputs...</code> (called "transformation" functions).<br>
+While more could be expressed, there are currently three forms implemented.</p>
+<ul>
+<li><code class="notranslate">func() *O</code> via <code class="notranslate">NewSingleton</code>
+<ul>
+<li>This generates a collection that has a single value. An example would be some global configuration.</li>
+</ul>
+</li>
+<li><code class="notranslate">func(input I) *O</code> via <code class="notranslate">NewCollection</code>
+<ul>
+<li>This generates a one-to-one mapping of input to output. An example would be a transformation from a <code class="notranslate">Pod</code> type to a generic <code class="notranslate">Workload</code> type.</li>
+</ul>
+</li>
+<li><code class="notranslate">func(input I) []O</code> via <code class="notranslate">NewManyCollection</code>
+<ul>
+<li>This generates a one-to-many mapping of input to output. An example would be a transformation from a <code class="notranslate">Service</code> to a <em>set</em> of <code class="notranslate">Endpoint</code> types.</li>
+<li>The order of the response does not matter. Each response must have a unique key.</li>
+</ul>
+</li>
+</ul>
+<p>The form used and input type only represent the <em>primary dependencies</em>, indicating the cardinality.<br>
+Each transformation can additionally include an arbitrary number of dependencies, fetching data from other collections.</p>
+<p>For example, a simple <code class="notranslate">Singleton</code> example that keeps track of the number of <code class="notranslate">ConfigMap</code>s in the cluster:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">ConfigMapCount</span> <span class="pl-c1">:=</span> krt.<span class="pl-smi">NewSingleton</span>[<span class="pl-smi">int</span>](<span class="pl-k">func</span>(<span class="pl-s1">ctx</span> krt.<span class="pl-smi">HandlerContext</span>) <span class="pl-c1">*</span><span class="pl-smi">int</span> {
+    <span class="pl-s1">cms</span> <span class="pl-c1">:=</span> <span class="pl-s1">krt</span>.<span class="pl-c1">Fetch</span>(<span class="pl-s1">ctx</span>, <span class="pl-s1">ConfigMaps</span>)
+    <span class="pl-k">return</span> <span class="pl-s1">ptr</span>.<span class="pl-c1">Of</span>(<span class="pl-s1">len</span>(<span class="pl-s1">cms</span>))
+})</pre></div>
+<p>The <code class="notranslate">Fetch</code> operation enables querying against other collections.<br>
+If the result of the <code class="notranslate">Fetch</code> operation changes, the collection will automatically be recomputed; the framework handles the state and event detection.<br>
+In the above example, the provided function will be called (at least) every time there is a change to a configmap.<br>
+The <code class="notranslate">ConfigMapCount</code> collection will produce events only when the count changes.<br>
+The framework will use generic Equals on the underlying object to determine whether or not to recompute collections.</p>
+<h3>Picking a collection type</h3>
+<p>There are a variety of collection types available.<br>
+Picking these is about simplicity, usability, and performance.</p>
+<p>The <code class="notranslate">NewSingleton</code> form (<code class="notranslate">func() *O</code>), in theory, could be used universally.<br>
+Consider a transformation from <code class="notranslate">Pod</code> to <code class="notranslate">SimplePod</code>:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">SimplePods</span> <span class="pl-c1">:=</span> krt.<span class="pl-smi">NewSingleton</span>[<span class="pl-smi">SimplePod</span>](<span class="pl-k">func</span>(<span class="pl-s1">ctx</span> krt.<span class="pl-smi">HandlerContext</span>) <span class="pl-c1">*</span>[]<span class="pl-smi">SimplePod</span> {
+    <span class="pl-s1">res</span> <span class="pl-c1">:=</span> []<span class="pl-smi">SimplePod</span>{}
+    <span class="pl-k">for</span> <span class="pl-s1">_</span>, <span class="pl-s1">pod</span> <span class="pl-c1">:=</span> <span class="pl-k">range</span> <span class="pl-s1">krt</span>.<span class="pl-c1">Fetch</span>(<span class="pl-s1">ctx</span>, <span class="pl-s1">Pod</span>) {
+        <span class="pl-s1">res</span> <span class="pl-c1">=</span> <span class="pl-s1">append</span>(<span class="pl-s1">res</span>, <span class="pl-smi">SimplePod</span>{<span class="pl-s1">Name</span>: <span class="pl-s1">pod</span>.<span class="pl-c1">Name</span>})
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">&amp;</span><span class="pl-s1">res</span>
+}) <span class="pl-c">// Results in a Collection[[]SimplePod]</span></pre></div>
+<p>While this <em>works</em>, it is inefficient and complex to write.<br>
+Consumers of SimplePod can only query the entire list at once.<br>
+Anytime <em>any</em> <code class="notranslate">Pod</code> changes, <em>all</em> <code class="notranslate">SimplePod</code>s must be recomputed.</p>
+<p>A better approach would be to lift <code class="notranslate">Pod</code> into a primary dependency:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">SimplePods</span> <span class="pl-c1">:=</span> krt.<span class="pl-smi">NewCollection</span>[<span class="pl-smi">SimplePod</span>](<span class="pl-k">func</span>(<span class="pl-s1">ctx</span> krt.<span class="pl-smi">HandlerContext</span>, <span class="pl-s1">pod</span> <span class="pl-c1">*</span>v1.<span class="pl-smi">Pod</span>) <span class="pl-c1">*</span><span class="pl-smi">SimplePod</span> {
+    <span class="pl-k">return</span> <span class="pl-c1">&amp;</span><span class="pl-smi">SimplePod</span>{<span class="pl-s1">Name</span>: <span class="pl-s1">pod</span>.<span class="pl-c1">Name</span>}
+}) <span class="pl-c">// Results in a Collection[SimplePod]</span></pre></div>
+<p>Not only is this simpler to write, its far more efficient.<br>
+Consumers can more efficiently query for <code class="notranslate">SimplePod</code>s using label selectors, filters, etc.<br>
+Additionally, if a single <code class="notranslate">Pod</code> changes we only recompute one <code class="notranslate">SimplePod</code>.</p>
+<p>Above we have a one-to-one mapping of input and output.<br>
+We may have one-to-many mappings, though.<br>
+In these cases, usually its best to use a <code class="notranslate">ManyCollection</code>.<br>
+Like the above examples, its <em>possible</em> to express these as normal <code class="notranslate">Collection</code>s, but likely inefficient.</p>
+<p>Example computing a list of all container names across all pods:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">ContainerNames</span> <span class="pl-c1">:=</span> krt.<span class="pl-smi">NewManyCollection</span>[<span class="pl-smi">string</span>](<span class="pl-k">func</span>(<span class="pl-s1">ctx</span> krt.<span class="pl-smi">HandlerContext</span>, <span class="pl-s1">pod</span> <span class="pl-c1">*</span>v1.<span class="pl-smi">Pod</span>) (<span class="pl-s1">res</span> []<span class="pl-smi">string</span>) {
+    <span class="pl-k">for</span> <span class="pl-s1">_</span>, <span class="pl-s1">c</span> <span class="pl-c1">:=</span> <span class="pl-k">range</span> <span class="pl-s1">pod</span>.<span class="pl-c1">Spec</span>.<span class="pl-c1">Containers</span> {
+      <span class="pl-s1">res</span> <span class="pl-c1">=</span> <span class="pl-s1">append</span>(<span class="pl-s1">res</span>, <span class="pl-s1">c</span>.<span class="pl-c1">Name</span>)
+    }
+    <span class="pl-k">return</span> <span class="pl-s1">res</span>
+}) <span class="pl-c">// Results in a Collection[string]</span></pre></div>
+<p>Example computing a list of service endpoints, similar to the Kubernetes core endpoints controller:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">Endpoints</span> <span class="pl-c1">:=</span> krt.<span class="pl-smi">NewManyCollection</span>[<span class="pl-smi">Endpoint</span>](<span class="pl-k">func</span>(<span class="pl-s1">ctx</span> krt.<span class="pl-smi">HandlerContext</span>, <span class="pl-s1">svc</span> <span class="pl-c1">*</span>v1.<span class="pl-smi">Service</span>) (<span class="pl-s1">res</span> []<span class="pl-smi">Endpoint</span>) {
+    <span class="pl-k">for</span> <span class="pl-s1">_</span>, <span class="pl-s1">c</span> <span class="pl-c1">:=</span> <span class="pl-k">range</span> <span class="pl-s1">krt</span>.<span class="pl-c1">Fetch</span>(<span class="pl-s1">ctx</span>, <span class="pl-s1">Pods</span>, <span class="pl-s1">krt</span>.<span class="pl-c1">FilterLabel</span>(<span class="pl-s1">svc</span>.<span class="pl-c1">Spec</span>.<span class="pl-c1">Selector</span>)) {
+      <span class="pl-s1">res</span> <span class="pl-c1">=</span> <span class="pl-s1">append</span>(<span class="pl-s1">res</span>, <span class="pl-smi">Endpoint</span>{<span class="pl-s1">Service</span>: <span class="pl-s1">svc</span>.<span class="pl-c1">Name</span>, <span class="pl-s1">Pod</span>: <span class="pl-s1">pod</span>.<span class="pl-c1">Name</span>, <span class="pl-s1">IP</span>: <span class="pl-s1">pod</span>.<span class="pl-c1">status</span>.<span class="pl-c1">PodIP</span>})
+    }
+    <span class="pl-k">return</span> <span class="pl-s1">res</span>
+}) <span class="pl-c">// Results in a Collection[Endpoint]</span></pre></div>
+<p>As a rule of thumb, if your <code class="notranslate">Collection</code> type is a list, you most likely should be using a different type to flatten the list.<br>
+An exception to this would be if the list represents an atomic set of items that are never queried independently;<br>
+in these cases, however, it is probably best to wrap it in a struct.<br>
+For example, to represent the set of containers in a pod, we may make a <code class="notranslate">type PodContainers struct { Name string, Containers []string }</code> and have a<br>
+<code class="notranslate">Collection[PodContainers]</code> rather than a <code class="notranslate">Collection[[]string]</code>.</p>
+<p>In theory, other forms could be expressed such as <code class="notranslate">func(input1 I1, input2 I2) *O</code>.<br>
+However, there haven't yet been use cases for these more complex forms.</p>
+<h3>Transformation constraints</h3>
+<p>In order for the framework to properly handle dependencies and events, transformation functions must adhere by a few properties.</p>
+<p>Basically, Transformations must be stateless and idempotent.</p>
+<ul>
+<li>Any querying of other <code class="notranslate">Collection</code>s <em>must</em> be done through <code class="notranslate">krt.Fetch</code>.</li>
+<li>Querying other data stores that may change is not permitted.</li>
+<li>Querying external state (e.g. making HTTP calls) is not permitted.</li>
+<li>Transformations <em>may</em> be called at any time, including many times for the same inputs. Transformation functions should not make any assumptions about calling patterns.</li>
+</ul>
+<p>Violation of these properties will result in undefined behavior (which would likely manifest as stale data).</p>
+<h3>Fetch details</h3>
+<p>In addition to simply fetching <em>all</em> resources from a collection, a filter can be provided.<br>
+This is more efficient than filtering outside of <code class="notranslate">Fetch</code>, as the framework can filter un-matched objects earlier, skipping redundant work.<br>
+The following filters are provided</p>
+<ul>
+<li><code class="notranslate">FilterName(name, namespace)</code>: filters an object by Name and Namespace.</li>
+<li><code class="notranslate">FilterNamespace(namespace)</code>: filters an object by Namespace.</li>
+<li><code class="notranslate">FilterKey(key)</code>: filters an object by key.</li>
+<li><code class="notranslate">FilterLabel(labels)</code>: filters to only objects that match these labels.</li>
+<li><code class="notranslate">FilterSelects(labels)</code>: filters to only objects that <strong>select</strong> these labels. An empty selector matches everything.</li>
+<li><code class="notranslate">FilterSelectsNonEmpty(labels)</code>: filters to only objects that <strong>select</strong> these labels. An empty selector matches nothing.</li>
+<li><code class="notranslate">FilterGeneric(func(any) bool)</code>: filters by an arbitrary function.</li>
+</ul>
+<p>Note that most filters may only be used if the objects being <code class="notranslate">Fetch</code>ed implement appropriate functions to extract the fields filtered against.<br>
+Failures to meet this requirement will result in a <code class="notranslate">panic</code>.</p>
+<h2>Library Status</h2>
+<p>This library is currently "experimental" and is not used in Istio production yet.<br>
+The intent is this will be slowly rolled out to controllers that will benefit from it and are lower risk;<br>
+likely, the ambient controller will be the first target.</p>
+<p>While its <em>plausible</em> all of Istio could be fundamentally re-architected to fully embrace <code class="notranslate">krt</code> throughout (replacing things like <code class="notranslate">PushContext</code>),<br>
+it is not yet clear this is desired.</p>
+<h3>Performance</h3>
+<p>Compared to a perfectly optimized hand-written controller, <code class="notranslate">krt</code> adds some overhead.<br>
+However, writing a perfectly optimized controller is hard, and often not done.<br>
+As a result, for many scenarios it is expected that <code class="notranslate">krt</code> will perform on-par or better.</p>
+<p>This is similar to a comparison between a high level programming language compared to assembly;<br>
+while its always possible to write better code in assembly, smart compilers can make optimizations humans are unlikely to,<br>
+such as loop unrolling.<br>
+Similarly, <code class="notranslate">krt</code> can make complex optimizations in one place, so each controller implementation doesn't, which is likely to increase<br>
+the amount of optimizations applied.</p>
+<p>The <code class="notranslate">BenchmarkControllers</code> puts this to the test, comparing an <em>ideal</em> hand-written controller to one written in <code class="notranslate">krt</code>.<br>
+While the numbers are likely to change over time, at the time of writing the overhead for <code class="notranslate">krt</code> is roughly 10%:</p>
+<pre lang="text" class="notranslate"><code class="notranslate">name                  time/op
+Controllers/krt-8     13.4ms ±23%
+Controllers/legacy-8  11.4ms ± 6%
+
+name                  alloc/op
+Controllers/krt-8     15.2MB ± 0%
+Controllers/legacy-8  12.9MB ± 0%
+</code></pre>
+<h3>Future work</h3>
+<h4>Object optimizations</h4>
+<p>One important aspect of <code class="notranslate">krt</code> is its ability to automatically detect if objects have changed, and only trigger dependencies if so.<br>
+This works better when we only compare fields we actually use.<br>
+Today, users can do this manually by making a transformation from the full object to a subset of the object.</p>
+<p>This could be improved by:</p>
+<ul>
+<li>Automagically detecting which subset of the object is used, and optimize this behind the scenes. This seems unrealistic, though.</li>
+<li>Allow a lightweight form of a <code class="notranslate">Full -&gt; Subset</code> transformation, that doesn't create a full new collection (with respective overhead), but rather overlays on top of an existing one.</li>
+</ul>
+<h4>Internal dependency optimizations</h4>
+<p>Today, the library stores a mapping of <code class="notranslate">Input -&gt; Dependencies</code> (<code class="notranslate">map[Key[I]][]dependency</code>).<br>
+Often times, there are common dependencies amongst keys.<br>
+For example, a namespace filter probably has many less unique values than unique input objects.<br>
+Other filters may be completely static and shared by all keys.</p>
+<p>This could be improved by:</p>
+<ul>
+<li>Optimize the data structure to be a bit more advanced in sharing dependencies between keys.</li>
+<li>Push the problem to the user; allow them to explicitly set up static <code class="notranslate">Fetch</code>es.</li>
+</ul>
+<h4>Debug tooling</h4>
+<p><code class="notranslate">krt</code> has an opportunity to add a lot of debugging capabilities that are hard to do elsewhere, because it would require<br>
+linking up disparate controllers, and a lot of per-controller logic.</p>
+<p>Some debugging tooling ideas:</p>
+<ul>
+<li>Add OpenTelemetry tracing to controllers (<a href="https://github.com/howardjohn/istio/commits/experiment/cv2-tracing">prototype</a>).</li>
+<li>Automatically generate mermaid diagrams showing system dependencies.</li>
+<li>Automatically detect violations of <a href="#transformation-constraints">Transformation constraints</a>.</li>
+</ul>

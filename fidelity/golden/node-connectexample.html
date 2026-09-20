@@ -1,0 +1,233 @@
+<h1>socks examples</h1>
+<h2>Example for SOCKS 'connect' command</h2>
+<p>The connect command is the most common use-case for a SOCKS proxy. This establishes a direct connection to a destination host through a proxy server. The destination host only has knowledge of the proxy server connecting to it and does not know about the origin client (you).</p>
+<p><strong>Origin Client (you) &lt;-&gt; Proxy Server &lt;-&gt; Destination Server</strong></p>
+<p>In this example, we are connecting to a web server on port 80, and sending a very basic HTTP request to receive a response. It's worth noting that there are many socks-http-agents that can be used with the node http module (and libraries such as request.js) to make this easier. This HTTP request is used as a simple example.</p>
+<p>The 'connect' command can be used via the SocksClient.createConnection() factory function as well as by creating a SocksClient instance and using event handlers.</p>
+<h3>Using createConnection with async/await</h3>
+<p>Since SocksClient.createConnection returns a Promise, we can easily use async/await for flow control.</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-v">SocksClient</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'socks'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">SocksClient</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">options</span>  <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">proxy</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">host</span>: <span class="pl-s">'104.131.124.203'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">1081</span><span class="pl-kos">,</span>
+    <span class="pl-c1">type</span>: <span class="pl-c1">5</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">destination</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">host</span>: <span class="pl-s">'ip-api.com'</span><span class="pl-kos">,</span> <span class="pl-c">// host names are supported with SOCKS v4a and SOCKS v5.</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">80</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">command</span>: <span class="pl-s">'connect'</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">async</span> <span class="pl-k">function</span> <span class="pl-s1">start</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">try</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">info</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-v">SocksClient</span><span class="pl-kos">.</span><span class="pl-en">createConnection</span><span class="pl-kos">(</span><span class="pl-s1">options</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-c">// &lt;Socket ...&gt;  (this is a raw net.Socket that is established to the destination host through the given proxy servers)</span>
+
+    <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-en">write</span><span class="pl-kos">(</span><span class="pl-s">'GET /json HTTP/1.1\nHost: ip-api.com\n\n'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-c1">on</span><span class="pl-kos">(</span><span class="pl-s">'data'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">.</span><span class="pl-en">toString</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ip-api.com sees that the last proxy (104.131.124.203) is connected to it and not the origin client (you).</span>
+      <span class="pl-c">/*</span>
+<span class="pl-c">        HTTP/1.1 200 OK</span>
+<span class="pl-c">        Access-Control-Allow-Origin: *</span>
+<span class="pl-c">        Content-Type: application/json; charset=utf-8</span>
+<span class="pl-c">        Date: Sun, 24 Dec 2017 03:47:51 GMT</span>
+<span class="pl-c">        Content-Length: 300</span>
+<span class="pl-c"></span>
+<span class="pl-c">        {</span>
+<span class="pl-c">          "as":"AS14061 Digital Ocean, Inc.",</span>
+<span class="pl-c">          "city":"Clifton",</span>
+<span class="pl-c">          "country":"United States",</span>
+<span class="pl-c">          "countryCode":"US",</span>
+<span class="pl-c">          "isp":"Digital Ocean",</span>
+<span class="pl-c">          "lat":40.8326,</span>
+<span class="pl-c">          "lon":-74.1307,</span>
+<span class="pl-c">          "org":"Digital Ocean",</span>
+<span class="pl-c">          "query":"104.131.124.203",</span>
+<span class="pl-c">          "region":"NJ",</span>
+<span class="pl-c">          "regionName":"New Jersey",</span>
+<span class="pl-c">          "status":"success",</span>
+<span class="pl-c">          "timezone":"America/New_York",</span>
+<span class="pl-c">          "zip":"07014"</span>
+<span class="pl-c">        }</span>
+<span class="pl-c">      */</span>
+  <span class="pl-kos">}</span> <span class="pl-en">catch</span> <span class="pl-kos">(</span><span class="pl-s1">err</span><span class="pl-kos">)</span><span class="pl-kos"></span> <span class="pl-kos">{</span>
+    <span class="pl-c">// Handle errors</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-s1">start</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<h3>Using createConnection with Promises</h3>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-v">SocksClient</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'socks'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">SocksClient</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">options</span>  <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">proxy</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">ipaddress</span>: <span class="pl-s">'104.131.124.203'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">1081</span><span class="pl-kos">,</span>
+    <span class="pl-c1">type</span>: <span class="pl-c1">5</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">destination</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">host</span>: <span class="pl-s">'ip-api.com'</span><span class="pl-kos">,</span> <span class="pl-c">// host names are supported with SOCKS v4a and SOCKS v5.</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">80</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">command</span>: <span class="pl-s">'connect'</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-v">SocksClient</span><span class="pl-kos">.</span><span class="pl-en">createConnection</span><span class="pl-kos">(</span><span class="pl-s1">options</span><span class="pl-kos">)</span>
+<span class="pl-kos">.</span><span class="pl-c1">then</span><span class="pl-kos">(</span><span class="pl-s1">info</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-c">// &lt;Socket ...&gt;  (this is a raw net.Socket that is established to the destination host through the given proxy servers)</span>
+
+  <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-en">write</span><span class="pl-kos">(</span><span class="pl-s">'GET /json HTTP/1.1\nHost: ip-api.com\n\n'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'data'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">.</span><span class="pl-en">toString</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ip-api.com sees that the last proxy (104.131.124.203) is connected to it and not the origin client (you).</span>
+    <span class="pl-c">/*</span>
+<span class="pl-c">      HTTP/1.1 200 OK</span>
+<span class="pl-c">      Access-Control-Allow-Origin: *</span>
+<span class="pl-c">      Content-Type: application/json; charset=utf-8</span>
+<span class="pl-c">      Date: Sun, 24 Dec 2017 03:47:51 GMT</span>
+<span class="pl-c">      Content-Length: 300</span>
+<span class="pl-c"></span>
+<span class="pl-c">      {</span>
+<span class="pl-c">        "as":"AS14061 Digital Ocean, Inc.",</span>
+<span class="pl-c">        "city":"Clifton",</span>
+<span class="pl-c">        "country":"United States",</span>
+<span class="pl-c">        "countryCode":"US",</span>
+<span class="pl-c">        "isp":"Digital Ocean",</span>
+<span class="pl-c">        "lat":40.8326,</span>
+<span class="pl-c">        "lon":-74.1307,</span>
+<span class="pl-c">        "org":"Digital Ocean",</span>
+<span class="pl-c">        "query":"104.131.124.203",</span>
+<span class="pl-c">        "region":"NJ",</span>
+<span class="pl-c">        "regionName":"New Jersey",</span>
+<span class="pl-c">        "status":"success",</span>
+<span class="pl-c">        "timezone":"America/New_York",</span>
+<span class="pl-c">        "zip":"07014"</span>
+<span class="pl-c">      }</span>
+<span class="pl-c">    */</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-kos">.</span><span class="pl-en">catch</span><span class="pl-kos">(</span><span class="pl-s1">err</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// handle errors</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<h3>Using createConnection with callbacks</h3>
+<p>SocksClient.createConnection() optionally accepts a callback function as a second parameter.</p>
+<p><strong>Note:</strong> If a callback function is provided, a Promise is still returned from the function, but the promise will always resolve regardless of if there was en error. (tldr: Do not mix callbacks and Promises).</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-v">SocksClient</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'socks'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">SocksClient</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">options</span>  <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">proxy</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">ipaddress</span>: <span class="pl-s">'104.131.124.203'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">1081</span><span class="pl-kos">,</span>
+    <span class="pl-c1">type</span>: <span class="pl-c1">5</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">destination</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">host</span>: <span class="pl-s">'ip-api.com'</span><span class="pl-kos">,</span> <span class="pl-c">// host names are supported with SOCKS v4a and SOCKS v5.</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">80</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">command</span>: <span class="pl-s">'connect'</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-v">SocksClient</span><span class="pl-kos">.</span><span class="pl-c1">createConnection</span><span class="pl-kos">(</span><span class="pl-s1">options</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">err</span><span class="pl-kos">,</span> <span class="pl-s1">info</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">err</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// handle errors</span>
+  <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-c">// &lt;Socket ...&gt;  (this is a raw net.Socket that is established to the destination host through the given proxy servers)</span>
+
+    <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-en">write</span><span class="pl-kos">(</span><span class="pl-s">'GET /json HTTP/1.1\nHost: ip-api.com\n\n'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'data'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">.</span><span class="pl-en">toString</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ip-api.com sees that the last proxy (104.131.124.203) is connected to it and not the origin client (you).</span>
+      <span class="pl-c">/*</span>
+<span class="pl-c">        HTTP/1.1 200 OK</span>
+<span class="pl-c">        Access-Control-Allow-Origin: *</span>
+<span class="pl-c">        Content-Type: application/json; charset=utf-8</span>
+<span class="pl-c">        Date: Sun, 24 Dec 2017 03:47:51 GMT</span>
+<span class="pl-c">        Content-Length: 300</span>
+<span class="pl-c"></span>
+<span class="pl-c">        {</span>
+<span class="pl-c">          "as":"AS14061 Digital Ocean, Inc.",</span>
+<span class="pl-c">          "city":"Clifton",</span>
+<span class="pl-c">          "country":"United States",</span>
+<span class="pl-c">          "countryCode":"US",</span>
+<span class="pl-c">          "isp":"Digital Ocean",</span>
+<span class="pl-c">          "lat":40.8326,</span>
+<span class="pl-c">          "lon":-74.1307,</span>
+<span class="pl-c">          "org":"Digital Ocean",</span>
+<span class="pl-c">          "query":"104.131.124.203",</span>
+<span class="pl-c">          "region":"NJ",</span>
+<span class="pl-c">          "regionName":"New Jersey",</span>
+<span class="pl-c">          "status":"success",</span>
+<span class="pl-c">          "timezone":"America/New_York",</span>
+<span class="pl-c">          "zip":"07014"</span>
+<span class="pl-c">        }</span>
+<span class="pl-c">      */</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos"></span></pre></div>
+<h3>Using event handlers</h3>
+<p>SocksClient also supports instance creation of a SocksClient. This allows for event based flow control.</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-v">SocksClient</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'socks'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">SocksClient</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">options</span>  <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">proxy</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">ipaddress</span>: <span class="pl-s">'104.131.124.203'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">1081</span><span class="pl-kos">,</span>
+    <span class="pl-c1">type</span>: <span class="pl-c1">5</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">destination</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">host</span>: <span class="pl-s">'ip-api.com'</span><span class="pl-kos">,</span> <span class="pl-c">// host names are supported with SOCKS v4a and SOCKS v5.</span>
+    <span class="pl-c1">port</span>: <span class="pl-c1">80</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+
+  <span class="pl-c1">command</span>: <span class="pl-s">'connect'</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">client</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">SocksClient</span><span class="pl-kos">(</span><span class="pl-s1">options</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-s1">client</span><span class="pl-kos">.</span><span class="pl-c1">on</span><span class="pl-kos">(</span><span class="pl-s">'established'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">info</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-c">// &lt;Socket ...&gt;  (this is a raw net.Socket that is established to the destination host through the given proxy servers)</span>
+
+  <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-en">write</span><span class="pl-kos">(</span><span class="pl-s">'GET /json HTTP/1.1\nHost: ip-api.com\n\n'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-s1">info</span><span class="pl-kos">.</span><span class="pl-c1">socket</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'data'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">data</span><span class="pl-kos">.</span><span class="pl-en">toString</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ip-api.com sees that the last proxy (104.131.124.203) is connected to it and not the origin client (you).</span>
+    <span class="pl-c">/*</span>
+<span class="pl-c">      HTTP/1.1 200 OK</span>
+<span class="pl-c">      Access-Control-Allow-Origin: *</span>
+<span class="pl-c">      Content-Type: application/json; charset=utf-8</span>
+<span class="pl-c">      Date: Sun, 24 Dec 2017 03:47:51 GMT</span>
+<span class="pl-c">      Content-Length: 300</span>
+<span class="pl-c"></span>
+<span class="pl-c">      {</span>
+<span class="pl-c">        "as":"AS14061 Digital Ocean, Inc.",</span>
+<span class="pl-c">        "city":"Clifton",</span>
+<span class="pl-c">        "country":"United States",</span>
+<span class="pl-c">        "countryCode":"US",</span>
+<span class="pl-c">        "isp":"Digital Ocean",</span>
+<span class="pl-c">        "lat":40.8326,</span>
+<span class="pl-c">        "lon":-74.1307,</span>
+<span class="pl-c">        "org":"Digital Ocean",</span>
+<span class="pl-c">        "query":"104.131.124.203",</span>
+<span class="pl-c">        "region":"NJ",</span>
+<span class="pl-c">        "regionName":"New Jersey",</span>
+<span class="pl-c">        "status":"success",</span>
+<span class="pl-c">        "timezone":"America/New_York",</span>
+<span class="pl-c">        "zip":"07014"</span>
+<span class="pl-c">      }</span>
+<span class="pl-c">    */</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Failed to establish proxy connection to destination.</span>
+<span class="pl-s1">client</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'error'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// Handle errors</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>

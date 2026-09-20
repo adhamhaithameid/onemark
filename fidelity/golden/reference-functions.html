@@ -1,0 +1,548 @@
+<p>r[items.fn]</p>
+<h1>Functions</h1>
+<p>r[items.fn.syntax]</p>
+<pre lang="grammar,items" class="notranslate"><code class="notranslate">Function -&gt;
+    FunctionQualifiers `fn` IDENTIFIER GenericParams?
+        `(` FunctionParameters? `)`
+        FunctionReturnType? WhereClause?
+        ( BlockExpression | `;` )
+
+FunctionQualifiers -&gt; `const`? `async`?[^async-edition] ItemSafety?[^extern-qualifiers] (`extern` Abi?)?
+
+ItemSafety -&gt; `safe`[^extern-safe] | `unsafe`
+
+Abi -&gt; STRING_LITERAL | RAW_STRING_LITERAL
+
+FunctionParameters -&gt;
+      SelfParam `,`?
+    | (SelfParam `,`)? FunctionParam (`,` FunctionParam)* `,`?
+
+SelfParam -&gt; OuterAttribute* ( ShorthandSelf | TypedSelf )
+
+ShorthandSelf -&gt; (`&amp;` | `&amp;` Lifetime)? `mut`? `self`
+
+TypedSelf -&gt; `mut`? `self` `:` Type
+
+FunctionParam -&gt; OuterAttribute* ( FunctionParamPattern | `...` | Type[^fn-param-2015] )
+
+FunctionParamPattern -&gt; PatternNoTopAlt `:` ( Type | `...` )
+
+FunctionReturnType -&gt; `-&gt;` Type
+</code></pre>
+<p>r[items.fn.intro]<br>
+A <em>function</em> consists of a <a href="../expressions/block-expr.md">block</a> (that's the <em>body</em> of the function), along with a name, a set of parameters, and an output type. Other than a name, all these are optional.</p>
+<p>r[items.fn.namespace]<br>
+Functions are declared with the keyword <code class="notranslate">fn</code> which defines the given name in the <a href="../names/namespaces.md">value namespace</a> of the module or block where it is located.</p>
+<p>r[items.fn.signature]<br>
+Functions may declare a set of <em>input</em> <a href="../variables.md"><em>variables</em></a> as parameters, through which the caller passes arguments into the function, and the <em>output</em> <a href="../types.md#type-expressions"><em>type</em></a> of the value the function will return to its caller on completion.</p>
+<p>r[items.fn.implicit-return]<br>
+If the output type is not explicitly stated, it is the <a href="../types/tuple.md">unit type</a>.</p>
+<p>r[items.fn.fn-item-type]<br>
+When referred to, a <em>function</em> yields a first-class <em>value</em> of the corresponding <a href="glossary.zst">zero-sized</a> <a href="../types/function-item.md"><em>function item type</em></a>, which when called evaluates to a direct call to the function.</p>
+<p>For example, this is a simple function:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">fn</span> <span class="pl-en">answer_to_life_the_universe_and_everything</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-c1">42</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.safety-qualifiers]<br>
+The <code class="notranslate">safe</code> function is semantically only allowed when used in an <a href="external-blocks.md"><code class="notranslate">extern</code> block</a>.</p>
+<p>r[items.fn.params]</p>
+<h2>Function parameters</h2>
+<p>r[items.fn.params.intro]<br>
+Function parameters are irrefutable <a href="../patterns.md">patterns</a>, so any pattern that is valid in an else-less <code class="notranslate">let</code> binding is also valid as a parameter:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">fn</span> <span class="pl-en">first</span><span class="pl-kos">(</span><span class="pl-kos">(</span>value<span class="pl-kos">,</span> _<span class="pl-kos">)</span><span class="pl-kos">:</span> <span class="pl-kos">(</span><span class="pl-smi">i32</span><span class="pl-kos">,</span> <span class="pl-smi">i32</span><span class="pl-kos">)</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span> value <span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.params.self-pat]<br>
+If the first parameter is a [SelfParam], this indicates that the function is a <a href="associated-items.md#methods">method</a>.</p>
+<p>r[items.fn.params.self-restriction]<br>
+Functions with a self parameter may only appear as an <a href="associated-items.md#associated-functions-and-methods">associated function</a> in a <a href="traits.md">trait</a> or <a href="implementations.md">implementation</a>.</p>
+<p>r[items.fn.params.varargs]<br>
+A parameter with the <code class="notranslate">...</code> token indicates a <a href="items.fn.c-variadic.intro">C-variadic function</a> and may only be used as the last parameter. In a function declaration in an <a href="external-blocks.md"><code class="notranslate">extern</code> block</a>, the C-variadic parameter may have a pattern, such as <code class="notranslate">ap: ...</code>, and in a <a href="items.fn.c-variadic.intro">C-variadic function</a> definition or C-variadic associated function declaration in a trait definition, the pattern is mandatory.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-kos">{</span>
+    <span class="pl-k">unsafe</span> <span class="pl-k">fn</span> <span class="pl-en">f1</span><span class="pl-kos">(</span>...<span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">unsafe</span> <span class="pl-k">fn</span> <span class="pl-en">f2</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f3</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">trait</span> <span class="pl-smi">Tr</span> <span class="pl-kos">{</span>
+    <span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f4</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>...<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-c">// ERROR: Missing pattern.</span></pre></div>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">trait</span> <span class="pl-smi">Tr</span> <span class="pl-kos">{</span>
+    <span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>...<span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ERROR: Missing pattern.</span>
+<span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.body]</p>
+<h2>Function body</h2>
+<p>r[items.fn.body.intro]<br>
+The body block of a function is conceptually wrapped in another block that first binds the argument patterns and then <code class="notranslate">return</code>s the value of the function's body. This means that the tail expression of the block, if evaluated, ends up being returned to the caller. As usual, an explicit return expression within the body of the function will short-cut that implicit return, if reached.</p>
+<p>For example, the function above behaves as if it was written as:</p>
+
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-c">// argument_0 is the actual first argument passed from the caller</span>
+<span class="pl-k">let</span> <span class="pl-kos">(</span>value<span class="pl-kos">,</span> _<span class="pl-kos">)</span> = argument_0<span class="pl-kos">;</span>
+<span class="pl-k">return</span> <span class="pl-kos">{</span>
+    value
+<span class="pl-kos">}</span><span class="pl-kos">;</span></pre></div>
+<p>r[items.fn.body.bodyless]<br>
+Functions without a body block are terminated with a semicolon. This form may only appear in a <a href="traits.md">trait</a> or <a href="external-blocks.md">external block</a>.</p>
+<p>r[items.fn.generics]</p>
+<h2>Generic functions</h2>
+<p>r[items.fn.generics.intro]<br>
+A <em>generic function</em> allows one or more <em>parameterized types</em> to appear in its signature. Each type parameter must be explicitly declared in an angle-bracket-enclosed and comma-separated list, following the function name.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-c">// foo is generic over A and B</span>
+
+<span class="pl-k">fn</span> <span class="pl-en">foo</span><span class="pl-kos">&lt;</span><span class="pl-smi">A</span><span class="pl-kos">,</span> <span class="pl-smi">B</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-s1">x</span><span class="pl-kos">:</span> <span class="pl-smi">A</span><span class="pl-kos">,</span> <span class="pl-s1">y</span><span class="pl-kos">:</span> <span class="pl-smi">B</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+# <span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.generics.param-names]<br>
+Inside the function signature and body, the name of the type parameter can be used as a type name.</p>
+<p>r[items.fn.generics.param-bounds]<br>
+<a href="traits.md">Trait</a> bounds can be specified for type parameters to allow methods from that trait to be called on values of that type. This is specified using the <code class="notranslate">where</code> syntax:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-k">use</span> std<span class="pl-kos">::</span>fmt<span class="pl-kos">::</span><span class="pl-v">Debug</span><span class="pl-kos">;</span>
+<span class="pl-k">fn</span> <span class="pl-en">foo</span><span class="pl-kos">&lt;</span><span class="pl-smi">T</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-s1">x</span><span class="pl-kos">:</span> <span class="pl-smi">T</span><span class="pl-kos">)</span> <span class="pl-k">where</span> <span class="pl-smi">T</span><span class="pl-kos">:</span> <span class="pl-smi">Debug</span> <span class="pl-kos">{</span>
+# <span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.generics.mono]<br>
+When a generic function is referenced, its type is instantiated based on the context of the reference. For example, calling the <code class="notranslate">foo</code> function here:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">use</span> std<span class="pl-kos">::</span>fmt<span class="pl-kos">::</span><span class="pl-v">Debug</span><span class="pl-kos">;</span>
+
+<span class="pl-k">fn</span> <span class="pl-en">foo</span><span class="pl-kos">&lt;</span><span class="pl-smi">T</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-s1">x</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-kos">[</span><span class="pl-smi">T</span><span class="pl-kos">]</span><span class="pl-kos">)</span> <span class="pl-k">where</span> <span class="pl-smi">T</span><span class="pl-kos">:</span> <span class="pl-smi">Debug</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// details elided</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span><span class="pl-kos">[</span><span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c1">2</span><span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>will instantiate type parameter <code class="notranslate">T</code> with <code class="notranslate">i32</code>.</p>
+<p>r[items.fn.generics.explicit-arguments]<br>
+The type parameters can also be explicitly supplied in a trailing <a href="../paths.md">path</a> component after the function name. This might be necessary if there is not sufficient context to determine the type parameters. For example, <code class="notranslate">mem::size_of::&lt;u32&gt;() == 4</code>.</p>
+<p>r[items.fn.extern]</p>
+<h2>Extern function qualifier</h2>
+<p>r[items.fn.extern.intro]<br>
+The <code class="notranslate">extern</code> function qualifier allows providing function <em>definitions</em> that can be called with a particular ABI:</p>
+
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">extern</span> <span class="pl-s">"ABI"</span> <span class="pl-k">fn</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span> <span class="pl-c">/* ... */</span> <span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.extern.def]<br>
+These are often used in combination with <a href="external-blocks.md">external block</a> items which provide function <em>declarations</em> that can be used to call functions without providing their <em>definition</em>:</p>
+
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"ABI"</span> <span class="pl-kos">{</span>
+  <span class="pl-k">unsafe</span> <span class="pl-k">fn</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">/* no body */</span>
+  safe<span class="pl-kos"></span> <span class="pl-k">fn</span> <span class="pl-en">bar</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">/* no body */</span>
+<span class="pl-kos">}</span>
+<span class="pl-k">unsafe</span> <span class="pl-kos">{</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">}</span><span class="pl-kos">;</span>
+<span class="pl-en">bar</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>r[items.fn.extern.default-abi]<br>
+When <code class="notranslate">"extern" Abi?*</code> is omitted from <code class="notranslate">FunctionQualifiers</code> in function items, the ABI <code class="notranslate">"Rust"</code> is assigned. For example:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">fn</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span></pre></div>
+<p>is equivalent to:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">extern</span> <span class="pl-s">"Rust"</span> <span class="pl-k">fn</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.extern.foreign-call]<br>
+Functions can be called by foreign code, and using an ABI that differs from Rust allows, for example, to provide functions that can be called from other programming languages like C:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-c">// Declares a function with the "C" ABI</span>
+<span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">new_i32</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span> <span class="pl-c1">0</span> <span class="pl-kos">}</span>
+
+<span class="pl-c">// Declares a function with the "stdcall" ABI</span>
+# <span class="pl-c1">#<span class="pl-kos">[</span>cfg<span class="pl-kos">(</span>any<span class="pl-kos">(</span>windows<span class="pl-kos">,</span> target_arch = <span class="pl-s">"x86"</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">]</span></span>
+<span class="pl-k">extern</span> <span class="pl-s">"stdcall"</span> <span class="pl-k">fn</span> <span class="pl-en">new_i32_stdcall</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span> <span class="pl-c1">0</span> <span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.extern.default-extern]<br>
+Just as with <a href="external-blocks.md">external block</a>, when the <code class="notranslate">extern</code> keyword is used and the <code class="notranslate">"ABI"</code> is omitted, the ABI used defaults to <code class="notranslate">"C"</code>. That is, this:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">extern</span> <span class="pl-k">fn</span> <span class="pl-en">new_i32</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span> <span class="pl-c1">0</span> <span class="pl-kos">}</span>
+<span class="pl-k">let</span> fptr<span class="pl-kos">:</span> <span class="pl-k">extern</span> <span class="pl-k">fn</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> = new_i32<span class="pl-kos">;</span></pre></div>
+<p>is equivalent to:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">new_i32</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span> <span class="pl-c1">0</span> <span class="pl-kos">}</span>
+<span class="pl-k">let</span> fptr<span class="pl-kos">:</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> = new_i32<span class="pl-kos">;</span></pre></div>
+<p>r[items.fn.extern.unwind]</p>
+<h3>Unwinding</h3>
+<p>r[items.fn.extern.unwind.intro]<br>
+Most ABI strings come in two variants, one with an <code class="notranslate">-unwind</code> suffix and one without. The <code class="notranslate">Rust</code> ABI always permits unwinding, so there is no <code class="notranslate">Rust-unwind</code> ABI. The choice of ABI, together with the runtime <a href="../panic.md#the-panic_handler-attribute">panic handler</a>, determines the behavior when unwinding out of a function.</p>
+<p>r[items.fn.extern.unwind.behavior]<br>
+The table below indicates the behavior of an unwinding operation reaching each type of ABI boundary (function declaration or definition using the corresponding ABI string). Note that the Rust runtime is not affected by, and cannot have an effect on, any unwinding that occurs entirely within another language's runtime, that is, unwinds that are thrown and caught without reaching a Rust ABI boundary.</p>
+<p>The <code class="notranslate">panic</code>-unwind column refers to <a href="../panic.md">panicking</a> via the <code class="notranslate">panic!</code> macro and similar standard library mechanisms, as well as to any other Rust operations that cause a panic, such as out-of-bounds array indexing or integer overflow.</p>
+<p>The "unwinding" ABI category refers to <code class="notranslate">"Rust"</code> (the implicit ABI of Rust functions not marked <code class="notranslate">extern</code>), <code class="notranslate">"C-unwind"</code>, and any other ABI with <code class="notranslate">-unwind</code> in its name. The "non-unwinding" ABI category refers to all other ABI strings, including <code class="notranslate">"C"</code> and <code class="notranslate">"stdcall"</code>.</p>
+<p>Native unwinding is defined per-target. On targets that support throwing and catching C++ exceptions, it refers to the mechanism used to implement this feature. Some platforms implement a form of unwinding referred to as <a href="https://rust-lang.github.io/rfcs/2945-c-unwind-abi.html#forced-unwinding" rel="nofollow">"forced unwinding"</a>; <code class="notranslate">longjmp</code> on Windows and <code class="notranslate">pthread_exit</code> in <code class="notranslate">glibc</code> are implemented this way. Forced unwinding is explicitly excluded from the "Native unwind" column in the table.</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>panic runtime</th>
+<th>ABI</th>
+<th><code class="notranslate">panic</code>-unwind</th>
+<th>Native unwind (unforced)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">panic=unwind</code></td>
+<td>unwinding</td>
+<td>unwind</td>
+<td>unwind</td>
+</tr>
+<tr>
+<td><code class="notranslate">panic=unwind</code></td>
+<td>non-unwinding</td>
+<td>abort (see notes below)</td>
+<td><a href="../behavior-considered-undefined.md">undefined behavior</a></td>
+</tr>
+<tr>
+<td><code class="notranslate">panic=abort</code></td>
+<td>unwinding</td>
+<td><code class="notranslate">panic</code> aborts without unwinding</td>
+<td>abort</td>
+</tr>
+<tr>
+<td><code class="notranslate">panic=abort</code></td>
+<td>non-unwinding</td>
+<td><code class="notranslate">panic</code> aborts without unwinding</td>
+<td><a href="../behavior-considered-undefined.md">undefined behavior</a></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>r[items.fn.extern.abort]<br>
+With <code class="notranslate">panic=unwind</code>, when a <code class="notranslate">panic</code> is turned into an abort by a non-unwinding ABI boundary, either no destructors (<code class="notranslate">Drop</code> calls) will run, or all destructors up until the ABI boundary will run. It is unspecified which of those two behaviors will happen.</p>
+<p>For other considerations and limitations regarding unwinding across FFI boundaries, see the <a href="../panic.md#unwinding-across-ffi-boundaries">relevant section in the Panic documentation</a>.</p>
+<p>r[items.fn.extern.custom]</p>
+<h3>Extern "custom"</h3>
+<p>r[items.fn.extern.custom.intro]<br>
+An <code class="notranslate">extern "custom"</code> function has an unknown, custom ABI. The only way to call such a function is via <a href="../inline-assembly.md">inline assembly</a>.</p>
+<blockquote>
+<p>[!EXAMPLE]</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-c1">#<span class="pl-kos">[</span>cfg<span class="pl-kos">(</span>target_arch = <span class="pl-s">"x86_64"</span><span class="pl-kos">)</span><span class="pl-kos">]</span></span> <span class="pl-kos">{</span>
+# <span class="pl-k">use</span> core<span class="pl-kos">::</span>arch<span class="pl-kos">::</span><span class="pl-kos">{</span>asm<span class="pl-kos">,</span> naked_asm<span class="pl-kos">}</span><span class="pl-kos">;</span>
+#
+<span class="pl-c">/// Adds 1 to `rax`.</span>
+<span class="pl-c"></span><span class="pl-c">///</span>
+<span class="pl-c"></span><span class="pl-c">/// This function uses a custom calling convention: the argument is</span>
+<span class="pl-c"></span><span class="pl-c">/// passed in `rax`, the result is returned in `rax`, the flags may</span>
+<span class="pl-c"></span><span class="pl-c">/// be clobbered, and all other registers are preserved.</span>
+<span class="pl-c"></span><span class="pl-c1">#<span class="pl-kos">[</span>unsafe<span class="pl-kos">(</span>naked<span class="pl-kos">)</span><span class="pl-kos">]</span></span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"custom"</span> <span class="pl-k">fn</span> <span class="pl-en">increment</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-en">naked_asm</span><span class="pl-en">!</span><span class="pl-kos">(</span>
+        <span class="pl-s">"add rax, 1"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"ret"</span><span class="pl-kos">,</span>
+    <span class="pl-kos">)</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">let</span> <span class="pl-k">mut</span> x<span class="pl-kos">:</span> <span class="pl-smi">u64</span> = <span class="pl-c1">41</span><span class="pl-kos">;</span>
+<span class="pl-c">// SAFETY: The inline assembly respects the calling convention of</span>
+<span class="pl-c">// `increment`: the argument is passed in `rax`, the result is read</span>
+<span class="pl-c">// from `rax`, and no other registers are affected.</span>
+<span class="pl-k">unsafe</span> <span class="pl-kos">{</span>
+    <span class="pl-en">asm</span><span class="pl-en">!</span><span class="pl-kos">(</span>
+        <span class="pl-s">"call {}"</span><span class="pl-kos">,</span>
+        sym increment<span class="pl-kos">,</span>
+        inout<span class="pl-kos">(</span><span class="pl-s">"rax"</span><span class="pl-kos">)</span> x<span class="pl-kos">,</span>
+    <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+<span class="pl-en">assert_eq</span><span class="pl-en">!</span><span class="pl-kos">(</span>x<span class="pl-kos">,</span> <span class="pl-c1">42</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+# <span class="pl-kos">}</span></pre></div>
+</blockquote>
+<p>r[items.fn.extern.custom.signature]<br>
+An <code class="notranslate">extern "custom"</code> function must:</p>
+<ul>
+<li>Be <code class="notranslate">unsafe</code>.</li>
+<li>Not have any parameters.</li>
+<li>Return the <a href="../types/tuple.md">unit type</a>, with the return type either omitted or written explicitly as <code class="notranslate">()</code>.</li>
+</ul>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>The rule is syntactic. The return type may not be a type alias, even one defined to be the <a href="../types/tuple.md">unit type</a>.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">type</span> <span class="pl-smi">Unit</span> = <span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-c1">#<span class="pl-kos">[</span>unsafe<span class="pl-kos">(</span>naked<span class="pl-kos">)</span><span class="pl-kos">]</span></span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"custom"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">Unit</span> <span class="pl-kos">{</span> <span class="pl-c">// ERROR: Not explicit `()`.</span>
+    core<span class="pl-kos">::</span>arch<span class="pl-kos">::</span>naked_asm!<span class="pl-kos">(</span><span class="pl-s">"ret"</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span></pre></div>
+</div>
+<p>r[items.fn.extern.custom.naked]<br>
+An <code class="notranslate">extern "custom"</code> function definition must be a <a href="../attributes/codegen.md#the-naked-attribute">naked function</a>.</p>
+<p>r[items.fn.const]</p>
+<h2>Const functions</h2>
+<p>See <a href="../const_eval.md#const-functions">const functions</a> for the definition of const functions.</p>
+<p>r[items.fn.async]</p>
+<h2>Async functions</h2>
+<p>r[items.fn.async.intro]<br>
+Functions may be qualified as async, and this can also be combined with the <code class="notranslate">unsafe</code> qualifier:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">async</span> <span class="pl-k">fn</span> <span class="pl-en">regular_example</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span> <span class="pl-kos">}</span>
+<span class="pl-k">async</span> <span class="pl-k">unsafe</span> <span class="pl-k">fn</span> <span class="pl-en">unsafe_example</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span> <span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.async.future]<br>
+Async functions do no work when called: instead, they capture their arguments into a future. When polled, that future will execute the function's body.</p>
+<p>r[items.fn.async.desugar-brief]<br>
+An async function is roughly equivalent to a function that returns <a href="../types/impl-trait.md"><code class="notranslate">impl Future</code></a> and with an <a href="../expressions/block-expr.md#async-blocks"><code class="notranslate">async move</code> block</a> as its body:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-c">// Source</span>
+<span class="pl-k">async</span> <span class="pl-k">fn</span> <span class="pl-en">example</span><span class="pl-kos">(</span><span class="pl-s1">x</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-smi">str</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">usize</span> <span class="pl-kos">{</span>
+    x<span class="pl-kos">.</span><span class="pl-en">len</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span></pre></div>
+<p>is roughly equivalent to:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-k">use</span> std<span class="pl-kos">::</span>future<span class="pl-kos">::</span><span class="pl-v">Future</span><span class="pl-kos">;</span>
+<span class="pl-c">// Desugared</span>
+<span class="pl-k">fn</span> <span class="pl-en">example</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-s1">x</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-c1">'</span><span class="pl-ent">a</span> <span class="pl-smi">str</span><span class="pl-kos">)</span> -&gt; <span class="pl-k">impl</span> <span class="pl-smi">Future</span><span class="pl-kos">&lt;</span><span class="pl-smi">Output</span> = <span class="pl-smi">usize</span><span class="pl-kos">&gt;</span> + <span class="pl-c1">'</span><span class="pl-ent">a</span> <span class="pl-kos">{</span>
+    <span class="pl-k">async</span> <span class="pl-k">move</span> <span class="pl-kos">{</span> x<span class="pl-kos">.</span><span class="pl-en">len</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.async.desugar]<br>
+The actual desugaring is more complex:</p>
+<p>r[items.fn.async.lifetime-capture]</p>
+<ul>
+<li>The return type in the desugaring is assumed to capture all lifetime parameters from the <code class="notranslate">async fn</code> declaration. This can be seen in the desugared example above, which explicitly outlives, and hence captures, <code class="notranslate">'a</code>.</li>
+</ul>
+<p>r[items.fn.async.param-capture]</p>
+<ul>
+<li>The <a href="../expressions/block-expr.md#async-blocks"><code class="notranslate">async move</code> block</a> in the body captures all function parameters, including those that are unused or bound to a <code class="notranslate">_</code> pattern. This ensures that function parameters are dropped in the same order as they would be if the function were not async, except that the drop occurs when the returned future has been fully awaited.</li>
+</ul>
+<p>For more information on the effect of async, see <a href="../expressions/block-expr.md#async-blocks"><code class="notranslate">async</code> blocks</a>.</p>
+<p>r[items.fn.async.edition2018]</p>
+<blockquote>
+<p>[!EDITION-2018]<br>
+Async functions are only available beginning with Rust 2018.</p>
+</blockquote>
+<p>r[items.fn.async.safety]</p>
+<h3>Combining <code class="notranslate">async</code> and <code class="notranslate">unsafe</code></h3>
+<p>r[items.fn.async.safety.intro]<br>
+It is legal to declare a function that is both async and unsafe. The resulting function is unsafe to call and (like any async function) returns a future. This future is just an ordinary future and thus an <code class="notranslate">unsafe</code> context is not required to "await" it:</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-c">// Returns a future that, when awaited, dereferences `x`.</span>
+<span class="pl-c">//</span>
+<span class="pl-c">// Soundness condition: `x` must be safe to dereference until</span>
+<span class="pl-c">// the resulting future is complete.</span>
+<span class="pl-k">async</span> <span class="pl-k">unsafe</span> <span class="pl-k">fn</span> <span class="pl-en">unsafe_example</span><span class="pl-kos">(</span><span class="pl-s1">x</span><span class="pl-kos">:</span> <span class="pl-c1">*</span><span class="pl-k">const</span> <span class="pl-smi">i32</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">*</span>x
+<span class="pl-kos">}</span>
+
+<span class="pl-k">async</span> <span class="pl-k">fn</span> <span class="pl-en">safe_example</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// An `unsafe` block is required to invoke the function initially:</span>
+    <span class="pl-k">let</span> p = <span class="pl-c1">22</span><span class="pl-kos">;</span>
+    <span class="pl-k">let</span> future = <span class="pl-k">unsafe</span> <span class="pl-kos">{</span> <span class="pl-en">unsafe_example</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span>p<span class="pl-kos">)</span> <span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+    <span class="pl-c">// But no `unsafe` block required here. This will</span>
+    <span class="pl-c">// read the value of `p`:</span>
+    <span class="pl-k">let</span> q = future<span class="pl-kos">.</span><span class="pl-k">await</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Note that this behavior is a consequence of the desugaring to a function that returns an <code class="notranslate">impl Future</code> -- in this case, the function we desugar to is an <code class="notranslate">unsafe</code> function, but the return value remains the same.</p>
+<p>Unsafe is used on an async function in precisely the same way that it is used on other functions: it indicates that the function imposes some additional obligations on its caller to ensure soundness. As in any other unsafe function, these conditions may extend beyond the initial call itself -- in the snippet above, for example, the <code class="notranslate">unsafe_example</code> function took a pointer <code class="notranslate">x</code> as argument, and then (when awaited) dereferenced that pointer. This implies that <code class="notranslate">x</code> would have to be valid until the future is finished executing, and it is the caller's responsibility to ensure that.</p>
+<p>r[items.fn.c-variadic]</p>
+<h2>C-variadic functions</h2>
+<p>r[items.fn.c-variadic.intro]<br>
+A <em>C-variadic</em> function accepts a variable argument list <code class="notranslate">pat: ...</code> as its final parameter.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span><span class="pl-k">mut</span> ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> -&gt; <span class="pl-smi">f64</span> <span class="pl-kos">{</span>
+    <span class="pl-k">unsafe</span> <span class="pl-kos">{</span> ap<span class="pl-kos">.</span><span class="pl-en">next_arg</span><span class="pl-kos">::</span><span class="pl-kos">&lt;</span><span class="pl-smi">f64</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">,</span> _<span class="pl-kos">:</span> <span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-c">// ERROR: `...` must be last.</span></pre></div>
+<p>This parameter stands in for an arbitrary number of arguments that may be passed by the caller.</p>
+<p>r[items.fn.c-variadic.parameter-type]<br>
+The type of <code class="notranslate">pat</code> in the function body is <a href="lang-types.va-list"><code class="notranslate">VaList&lt;'_&gt;</code></a>.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-k">use</span> core<span class="pl-kos">::</span>ffi<span class="pl-kos">::</span><span class="pl-v">VaList</span><span class="pl-kos">;</span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">let</span> _<span class="pl-kos">:</span> <span class="pl-smi">VaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">_</span><span class="pl-kos">&gt;</span> = ap<span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.c-variadic.lifetime]<br>
+A C-variadic function definition is implicitly generic over the lifetime of its variadic parameter, as if the parameter had type <code class="notranslate">VaList&lt;'x&gt;</code> for a fresh, unnameable lifetime <code class="notranslate">'x</code>. Because the function must be valid for any such lifetime, the <code class="notranslate">VaList</code> cannot be proved to outlive any caller-provided lifetime (and so cannot escape the call) and no caller-provided lifetime can be proved to outlive it.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-k">use</span> core<span class="pl-kos">::</span>ffi<span class="pl-kos">::</span><span class="pl-v">VaList</span><span class="pl-kos">;</span>
+<span class="pl-k">fn</span> <span class="pl-en">b_outlives_a</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">,</span> <span class="pl-c1">'</span><span class="pl-ent">b</span><span class="pl-kos">:</span> <span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span>_<span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-smi">VaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">,</span> _<span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-c1">&amp;</span><span class="pl-c1">'</span><span class="pl-ent">b</span> <span class="pl-k">mut</span> <span class="pl-smi">u8</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span><span class="pl-k">mut</span> <span class="pl-s1">r</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-smi">u8</span><span class="pl-kos">,</span> <span class="pl-k">mut</span> ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-en">b_outlives_a</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span><span class="pl-k">mut</span> ap<span class="pl-kos">,</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> r<span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ERROR: May not live long enough.</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-k">use</span> core<span class="pl-kos">::</span>ffi<span class="pl-kos">::</span><span class="pl-v">VaList</span><span class="pl-kos">;</span>
+<span class="pl-k">fn</span> <span class="pl-en">a_outlives_b</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">:</span> <span class="pl-c1">'</span><span class="pl-ent">b</span><span class="pl-kos">,</span> <span class="pl-c1">'</span><span class="pl-ent">b</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span>_<span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-smi">VaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">,</span> _<span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-c1">&amp;</span><span class="pl-c1">'</span><span class="pl-ent">b</span> <span class="pl-k">mut</span> <span class="pl-smi">u8</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span><span class="pl-k">mut</span> <span class="pl-s1">r</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-smi">u8</span><span class="pl-kos">,</span> <span class="pl-k">mut</span> ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-en">a_outlives_b</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span><span class="pl-k">mut</span> ap<span class="pl-kos">,</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> r<span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ERROR: May not live long enough.</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>This is different than if the data were a stack variable: any caller-provided lifetime can be proved to outlive a borrow of a callee stack variable.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">struct</span> <span class="pl-smi">MockVaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">data</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span><span class="pl-c1">'</span><span class="pl-ent">data</span> <span class="pl-smi">u8</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">fn</span> <span class="pl-en">b_outlives_a</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">,</span> <span class="pl-c1">'</span><span class="pl-ent">b</span><span class="pl-kos">:</span> <span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span>_<span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-smi">MockVaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">,</span> _<span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-c1">&amp;</span><span class="pl-c1">'</span><span class="pl-ent">b</span> <span class="pl-k">mut</span> <span class="pl-smi">u8</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span><span class="pl-k">mut</span> <span class="pl-s1">r</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> <span class="pl-smi">u8</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">let</span> data = <span class="pl-c1">0</span><span class="pl-kos">;</span>
+    <span class="pl-k">let</span> <span class="pl-k">mut</span> ap = <span class="pl-en">MockVaList</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span>data<span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-en">b_outlives_a</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span><span class="pl-k">mut</span> ap<span class="pl-kos">,</span> <span class="pl-c1">&amp;</span><span class="pl-k">mut</span> r<span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// OK.</span>
+<span class="pl-kos">}</span></pre></div>
+</div>
+<p>r[items.fn.c-variadic.desugar-brief]<br>
+A C-variadic function definition is roughly equivalent to a function operating on a <a href="lang-types.va-list"><code class="notranslate">VaList</code></a>.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span><span class="pl-k">mut</span> ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span>
+    <span class="pl-k">unsafe</span> <span class="pl-kos">{</span> ap<span class="pl-kos">.</span><span class="pl-en">next_arg</span><span class="pl-kos">::</span><span class="pl-kos">&lt;</span><span class="pl-smi">i32</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Roughly desugars to:</p>
+
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-c1">#!<span class="pl-kos">[</span> feature<span class="pl-kos">(</span>core_intrinsics<span class="pl-kos">)</span> <span class="pl-kos">]</span></span>
+# <span class="pl-c1">#!<span class="pl-kos">[</span>allow<span class="pl-kos">(</span>internal_features<span class="pl-kos">)</span><span class="pl-kos">]</span></span>
+# <span class="pl-k">use</span> core<span class="pl-kos">::</span>ffi<span class="pl-kos">::</span><span class="pl-v">VaList</span><span class="pl-kos">;</span>
+# <span class="pl-k">use</span> core<span class="pl-kos">::</span>mem<span class="pl-kos">::</span><span class="pl-v">MaybeUninit</span><span class="pl-kos">;</span>
+<span class="pl-k">use</span> core<span class="pl-kos">::</span>intrinsics<span class="pl-kos">::</span><span class="pl-kos">{</span>va_arg<span class="pl-kos">,</span> va_end<span class="pl-kos">}</span><span class="pl-kos">;</span>
+<span class="pl-c">// `va_start` is magic and has no intrinsic.</span>
+<span class="pl-k">fn</span> <span class="pl-en">va_start</span><span class="pl-kos">(</span><span class="pl-s1">ap</span><span class="pl-kos">:</span> <span class="pl-c1">*</span><span class="pl-k">mut</span> <span class="pl-smi">VaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">_</span><span class="pl-kos">&gt;</span><span class="pl-kos">)</span> <span class="pl-kos">{</span> <span class="pl-c">/* magic */</span> <span class="pl-kos">}</span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">i32</span> <span class="pl-kos">{</span>
+    <span class="pl-k">unsafe</span> <span class="pl-kos">{</span>
+        <span class="pl-k">let</span> <span class="pl-k">mut</span> ap<span class="pl-kos">:</span> <span class="pl-smi">MaybeUninit</span><span class="pl-kos">&lt;</span><span class="pl-smi">VaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">_</span><span class="pl-kos">&gt;</span><span class="pl-kos">&gt;</span> = <span class="pl-smi">MaybeUninit</span><span class="pl-kos">::</span><span class="pl-en">uninit</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-en">va_start</span><span class="pl-kos">(</span>ap<span class="pl-kos">.</span><span class="pl-en">as_mut_ptr</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">let</span> <span class="pl-k">mut</span> ap = ap<span class="pl-kos">.</span><span class="pl-en">assume_init</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">let</span> x = <span class="pl-en">va_arg</span><span class="pl-kos">::</span><span class="pl-kos">&lt;</span><span class="pl-smi">i32</span><span class="pl-kos">&gt;</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span><span class="pl-k">mut</span> ap<span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-en">va_end</span><span class="pl-kos">(</span><span class="pl-c1">&amp;</span><span class="pl-k">mut</span> ap<span class="pl-kos">)</span><span class="pl-kos">;</span>
+        x
+    <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>In an actual C-variadic function definition, the lifetime in <code class="notranslate">VaList&lt;'_&gt;</code> is different from what this code would suggest. See [items.fn.c-variadic.lifetime].</p>
+</div>
+<p>r[items.fn.c-variadic.next-arg-safety]<br>
+Calling <code class="notranslate">VaList::next_arg</code> to read an argument of type <code class="notranslate">T</code> is only safe if all of the following conditions are satisfied:</p>
+<ul>
+<li>There is another C-variadic argument to read.</li>
+<li>The actual type of the argument <code class="notranslate">U</code> is compatible with <code class="notranslate">T</code> (as defined below).</li>
+<li>If <code class="notranslate">U</code> and <code class="notranslate">T</code> are both integer types, then the value passed by the caller must be<br>
+representable in both types.</li>
+</ul>
+<p>Types <code class="notranslate">T</code> and <code class="notranslate">U</code> are compatible when one of the following is true:</p>
+<ul>
+<li><code class="notranslate">T</code> and <code class="notranslate">U</code> are the same type (up to free lifetimes).</li>
+<li><code class="notranslate">T</code> and <code class="notranslate">U</code> are integer types of the same size.</li>
+<li><code class="notranslate">T</code> and <code class="notranslate">U</code> are both pointers and their target types are compatible.</li>
+<li><code class="notranslate">T</code> is a pointer to <code class="notranslate">c_void</code> and <code class="notranslate">U</code> is a pointer to <code class="notranslate">i8</code> or <code class="notranslate">u8</code>, or vice versa.</li>
+</ul>
+<p>Examples of compatible types are:</p>
+<ul>
+<li><code class="notranslate">u32</code> and <code class="notranslate">i32</code> --- but UB may still occur if the value is not representable in the target type.</li>
+<li><code class="notranslate">u64</code> and <code class="notranslate">usize</code> --- on a 64-bit platform.</li>
+<li><code class="notranslate">*const &amp;'a u32</code> and <code class="notranslate">*mut &amp;'static u32</code> --- these types are equal up to free lifetimes.</li>
+</ul>
+<p>Examples of incompatible types are:</p>
+<ul>
+<li><code class="notranslate">usize</code> and <code class="notranslate">*const _</code> --- pointers and integers are not compatible.</li>
+<li><code class="notranslate">*const fn(&amp;'static ())</code> and <code class="notranslate">*const for&lt;'a&gt; fn(&amp;'a ())</code> --- these types are not equal up to free lifetimes.</li>
+</ul>
+<p>r[items.fn.c-variadic.abi-compatibility]<br>
+<a href="lang-types.va-list"><code class="notranslate">VaList</code></a> is ABI compatible with the C <code class="notranslate">va_list</code> type.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-k">use</span> core<span class="pl-kos">::</span>ffi<span class="pl-kos">::</span><span class="pl-kos">{</span>c_char<span class="pl-kos">,</span> c_int<span class="pl-kos">,</span> <span class="pl-v">VaList</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// The C `vprintf` function is:</span>
+    <span class="pl-c">//</span>
+    <span class="pl-c">//     int vprintf(const char *format, va_list ap);</span>
+    <span class="pl-c">//</span>
+    <span class="pl-k">unsafe</span> <span class="pl-k">fn</span> <span class="pl-en">vprintf</span><span class="pl-kos">(</span><span class="pl-s1">fmt</span><span class="pl-kos">:</span> <span class="pl-c1">*</span><span class="pl-k">const</span> <span class="pl-smi">c_char</span><span class="pl-kos">,</span> <span class="pl-s1">ap</span><span class="pl-kos">:</span> <span class="pl-smi">VaList</span><span class="pl-kos">&lt;</span><span class="pl-c1">'</span><span class="pl-ent">_</span><span class="pl-kos">&gt;</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">c_int</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">print</span><span class="pl-kos">(</span><span class="pl-s1">fmt</span><span class="pl-kos">:</span> <span class="pl-c1">*</span><span class="pl-k">const</span> <span class="pl-smi">c_char</span><span class="pl-kos">,</span> ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> -&gt; <span class="pl-smi">c_int</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// The `VaList` is passed directly to the C function.</span>
+    <span class="pl-k">unsafe</span> <span class="pl-kos">{</span> <span class="pl-en">vprintf</span><span class="pl-kos">(</span>fmt<span class="pl-kos">,</span> ap<span class="pl-kos">)</span> <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.c-variadic.abi]<br>
+Except on <a href="attributes.codegen.naked">naked functions</a>, only <code class="notranslate">extern "C"</code> and <code class="notranslate">extern "C-unwind"</code> function definitions can accept a variable argument list.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-c">// ERROR: Not supported.</span></pre></div>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"sysv64"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-c">// ERROR: Not supported.</span></pre></div>
+<p>A naked function can accept a variable argument list only if its ABI string is accepted under [items.extern.variadic.conventions].</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"># <span class="pl-c1">#<span class="pl-kos">[</span>cfg<span class="pl-kos">(</span>target_arch = <span class="pl-s">"x86_64"</span><span class="pl-kos">)</span><span class="pl-kos">]</span></span> <span class="pl-kos">{</span>
+<span class="pl-c">/// Computes the dot product of the `n`-dimensional vector `v`, passed</span>
+<span class="pl-c"></span><span class="pl-c">/// as `n` C-variadic `f64` arguments, with the vector `(c, ..., c)`.</span>
+<span class="pl-c"></span><span class="pl-c">/// That is, it computes `c * (v1 + ... + vn)`.</span>
+<span class="pl-c"></span><span class="pl-c">///</span>
+<span class="pl-c"></span><span class="pl-c">/// # Safety</span>
+<span class="pl-c"></span><span class="pl-c">///</span>
+<span class="pl-c"></span><span class="pl-c">/// The caller must pass `n` in the range `1..=7`, followed by exactly</span>
+<span class="pl-c"></span><span class="pl-c">/// `n` values of type `f64`.</span>
+<span class="pl-c"></span><span class="pl-c">// SAFETY: The body respects the "sysv64" calling convention, upholds</span>
+<span class="pl-c">// the signature, and does not fall through.</span>
+<span class="pl-c1">#<span class="pl-kos">[</span>unsafe<span class="pl-kos">(</span>naked<span class="pl-kos">)</span><span class="pl-kos">]</span></span>
+<span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"sysv64"</span> <span class="pl-k">fn</span> <span class="pl-en">dot</span><span class="pl-kos">(</span><span class="pl-s1">n</span><span class="pl-kos">:</span> <span class="pl-smi">u64</span><span class="pl-kos">,</span> <span class="pl-s1">c</span><span class="pl-kos">:</span> <span class="pl-smi">f64</span><span class="pl-kos">,</span> v<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> -&gt; <span class="pl-smi">f64</span> <span class="pl-kos">{</span>
+    core<span class="pl-kos">::</span>arch<span class="pl-kos">::</span>naked_asm!<span class="pl-kos">(</span>
+        <span class="pl-c">// The "sysv64" calling convention passes `n` in `rdi`, `c` in</span>
+        <span class="pl-c">// `xmm0`, and the coordinates in `xmm1` through `xmm7`,</span>
+        <span class="pl-c">// in order. (The caller also passes the number of vector</span>
+        <span class="pl-c">// registers used in `al`.)</span>
+        <span class="pl-c">//</span>
+        <span class="pl-c">// The sum takes the last `n - 1` additions of the chain</span>
+        <span class="pl-c">// below. Each `addsd` encodes in exactly 4 bytes, so we enter</span>
+        <span class="pl-c">// the chain `4 * (n - 1)` bytes before the `mulsd`.</span>
+        <span class="pl-s">"neg rdi"</span><span class="pl-kos">,</span> <span class="pl-c">// I.e., `rdi = -n`.</span>
+        <span class="pl-s">"lea rax, [rip + 2f]"</span><span class="pl-kos">,</span> <span class="pl-c">// I.e., `rax` = address of label 2.</span>
+        <span class="pl-s">"lea rax, [rax + rdi*4 + 4]"</span><span class="pl-kos">,</span> <span class="pl-c">// I.e., `rax -= 4 * (n - 1)`.</span>
+        <span class="pl-s">"jmp rax"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"addsd xmm6, xmm7"</span><span class="pl-kos">,</span> <span class="pl-c">// Entered when `n` is 7.</span>
+        <span class="pl-s">"addsd xmm5, xmm6"</span><span class="pl-kos">,</span> <span class="pl-c">// ... when `n` is at least 6.</span>
+        <span class="pl-s">"addsd xmm4, xmm5"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"addsd xmm3, xmm4"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"addsd xmm2, xmm3"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"addsd xmm1, xmm2"</span><span class="pl-kos">,</span> <span class="pl-c">// ... when `n` is at least 2.</span>
+        <span class="pl-s">"2:"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"mulsd xmm0, xmm1"</span><span class="pl-kos">,</span> <span class="pl-c">// The result is returned in `xmm0`.</span>
+        <span class="pl-s">"ret"</span><span class="pl-kos">,</span>
+    <span class="pl-kos">)</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-c">// SAFETY: `dot` is passed `n` variadic `f64` arguments in each call.</span>
+<span class="pl-k">let</span> dot2 = <span class="pl-k">unsafe</span> <span class="pl-kos">{</span> <span class="pl-en">dot</span><span class="pl-kos">(</span><span class="pl-c1">2</span><span class="pl-kos">,</span> <span class="pl-c1">10.0</span><span class="pl-kos">,</span> <span class="pl-c1">3.0</span><span class="pl-kos">,</span> <span class="pl-c1">4.0</span><span class="pl-kos">)</span> <span class="pl-kos">}</span><span class="pl-kos">;</span>
+<span class="pl-en">assert_eq</span><span class="pl-en">!</span><span class="pl-kos">(</span>dot2<span class="pl-kos">,</span> <span class="pl-c1">70.0</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">let</span> dot7 = <span class="pl-k">unsafe</span> <span class="pl-kos">{</span> <span class="pl-en">dot</span><span class="pl-kos">(</span><span class="pl-c1">7</span><span class="pl-kos">,</span> <span class="pl-c1">2.0</span><span class="pl-kos">,</span> <span class="pl-c1">1.0</span><span class="pl-kos">,</span> <span class="pl-c1">2.0</span><span class="pl-kos">,</span> <span class="pl-c1">3.0</span><span class="pl-kos">,</span> <span class="pl-c1">4.0</span><span class="pl-kos">,</span> <span class="pl-c1">5.0</span><span class="pl-kos">,</span> <span class="pl-c1">6.0</span><span class="pl-kos">,</span> <span class="pl-c1">7.0</span><span class="pl-kos">)</span> <span class="pl-kos">}</span><span class="pl-kos">;</span>
+<span class="pl-en">assert_eq</span><span class="pl-en">!</span><span class="pl-kos">(</span>dot7<span class="pl-kos">,</span> <span class="pl-c1">56.0</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+# <span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.c-variadic.safety]<br>
+When a variable argument list is used in the signature:</p>
+<ul>
+<li>Function definitions must be <code class="notranslate">unsafe</code>.</li>
+<li>Function declarations within trait definitions must be <code class="notranslate">unsafe</code>.</li>
+<li>Function declarations in <code class="notranslate">extern</code> blocks may be <code class="notranslate">safe</code>.</li>
+</ul>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-c">// ERROR: Must be `unsafe`.</span></pre></div>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">trait</span> <span class="pl-smi">Tr</span> <span class="pl-kos">{</span>
+    <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// ERROR: Must be `unsafe`.</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-kos">{</span>
+    safe <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span><span class="pl-kos">;</span> <span class="pl-c">// OK.</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>For <code class="notranslate">safe</code> function declarations in an <code class="notranslate">extern</code> block, see the warning in [items.extern.variadic].</p>
+</div>
+<p>r[items.fn.c-variadic.async]<br>
+A C-variadic function cannot be <code class="notranslate">async</code>.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">async</span> <span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-c">// ERROR: Cannot be `async`.</span></pre></div>
+<p>r[items.fn.c-variadic.const]<br>
+A C-variadic function cannot be <code class="notranslate">const</code>.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-k">unsafe</span> <span class="pl-k">extern</span> <span class="pl-s">"C"</span> <span class="pl-k">fn</span> <span class="pl-en">f</span><span class="pl-kos">(</span>ap<span class="pl-kos">:</span> ...<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-c">// ERROR: Cannot be `const`.</span></pre></div>
+<p>r[items.fn.c-variadic.stable-targets]<br>
+Support for C-variadic function definitions is stable on the following target architectures:</p>
+<ul>
+<li>x86 and x86-64</li>
+<li>ARM</li>
+<li>AArch64 and Arm64EC</li>
+<li>RISC-V 32-bit and 64-bit (except when using the ilp32e ABI)</li>
+<li>LoongArch 32-bit and 64-bit</li>
+<li>s390x</li>
+<li>PowerPC and PowerPC64</li>
+<li>AMDGPU and NVPTX</li>
+<li>Wasm32 and Wasm64</li>
+<li>C-SKY</li>
+<li>Xtensa</li>
+<li>Hexagon</li>
+<li>SPARC64</li>
+<li>MIPS</li>
+</ul>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>Some target architectures (e.g., BPF) do not support C-variadic function definitions. The compiler will emit an error if such a definition is used on an unsupported target.</p>
+</div>
+<p>r[items.fn.attributes]</p>
+<h2>Attributes on functions</h2>
+<p>r[items.fn.attributes.intro]<br>
+<a href="../attributes.md">Outer attributes</a> are allowed on functions. <a href="../attributes.md">Inner attributes</a> are allowed directly after the <code class="notranslate">{</code> inside its body <a href="../expressions/block-expr.md">block</a>.</p>
+<p>This example shows an inner attribute on a function. The function is documented with just the word "Example".</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">fn</span> <span class="pl-en">documented</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c1">#!<span class="pl-kos">[</span>doc = <span class="pl-s">"Example"</span><span class="pl-kos">]</span></span>
+<span class="pl-kos">}</span></pre></div>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>Except for lints, it is idiomatic to only use outer attributes on function items.</p>
+</div>
+<p>r[items.fn.attributes.builtin-attributes]<br>
+The attributes that have meaning on a function are:</p>
+<ul>
+<li><a href="../conditional-compilation.md#the-cfg_attr-attribute"><code class="notranslate">cfg_attr</code></a></li>
+<li><a href="../conditional-compilation.md#the-cfg-attribute"><code class="notranslate">cfg</code></a></li>
+<li><a href="../attributes/codegen.md#the-cold-attribute"><code class="notranslate">cold</code></a></li>
+<li><a href="../attributes/diagnostics.md#the-deprecated-attribute"><code class="notranslate">deprecated</code></a></li>
+<li><a href="../../rustdoc/the-doc-attribute.html"><code class="notranslate">doc</code></a></li>
+<li><a href="../abi.md#the-export_name-attribute"><code class="notranslate">export_name</code></a></li>
+<li><a href="../attributes/codegen.md#the-inline-attribute"><code class="notranslate">inline</code></a></li>
+<li><a href="../abi.md#the-link_section-attribute"><code class="notranslate">link_section</code></a></li>
+<li><a href="../attributes/diagnostics.md#the-must_use-attribute"><code class="notranslate">must_use</code></a></li>
+<li><a href="../abi.md#the-no_mangle-attribute"><code class="notranslate">no_mangle</code></a></li>
+<li><a href="../attributes/diagnostics.md#lint-check-attributes">Lint check attributes</a></li>
+<li><a href="macro.proc.attribute">Procedural macro attributes</a></li>
+<li><a href="../attributes/testing.md">Testing attributes</a></li>
+</ul>
+<p>r[items.fn.param-attributes]</p>
+<h2>Attributes on function parameters</h2>
+<p>r[items.fn.param-attributes.intro]<br>
+<a href="../attributes.md">Outer attributes</a> are allowed on function parameters and the permitted <a href="../attributes.md#built-in-attributes-index">built-in attributes</a> are restricted to <code class="notranslate">cfg</code>, <code class="notranslate">cfg_attr</code>, <code class="notranslate">allow</code>, <code class="notranslate">warn</code>, <code class="notranslate">deny</code>, and <code class="notranslate">forbid</code>.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">fn</span> <span class="pl-en">len</span><span class="pl-kos">(</span>
+    <span class="pl-c1">#<span class="pl-kos">[</span>cfg<span class="pl-kos">(</span>windows<span class="pl-kos">)</span><span class="pl-kos">]</span></span> <span class="pl-s1">slice</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-kos">[</span><span class="pl-smi">u16</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-c1">#<span class="pl-kos">[</span>cfg<span class="pl-kos">(</span>not<span class="pl-kos">(</span>windows<span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">]</span></span> <span class="pl-s1">slice</span><span class="pl-kos">:</span> <span class="pl-c1">&amp;</span><span class="pl-kos">[</span><span class="pl-smi">u8</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span> -&gt; <span class="pl-smi">usize</span> <span class="pl-kos">{</span>
+    slice<span class="pl-kos">.</span><span class="pl-en">len</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span></pre></div>
+<p>r[items.fn.param-attributes.parsed-attributes]<br>
+Inert helper attributes used by procedural macro attributes applied to items are also allowed but be careful to not include these inert attributes in your final <code class="notranslate">TokenStream</code>.</p>
+<p>For example, the following code defines an inert <code class="notranslate">some_inert_attribute</code> attribute that is not formally defined anywhere and the <code class="notranslate">some_proc_macro_attribute</code> procedural macro is responsible for detecting its presence and removing it from the output token stream.</p>
+
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-c1">#<span class="pl-kos">[</span>some_proc_macro_attribute<span class="pl-kos">]</span></span>
+<span class="pl-k">fn</span> <span class="pl-en">foo_oof</span><span class="pl-kos">(</span><span class="pl-c1">#<span class="pl-kos">[</span>some_inert_attribute<span class="pl-kos">]</span></span> <span class="pl-s1">arg</span><span class="pl-kos">:</span> <span class="pl-smi">u8</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+<span class="pl-kos">}</span></pre></div>

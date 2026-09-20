@@ -1,0 +1,252 @@
+<h1>Overview</h1>
+<p>The React DevTools extension consists of multiple pieces:</p>
+<ul>
+<li>The <strong>frontend</strong> portion is the extension you see (the Components tree, the Profiler, etc.).</li>
+<li>The <strong>backend</strong> portion is invisible. It runs in the same context as React itself. When React commits changes to e.g. the DOM, the backend is responsible for notifying the frontend by sending a message through the <strong>bridge</strong> (an abstraction around e.g. <code class="notranslate">postMessage</code>).</li>
+</ul>
+<p>One of the largest performance bottlenecks of the old React DevTools was the amount of bridge traffic. Each time React commits an update, the backend sends every fiber that changed across the bridge, resulting in a lot of (JSON) serialization. The primary goal for the DevTools rewrite was to reduce this traffic. Instead of sending everything across the bridge, <strong>the backend should only send the minimum amount required to render the Components tree</strong>. The frontend can request more information (e.g. an element's props) on-demand, only as needed.</p>
+<p>The old DevTools also rendered the entire application tree in the form of a large DOM structure of nested nodes. A secondary goal of the rewrite was to avoid rendering unnecessary nodes by using a windowing library (specifically <a href="https://github.com/bvaughn/react-window">react-window</a>).</p>
+<h2>Components panel</h2>
+<h3>Serializing the tree</h3>
+<p>Every React commit that changes the tree in a way DevTools cares about results in an "<em>operations</em>" message being sent across the bridge. These messages are lightweight patches that describe the changes that were made. (We don't resend the full tree structure like in legacy DevTools.)</p>
+<p>The payload for each message is a typed array. The first two entries are numbers that identify which renderer and root the update belongs to (for multi-root support). Then the strings are encoded in a <a href="#string-table">string table</a>. The rest of the array depends on the operations being made to the tree.</p>
+<p>No updates are required for most commits because we only send the following bits of information: element type, id, parent id, owner id, name, and key. Additional information (e.g. props, state) requires a separate <a href="#inspecting-an-element">"<em>inspectElement</em>" message</a>.</p>
+<h4>String table</h4>
+<p>The string table is encoded right after the first two numbers.</p>
+<p>It consists of:</p>
+<ol>
+<li>the total length of the next items that belong to the string table</li>
+<li>for each string in a table:
+<ul>
+<li>encoded size</li>
+<li>a list of its UTF encoded codepoints</li>
+</ul>
+</li>
+</ol>
+<p>For example, for <code class="notranslate">Foo</code> and <code class="notranslate">Bar</code> we would see:</p>
+<pre class="notranslate"><code class="notranslate">[
+  8,   // string table length
+  3,   // encoded display name size
+  70,  // "F"
+  111, // "o"
+  111, // "o"
+  3,   // encoded display name size
+  66,  // "B"
+  97,  // "a"
+  114, // "r"
+]
+</code></pre>
+<p>Later operations will reference strings by a one-based index. For example, <code class="notranslate">1</code> would mean <code class="notranslate">"Foo"</code>, and <code class="notranslate">2</code> would mean <code class="notranslate">"Bar"</code>. The <code class="notranslate">0</code> string id always represents <code class="notranslate">null</code> and isn't explicitly encoded in the table.</p>
+<h4>Adding a root node</h4>
+<p>Adding a root to the tree requires sending 5 numbers:</p>
+<ol>
+<li>add operation constant (<code class="notranslate">1</code>)</li>
+<li>fiber id</li>
+<li>element type constant (<code class="notranslate">11 === ElementTypeRoot</code>)</li>
+<li>root has <code class="notranslate">StrictMode</code> enabled</li>
+<li>supports profiling flag</li>
+<li>supports <code class="notranslate">StrictMode</code> flag</li>
+<li>owner metadata flag</li>
+</ol>
+<p>For example, adding a root fiber with an id of 1:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c">// add operation</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c">// fiber id</span>
+  <span class="pl-c1">11</span><span class="pl-kos">,</span> <span class="pl-c">// ElementTypeRoot</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c">// this root is StrictMode enabled</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c">// this root's renderer supports profiling</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c">// this root's renderer supports StrictMode</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c">// this root has owner metadata</span>
+<span class="pl-kos">]</span></pre></div>
+<h4>Adding a leaf node</h4>
+<p>Adding a leaf node to the tree requires sending 7 numbers:</p>
+<ol>
+<li>add operation constant (<code class="notranslate">1</code>)</li>
+<li>fiber id</li>
+<li>element type constant (e.g. <code class="notranslate">1 === ElementTypeClass</code>)</li>
+<li>parent fiber id</li>
+<li>owner fiber id</li>
+<li>string table id for <code class="notranslate">displayName</code></li>
+<li>string table id for <code class="notranslate">key</code></li>
+</ol>
+<p>For example, adding a function component <code class="notranslate">&lt;Foo&gt;</code> with an id 2:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span>   <span class="pl-c">// add operation</span>
+  <span class="pl-c1">2</span><span class="pl-kos">,</span>   <span class="pl-c">// fiber id</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span>   <span class="pl-c">// ElementTypeClass</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span>   <span class="pl-c">// parent id</span>
+  <span class="pl-c1">0</span><span class="pl-kos">,</span>   <span class="pl-c">// owner id</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span>   <span class="pl-c">// id of "Foo" displayName in the string table</span>
+  <span class="pl-c1">0</span><span class="pl-kos">,</span>   <span class="pl-c">// id of null key in the string table (always zero for null)</span>
+<span class="pl-kos">]</span></pre></div>
+<h4>Removing a node</h4>
+<p>Removing a fiber from the tree (a root or a leaf) requires sending:</p>
+<ol>
+<li>remove operation constant (<code class="notranslate">2</code>)</li>
+<li>how many items were removed</li>
+<li>number of children
+<ul>
+<li>(followed by a children-first list of removed fiber ids)</li>
+</ul>
+</li>
+</ol>
+<p>For example, removing fibers with ids of 35 and 21:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">2</span><span class="pl-kos">,</span> <span class="pl-c">// remove operation</span>
+  <span class="pl-c1">2</span><span class="pl-kos">,</span> <span class="pl-c">// number of removed fibers</span>
+  <span class="pl-c1">35</span><span class="pl-kos">,</span> <span class="pl-c">// first removed id</span>
+  <span class="pl-c1">21</span><span class="pl-kos">,</span> <span class="pl-c">// second removed id</span>
+<span class="pl-kos">]</span></pre></div>
+<h4>Re-ordering children</h4>
+<ol>
+<li>re-order children constant (<code class="notranslate">3</code>)</li>
+<li>fiber id</li>
+<li>number of children
+<ul>
+<li>(followed by an ordered list of child fiber ids)</li>
+</ul>
+</li>
+</ol>
+<p>For example:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">3</span><span class="pl-kos">,</span>  <span class="pl-c">// re-order operation</span>
+  <span class="pl-c1">15</span><span class="pl-kos">,</span> <span class="pl-c">// fiber id</span>
+  <span class="pl-c1">2</span><span class="pl-kos">,</span>  <span class="pl-c">// number of children</span>
+  <span class="pl-c1">35</span><span class="pl-kos">,</span> <span class="pl-c">// first child id</span>
+  <span class="pl-c1">21</span><span class="pl-kos">,</span> <span class="pl-c">// second child id</span>
+<span class="pl-kos">]</span></pre></div>
+<h4>Updating tree base duration</h4>
+<p>While profiling is in progress, we send an extra operation any time a fiber is added or updated in a way that affects its tree base duration. This information is needed by the Profiler UI in order to render the "snapshot" and "ranked" chart views.</p>
+<ol>
+<li>tree base duration constant (<code class="notranslate">4</code>)</li>
+<li>fiber id</li>
+<li>tree base duration</li>
+</ol>
+<p>For example, updating the base duration for a fiber with an id of 1:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">4</span><span class="pl-kos">,</span>  <span class="pl-c">// update tree base duration operation</span>
+  <span class="pl-c1">4</span><span class="pl-kos">,</span>  <span class="pl-c">// tree base duration operation</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span>  <span class="pl-c">// fiber id</span>
+  <span class="pl-c1">32</span><span class="pl-kos">,</span> <span class="pl-c">// new tree base duration value</span>
+<span class="pl-kos">]</span></pre></div>
+<h4>Updating errors and warnings on a Fiber</h4>
+<p>We record calls to <code class="notranslate">console.warn</code> and <code class="notranslate">console.error</code> in the backend.<br>
+Periodically we notify the frontend that the number of recorded calls got updated.<br>
+We only send the serialized messages as part of the <code class="notranslate">inspectElement</code> event.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">5</span><span class="pl-kos">,</span> <span class="pl-c">// update error/warning counts operation</span>
+  <span class="pl-c1">4</span><span class="pl-kos">,</span> <span class="pl-c">// fiber id</span>
+  <span class="pl-c1">0</span><span class="pl-kos">,</span> <span class="pl-c">// number of calls to console.error from that fiber</span>
+  <span class="pl-c1">3</span><span class="pl-kos">,</span> <span class="pl-c">// number of calls to console.warn from that fiber</span>
+<span class="pl-kos">]</span></pre></div>
+<h4>Removing a root</h4>
+<p>A special case of unmounting an entire root (including its descendants). This specialized message replaces what would otherwise be a series of remove-node operations. It is currently only used in one case: updating component filters. The primary motivation for this is actually to preserve fiber ids for components that are re-added to the tree after the updated filters have been applied. This preserves mappings between the Fiber (id) and things like error and warning logs.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">6</span><span class="pl-kos">,</span> <span class="pl-c">// remove root operation</span>
+<span class="pl-kos">]</span></pre></div>
+<p>This operation has no additional payload because renderer and root ids are already sent at the beginning of every operations payload.</p>
+<h4>Setting the mode for a subtree</h4>
+<p>This message specifies that a subtree operates under a specific mode (e.g. <code class="notranslate">StrictMode</code>).</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">[</span>
+  <span class="pl-c1">7</span><span class="pl-kos">,</span>   <span class="pl-c">// set subtree mode</span>
+  <span class="pl-c1">1</span><span class="pl-kos">,</span>   <span class="pl-c">// subtree root fiber id</span>
+  <span class="pl-c1">0b01</span> <span class="pl-c">// mode bitmask</span>
+<span class="pl-kos">]</span></pre></div>
+<p>Modes are constant meaning that the modes a subtree mounts with will never change.</p>
+<h2>Reconstructing the tree</h2>
+<p>The frontend stores its information about the tree in a map of id to objects with the following keys:</p>
+<ul>
+<li>id: <code class="notranslate">number</code></li>
+<li>parentID: <code class="notranslate">number</code></li>
+<li>children: <code class="notranslate">Array&lt;number&gt;</code></li>
+<li>type: <code class="notranslate">number</code> (constant)</li>
+<li>displayName: <code class="notranslate">string | null</code></li>
+<li>key: <code class="notranslate">number | string | null</code></li>
+<li>ownerID: <code class="notranslate">number</code></li>
+<li>depth: <code class="notranslate">number</code> <sup>1</sup></li>
+<li>weight: <code class="notranslate">number</code> <sup>2</sup></li>
+</ul>
+<p><sup>1</sup> The <code class="notranslate">depth</code> value determines how much padding/indentation to use for the element when rendering it in the Components panel. (This preserves the appearance of a nested tree, even though the view is a flat list.)</p>
+<p><sup>2</sup> The <code class="notranslate">weight</code> of an element is the number of elements (including itself) below it in the tree. We cache this property so that we can quickly determine the total number of Components as well as find the Nth element within that set. (This enables us to use windowing.) This value needs to be adjusted each time elements are added or removed from the tree, but we amortize this over time to avoid any big performance hits when rendering the tree.</p>
+<h4>Finding the element at index N</h4>
+<p>The tree data structure lets us impose an order on elements and "quickly" find the Nth one using the <code class="notranslate">weight</code> attribute.</p>
+<p>First we find which root contains the index:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">let</span> <span class="pl-s1">rootID</span><span class="pl-kos">;</span>
+<span class="pl-k">let</span> <span class="pl-s1">root</span><span class="pl-kos">;</span>
+<span class="pl-k">let</span> <span class="pl-s1">rootWeight</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span><span class="pl-kos">;</span>
+<span class="pl-k">for</span> <span class="pl-kos">(</span><span class="pl-k">let</span> <span class="pl-s1">i</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span><span class="pl-kos">;</span> <span class="pl-s1">i</span> <span class="pl-c1">&lt;</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">_roots</span><span class="pl-kos">.</span><span class="pl-c1">length</span><span class="pl-kos">;</span> <span class="pl-s1">i</span><span class="pl-c1">++</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-s1">rootID</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">_roots</span><span class="pl-kos">[</span><span class="pl-s1">i</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+  <span class="pl-s1">root</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">_idToElement</span><span class="pl-kos">.</span><span class="pl-en">get</span><span class="pl-kos">(</span><span class="pl-s1">rootID</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">root</span><span class="pl-kos">.</span><span class="pl-c1">children</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">===</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">continue</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">rootWeight</span> <span class="pl-c1">+</span> <span class="pl-s1">root</span><span class="pl-kos">.</span><span class="pl-c1">weight</span> <span class="pl-c1">&gt;</span> <span class="pl-s1">index</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">break</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+    <span class="pl-s1">rootWeight</span> <span class="pl-c1">+=</span> <span class="pl-s1">root</span><span class="pl-kos">.</span><span class="pl-c1">weight</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>We skip the root itself because don't display them in the tree:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">firstChildID</span> <span class="pl-c1">=</span> <span class="pl-s1">root</span><span class="pl-kos">.</span><span class="pl-c1">children</span><span class="pl-kos">[</span><span class="pl-c1">0</span><span class="pl-kos">]</span><span class="pl-kos">;</span></pre></div>
+<p>Then we traverse the tree to find the element:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">let</span> <span class="pl-s1">currentElement</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">_idToElement</span><span class="pl-kos">.</span><span class="pl-en">get</span><span class="pl-kos">(</span><span class="pl-s1">firstChildID</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-k">let</span> <span class="pl-s1">currentWeight</span> <span class="pl-c1">=</span> <span class="pl-s1">rootWeight</span><span class="pl-kos">;</span>
+<span class="pl-k">while</span> <span class="pl-kos">(</span><span class="pl-s1">index</span> <span class="pl-c1">!==</span> <span class="pl-s1">currentWeight</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">for</span> <span class="pl-kos">(</span><span class="pl-k">let</span> <span class="pl-s1">i</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span><span class="pl-kos">;</span> <span class="pl-s1">i</span> <span class="pl-c1">&lt;</span> <span class="pl-s1">currentElement</span><span class="pl-kos">.</span><span class="pl-c1">children</span><span class="pl-kos">.</span><span class="pl-c1">length</span><span class="pl-kos">;</span> <span class="pl-s1">i</span><span class="pl-c1">++</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">childID</span> <span class="pl-c1">=</span> <span class="pl-s1">currentElement</span><span class="pl-kos">.</span><span class="pl-c1">children</span><span class="pl-kos">[</span><span class="pl-s1">i</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">child</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">_idToElement</span><span class="pl-kos">.</span><span class="pl-en">get</span><span class="pl-kos">(</span><span class="pl-s1">childID</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-kos">{</span> weight <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-s1">child</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">index</span> <span class="pl-c1">&lt;=</span> <span class="pl-s1">currentWeight</span> <span class="pl-c1">+</span> <span class="pl-s1">weight</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">currentWeight</span><span class="pl-c1">++</span><span class="pl-kos">;</span>
+      <span class="pl-s1">currentElement</span> <span class="pl-c1">=</span> <span class="pl-s1">child</span><span class="pl-kos">;</span>
+      <span class="pl-k">break</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">currentWeight</span> <span class="pl-c1">+=</span> <span class="pl-s1">weight</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<h2>Inspecting an element</h2>
+<p>When an element is mounted in the tree, DevTools sends a minimal amount of information about it across the bridge. This information includes its display name, type, and key- but does <em>not</em> include things like props or state. (These values are often expensive to serialize and change frequently, which would add a significant amount of load to the bridge.)</p>
+<p>Instead, DevTools lazily requests additional information about an element only when it is selected in the "Components" tab. At that point, the frontend requests this information by sending a special "<em>inspectElement</em>" message containing the id of the element being inspected. The backend then responds with an "<em>inspectedElement</em>" message containing the additional details.</p>
+<h3>Polling strategy</h3>
+<p>Elements can update frequently, especially in response to things like scrolling events. Since props and state can be large, we avoid sending this information across the bridge every time the selected element is updated. Instead, the frontend polls the backend for updates about once a second. The backend tracks when the element was last "inspected" and sends a special no-op response if it has not been re-rendered since then.</p>
+<h3>Deeply nested properties</h3>
+<p>Even when dealing with a single component, serializing deeply nested properties can be expensive. Because of this, DevTools uses a technique referred to as "dehydration" to only send a shallow copy of the data on initial inspection. DevTools then fills in the missing data on-demand as a user expands nested objects or arrays. Filled in paths are remembered (for the currently inspected element) so they are not "dehydrated" again as part of a polling update.</p>
+<h3>Inspecting hooks</h3>
+<p>Hooks present a unique challenge for the DevTools because of the concept of <em>custom</em> hooks. (A custom hook is essentially any function that calls at least one of the built-in hooks. By convention custom hooks also have names that begin with "use".)</p>
+<p>So how does DevTools identify custom functions called from within third-party components? It does this by temporarily overriding React's built-in hooks and shallow rendering the component in question. Whenever one of the (overridden) built-in hooks are called, it parses the call stack to spot potential custom hooks (functions between the component itself and the built-in hook). This approach enables it to build a tree structure describing all of the calls to both the built-in <em>and</em> custom hooks, along with the values passed to those hooks. (If you're interested in learning more about this, <a href="https://github.com/facebook/react/blob/main/packages/react-debug-tools/src/ReactDebugHooks.js">here is the source code</a>.)</p>
+<blockquote>
+<p><strong>Note</strong>: DevTools obtains hooks info by re-rendering a component.<br>
+Breakpoints will be invoked during this additional (shallow) render,<br>
+but DevTools temporarily overrides <code class="notranslate">console</code> methods to suppress logging.</p>
+</blockquote>
+<h3>Performance implications</h3>
+<p>To mitigate the performance impact of re-rendering a component, DevTools does the following:</p>
+<ul>
+<li>Only function components that use <em>at least one hook</em> are rendered. (Props and state can be analyzed without rendering.)</li>
+<li>Rendering is always shallow.</li>
+<li>Rendering is throttled to occur, at most, once per second.</li>
+<li>Rendering is skipped if the component has been not updated since the last time its properties were inspected.</li>
+</ul>
+<h2>Profiler</h2>
+<p>DevTools provides profiling tools for identifying and fixing performance problems in React 16.9+. The profiler is explained below, but at a high level– its architecture aims to minimize the impact (CPU usage) while profiling is active. This can be accomplished by:</p>
+<ul>
+<li>Minimizing bridge traffic.</li>
+<li>Making expensive computations lazy.</li>
+</ul>
+<p>The majority of profiling information is stored in the DevTools backend. The backend push-notifies the frontend of when profiling starts or stops by sending a "<em>profilingStatus</em>" message. The frontend also asks for the current status after mounting by sending a "<em>getProfilingStatus</em>" message. (This is done to support the reload-and-profile functionality.)</p>
+<h3>Commit profiler</h3>
+<p>When profiling begins, the frontend takes a snapshot/copy of each root. This snapshot includes the id, name, key, and child IDs for each node in the tree. (This information is already present on the frontend, so it does not require any additional bridge traffic.) While profiling is active, each time React commits– the frontend also stores a copy of the "<em>operations</em>" message (described above). Once profiling has finished, the frontend can use the original snapshot along with each of the stored "<em>operations</em>" messages to reconstruct the tree for each of the profiled commits.</p>
+<p>When profiling begins, the backend records the base durations of each fiber currently in the tree. While profiling is in progress, the backend also stores some information about each commit, including:</p>
+<ul>
+<li>Commit time and duration</li>
+<li>Which elements were rendered during that commit</li>
+<li>Which props and state changed (if enabled in profiler settings)</li>
+</ul>
+<p>This information will eventually be required by the frontend in order to render its profiling graphs, but it will not be sent across the bridge until profiling has been completed (to minimize the performance impact of profiling).</p>
+<h3>Combining profiling data</h3>
+<p>Once profiling is finished, the frontend requests profiling data from the backend one renderer at a time by sending a "<em>getProfilingData</em>" message. The backend responds with a "<em>profilingData</em>" message that contains per-root commit timing and duration information. The frontend then combines this information with its own snapshots to form a complete picture of the profiling session. Using this data, charts and graphs are lazily computed (and incrementally cached) on-demand, based on which commits and views are selected in the Profiler UI.</p>
+<h3>Importing/exporting data</h3>
+<p>Because all of the data is merged in the frontend after a profiling session is completed, it can be exported and imported (as a single JSON object), enabling profiling sessions to be shared between users.</p>
+<h2>Package Specific Details</h2>
+<h3>Devtools Extension Overview Diagram</h3>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://user-images.githubusercontent.com/2735514/132768489-6ab85156-b816-442f-9c3f-7af738ee9e49.png"><img src="https://user-images.githubusercontent.com/2735514/132768489-6ab85156-b816-442f-9c3f-7af738ee9e49.png" alt="React Devtools Extension" style="max-width: 100%;"></a></p>

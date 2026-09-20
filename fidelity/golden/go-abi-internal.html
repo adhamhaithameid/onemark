@@ -1,0 +1,1329 @@
+<h1>Go internal ABI specification</h1>
+<p>Self-link: <a href="https://go.dev/s/regabi" rel="nofollow">go.dev/s/regabi</a></p>
+<p>This document describes Go’s internal application binary interface<br>
+(ABI), known as ABIInternal.<br>
+Go's ABI defines the layout of data in memory and the conventions for<br>
+calling between Go functions.<br>
+This ABI is <em>unstable</em> and will change between Go versions.<br>
+If you’re writing assembly code, please instead refer to Go’s<br>
+<a href="/doc/asm.html">assembly documentation</a>, which describes Go’s stable<br>
+ABI, known as ABI0.</p>
+<p>All functions defined in Go source follow ABIInternal.<br>
+However, ABIInternal and ABI0 functions are able to call each other<br>
+through transparent <em>ABI wrappers</em>, described in the <a href="https://golang.org/design/27539-internal-abi" rel="nofollow">internal calling<br>
+convention proposal</a>.</p>
+<p>Go uses a common ABI design across all architectures.<br>
+We first describe the common ABI, and then cover per-architecture<br>
+specifics.</p>
+<p><em>Rationale</em>: For the reasoning behind using a common ABI across<br>
+architectures instead of the platform ABI, see the <a href="https://golang.org/design/40724-register-calling" rel="nofollow">register-based Go<br>
+calling convention proposal</a>.</p>
+<h2>Memory layout</h2>
+<p>Go's built-in types have the following sizes and alignments.<br>
+Many, though not all, of these sizes are guaranteed by the <a href="/doc/go_spec.html#Size_and_alignment_guarantees">language<br>
+specification</a>.<br>
+Those that aren't guaranteed may change in future versions of Go (for<br>
+example, we've considered changing the alignment of int64 on 32-bit).</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Type</th>
+<th>64-bit</th>
+<th></th>
+<th>32-bit</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>Size</td>
+<td>Align</td>
+<td>Size</td>
+<td>Align</td>
+</tr>
+<tr>
+<td>bool, uint8, int8</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>uint16, int16</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>uint32, int32</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>uint64, int64</td>
+<td>8</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+</tr>
+<tr>
+<td>int, uint</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>float32</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>float64</td>
+<td>8</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+</tr>
+<tr>
+<td>complex64</td>
+<td>8</td>
+<td>4</td>
+<td>8</td>
+<td>4</td>
+</tr>
+<tr>
+<td>complex128</td>
+<td>16</td>
+<td>8</td>
+<td>16</td>
+<td>4</td>
+</tr>
+<tr>
+<td>uintptr, *T, unsafe.Pointer</td>
+<td>8</td>
+<td>8</td>
+<td>4</td>
+<td>4</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>The types <code class="notranslate">byte</code> and <code class="notranslate">rune</code> are aliases for <code class="notranslate">uint8</code> and <code class="notranslate">int32</code>,<br>
+respectively, and hence have the same size and alignment as these<br>
+types.</p>
+<p>The layout of <code class="notranslate">map</code>, <code class="notranslate">chan</code>, and <code class="notranslate">func</code> types is equivalent to *T.</p>
+<p>To describe the layout of the remaining composite types, we first<br>
+define the layout of a <em>sequence</em> S of N fields with types<br>
+t<sub>1</sub>, t<sub>2</sub>, ..., t<sub>N</sub>.<br>
+We define the byte offset at which each field begins relative to a<br>
+base address of 0, as well as the size and alignment of the sequence<br>
+as follows:</p>
+<pre class="notranslate"><code class="notranslate">offset(S, i) = 0  if i = 1
+             = align(offset(S, i-1) + sizeof(t_(i-1)), alignof(t_i))
+alignof(S)   = 1  if N = 0
+             = max(alignof(t_i) | 1 &lt;= i &lt;= N)
+sizeof(S)    = 0  if N = 0
+             = align(offset(S, N) + sizeof(t_N), alignof(S))
+</code></pre>
+<p>Where sizeof(T) and alignof(T) are the size and alignment of type T,<br>
+respectively, and align(x, y) rounds x up to a multiple of y.</p>
+<p>The <code class="notranslate">interface{}</code> type is a sequence of 1. a pointer to the runtime type<br>
+description for the interface's dynamic type and 2. an <code class="notranslate">unsafe.Pointer</code><br>
+data field.<br>
+Any other interface type (besides the empty interface) is a sequence<br>
+of 1. a pointer to the runtime "itab" that gives the method pointers and<br>
+the type of the data field and 2. an <code class="notranslate">unsafe.Pointer</code> data field.<br>
+An interface can be "direct" or "indirect" depending on the dynamic<br>
+type: a direct interface stores the value directly in the data field,<br>
+and an indirect interface stores a pointer to the value in the data<br>
+field.<br>
+An interface can only be direct if the value consists of a single<br>
+pointer word.</p>
+<p>An array type <code class="notranslate">[N]T</code> is a sequence of N fields of type T.</p>
+<p>The slice type <code class="notranslate">[]T</code> is a sequence of a <code class="notranslate">*[cap]T</code> pointer to the slice<br>
+backing store, an <code class="notranslate">int</code> giving the <code class="notranslate">len</code> of the slice, and an <code class="notranslate">int</code><br>
+giving the <code class="notranslate">cap</code> of the slice.</p>
+<p>The <code class="notranslate">string</code> type is a sequence of a <code class="notranslate">*[len]byte</code> pointer to the<br>
+string backing store, and an <code class="notranslate">int</code> giving the <code class="notranslate">len</code> of the string.</p>
+<p>A struct type <code class="notranslate">struct { f1 t1; ...; fM tM }</code> is laid out as the<br>
+sequence t1, ..., tM, tP, where tP is either:</p>
+<ul>
+<li>Type <code class="notranslate">byte</code> if sizeof(tM) = 0 and any of sizeof(t<em>i</em>) ≠ 0.</li>
+<li>Empty (size 0 and align 1) otherwise.</li>
+</ul>
+<p>The padding byte prevents creating a past-the-end pointer by taking<br>
+the address of the final, empty fN field.</p>
+<p>Note that user-written assembly code should generally not depend on Go<br>
+type layout and should instead use the constants defined in<br>
+<a href="/doc/asm.html#data-offsets"><code class="notranslate">go_asm.h</code></a>.</p>
+<h2>Function call argument and result passing</h2>
+<p>Function calls pass arguments and results using a combination of the<br>
+stack and machine registers.<br>
+Each argument or result is passed either entirely in registers or<br>
+entirely on the stack.<br>
+Because access to registers is generally faster than access to the<br>
+stack, arguments and results are preferentially passed in registers.<br>
+However, any argument or result that contains a non-trivial array or<br>
+does not fit entirely in the remaining available registers is passed<br>
+on the stack.</p>
+<p>Each architecture defines a sequence of integer registers and a<br>
+sequence of floating-point registers.<br>
+At a high level, arguments and results are recursively broken down<br>
+into values of base types and these base values are assigned to<br>
+registers from these sequences.</p>
+<p>Arguments and results can share the same registers, but do not share<br>
+the same stack space.<br>
+Beyond the arguments and results passed on the stack, the caller also<br>
+reserves spill space on the stack for all register-based arguments<br>
+(but does not populate this space).</p>
+<p>The receiver, arguments, and results of function or method F are<br>
+assigned to registers or the stack using the following algorithm:</p>
+<ol>
+<li>Let NI and NFP be the length of integer and floating-point register<br>
+sequences defined by the architecture.<br>
+Let I and FP be 0; these are the indexes of the next integer and<br>
+floating-point register.<br>
+Let S, the type sequence defining the stack frame, be empty.</li>
+<li>If F is a method, assign F’s receiver.</li>
+<li>For each argument A of F, assign A.</li>
+<li>Add a pointer-alignment field to S. This has size 0 and the same<br>
+alignment as <code class="notranslate">uintptr</code>.</li>
+<li>Reset I and FP to 0.</li>
+<li>For each result R of F, assign R.</li>
+<li>Add a pointer-alignment field to S.</li>
+<li>For each register-assigned receiver and argument of F, let T be its<br>
+type and add T to the stack sequence S.<br>
+This is the argument's (or receiver's) spill space and will be<br>
+uninitialized at the call.</li>
+<li>Add a pointer-alignment field to S.</li>
+</ol>
+<p>Assigning a receiver, argument, or result V of underlying type T works<br>
+as follows:</p>
+<ol>
+<li>Remember I and FP.</li>
+<li>If T has zero size, add T to the stack sequence S and return.</li>
+<li>Try to register-assign V.</li>
+<li>If step 3 failed, reset I and FP to the values from step 1, add T<br>
+to the stack sequence S, and assign V to this field in S.</li>
+</ol>
+<p>Register-assignment of a value V of underlying type T works as follows:</p>
+<ol>
+<li>If T is a boolean or integral type that fits in an integer<br>
+register, assign V to register I and increment I.</li>
+<li>If T is an integral type that fits in two integer registers, assign<br>
+the least significant and most significant halves of V to registers<br>
+I and I+1, respectively, and increment I by 2</li>
+<li>If T is a floating-point type and can be represented without loss<br>
+of precision in a floating-point register, assign V to register FP<br>
+and increment FP.</li>
+<li>If T is a complex type, recursively register-assign its real and<br>
+imaginary parts.</li>
+<li>If T is a pointer type, map type, channel type, or function type,<br>
+assign V to register I and increment I.</li>
+<li>If T is a string type, interface type, or slice type, recursively<br>
+register-assign V’s components (2 for strings and interfaces, 3 for<br>
+slices).</li>
+<li>If T is a struct type, recursively register-assign each field of V.</li>
+<li>If T is an array type of length 0, do nothing.</li>
+<li>If T is an array type of length 1, recursively register-assign its<br>
+one element.</li>
+<li>If T is an array type of length &gt; 1, fail.</li>
+<li>If I &gt; NI or FP &gt; NFP, fail.</li>
+<li>If any recursive assignment above fails, fail.</li>
+</ol>
+<p>The above algorithm produces an assignment of each receiver, argument,<br>
+and result to registers or to a field in the stack sequence.<br>
+The final stack sequence looks like: stack-assigned receiver,<br>
+stack-assigned arguments, pointer-alignment, stack-assigned results,<br>
+pointer-alignment, spill space for each register-assigned argument,<br>
+pointer-alignment.<br>
+The following diagram shows what this stack frame looks like on the<br>
+stack, using the typical convention where address 0 is at the bottom:</p>
+<pre class="notranslate"><code class="notranslate">+------------------------------+
+|             . . .            |
+| 2nd reg argument spill space |
+| 1st reg argument spill space |
+| &lt;pointer-sized alignment&gt;    |
+|             . . .            |
+| 2nd stack-assigned result    |
+| 1st stack-assigned result    |
+| &lt;pointer-sized alignment&gt;    |
+|             . . .            |
+| 2nd stack-assigned argument  |
+| 1st stack-assigned argument  |
+| stack-assigned receiver      |
++------------------------------+ ↓ lower addresses
+</code></pre>
+<p>To perform a call, the caller reserves space starting at the lowest<br>
+address in its stack frame for the call stack frame, stores arguments<br>
+in the registers and argument stack fields determined by the above<br>
+algorithm, and performs the call.<br>
+At the time of a call, spill space, result stack fields, and result<br>
+registers are left uninitialized.<br>
+Upon return, the callee must have stored results to all result<br>
+registers and result stack fields determined by the above algorithm.</p>
+<p>There are no callee-save registers, so a call may overwrite any<br>
+register that doesn’t have a fixed meaning, including argument<br>
+registers.</p>
+<h3>Example</h3>
+<p>Consider the function <code class="notranslate">func f(a1 uint8, a2 [2]uintptr, a3 uint8) (r1 struct { x uintptr; y [2]uintptr }, r2 string)</code> on a 64-bit<br>
+architecture with hypothetical integer registers R0–R9.</p>
+<p>On entry, <code class="notranslate">a1</code> is assigned to <code class="notranslate">R0</code>, <code class="notranslate">a3</code> is assigned to <code class="notranslate">R1</code> and the<br>
+stack frame is laid out in the following sequence:</p>
+<pre class="notranslate"><code class="notranslate">a2      [2]uintptr
+r1.x    uintptr
+r1.y    [2]uintptr
+a1Spill uint8
+a3Spill uint8
+_       [6]uint8  // alignment padding
+</code></pre>
+<p>In the stack frame, only the <code class="notranslate">a2</code> field is initialized on entry; the<br>
+rest of the frame is left uninitialized.</p>
+<p>On exit, <code class="notranslate">r2.base</code> is assigned to <code class="notranslate">R0</code>, <code class="notranslate">r2.len</code> is assigned to <code class="notranslate">R1</code>,<br>
+and <code class="notranslate">r1.x</code> and <code class="notranslate">r1.y</code> are initialized in the stack frame.</p>
+<p>There are several things to note in this example.<br>
+First, <code class="notranslate">a2</code> and <code class="notranslate">r1</code> are stack-assigned because they contain arrays.<br>
+The other arguments and results are register-assigned.<br>
+Result <code class="notranslate">r2</code> is decomposed into its components, which are individually<br>
+register-assigned.<br>
+On the stack, the stack-assigned arguments appear at lower addresses<br>
+than the stack-assigned results, which appear at lower addresses than<br>
+the argument spill area.<br>
+Only arguments, not results, are assigned a spill area on the stack.</p>
+<h3>Rationale</h3>
+<p>Each base value is assigned to its own register to optimize<br>
+construction and access.<br>
+An alternative would be to pack multiple sub-word values into<br>
+registers, or to simply map an argument's in-memory layout to<br>
+registers (this is common in C ABIs), but this typically adds cost to<br>
+pack and unpack these values.<br>
+Modern architectures have more than enough registers to pass all<br>
+arguments and results this way for nearly all functions (see the<br>
+appendix), so there’s little downside to spreading base values across<br>
+registers.</p>
+<p>Arguments that can’t be fully assigned to registers are passed<br>
+entirely on the stack in case the callee takes the address of that<br>
+argument.<br>
+If an argument could be split across the stack and registers and the<br>
+callee took its address, it would need to be reconstructed in memory,<br>
+a process that would be proportional to the size of the argument.</p>
+<p>Non-trivial arrays are always passed on the stack because indexing<br>
+into an array typically requires a computed offset, which generally<br>
+isn’t possible with registers.<br>
+Arrays in general are rare in function signatures (only 0.7% of<br>
+functions in the Go 1.15 standard library and 0.2% in kubelet).<br>
+We considered allowing array fields to be passed on the stack while<br>
+the rest of an argument’s fields are passed in registers, but this<br>
+creates the same problems as other large structs if the callee takes<br>
+the address of an argument, and would benefit &lt;0.1% of functions in<br>
+kubelet (and even these very little).</p>
+<p>We make exceptions for 0 and 1-element arrays because these don’t<br>
+require computed offsets, and 1-element arrays are already decomposed<br>
+in the compiler’s SSA representation.</p>
+<p>The ABI assignment algorithm above is equivalent to Go’s stack-based<br>
+ABI0 calling convention if there are zero architecture registers.<br>
+This is intended to ease the transition to the register-based internal<br>
+ABI and make it easy for the compiler to generate either calling<br>
+convention.<br>
+An architecture may still define register meanings that aren’t<br>
+compatible with ABI0, but these differences should be easy to account<br>
+for in the compiler.</p>
+<p>The assignment algorithm assigns zero-sized values to the stack<br>
+(assignment step 2) in order to support ABI0-equivalence.<br>
+While these values take no space themselves, they do result in<br>
+alignment padding on the stack in ABI0.<br>
+Without this step, the internal ABI would register-assign zero-sized<br>
+values even on architectures that provide no argument registers<br>
+because they don't consume any registers, and hence not add alignment<br>
+padding to the stack.</p>
+<p>The algorithm reserves spill space for arguments in the caller’s frame<br>
+so that the compiler can generate a stack growth path that spills into<br>
+this reserved space.<br>
+If the callee has to grow the stack, it may not be able to reserve<br>
+enough additional stack space in its own frame to spill these, which<br>
+is why it’s important that the caller do so.<br>
+These slots also act as the home location if these arguments need to<br>
+be spilled for any other reason, which simplifies traceback printing.</p>
+<p>There are several options for how to lay out the argument spill space.<br>
+We chose to lay out each argument according to its type's usual memory<br>
+layout but to separate the spill space from the regular argument<br>
+space.<br>
+Using the usual memory layout simplifies the compiler because it<br>
+already understands this layout.<br>
+Also, if a function takes the address of a register-assigned argument,<br>
+the compiler must spill that argument to memory in its usual memory<br>
+layout and it's more convenient to use the argument spill space for<br>
+this purpose.</p>
+<p>Alternatively, the spill space could be structured around argument<br>
+registers.<br>
+In this approach, the stack growth spill path would spill each<br>
+argument register to a register-sized stack word.<br>
+However, if the function takes the address of a register-assigned<br>
+argument, the compiler would have to reconstruct it in memory layout<br>
+elsewhere on the stack.</p>
+<p>The spill space could also be interleaved with the stack-assigned<br>
+arguments so the arguments appear in order whether they are register-<br>
+or stack-assigned.<br>
+This would be close to ABI0, except that register-assigned arguments<br>
+would be uninitialized on the stack and there's no need to reserve<br>
+stack space for register-assigned results.<br>
+We expect separating the spill space to perform better because of<br>
+memory locality.<br>
+Separating the space is also potentially simpler for <code class="notranslate">reflect</code> calls<br>
+because this allows <code class="notranslate">reflect</code> to summarize the spill space as a single<br>
+number.<br>
+Finally, the long-term intent is to remove reserved spill slots<br>
+entirely – allowing most functions to be called without any stack<br>
+setup and easing the introduction of callee-save registers – and<br>
+separating the spill space makes that transition easier.</p>
+<h2>Closures</h2>
+<p>A func value (e.g., <code class="notranslate">var x func()</code>) is a pointer to a closure object.<br>
+A closure object begins with a pointer-sized program counter<br>
+representing the entry point of the function, followed by zero or more<br>
+bytes containing the closed-over environment.</p>
+<p>Closure calls follow the same conventions as static function and<br>
+method calls, with one addition. Each architecture specifies a<br>
+<em>closure context pointer</em> register and calls to closures store the<br>
+address of the closure object in the closure context pointer register<br>
+prior to the call.</p>
+<h2>Software floating-point mode</h2>
+<p>In "softfloat" mode, the ABI simply treats the hardware as having zero<br>
+floating-point registers.<br>
+As a result, any arguments containing floating-point values will be<br>
+passed on the stack.</p>
+<p><em>Rationale</em>: Softfloat mode is about compatibility over performance<br>
+and is not commonly used.<br>
+Hence, we keep the ABI as simple as possible in this case, rather than<br>
+adding additional rules for passing floating-point values in integer<br>
+registers.</p>
+<h2>Architecture specifics</h2>
+<p>This section describes per-architecture register mappings, as well as<br>
+other per-architecture special cases.</p>
+<h3>amd64 architecture</h3>
+<p>The amd64 architecture uses the following sequence of 9 registers for<br>
+integer arguments and results:</p>
+<pre class="notranslate"><code class="notranslate">RAX, RBX, RCX, RDI, RSI, R8, R9, R10, R11
+</code></pre>
+<p>It uses X0 – X14 for floating-point arguments and results.</p>
+<p><em>Rationale</em>: These sequences are chosen from the available registers<br>
+to be relatively easy to remember.</p>
+<p>Registers R12 and R13 are permanent scratch registers.<br>
+R15 is a scratch register except in dynamically linked binaries.</p>
+<p><em>Rationale</em>: Some operations such as stack growth and reflection calls<br>
+need dedicated scratch registers in order to manipulate call frames<br>
+without corrupting arguments or results.</p>
+<p>Special-purpose registers are as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Register</th>
+<th>Call meaning</th>
+<th>Return meaning</th>
+<th>Body meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RSP</td>
+<td>Stack pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>RBP</td>
+<td>Frame pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>RDX</td>
+<td>Closure context pointer</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Scratch</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R13</td>
+<td>Scratch</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R14</td>
+<td>Current goroutine</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R15</td>
+<td>GOT reference temporary if dynlink</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>X15</td>
+<td>Zero value (*)</td>
+<td>Same</td>
+<td>Scratch</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>(*) Except on Plan 9, where X15 is a scratch register because SSE<br>
+registers cannot be used in note handlers (so the compiler avoids<br>
+using them except when absolutely necessary).</p>
+<p><em>Rationale</em>: These register meanings are compatible with Go’s<br>
+stack-based calling convention except for R14 and X15, which will have<br>
+to be restored on transitions from ABI0 code to ABIInternal code.<br>
+In ABI0, these are undefined, so transitions from ABIInternal to ABI0<br>
+can ignore these registers.</p>
+<p><em>Rationale</em>: For the current goroutine pointer, we chose a register<br>
+that requires an additional REX byte.<br>
+While this adds one byte to every function prologue, it is hardly ever<br>
+accessed outside the function prologue and we expect making more<br>
+single-byte registers available to be a net win.</p>
+<p><em>Rationale</em>: We could allow R14 (the current goroutine pointer) to be<br>
+a scratch register in function bodies because it can always be<br>
+restored from TLS on amd64.<br>
+However, we designate it as a fixed register for simplicity and for<br>
+consistency with other architectures that may not have a copy of the<br>
+current goroutine pointer in TLS.</p>
+<p><em>Rationale</em>: We designate X15 as a fixed zero register because<br>
+functions often have to bulk zero their stack frames, and this is more<br>
+efficient with a designated zero register.</p>
+<p><em>Implementation note</em>: Registers with fixed meaning at calls but not<br>
+in function bodies must be initialized by "injected" calls such as<br>
+signal-based panics.</p>
+<h4>Stack layout</h4>
+<p>The stack pointer, RSP, grows down and is always aligned to 8 bytes.</p>
+<p>The amd64 architecture does not use a link register.</p>
+<p>A function's stack frame is laid out as follows:</p>
+<pre class="notranslate"><code class="notranslate">+------------------------------+
+| return PC                    |
+| RBP on entry                 |
+| ... locals ...               |
+| ... outgoing arguments ...   |
++------------------------------+ ↓ lower addresses
+</code></pre>
+<p>The "return PC" is pushed as part of the standard amd64 <code class="notranslate">CALL</code><br>
+operation.<br>
+On entry, a function subtracts from RSP to open its stack frame and<br>
+saves the value of RBP directly below the return PC.<br>
+A leaf function that does not require any stack space may omit the<br>
+saved RBP.</p>
+<p>The Go ABI's use of RBP as a frame pointer register is compatible with<br>
+amd64 platform conventions so that Go can inter-operate with platform<br>
+debuggers and profilers.</p>
+<h4>Flags</h4>
+<p>The direction flag (D) is always cleared (set to the “forward”<br>
+direction) at a call.<br>
+The arithmetic status flags are treated like scratch registers and not<br>
+preserved across calls.<br>
+All other bits in RFLAGS are system flags.</p>
+<p>At function calls and returns, the CPU is in x87 mode (not MMX<br>
+technology mode).</p>
+<p><em>Rationale</em>: Go on amd64 does not use either the x87 registers or MMX<br>
+registers. Hence, we follow the SysV platform conventions in order to<br>
+simplify transitions to and from the C ABI.</p>
+<p>At calls, the MXCSR control bits are always set as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Flag</th>
+<th>Bit</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FZ</td>
+<td>15</td>
+<td>0</td>
+<td>Do not flush to zero</td>
+</tr>
+<tr>
+<td>RC</td>
+<td>14/13</td>
+<td>0 (RN)</td>
+<td>Round to nearest</td>
+</tr>
+<tr>
+<td>PM</td>
+<td>12</td>
+<td>1</td>
+<td>Precision masked</td>
+</tr>
+<tr>
+<td>UM</td>
+<td>11</td>
+<td>1</td>
+<td>Underflow masked</td>
+</tr>
+<tr>
+<td>OM</td>
+<td>10</td>
+<td>1</td>
+<td>Overflow masked</td>
+</tr>
+<tr>
+<td>ZM</td>
+<td>9</td>
+<td>1</td>
+<td>Divide-by-zero masked</td>
+</tr>
+<tr>
+<td>DM</td>
+<td>8</td>
+<td>1</td>
+<td>Denormal operations masked</td>
+</tr>
+<tr>
+<td>IM</td>
+<td>7</td>
+<td>1</td>
+<td>Invalid operations masked</td>
+</tr>
+<tr>
+<td>DAZ</td>
+<td>6</td>
+<td>0</td>
+<td>Do not zero de-normals</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>The MXCSR status bits are callee-save.</p>
+<p><em>Rationale</em>: Having a fixed MXCSR control configuration allows Go<br>
+functions to use SSE operations without modifying or saving the MXCSR.<br>
+Functions are allowed to modify it between calls (as long as they<br>
+restore it), but as of this writing Go code never does.<br>
+The above fixed configuration matches the process initialization<br>
+control bits specified by the ELF AMD64 ABI.</p>
+<p>The x87 floating-point control word is not used by Go on amd64.</p>
+<h3>arm64 architecture</h3>
+<p>The arm64 architecture uses R0 – R15 for integer arguments and results.</p>
+<p>It uses F0 – F15 for floating-point arguments and results.</p>
+<p><em>Rationale</em>: 16 integer registers and 16 floating-point registers are<br>
+more than enough for passing arguments and results for practically all<br>
+functions (see Appendix). While there are more registers available,<br>
+using more registers provides little benefit. Additionally, it will add<br>
+overhead on code paths where the number of arguments are not statically<br>
+known (e.g. reflect call), and will consume more stack space when there<br>
+is only limited stack space available to fit in the nosplit limit.</p>
+<p>Registers R16 and R17 are permanent scratch registers. They are also<br>
+used as scratch registers by the linker (Go linker and external<br>
+linker) in trampolines.</p>
+<p>Register R18 is reserved and never used. It is reserved for the OS<br>
+on some platforms (e.g. macOS).</p>
+<p>Registers R19 – R25 are permanent scratch registers. In addition,<br>
+R27 is a permanent scratch register used by the assembler when<br>
+expanding instructions.</p>
+<p>Floating-point registers F16 – F31 are also permanent scratch<br>
+registers.</p>
+<p>Special-purpose registers are as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Register</th>
+<th>Call meaning</th>
+<th>Return meaning</th>
+<th>Body meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RSP</td>
+<td>Stack pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R30</td>
+<td>Link register</td>
+<td>Same</td>
+<td>Scratch (non-leaf functions)</td>
+</tr>
+<tr>
+<td>R29</td>
+<td>Frame pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R28</td>
+<td>Current goroutine</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R27</td>
+<td>Scratch</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R26</td>
+<td>Closure context pointer</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R18</td>
+<td>Reserved (not used)</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>ZR</td>
+<td>Zero value</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p><em>Rationale</em>: These register meanings are compatible with Go’s<br>
+stack-based calling convention.</p>
+<p><em>Rationale</em>: The link register, R30, holds the function return<br>
+address at the function entry. For functions that have frames<br>
+(including most non-leaf functions), R30 is saved to stack in the<br>
+function prologue and restored in the epilogue. Within the function<br>
+body, R30 can be used as a scratch register.</p>
+<p><em>Implementation note</em>: Registers with fixed meaning at calls but not<br>
+in function bodies must be initialized by "injected" calls such as<br>
+signal-based panics.</p>
+<h4>Stack layout</h4>
+<p>The stack pointer, RSP, grows down and is always aligned to 16 bytes.</p>
+<p><em>Rationale</em>: The arm64 architecture requires the stack pointer to be<br>
+16-byte aligned.</p>
+<p>A function's stack frame, after the frame is created, is laid out as<br>
+follows:</p>
+<pre class="notranslate"><code class="notranslate">+------------------------------+
+| ... locals ...               |
+| ... outgoing arguments ...   |
+| return PC                    | ← RSP points to
+| frame pointer on entry       |
++------------------------------+ ↓ lower addresses
+</code></pre>
+<p>The "return PC" is loaded to the link register, R30, as part of the<br>
+arm64 <code class="notranslate">CALL</code> operation.</p>
+<p>On entry, a function subtracts from RSP to open its stack frame, and<br>
+saves the values of R30 and R29 at the bottom of the frame.<br>
+Specifically, R30 is saved at 0(RSP) and R29 is saved at -8(RSP),<br>
+after RSP is updated.</p>
+<p>A leaf function that does not require any stack space may omit the<br>
+saved R30 and R29.</p>
+<p>The Go ABI's use of R29 as a frame pointer register is compatible with<br>
+arm64 architecture requirement so that Go can inter-operate with platform<br>
+debuggers and profilers.</p>
+<p>This stack layout is used by both register-based (ABIInternal) and<br>
+stack-based (ABI0) calling conventions.</p>
+<h4>Flags</h4>
+<p>The arithmetic status flags (NZCV) are treated like scratch registers<br>
+and not preserved across calls.<br>
+All other bits in PSTATE are system flags and are not modified by Go.</p>
+<p>The floating-point status register (FPSR) is treated like scratch<br>
+registers and not preserved across calls.</p>
+<p>At calls, the floating-point control register (FPCR) bits are always<br>
+set as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Flag</th>
+<th>Bit</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DN</td>
+<td>25</td>
+<td>0</td>
+<td>Propagate NaN operands</td>
+</tr>
+<tr>
+<td>FZ</td>
+<td>24</td>
+<td>0</td>
+<td>Do not flush to zero</td>
+</tr>
+<tr>
+<td>RC</td>
+<td>23/22</td>
+<td>0 (RN)</td>
+<td>Round to nearest, choose even if tied</td>
+</tr>
+<tr>
+<td>IDE</td>
+<td>15</td>
+<td>0</td>
+<td>Denormal operations trap disabled</td>
+</tr>
+<tr>
+<td>IXE</td>
+<td>12</td>
+<td>0</td>
+<td>Inexact trap disabled</td>
+</tr>
+<tr>
+<td>UFE</td>
+<td>11</td>
+<td>0</td>
+<td>Underflow trap disabled</td>
+</tr>
+<tr>
+<td>OFE</td>
+<td>10</td>
+<td>0</td>
+<td>Overflow trap disabled</td>
+</tr>
+<tr>
+<td>DZE</td>
+<td>9</td>
+<td>0</td>
+<td>Divide-by-zero trap disabled</td>
+</tr>
+<tr>
+<td>IOE</td>
+<td>8</td>
+<td>0</td>
+<td>Invalid operations trap disabled</td>
+</tr>
+<tr>
+<td>NEP</td>
+<td>2</td>
+<td>0</td>
+<td>Scalar operations do not affect higher elements in vector registers</td>
+</tr>
+<tr>
+<td>AH</td>
+<td>1</td>
+<td>0</td>
+<td>No alternate handling of de-normal inputs</td>
+</tr>
+<tr>
+<td>FIZ</td>
+<td>0</td>
+<td>0</td>
+<td>Do not zero de-normals</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p><em>Rationale</em>: Having a fixed FPCR control configuration allows Go<br>
+functions to use floating-point and vector (SIMD) operations without<br>
+modifying or saving the FPCR.<br>
+Functions are allowed to modify it between calls (as long as they<br>
+restore it), but as of this writing Go code never does.</p>
+<h3>loong64 architecture</h3>
+<p>The loong64 architecture uses R4 – R19 for integer arguments and integer results.</p>
+<p>It uses F0 – F15 for floating-point arguments and results.</p>
+<p>Registers R20 - R21, R23 – R28, R30 - R31, F16 – F31 are permanent scratch registers.</p>
+<p>Register R2 is reserved and never used.</p>
+<p>Special-purpose registers used within Go generated code and Go assembly code<br>
+are as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Register</th>
+<th>Call meaning</th>
+<th>Return meaning</th>
+<th>Body meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R0</td>
+<td>Zero value</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>Link register</td>
+<td>Link register</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Stack pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R22</td>
+<td>Current goroutine</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R29</td>
+<td>Closure context pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R30, R31</td>
+<td>used by the assembler</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p><em>Rationale</em>: These register meanings are compatible with Go’s stack-based<br>
+calling convention.</p>
+<h4>Stack layout</h4>
+<p>The stack pointer, R3, grows down and is aligned to 8 bytes.</p>
+<p>A function's stack frame, after the frame is created, is laid out as<br>
+follows:</p>
+<pre class="notranslate"><code class="notranslate">+------------------------------+
+| ... locals ...               |
+| ... outgoing arguments ...   |
+| return PC                    | ← R3 points to
++------------------------------+ ↓ lower addresses
+</code></pre>
+<p>This stack layout is used by both register-based (ABIInternal) and<br>
+stack-based (ABI0) calling conventions.</p>
+<p>The "return PC" is loaded to the link register, R1, as part of the<br>
+loong64 <code class="notranslate">JAL</code> operation.</p>
+<h4>Flags</h4>
+<p>All bits in CSR are system flags and are not modified by Go.</p>
+<h3>ppc64 architecture</h3>
+<p>The ppc64 architecture uses R3 – R10 and R14 – R17 for integer arguments<br>
+and results.</p>
+<p>It uses F1 – F12 for floating-point arguments and results.</p>
+<p>Register R31 is a permanent scratch register in Go.</p>
+<p>Special-purpose registers used within Go generated code and Go<br>
+assembly code are as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Register</th>
+<th>Call meaning</th>
+<th>Return meaning</th>
+<th>Body meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R0</td>
+<td>Zero value</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>Stack pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>TOC register</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R11</td>
+<td>Closure context pointer</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Function address on indirect calls</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R13</td>
+<td>TLS pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R20,R21</td>
+<td>Scratch</td>
+<td>Scratch</td>
+<td>Used by duffcopy, duffzero</td>
+</tr>
+<tr>
+<td>R30</td>
+<td>Current goroutine</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R31</td>
+<td>Scratch</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>LR</td>
+<td>Link register</td>
+<td>Link register</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td><em>Rationale</em>: These register meanings are compatible with Go’s</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>stack-based calling convention.</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>The link register, LR, holds the function return<br>
+address at the function entry and is set to the correct return<br>
+address before exiting the function. It is also used<br>
+in some cases as the function address when doing an indirect call.</p>
+<p>The register R2 contains the address of the TOC (table of contents) which<br>
+contains data or code addresses used when generating position independent<br>
+code. Non-Go code generated when using cgo contains TOC-relative addresses<br>
+which depend on R2 holding a valid TOC. Go code compiled with -shared or<br>
+-dynlink initializes and maintains R2 and uses it in some cases for<br>
+function calls; Go code compiled without these options does not modify R2.</p>
+<p>When making a function call R12 contains the function address for use by the<br>
+code to generate R2 at the beginning of the function. R12 can be used for<br>
+other purposes within the body of the function, such as trampoline generation.</p>
+<p>R20 and R21 are used in duffcopy and duffzero which could be generated<br>
+before arguments are saved so should not be used for register arguments.</p>
+<p>The Count register CTR can be used as the call target for some branch instructions.<br>
+It holds the return address when preemption has occurred.</p>
+<p>On PPC64 when a float32 is loaded it becomes a float64 in the register, which is<br>
+different from other platforms and that needs to be recognized by the internal<br>
+implementation of reflection so that float32 arguments are passed correctly.</p>
+<p>Registers R18 - R29 and F13 - F31 are considered scratch registers.</p>
+<h4>Stack layout</h4>
+<p>The stack pointer, R1, grows down and is aligned to 8 bytes in Go, but changed<br>
+to 16 bytes when calling cgo.</p>
+<p>A function's stack frame, after the frame is created, is laid out as<br>
+follows:</p>
+<pre class="notranslate"><code class="notranslate">+------------------------------+
+| ... locals ...               |
+| ... outgoing arguments ...   |
+| 24  TOC register R2 save     | When compiled with -shared/-dynlink
+| 16  Unused in Go             | Not used in Go
+|  8  CR save                  | nonvolatile CR fields
+|  0  return PC                | ← R1 points to
++------------------------------+ ↓ lower addresses
+</code></pre>
+<p>The "return PC" is loaded to the link register, LR, as part of the<br>
+ppc64 <code class="notranslate">BL</code> operations.</p>
+<p>On entry to a non-leaf function, the stack frame size is subtracted from R1 to<br>
+create its stack frame, and saves the value of LR at the bottom of the frame.</p>
+<p>A leaf function that does not require any stack space does not modify R1 and<br>
+does not save LR.</p>
+<p><em>NOTE</em>: We might need to save the frame pointer on the stack as<br>
+in the PPC64 ELF v2 ABI so Go can inter-operate with platform debuggers<br>
+and profilers.</p>
+<p>This stack layout is used by both register-based (ABIInternal) and<br>
+stack-based (ABI0) calling conventions.</p>
+<h4>Flags</h4>
+<p>The condition register consists of 8 condition code register fields<br>
+CR0-CR7. Go generated code only sets and uses CR0, commonly set by<br>
+compare functions and use to determine the target of a conditional<br>
+branch. The generated code does not set or use CR1-CR7.</p>
+<p>The floating point status and control register (FPSCR) is initialized<br>
+to 0 by the kernel at startup of the Go program and not changed by<br>
+the Go generated code.</p>
+<h3>riscv64 architecture</h3>
+<p>The riscv64 architecture uses X10 – X17, X8, X9, X18 – X23 for integer arguments<br>
+and results.</p>
+<p>It uses F10 – F17, F8, F9, F18 – F23 for floating-point arguments and results.</p>
+<p>Special-purpose registers used within Go generated code and Go<br>
+assembly code are as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Register</th>
+<th>Call meaning</th>
+<th>Return meaning</th>
+<th>Body meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X0</td>
+<td>Zero value</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>X1</td>
+<td>Link register</td>
+<td>Link register</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>X2</td>
+<td>Stack pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>X3</td>
+<td>Global pointer</td>
+<td>Same</td>
+<td>Used by dynamic linker</td>
+</tr>
+<tr>
+<td>X4</td>
+<td>TLS (thread pointer)</td>
+<td>TLS</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>X26</td>
+<td>Closure context pointer</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>X27</td>
+<td>Current goroutine</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>X31</td>
+<td>Scratch</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p><em>Rationale</em>: These register meanings are compatible with Go’s<br>
+stack-based calling convention.<br>
+X10 – X17, X8, X9, X18 – X23, is the same order as A0 – A7, S0 – S7 in platform ABI.<br>
+F10 – F17, F8, F9, F18 – F23, is the same order as FA0 – FA7, FS0 – FS7 in platform ABI.<br>
+X8 – X23, F8 – F15 are used for compressed instruction (RVC) which benefits code size.</p>
+<h4>Stack layout</h4>
+<p>The stack pointer, X2, grows down and is aligned to 8 bytes.</p>
+<p>A function's stack frame, after the frame is created, is laid out as<br>
+follows:</p>
+<pre class="notranslate"><code class="notranslate">+------------------------------+
+| ... locals ...               |
+| ... outgoing arguments ...   |
+| return PC                    | ← X2 points to
++------------------------------+ ↓ lower addresses
+</code></pre>
+<p>The "return PC" is loaded to the link register, X1, as part of the<br>
+riscv64 <code class="notranslate">CALL</code> operation.</p>
+<h4>Flags</h4>
+<p>The riscv64 has Zicsr extension for control and status register (CSR) and<br>
+treated as scratch register.<br>
+All bits in CSR are system flags and are not modified by Go.</p>
+<h3>s390x architecture</h3>
+<p>The s390x architecture uses R2 – R9 for integer arguments and integer results.</p>
+<p>It uses F0 – F15 for floating-point arguments and results.</p>
+<p>Special-purpose registers used within Go generated code and Go assembly code<br>
+are as follows:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Register</th>
+<th>Call meaning</th>
+<th>Return meaning</th>
+<th>Body meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R0</td>
+<td>Zero value</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>Scratch</td>
+<td>Scratch</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R10, R11</td>
+<td>used by the assembler</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R12</td>
+<td>Closure context pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R13</td>
+<td>Current goroutine</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+<tr>
+<td>R14</td>
+<td>Link register</td>
+<td>Link register</td>
+<td>Scratch</td>
+</tr>
+<tr>
+<td>R15</td>
+<td>Stack pointer</td>
+<td>Same</td>
+<td>Same</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p><em>Rationale</em>: These register meanings are compatible with Go’s stack-based<br>
+calling convention.</p>
+<h4>Stack layout</h4>
+<p>The stack pointer, R15, grows down and is aligned to 8 bytes.</p>
+<p>A function's stack frame, after the frame is created, is laid out as<br>
+follows:</p>
+<pre class="notranslate"><code class="notranslate">+------------------------------+
+| ... locals ...               |
+| ... outgoing arguments ...   |
+| return PC                    | ← R15 points to
++------------------------------+ ↓ lower addresses
+</code></pre>
+<p>This stack layout is used by both register-based (ABIInternal) and<br>
+stack-based (ABI0) calling conventions.</p>
+<p>The "return PC" is loaded to the link register R14, as part of the<br>
+s390x <code class="notranslate">BL</code> operation.</p>
+<h4>Flags</h4>
+<p>The s390x architecture maintains a single condition code (CC) field in the Program Status Word (PSW).<br>
+Go-generated code sets and tests this condition code to control conditional branches.</p>
+<h2>Future directions</h2>
+<h3>Spill path improvements</h3>
+<p>The ABI currently reserves spill space for argument registers so the<br>
+compiler can statically generate an argument spill path before calling<br>
+into <code class="notranslate">runtime.morestack</code> to grow the stack.<br>
+This ensures there will be sufficient spill space even when the stack<br>
+is nearly exhausted and keeps stack growth and stack scanning<br>
+essentially unchanged from ABI0.</p>
+<p>However, this wastes stack space (the median wastage is 16 bytes per<br>
+call), resulting in larger stacks and increased cache footprint.<br>
+A better approach would be to reserve stack space only when spilling.<br>
+One way to ensure enough space is available to spill would be for<br>
+every function to ensure there is enough space for the function's own<br>
+frame <em>as well as</em> the spill space of all functions it calls.<br>
+For most functions, this would change the threshold for the prologue<br>
+stack growth check.<br>
+For <code class="notranslate">nosplit</code> functions, this would change the threshold used in the<br>
+linker's static stack size check.</p>
+<p>Allocating spill space in the callee rather than the caller may also<br>
+allow for faster reflection calls in the common case where a function<br>
+takes only register arguments, since it would allow reflection to make<br>
+these calls directly without allocating any frame.</p>
+<p>The statically-generated spill path also increases code size.<br>
+It is possible to instead have a generic spill path in the runtime, as<br>
+part of <code class="notranslate">morestack</code>.<br>
+However, this complicates reserving the spill space, since spilling<br>
+all possible register arguments would, in most cases, take<br>
+significantly more space than spilling only those used by a particular<br>
+function.<br>
+Some options are to spill to a temporary space and copy back only the<br>
+registers used by the function, or to grow the stack if necessary<br>
+before spilling to it (using a temporary space if necessary), or to<br>
+use a heap-allocated space if insufficient stack space is available.<br>
+These options all add enough complexity that we will have to make this<br>
+decision based on the actual code size growth caused by the static<br>
+spill paths.</p>
+<h3>Clobber sets</h3>
+<p>As defined, the ABI does not use callee-save registers.<br>
+This significantly simplifies the garbage collector and the compiler's<br>
+register allocator, but at some performance cost.<br>
+A potentially better balance for Go code would be to use <em>clobber<br>
+sets</em>: for each function, the compiler records the set of registers it<br>
+clobbers (including those clobbered by functions it calls) and any<br>
+register not clobbered by function F can remain live across calls to<br>
+F.</p>
+<p>This is generally a good fit for Go because Go's package DAG allows<br>
+function metadata like the clobber set to flow up the call graph, even<br>
+across package boundaries.<br>
+Clobber sets would require relatively little change to the garbage<br>
+collector, unlike general callee-save registers.<br>
+One disadvantage of clobber sets over callee-save registers is that<br>
+they don't help with indirect function calls or interface method<br>
+calls, since static information isn't available in these cases.</p>
+<h3>Large aggregates</h3>
+<p>Go encourages passing composite values by value, and this simplifies<br>
+reasoning about mutation and races.<br>
+However, this comes at a performance cost for large composite values.<br>
+It may be possible to instead transparently pass large composite<br>
+values by reference and delay copying until it is actually necessary.</p>
+<h2>Appendix: Register usage analysis</h2>
+<p>In order to understand the impacts of the above design on register<br>
+usage, we<br>
+<a href="https://github.com/aclements/go-misc/tree/master/abi">analyzed</a> the<br>
+impact of the above ABI on a large code base: cmd/kubelet from<br>
+<a href="https://github.com/kubernetes/kubernetes">Kubernetes</a> at tag v1.18.8.</p>
+<p>The following table shows the impact of different numbers of available<br>
+integer and floating-point registers on argument assignment:</p>
+<pre class="notranslate"><code class="notranslate">|      |        |       |      stack args |          spills |     stack total |
+| ints | floats | % fit | p50 | p95 | p99 | p50 | p95 | p99 | p50 | p95 | p99 |
+|    0 |      0 |  6.3% |  32 | 152 | 256 |   0 |   0 |   0 |  32 | 152 | 256 |
+|    0 |      8 |  6.4% |  32 | 152 | 256 |   0 |   0 |   0 |  32 | 152 | 256 |
+|    1 |      8 | 21.3% |  24 | 144 | 248 |   8 |   8 |   8 |  32 | 152 | 256 |
+|    2 |      8 | 38.9% |  16 | 128 | 224 |   8 |  16 |  16 |  24 | 136 | 240 |
+|    3 |      8 | 57.0% |   0 | 120 | 224 |  16 |  24 |  24 |  24 | 136 | 240 |
+|    4 |      8 | 73.0% |   0 | 120 | 216 |  16 |  32 |  32 |  24 | 136 | 232 |
+|    5 |      8 | 83.3% |   0 | 112 | 216 |  16 |  40 |  40 |  24 | 136 | 232 |
+|    6 |      8 | 87.5% |   0 | 112 | 208 |  16 |  48 |  48 |  24 | 136 | 232 |
+|    7 |      8 | 89.8% |   0 | 112 | 208 |  16 |  48 |  56 |  24 | 136 | 232 |
+|    8 |      8 | 91.3% |   0 | 112 | 200 |  16 |  56 |  64 |  24 | 136 | 232 |
+|    9 |      8 | 92.1% |   0 | 112 | 192 |  16 |  56 |  72 |  24 | 136 | 232 |
+|   10 |      8 | 92.6% |   0 | 104 | 192 |  16 |  56 |  72 |  24 | 136 | 232 |
+|   11 |      8 | 93.1% |   0 | 104 | 184 |  16 |  56 |  80 |  24 | 128 | 232 |
+|   12 |      8 | 93.4% |   0 | 104 | 176 |  16 |  56 |  88 |  24 | 128 | 232 |
+|   13 |      8 | 94.0% |   0 |  88 | 176 |  16 |  56 |  96 |  24 | 128 | 232 |
+|   14 |      8 | 94.4% |   0 |  80 | 152 |  16 |  64 | 104 |  24 | 128 | 232 |
+|   15 |      8 | 94.6% |   0 |  80 | 152 |  16 |  64 | 112 |  24 | 128 | 232 |
+|   16 |      8 | 94.9% |   0 |  16 | 152 |  16 |  64 | 112 |  24 | 128 | 232 |
+|    ∞ |      8 | 99.8% |   0 |   0 |   0 |  24 | 112 | 216 |  24 | 120 | 216 |
+</code></pre>
+<p>The first two columns show the number of available integer and<br>
+floating-point registers.<br>
+The first row shows the results for 0 integer and 0 floating-point<br>
+registers, which is equivalent to ABI0.<br>
+We found that any reasonable number of floating-point registers has<br>
+the same effect, so we fixed it at 8 for all other rows.</p>
+<p>The “% fit” column gives the fraction of functions where all arguments<br>
+and results are register-assigned and no arguments are passed on the<br>
+stack.<br>
+The three “stack args” columns give the median, 95th and 99th<br>
+percentile number of bytes of stack arguments.<br>
+The “spills” columns likewise summarize the number of bytes in<br>
+on-stack spill space.<br>
+And “stack total” summarizes the sum of stack arguments and on-stack<br>
+spill slots.<br>
+Note that these are three different distributions; for example,<br>
+there’s no single function that takes 0 stack argument bytes, 16 spill<br>
+bytes, and 24 total stack bytes.</p>
+<p>From this, we can see that the fraction of functions that fit entirely<br>
+in registers grows very slowly once it reaches about 90%, though<br>
+curiously there is a small minority of functions that could benefit<br>
+from a huge number of registers.<br>
+Making 9 integer registers available on amd64 puts it in this realm.<br>
+We also see that the stack space required for most functions is fairly<br>
+small.<br>
+While the increasing space required for spills largely balances out<br>
+the decreasing space required for stack arguments as the number of<br>
+available registers increases, there is a general reduction in the<br>
+total stack space required with more available registers.<br>
+This does, however, suggest that eliminating spill slots in the future<br>
+would noticeably reduce stack requirements.</p>

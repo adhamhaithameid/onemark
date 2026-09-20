@@ -1,0 +1,113 @@
+<h1><a href="https://redux.js.org" rel="nofollow"><img src="https://avatars.githubusercontent.com/u/13142323?s=200&amp;v=4" height="60" alt="Redux Logo" aria-label="redux.js.org" style="max-width: 100%; height: auto; max-height: 60px;">Redux</a></h1>
+<p>Redux is a JS library for predictable and maintainable global state management.</p>
+<p>It helps you write applications that behave consistently, run in different environments (client, server, and native), and are easy to test. On top of that, it provides a great developer experience, such as <a href="https://github.com/reduxjs/redux-devtools">live code editing combined with a time traveling debugger</a>.</p>
+<p>You can use Redux together with <a href="https://react.dev" rel="nofollow">React</a>, or with any other view library. The Redux core is tiny (2kB, including dependencies), and has a rich ecosystem of addons.</p>
+<p><a href="https://redux-toolkit.js.org" rel="nofollow"><strong>Redux Toolkit</strong></a> is our official recommended approach for writing Redux logic. It wraps around the Redux core, and contains packages and functions that we think are essential for building a Redux app. Redux Toolkit builds in our suggested best practices, simplifies most Redux tasks, prevents common mistakes, and makes it easier to write Redux applications.</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/ed3993130132d3d96177d330b2e2632e94b7792743719d8701472405cae53a41/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f616374696f6e732f776f726b666c6f772f7374617475732f72656475786a732f72656475782f746573742e79616d6c3f6272616e63683d6d6173746572266576656e743d70757368267374796c653d666c61742d737175617265"><img src="https://camo.githubusercontent.com/ed3993130132d3d96177d330b2e2632e94b7792743719d8701472405cae53a41/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f616374696f6e732f776f726b666c6f772f7374617475732f72656475786a732f72656475782f746573742e79616d6c3f6272616e63683d6d6173746572266576656e743d70757368267374796c653d666c61742d737175617265" alt="GitHub Workflow Status" data-canonical-src="https://img.shields.io/github/actions/workflow/status/reduxjs/redux/test.yaml?branch=master&amp;event=push&amp;style=flat-square" style="max-width: 100%;"></a><br>
+<a href="https://www.npmjs.com/package/redux" rel="nofollow"><img src="https://camo.githubusercontent.com/8d594c96056d26eacf6b21637e53013b548b67187b3e4e0976a453ea9034c937/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f72656475782e7376673f7374796c653d666c61742d737175617265" alt="npm version" data-canonical-src="https://img.shields.io/npm/v/redux.svg?style=flat-square" style="max-width: 100%;"></a><br>
+<a href="https://www.npmjs.com/package/redux" rel="nofollow"><img src="https://camo.githubusercontent.com/58196606fea323a57ae3b92ac2f626bc166250fb52492c2666a2f7783f33b792/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f72656475782e7376673f7374796c653d666c61742d737175617265" alt="npm downloads" data-canonical-src="https://img.shields.io/npm/dm/redux.svg?style=flat-square" style="max-width: 100%;"></a><br>
+<a href="https://discord.gg/0ZcbPKXt5bZ6au5t" rel="nofollow"><img src="https://camo.githubusercontent.com/897729ca17d7f078e3c181ccc610dede06999c5097157ca5b1c794f7e88b5f6f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646973636f72642d2532337265647578253230253430253230726561637469666c75782d3631646166622e7376673f7374796c653d666c61742d737175617265" alt="redux channel on discord" data-canonical-src="https://img.shields.io/badge/discord-%23redux%20%40%20reactiflux-61dafb.svg?style=flat-square" style="max-width: 100%;"></a></p>
+<h2>Installation</h2>
+<h3>Create a React Redux App</h3>
+<p>The recommended way to start new apps with React and Redux Toolkit is by using <a href="https://github.com/reduxjs/redux-templates">our official Redux Toolkit + TS template for Vite</a>, or by creating a new Next.js project using <a href="https://github.com/vercel/next.js/tree/canary/examples/with-redux">Next's <code class="notranslate">with-redux</code> template</a>.</p>
+<p>Both of these already have Redux Toolkit and React-Redux configured appropriately for that build tool, and come with a small example app that demonstrates how to use several of Redux Toolkit's features.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Vite with our Redux+TS template</span>
+<span class="pl-c"><span class="pl-c">#</span> (using the `tiged` tool to clone and extract the template)</span>
+npx tiged reduxjs/redux-templates/packages/vite-template-redux my-app
+
+<span class="pl-c"><span class="pl-c">#</span> Next.js using the `with-redux` template</span>
+npx create-next-app --example with-redux my-app</pre></div>
+<p>For React Native, we have <a href="https://github.com/reduxjs/redux-templates/tree/master/packages/expo-template-redux-typescript">an official Redux+TS template for Expo</a>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npx tiged reduxjs/redux-templates/packages/expo-template-redux-typescript my-app</pre></div>
+<pre class="notranslate"><code class="notranslate">npm install @reduxjs/toolkit react-redux
+</code></pre>
+<p>For the Redux core library by itself:</p>
+<pre class="notranslate"><code class="notranslate">npm install redux
+</code></pre>
+<p>For more details, see <a href="https://redux.js.org/introduction/installation" rel="nofollow">the Installation docs page</a>.</p>
+<h2>Documentation</h2>
+<p>The Redux core docs are located at <strong><a href="https://redux.js.org" rel="nofollow">https://redux.js.org</a></strong>, and include the full Redux tutorials, as well usage guides on general Redux patterns:</p>
+<ul>
+<li><a href="https://redux.js.org/introduction/getting-started" rel="nofollow">Introduction</a></li>
+<li><a href="https://redux.js.org/tutorials/index" rel="nofollow">Tutorials</a></li>
+<li><a href="https://redux.js.org/usage/index" rel="nofollow">Usage Guides</a></li>
+<li><a href="https://redux.js.org/faq" rel="nofollow">FAQ</a></li>
+<li><a href="https://redux.js.org/api/api-reference" rel="nofollow">API Reference</a></li>
+</ul>
+<p>The Redux Toolkit docs are available at <strong><a href="https://redux-toolkit.js.org" rel="nofollow">https://redux-toolkit.js.org</a></strong>, including API references and usage guides for all of the APIs included in Redux Toolkit.</p>
+<h2>Learn Redux</h2>
+<h3>Redux Essentials Tutorial</h3>
+<p>The <a href="https://redux.js.org/tutorials/essentials/part-1-overview-concepts" rel="nofollow"><strong>Redux Essentials tutorial</strong></a> is a "top-down" tutorial that teaches "how to use Redux the right way", using our latest recommended APIs and best practices. We recommend starting there.</p>
+<h3>Redux Fundamentals Tutorial</h3>
+<p>The <a href="https://redux.js.org/tutorials/fundamentals/part-1-overview" rel="nofollow"><strong>Redux Fundamentals tutorial</strong></a> is a "bottom-up" tutorial that teaches "how Redux works" from first principles and without any abstractions, and why standard Redux usage patterns exist.</p>
+<h3>Help and Discussion</h3>
+<p>The <strong><a href="https://discord.gg/0ZcbPKXt5bZ6au5t" rel="nofollow">#redux channel</a></strong> of the <strong><a href="https://www.reactiflux.com" rel="nofollow">Reactiflux Discord community</a></strong> is our official resource for all questions related to learning and using Redux. Reactiflux is a great place to hang out, ask questions, and learn - please come and join us there!</p>
+<h2>Before Proceeding Further</h2>
+<p>Redux is a valuable tool for organizing your state, but you should also consider whether it's appropriate for your situation. Please don't use Redux just because someone said you should - instead, please take some time to understand the potential benefits and tradeoffs of using it.</p>
+<p>Here are some suggestions on when it makes sense to use Redux:</p>
+<ul>
+<li>You have reasonable amounts of data changing over time</li>
+<li>You need a single source of truth for your state</li>
+<li>You find that keeping all your state in a top-level component is no longer sufficient</li>
+</ul>
+<p>Yes, these guidelines are subjective and vague, but this is for a good reason. The point at which you should integrate Redux into your application is different for every user and different for every application.</p>
+<blockquote>
+<p><strong>For more thoughts on how Redux is meant to be used, please see:</strong><br></p>
+<ul>
+<li><strong><a href="https://changelog.com/posts/when-and-when-not-to-reach-for-redux" rel="nofollow">When (and when not) to reach for Redux</a></strong></li>
+<li><strong><a href="https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367" rel="nofollow">You Might Not Need Redux</a></strong><br></li>
+<li><strong><a href="https://blog.isquaredsoftware.com/2017/05/idiomatic-redux-tao-of-redux-part-1/" rel="nofollow">The Tao of Redux, Part 1 - Implementation and Intent</a></strong><br></li>
+<li><strong><a href="https://blog.isquaredsoftware.com/2017/05/idiomatic-redux-tao-of-redux-part-2/" rel="nofollow">The Tao of Redux, Part 2 - Practice and Philosophy</a></strong></li>
+<li><strong><a href="https://redux.js.org/faq" rel="nofollow">Redux FAQ</a></strong></li>
+</ul>
+</blockquote>
+<h2>Basic Example</h2>
+<p>The whole global state of your app is stored in an object tree inside a single <em>store</em>.<br>
+The only way to change the state tree is to create an <em>action</em>, an object describing what happened, and <em>dispatch</em> it to the store.<br>
+To specify how state gets updated in response to an action, you write pure <em>reducer</em> functions that calculate a new state based on the old state and the action.</p>
+<p>Redux Toolkit simplifies the process of writing Redux logic and setting up the store. With Redux Toolkit, the basic app logic looks like:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">createSlice</span><span class="pl-kos">,</span> <span class="pl-s1">configureStore</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@reduxjs/toolkit'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">counterSlice</span> <span class="pl-c1">=</span> <span class="pl-en">createSlice</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">name</span>: <span class="pl-s">'counter'</span><span class="pl-kos">,</span>
+  <span class="pl-c1">initialState</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">value</span>: <span class="pl-c1">0</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-c1">reducers</span>: <span class="pl-kos">{</span>
+    <span class="pl-en">incremented</span>: <span class="pl-s1">state</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-c">// Redux Toolkit allows us to write "mutating" logic in reducers. It</span>
+      <span class="pl-c">// doesn't actually mutate the state because it uses the Immer library,</span>
+      <span class="pl-c">// which detects changes to a "draft state" and produces a brand new</span>
+      <span class="pl-c">// immutable state based off those changes</span>
+      <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">value</span> <span class="pl-c1">+=</span> <span class="pl-c1">1</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-en">decremented</span>: <span class="pl-s1">state</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">value</span> <span class="pl-c1">-=</span> <span class="pl-c1">1</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+<span class="pl-k">export</span> <span class="pl-k">const</span> <span class="pl-kos">{</span> incremented<span class="pl-kos">,</span> decremented <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-s1">counterSlice</span><span class="pl-kos">.</span><span class="pl-c1">actions</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">store</span> <span class="pl-c1">=</span> <span class="pl-en">configureStore</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">reducer</span>: <span class="pl-s1">counterSlice</span><span class="pl-kos">.</span><span class="pl-c1">reducer</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// Can still subscribe to the store</span>
+<span class="pl-s1">store</span><span class="pl-kos">.</span><span class="pl-en">subscribe</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">store</span><span class="pl-kos">.</span><span class="pl-en">getState</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// Still pass action objects to `dispatch`, but they're created for us</span>
+<span class="pl-s1">store</span><span class="pl-kos">.</span><span class="pl-en">dispatch</span><span class="pl-kos">(</span><span class="pl-en">incremented</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-c">// {value: 1}</span>
+<span class="pl-s1">store</span><span class="pl-kos">.</span><span class="pl-en">dispatch</span><span class="pl-kos">(</span><span class="pl-en">incremented</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-c">// {value: 2}</span>
+<span class="pl-s1">store</span><span class="pl-kos">.</span><span class="pl-en">dispatch</span><span class="pl-kos">(</span><span class="pl-en">decremented</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-c">// {value: 1}</span></pre></div>
+<p>Redux Toolkit allows us to write shorter logic that's easier to read, while still following the original core Redux behavior and data flow.</p>
+<h2>Logo</h2>
+<p>You can find the official logo <a href="https://github.com/reduxjs/redux/tree/master/logo">on GitHub</a>.</p>
+<h2>Change Log</h2>
+<p>This project adheres to <a href="https://semver.org/" rel="nofollow">Semantic Versioning</a>.<br>
+Every release, along with the migration instructions, is documented on the GitHub <a href="https://github.com/reduxjs/redux/releases">Releases</a> page.</p>
+<h2>License</h2>
+<p><a href="LICENSE.md">MIT</a></p>

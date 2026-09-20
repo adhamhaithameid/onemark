@@ -1,0 +1,297 @@
+<hr>
+<h2>title: function-paren-newline<br>
+rule_type: layout</h2>
+<p>Many style guides require or disallow newlines inside of function parentheses.</p>
+<h2>Rule Details</h2>
+<p>This rule enforces consistent line breaks inside parentheses of function parameters or arguments.</p>
+<h3>Options</h3>
+<p>This rule has a single option, which can either be a string or an object.</p>
+<ul>
+<li><code class="notranslate">"always"</code> requires line breaks inside all function parentheses.</li>
+<li><code class="notranslate">"never"</code> disallows line breaks inside all function parentheses.</li>
+<li><code class="notranslate">"multiline"</code> (default) requires linebreaks inside function parentheses if any of the parameters/arguments have a line break between them. Otherwise, it disallows linebreaks.</li>
+<li><code class="notranslate">"multiline-arguments"</code> works like <code class="notranslate">multiline</code> but allows linebreaks inside function parentheses if there is only one parameter/argument.</li>
+<li><code class="notranslate">"consistent"</code> requires consistent usage of linebreaks for each pair of parentheses. It reports an error if one parenthesis in the pair has a linebreak inside it and the other parenthesis does not.</li>
+<li><code class="notranslate">{ "minItems": value }</code> requires linebreaks inside function parentheses if the number of parameters/arguments is at least <code class="notranslate">value</code>. Otherwise, it disallows linebreaks.</li>
+</ul>
+<p>Example configurations:</p>
+<div class="highlight highlight-source-json"><pre class="notranslate">{
+  <span class="pl-ent">"rules"</span>: {
+    <span class="pl-ent">"function-paren-newline"</span>: [<span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>never<span class="pl-pds">"</span></span>]
+  }
+}</pre></div>
+<div class="highlight highlight-source-json"><pre class="notranslate">{
+  <span class="pl-ent">"rules"</span>: {
+    <span class="pl-ent">"function-paren-newline"</span>: [<span class="pl-s"><span class="pl-pds">"</span>error<span class="pl-pds">"</span></span>, { <span class="pl-ent">"minItems"</span>: <span class="pl-c1">3</span> }]
+  }
+}</pre></div>
+<p>Examples of <strong>incorrect</strong> code for this rule with the <code class="notranslate">"always"</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "always"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the <code class="notranslate">"always"</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "always"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>incorrect</strong> code for this rule with the <code class="notranslate">"never"</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "never"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the <code class="notranslate">"never"</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "never"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-en">qux</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+             <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>incorrect</strong> code for this rule with the default <code class="notranslate">"multiline"</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "multiline"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-s1">baz</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the default <code class="notranslate">"multiline"</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "multiline"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">,</span> <span class="pl-s1">qux</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">,</span>
+  <span class="pl-s1">qux</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-s1">baz</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>incorrect</strong> code for this rule with the <code class="notranslate">"consistent"</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "consistent"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-s1">baz</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the <code class="notranslate">"consistent"</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "consistent"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-s1">baz</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>incorrect</strong> code for this rule with the <code class="notranslate">"multiline-arguments"</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "multiline-arguments"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">qux</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the consistent <code class="notranslate">"multiline-arguments"</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", "multiline-arguments"] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">qux</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span>
+<span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-s1">baz</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>incorrect</strong> code for this rule with the <code class="notranslate">{ "minItems": 3 }</code> option:</p>
+<p>::: incorrect</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", { "minItems": 3 }] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foobar</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">,</span> <span class="pl-s1">qux</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">barbaz</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">barbaz</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<p>Examples of <strong>correct</strong> code for this rule with the <code class="notranslate">{ "minItems": 3 }</code> option:</p>
+<p>::: correct</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/* eslint function-paren-newline: ["error", { "minItems": 3 }] */</span>
+
+<span class="pl-k">function</span> <span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span>
+  <span class="pl-s1">baz</span><span class="pl-kos">,</span>
+  <span class="pl-s1">qux</span>
+<span class="pl-kos">)</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-en">foobar</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">,</span> <span class="pl-s1">qux</span>
+<span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span><span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-en">foo</span><span class="pl-kos">(</span>
+  <span class="pl-s1">bar</span><span class="pl-kos">,</span> <span class="pl-s1">baz</span><span class="pl-kos">,</span> <span class="pl-s1">qux</span>
+<span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>:::</p>
+<h2>When Not To Use It</h2>
+<p>If don't want to enforce consistent linebreaks inside function parentheses, do not turn on this rule.</p>

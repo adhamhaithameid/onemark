@@ -1,0 +1,409 @@
+<h1>Contribute to the Moby Project</h1>
+<p>Want to hack on the Moby Project? Awesome! We have a contributor's guide that explains<br>
+<a href="docs/contributing/">setting up a development environment and the contribution<br>
+process</a>.</p>
+<p><a href="docs/contributing/who-written-for.md"><img src="docs/static_files/contributors.png" alt="Contributors guide" style="max-width: 100%;"></a></p>
+<p>This page contains information about reporting issues as well as some tips and<br>
+guidelines useful to experienced open source contributors. Finally, make sure<br>
+you read our <a href="#moby-community-guidelines">community guidelines</a> before you<br>
+start participating.</p>
+<h2>Topics</h2>
+<ul>
+<li><a href="#reporting-security-issues">Reporting Security Issues</a></li>
+<li><a href="#design-and-cleanup-proposals">Design and Cleanup Proposals</a></li>
+<li><a href="#reporting-other-issues">Reporting Issues</a></li>
+<li><a href="#quick-contribution-tips-and-guidelines">Quick Contribution Tips and Guidelines</a></li>
+<li><a href="#moby-community-guidelines">Community Guidelines</a></li>
+</ul>
+<h2>Reporting security issues</h2>
+<p>The Moby maintainers take security seriously. If you discover a security<br>
+issue, please bring it to their attention right away!</p>
+<p>Please <strong>DO NOT</strong> file a public issue, instead send your report privately to<br>
+<a href="mailto:security@docker.com">security@docker.com</a>.</p>
+<p>Security reports are greatly appreciated and we will publicly thank you for it,<br>
+although we keep your name confidential if you request it. We also like to send<br>
+gifts—if you're into schwag, make sure to let us know. We currently do not<br>
+offer a paid security bounty program, but are not ruling it out in the future.</p>
+<h2>Reporting other issues</h2>
+<p>A great way to contribute to the project is to send a detailed report when you<br>
+encounter an issue. We always appreciate a well-written, thorough bug report,<br>
+and will thank you for it!</p>
+<p>Check that <a href="https://github.com/moby/moby/issues">our issue database</a><br>
+doesn't already include that problem or suggestion before submitting an issue.<br>
+If you find a match, you can use the "subscribe" button to get notified on<br>
+updates. Do <em>not</em> leave random "+1" or "I have this too" comments, as they<br>
+only clutter the discussion, and don't help resolving it. However, if you<br>
+have ways to reproduce the issue or have additional information that may help<br>
+resolving the issue, please leave a comment.</p>
+<p>When reporting issues, always include:</p>
+<ul>
+<li>The output of <code class="notranslate">docker version</code>.</li>
+<li>The output of <code class="notranslate">docker info</code>.</li>
+</ul>
+<p>Also include the steps required to reproduce the problem if possible and<br>
+applicable. This information will help us review and fix your issue faster.<br>
+When sending lengthy log-files, consider posting them as a gist (<a href="https://gist.github.com">https://gist.github.com</a>).<br>
+Don't forget to remove sensitive data from your logfiles before posting (you can<br>
+replace those parts with "REDACTED").</p>
+<h2>Quick contribution tips and guidelines</h2>
+<p>This section gives the experienced contributor some tips and guidelines.</p>
+<h3>Pull requests are always welcome</h3>
+<p>Not sure if that typo is worth a pull request? Found a bug and know how to fix<br>
+it? Do it! We will appreciate it. Any significant improvement should be<br>
+documented as <a href="https://github.com/moby/moby/issues">a GitHub issue</a> before<br>
+anybody starts working on it.</p>
+<p>We are always thrilled to receive pull requests. We do our best to process them<br>
+quickly. If your pull request is not accepted on the first try,<br>
+don't get discouraged! Our <a href="docs/contributing/README.md">contributor's guide</a> explains <a href="project/REVIEWING.md">the review process we<br>
+use for simple changes</a>.</p>
+<h3>Design and cleanup proposals</h3>
+<p>You can propose new designs for existing Docker features. You can also design<br>
+entirely new features. We really appreciate contributors who want to refactor or<br>
+otherwise cleanup our project. For information on making these types of<br>
+contributions, see <a href="#design-and-cleanup-proposals">the advanced contribution<br>
+section</a> in<br>
+the contributors guide.</p>
+<h3>Where to put your changes</h3>
+<p>You can make changes to any Go package within Moby outside of the vendor directory. There are no<br>
+restrictions on packages but a few guidelines to follow for deciding on making these changes.<br>
+When adding new packages, first consider putting them in an internal directory to prevent<br>
+unintended importing from other modules. Code changes should either go under <code class="notranslate">api</code>, <code class="notranslate">client</code>,<br>
+or <code class="notranslate">daemon</code> modules, or one of the integration test directories.</p>
+<p>Try to put a new package under the appropriate directories. The root directory is reserved for<br>
+configuration and build files, no source files will be accepted in the root.</p>
+<ul>
+<li><code class="notranslate">api</code> - All types shared by client and daemon along with swagger definitions.</li>
+<li><code class="notranslate">client</code> - All Go files for the docker client</li>
+<li><code class="notranslate">contrib</code> - Files, configurations, and packages related to external tools or libraries</li>
+<li><code class="notranslate">daemon</code> - All Go files and packages for building the daemon</li>
+<li><code class="notranslate">docs</code> - All Moby technical documentation using markdown</li>
+<li><code class="notranslate">hack</code> - All scripts used for testing, development, and CI</li>
+<li><code class="notranslate">integration</code> - Testing the integration of the API, client, and daemon</li>
+<li><code class="notranslate">integration-cli</code> - Deprecated integration tests of the docker cli with the daemon, no new tests allowed</li>
+<li><code class="notranslate">pkg</code> - Legacy Go packages used externally, no new packages should be added here</li>
+<li><code class="notranslate">project</code> - All files related to Moby project governance</li>
+<li><code class="notranslate">vendor</code> - Autogenerated vendor files from <code class="notranslate">make vendor</code> command, do not manually edit files here</li>
+</ul>
+<p>The daemon module has many subpackages. Consider putting new packages under one of these<br>
+directories.</p>
+<ul>
+<li><code class="notranslate">daemon/cmd</code> - All Go main packages and the packages used only for that main package</li>
+<li><code class="notranslate">daemon/internal</code> - All utility packages used by daemon and not intended for external use</li>
+<li><code class="notranslate">daemon/man</code>- All Moby reference manuals used for the <code class="notranslate">man</code> command</li>
+<li><code class="notranslate">daemon/plugins</code> - All included daemon plugins which are intended to be registered via init</li>
+<li><code class="notranslate">daemon/pkg</code> - All libraries used by daemon and for integration testing</li>
+<li><code class="notranslate">daemon/version</code> - Version package with the current daemon version</li>
+</ul>
+<h3>Connect with other Moby Project contributors</h3>
+<markdown-accessiblity-table><table role="table">
+  
+  
+  <tbody><tr>
+    <td>Forums</td>
+    <td>
+      A public forum for users to discuss questions and explore current design patterns and
+      best practices about all the Moby projects. To participate, log in with your Github
+      account or create an account at <a href="https://forums.mobyproject.org" rel="nofollow">https://forums.mobyproject.org</a>.
+    </td>
+  </tr>
+  <tr>
+    <td>Slack</td>
+    <td>
+      <p>
+        Register for the Docker Community Slack at
+	<a href="https://dockr.ly/comm-slack" rel="nofollow">https://dockr.ly/comm-slack</a>.
+        We use the #moby-project channel for general discussion, and there are separate channels for other Moby projects such as #containerd.
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>Twitter</td>
+    <td>
+      You can follow <a href="https://twitter.com/moby/" rel="nofollow">Moby Project Twitter feed</a>
+      to get updates on our products. You can also tweet us questions or just
+      share blogs or stories.
+    </td>
+  </tr>
+</tbody></table></markdown-accessiblity-table>
+<h3>Conventions</h3>
+<p>Fork the repository and make changes on your fork in a feature branch:</p>
+<ul>
+<li>If it's a bug fix branch, name it XXXX-something where XXXX is the number of<br>
+the issue.</li>
+<li>If it's a feature branch, create an enhancement issue to announce<br>
+your intentions, and name it XXXX-something where XXXX is the number of the<br>
+issue.</li>
+</ul>
+<p>Submit tests for your changes. See <a href="./TESTING.md">TESTING.md</a> for details.</p>
+<p>If your changes need integration tests, write them against the API. The <code class="notranslate">cli</code><br>
+integration tests are slowly either migrated to API tests or moved away as unit<br>
+tests in <code class="notranslate">docker/cli</code> and end-to-end tests for Docker.</p>
+<p>Update the documentation when creating or modifying features. Test your<br>
+documentation changes for clarity, concision, and correctness, as well as a<br>
+clean documentation build. See our contributors guide for <a href="https://github.com/docker/docs/blob/main/STYLE.md">our style<br>
+guide</a> and instructions on <a href="https://docs.docker.com/" rel="nofollow">building<br>
+the documentation</a>.</p>
+<p>Write clean code. Universally formatted code promotes ease of writing, reading,<br>
+and maintenance. Always run <code class="notranslate">gofmt -s -w file.go</code> on each changed file before<br>
+committing your changes. Most editors have plug-ins that do this automatically.</p>
+<p>Pull request descriptions should be as clear as possible and include a reference<br>
+to all the issues that they address.</p>
+<h3>Successful Changes</h3>
+<p>Before contributing large or high impact changes, make the effort to coordinate<br>
+with the maintainers of the project before submitting a pull request. This<br>
+prevents you from doing extra work that may or may not be merged.</p>
+<p>Large PRs that are just submitted without any prior communication are unlikely<br>
+to be successful.</p>
+<p>While pull requests are the methodology for submitting changes to code, changes<br>
+are much more likely to be accepted if they are accompanied by additional<br>
+engineering work. While we don't define this explicitly, most of these goals<br>
+are accomplished through communication of the design goals and subsequent<br>
+solutions. Often times, it helps to first state the problem before presenting<br>
+solutions.</p>
+<p>Typically, the best methods of accomplishing this are to submit an issue,<br>
+stating the problem. This issue can include a problem statement and a<br>
+checklist with requirements. If solutions are proposed, alternatives should be<br>
+listed and eliminated. Even if the criteria for elimination of a solution is<br>
+frivolous, say so.</p>
+<p>Larger changes typically work best with design documents. These are focused on<br>
+providing context to the design at the time the feature was conceived and can<br>
+inform future documentation contributions.</p>
+<h3>Commit Messages</h3>
+<p>Commit messages must start with a capitalized and short summary (max. 50 chars)<br>
+written in the imperative, followed by an optional, more detailed explanatory<br>
+text which is separated from the summary by an empty line.</p>
+<p>Commit messages should follow best practices, including explaining the context<br>
+of the problem and how it was solved, including in caveats or follow up changes<br>
+required. They should tell the story of the change and provide readers<br>
+understanding of what led to it.</p>
+<p>If you're lost about what this even means, please see <a href="http://chris.beams.io/posts/git-commit/" rel="nofollow">How to Write a Git<br>
+Commit Message</a> for a start.</p>
+<p>In practice, the best approach to maintaining a nice commit message is to<br>
+leverage a <code class="notranslate">git add -p</code> and <code class="notranslate">git commit --amend</code> to formulate a solid<br>
+changeset. This allows one to piece together a change, as information becomes<br>
+available.</p>
+<p>If you squash a series of commits, don't just submit that. Re-write the commit<br>
+message, as if the series of commits was a single stroke of brilliance.</p>
+<p>That said, there is no requirement to have a single commit for a PR, as long as<br>
+each commit tells the story. For example, if there is a feature that requires a<br>
+package, it might make sense to have the package in a separate commit then have<br>
+a subsequent commit that uses it.</p>
+<p>Remember, you're telling part of the story with the commit message. Don't make<br>
+your chapter weird.</p>
+<p>Contributors are responsible for their commits, including any AI-assisted work.<br>
+Do not credit LLMs or AI agents with <code class="notranslate">Co-Authored-By</code> trailers; reserve those for<br>
+human contributors.<br>
+Credit agents in the pull request body or with an <code class="notranslate">Assisted-By: &lt;agent name&gt;</code><br>
+commit trailer instead.</p>
+<h3>Review</h3>
+<p>Code review comments may be added to your pull request. Discuss, then make the<br>
+suggested modifications and push additional commits to your feature branch. Post<br>
+a comment after pushing. New commits show up in the pull request automatically,<br>
+but the reviewers are notified only when you comment.</p>
+<p>Pull requests must be cleanly rebased on top of master without multiple branches<br>
+mixed into the PR.</p>
+<p><strong>Git tip</strong>: If your PR no longer merges cleanly, use <code class="notranslate">rebase master</code> in your<br>
+feature branch to update your pull request rather than <code class="notranslate">merge master</code>.</p>
+<p>Before you make a pull request, squash your commits into logical units of work<br>
+using <code class="notranslate">git rebase -i</code> and <code class="notranslate">git push -f</code>. A logical unit of work is a consistent<br>
+set of patches that should be reviewed together: for example, upgrading the<br>
+version of a vendored dependency and taking advantage of its now available new<br>
+feature constitute two separate units of work. Implementing a new function and<br>
+calling it in another file constitute a single logical unit of work. The very<br>
+high majority of submissions should have a single commit, so if in doubt: squash<br>
+down to one.</p>
+<p>After every commit, <a href="./TESTING.md">make sure the test suite passes</a>. Include<br>
+documentation changes in the same pull request so that a revert would remove<br>
+all traces of the feature or fix.</p>
+<p>Include an issue reference like <code class="notranslate">Closes #XXXX</code> or <code class="notranslate">Fixes #XXXX</code> in commits that<br>
+close an issue. Including references automatically closes the issue on a merge.</p>
+<p>Please do not add yourself to the <code class="notranslate">AUTHORS</code> file, as it is regenerated regularly<br>
+from the Git history.</p>
+<p>Please see the <a href="#coding-style">Coding Style</a> for further guidelines.</p>
+<h3>Merge approval</h3>
+<p>Moby maintainers use LGTM (Looks Good To Me) in comments on the code review to<br>
+indicate acceptance, or use the Github review approval feature.</p>
+<p>For an explanation of the review and approval process see the<br>
+<a href="project/REVIEWING.md">REVIEWING</a> page.</p>
+<h3>Sign your work</h3>
+<p>The sign-off is a simple line at the end of the explanation for the patch. Your<br>
+signature certifies that you wrote the patch or otherwise have the right to pass<br>
+it on as an open-source patch. The rules are pretty simple: if you can certify<br>
+the below (from <a href="http://developercertificate.org/" rel="nofollow">developercertificate.org</a>):</p>
+<pre class="notranslate"><code class="notranslate">Developer Certificate of Origin
+Version 1.1
+
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
+1 Letterman Drive
+Suite D4700
+San Francisco, CA, 94129
+
+Everyone is permitted to copy and distribute verbatim copies of this
+license document, but changing it is not allowed.
+
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+    have the right to submit it under the open source license
+    indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+    of my knowledge, is covered under an appropriate open source
+    license and I have the right under that license to submit that
+    work with modifications, whether created in whole or in part
+    by me, under the same open source license (unless I am
+    permitted to submit under a different license), as indicated
+    in the file; or
+
+(c) The contribution was provided directly to me by some other
+    person who certified (a), (b) or (c) and I have not modified
+    it.
+
+(d) I understand and agree that this project and the contribution
+    are public and that a record of the contribution (including all
+    personal information I submit with it, including my sign-off) is
+    maintained indefinitely and may be redistributed consistent with
+    this project or the open source license(s) involved.
+</code></pre>
+<p>Then you just add a line to every git commit message:</p>
+<pre class="notranslate"><code class="notranslate">Signed-off-by: Joe Smith &lt;joe.smith@email.com&gt;
+</code></pre>
+<p>Use your real name (sorry, no pseudonyms or anonymous contributions.)</p>
+<p>If you set your <code class="notranslate">user.name</code> and <code class="notranslate">user.email</code> git configs, you can sign your<br>
+commit automatically with <code class="notranslate">git commit -s</code>.</p>
+<h3>How can I become a maintainer?</h3>
+<p>The procedures for adding new maintainers are explained in the<br>
+<a href="/project/GOVERNANCE.md">/project/GOVERNANCE.md</a><br>
+file in this repository.</p>
+<p>Don't forget: being a maintainer is a time investment. Make sure you<br>
+will have time to make yourself available. You don't have to be a<br>
+maintainer to make a difference on the project!</p>
+<h2>Moby community guidelines</h2>
+<p>We want to keep the Moby community awesome, growing and collaborative. We need<br>
+your help to keep it that way. To help with this we've come up with some general<br>
+guidelines for the community as a whole:</p>
+<ul>
+<li>
+<p>Be nice: Be courteous, respectful and polite to fellow community members:<br>
+no regional, racial, gender, or other abuse will be tolerated. We like<br>
+nice people way better than mean ones!</p>
+</li>
+<li>
+<p>Encourage diversity and participation: Make everyone in our community feel<br>
+welcome, regardless of their background and the extent of their<br>
+contributions, and do everything possible to encourage participation in<br>
+our community.</p>
+</li>
+<li>
+<p>Keep it legal: Basically, don't get us in trouble. Share only content that<br>
+you own, do not share private or sensitive information, and don't break<br>
+the law.</p>
+</li>
+<li>
+<p>Stay on topic: Make sure that you are posting to the correct channel and<br>
+avoid off-topic discussions. Remember when you update an issue or respond<br>
+to an email you are potentially sending to a large number of people. Please<br>
+consider this before you update. Also remember that nobody likes spam.</p>
+</li>
+<li>
+<p>Don't send email to the maintainers: There's no need to send email to the<br>
+maintainers to ask them to investigate an issue or to take a look at a<br>
+pull request. Instead of sending an email, GitHub mentions should be<br>
+used to ping maintainers to review a pull request, a proposal or an<br>
+issue.</p>
+</li>
+</ul>
+<p>The open source governance for this repository is handled via the <a href="https://github.com/moby/tsc">Moby Technical Steering Committee (TSC)</a><br>
+charter. For any concerns with the community process regarding technical contributions,<br>
+please contact the TSC. More information on project governance is available in<br>
+our <a href="/project/GOVERNANCE.md">project/GOVERNANCE.md</a> document.</p>
+<h3>Guideline violations — 3 strikes method</h3>
+<p>The point of this section is not to find opportunities to punish people, but we<br>
+do need a fair way to deal with people who are making our community suck.</p>
+<ol>
+<li>
+<p>First occurrence: We'll give you a friendly, but public reminder that the<br>
+behavior is inappropriate according to our guidelines.</p>
+</li>
+<li>
+<p>Second occurrence: We will send you a private message with a warning that<br>
+any additional violations will result in removal from the community.</p>
+</li>
+<li>
+<p>Third occurrence: Depending on the violation, we may need to delete or ban<br>
+your account.</p>
+</li>
+</ol>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>
+<p>Obvious spammers are banned on first occurrence. If we don't do this, we'll<br>
+have spam all over the place.</p>
+</li>
+<li>
+<p>Violations are forgiven after 6 months of good behavior, and we won't hold a<br>
+grudge.</p>
+</li>
+<li>
+<p>People who commit minor infractions will get some education, rather than<br>
+hammering them in the 3 strikes process.</p>
+</li>
+<li>
+<p>The rules apply equally to everyone in the community, no matter how much<br>
+you've contributed.</p>
+</li>
+<li>
+<p>Extreme violations of a threatening, abusive, destructive or illegal nature<br>
+will be addressed immediately and are not subject to 3 strikes or forgiveness.</p>
+</li>
+<li>
+<p>Contact <a href="mailto:abuse@docker.com">abuse@docker.com</a> to report abuse or appeal violations. In the case of<br>
+appeals, we know that mistakes happen, and we'll work with you to come up with a<br>
+fair solution if there has been a misunderstanding.</p>
+</li>
+</ul>
+<h2>Coding Style</h2>
+<p>Unless explicitly stated, we follow all coding guidelines from the Go<br>
+community. While some of these standards may seem arbitrary, they somehow seem<br>
+to result in a solid, consistent codebase.</p>
+<p>It is possible that the code base does not currently comply with these<br>
+guidelines. We are not looking for a massive PR that fixes this, since that<br>
+goes against the spirit of the guidelines. All new contributions should make a<br>
+best effort to clean up and make the code base better than they left it.<br>
+Obviously, apply your best judgement. Remember, the goal here is to make the<br>
+code base easier for humans to navigate and understand. Always keep that in<br>
+mind when nudging others to comply.</p>
+<p>The rules:</p>
+<ol>
+<li>All code should be formatted with <code class="notranslate">gofmt -s</code>.</li>
+<li>All code should pass the default levels of<br>
+<a href="https://github.com/golang/lint"><code class="notranslate">golint</code></a>.</li>
+<li>All code should follow the guidelines covered in <a href="http://golang.org/doc/effective_go.html" rel="nofollow">Effective<br>
+Go</a> and <a href="https://github.com/golang/go/wiki/CodeReviewComments">Go Code Review<br>
+Comments</a>.</li>
+<li>Comment the code. Tell us the why, the history and the context.</li>
+<li>Document <em>all</em> declarations and methods, even private ones. Declare<br>
+expectations, caveats and anything else that may be important. If a type<br>
+gets exported, having the comments already there will ensure it's ready.</li>
+<li>Variable name length should be proportional to its context and no longer.<br>
+<code class="notranslate">noCommaALongVariableNameLikeThisIsNotMoreClearWhenASimpleCommentWouldDo</code>.<br>
+In practice, short methods will have short variable names and globals will<br>
+have longer names.</li>
+<li>No underscores in package names. If you need a compound name, step back,<br>
+and re-examine why you need a compound name. If you still think you need a<br>
+compound name, lose the underscore.</li>
+<li>No utils or helpers packages. If a function is not general enough to<br>
+warrant its own package, it has not been written generally enough to be a<br>
+part of a util package. Just leave it unexported and well-documented.</li>
+<li>All tests should run with <code class="notranslate">go test</code> and outside tooling should not be<br>
+required. No, we don't need another unit testing framework. Assertion<br>
+packages are acceptable if they provide <em>real</em> incremental value.</li>
+<li>Even though we call these "rules" above, they are actually just<br>
+guidelines. Since you've read all the rules, you now know that.</li>
+</ol>
+<p>If you are having trouble getting into the mood of idiomatic Go, we recommend<br>
+reading through <a href="https://go.dev/doc/effective_go" rel="nofollow">Effective Go</a>. The<br>
+<a href="https://go.dev/blog/" rel="nofollow">Go Blog</a> is also a great resource. Drinking the<br>
+kool-aid is a lot easier than going thirsty.</p>

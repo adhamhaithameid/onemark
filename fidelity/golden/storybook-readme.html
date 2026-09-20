@@ -1,0 +1,314 @@
+<p align="center">
+  <a href="https://storybook.js.org/?ref=readme" rel="nofollow">
+    <themed-picture data-catalyst-inline="true"><picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/263385/199832481-bbbf5961-6a26-481d-8224-51258cce9b33.png">
+      <img src="https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png" alt="Storybook" width="400">
+    </picture></themed-picture>
+  </a>
+</p>
+<p align="center">Build bulletproof UI components faster</p>
+<br>
+<p align="center">
+  <a href="https://circleci.com/gh/storybookjs/storybook" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/5ffa6708f956446272eb5065b78b3a6ac5f3fe41f516776bd283dd4e2a068ba1/68747470733a2f2f636972636c6563692e636f6d2f67682f73746f7279626f6f6b6a732f73746f7279626f6f6b2e7376673f7374796c653d736869656c64" alt="Build Status on CircleCI" data-canonical-src="https://circleci.com/gh/storybookjs/storybook.svg?style=shield" style="max-width: 100%;">
+  </a>
+  <a href="https://codecov.io/gh/storybookjs/storybook" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/55a00cd477f25fd3b94f73bbc9cee29aca20ca1fc12006b24f4b74f2de183f8a/68747470733a2f2f636f6465636f762e696f2f67682f73746f7279626f6f6b6a732f73746f7279626f6f6b2f6272616e63682f6d61696e2f67726170682f62616467652e737667" alt="codecov" data-canonical-src="https://codecov.io/gh/storybookjs/storybook/branch/main/graph/badge.svg" style="max-width: 100%;">
+  </a>
+  <a href="https://github.com/storybookjs/storybook/blob/main/LICENSE">
+    <img src="https://camo.githubusercontent.com/d9b1cbab15cf222502c02393fd78a8d67e3e8076d6718aec28f40ddb643d67a0/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6963656e73652f73746f7279626f6f6b6a732f73746f7279626f6f6b2e737667" alt="License" data-canonical-src="https://img.shields.io/github/license/storybookjs/storybook.svg" style="max-width: 100%;">
+  </a>
+  <br>
+  <a href="https://discord.gg/storybook" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/9234aded6441aed0cbec3daea6aa0a60dd75ae61a168371771f3f4a0a3ac4322/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646973636f72642d6a6f696e2d3732383944412e7376673f6c6f676f3d646973636f7264266c6f6e6743616368653d74727565267374796c653d666c6174" data-canonical-src="https://img.shields.io/badge/discord-join-7289DA.svg?logo=discord&amp;longCache=true&amp;style=flat" style="max-width: 100%;">
+  </a>
+  <a href="https://storybook.js.org/community/?ref=readme" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/4efc8749a50f80bd92b1caf37979d09a6b197625d979f81e21d4bc0976eca26c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636f6d6d756e6974792d6a6f696e2d3442433432342e737667" alt="Storybook Community" data-canonical-src="https://img.shields.io/badge/community-join-4BC424.svg" style="max-width: 100%;">
+  </a>
+  <a href="#backers">
+    <img src="https://camo.githubusercontent.com/60fba4809896f30714685c017ab7a82231d518cb52372b6878baedb91c728835/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f6261636b6572732f62616467652e737667" alt="Backers on Open Collective" data-canonical-src="https://opencollective.com/storybook/backers/badge.svg" style="max-width: 100%;">
+  </a>
+  <a href="#sponsors">
+    <img src="https://camo.githubusercontent.com/b10f04fe0dd8dfed31f7ad3f0d174c8a197a26d4ad21492f4548dea7dcd49650/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f62616467652e737667" alt="Sponsors on Open Collective" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/badge.svg" style="max-width: 100%;">
+  </a>
+  <a href="https://x.com/intent/follow?screen_name=storybookjs" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/e0ddc154532401232ee9ec849a0db05d603e798e4abe42bae717fbd94e49e2e4/68747470733a2f2f696d672e736869656c64732e696f2f747769747465722f666f6c6c6f772f73746f7279626f6f6b6a733f636f6c6f723d626c7565266c6f676f3d74776974746572" alt="Official Twitter Handle" data-canonical-src="https://img.shields.io/twitter/follow/storybookjs?color=blue&amp;logo=twitter" style="max-width: 100%;">
+  </a>
+  <a href="https://api.securityscorecards.dev/projects/github.com/storybookjs/storybook" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/22fcc2c35491154bf5ca4446fd04879d20aa0384a8db2487b244f413338bf3fe/68747470733a2f2f6170692e736563757269747973636f726563617264732e6465762f70726f6a656374732f6769746875622e636f6d2f73746f7279626f6f6b6a732f73746f7279626f6f6b2f6261646765" alt="OpenSSF Scorecard" data-canonical-src="https://api.securityscorecards.dev/projects/github.com/storybookjs/storybook/badge" style="max-width: 100%;">
+  </a>
+</p>
+<p align="center">
+Storybook is a frontend workshop for building UI components and pages in isolation. Thousands of teams use it for UI development, testing, and documentation. Find out more at <a href="https://storybook.js.org/?ref=readme" rel="nofollow">storybook.js.org</a>!
+</p>
+
+  <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/storybookjs/storybook/refs/heads/release-6-5/media/storybook-intro.gif"><img src="https://raw.githubusercontent.com/storybookjs/storybook/refs/heads/release-6-5/media/storybook-intro.gif" width="100%" style="max-width: 100%;"></a></p>
+
+<p align="center">
+  View README for:<br>
+  <a href="https://github.com/storybookjs/storybook/blob/main/README.md" title="latest"><img alt="latest" src="https://camo.githubusercontent.com/5f976e829af6b44bd1fbbca50a418709c87d660748b5145721d562ceb2ef3aa7/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f72656163742f6c61746573743f7374796c653d666f722d7468652d6261646765266c6f676f3d73746f7279626f6f6b266c6f676f436f6c6f723d66666666666626636f6c6f723d363642463343" data-canonical-src="https://img.shields.io/npm/v/@storybook/react/latest?style=for-the-badge&amp;logo=storybook&amp;logoColor=ffffff&amp;color=66BF3C" style="max-width: 100%;"></a>
+  <a href="https://github.com/storybookjs/storybook/blob/next/README.md" title="next"><img alt="next" src="https://camo.githubusercontent.com/09192b4271151a2cd5c530074b413e73b88f98023635a9e14a66dee617cce606/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f72656163742f6e6578743f7374796c653d666f722d7468652d6261646765266c6f676f3d73746f7279626f6f6b266c6f676f436f6c6f723d66666666666626636f6c6f723d314541374644" data-canonical-src="https://img.shields.io/npm/v/@storybook/react/next?style=for-the-badge&amp;logo=storybook&amp;logoColor=ffffff&amp;color=1EA7FD" style="max-width: 100%;"></a>
+</p>
+<h2>Table of contents</h2>
+<ul>
+<li>🚀 <a href="#getting-started">Getting Started</a></li>
+<li>📒 <a href="#projects">Projects</a>
+<ul>
+<li>🛠 <a href="#supported-frameworks">Supported Frameworks &amp; Examples</a></li>
+<li>🔗<a href="#addons">Addons</a></li>
+</ul>
+</li>
+<li>🏅 <a href="#badges--presentation-materials">Badges &amp; Presentation materials</a></li>
+<li>👥 <a href="#community">Community</a></li>
+<li>👏 <a href="#contributing">Contributing</a>
+<ul>
+<li>👨‍💻 <a href="#development-scripts">Development scripts</a></li>
+<li>💸 <a href="#sponsors">Sponsors</a></li>
+<li>💵 <a href="#backers">Backers</a></li>
+</ul>
+</li>
+<li>📝 <a href="#license">License</a></li>
+</ul>
+<h2>Getting Started</h2>
+<p>Visit <a href="https://storybook.js.org/?ref=readme" rel="nofollow">Storybook's website</a> to learn more about Storybook and to get started.</p>
+<h3>Documentation</h3>
+<p>Documentation can be found on <a href="https://storybook.js.org/docs?ref=readme" rel="nofollow">Storybook's docs site</a>.</p>
+<h3>Examples</h3>
+<p>View <a href="https://storybook.js.org/showcase?ref=readme" rel="nofollow">Component Encyclopedia</a> to see how leading teams use Storybook.</p>
+<p>Use <a href="https://storybook.new" rel="nofollow">storybook.new</a> to quickly create an example project in Stackblitz.</p>
+<p>Storybook comes with a lot of <a href="https://storybook.js.org/docs/configure/user-interface/storybook-addons?ref=readme" rel="nofollow">addons</a> for component design, documentation, testing, interactivity, and so on. Storybook's API makes it possible to configure and extend in various ways. It has even been extended to support React Native, Android, iOS, and Flutter development for mobile.</p>
+<h3>Community</h3>
+<p>For additional help, share your issue in <a href="https://github.com/storybookjs/storybook/discussions/new?category=help">the repo's GitHub Discussions</a>.</p>
+<h2>Projects</h2>
+<h3>Supported Frameworks</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Renderer</th>
+<th>Demo</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/renderers/react">React</a></td>
+<td><a href="https://next--630511d655df72125520f051.chromatic.com/" rel="nofollow"><img src="https://camo.githubusercontent.com/fdbd38d2f8c1d2db018c3492082bf3c0485b7d8175c66c820b6806cdbdd37e3b/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f72656163742f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="Storybook demo" data-canonical-src="https://img.shields.io/npm/v/@storybook/react/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/renderers/react"><img src="https://camo.githubusercontent.com/bc029500e6c8bc823650f4b6402f95f35b590bf9dbef49f33ab852269e5b3a62/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f72656163743f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="React" data-canonical-src="https://img.shields.io/npm/dm/@storybook/react?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="code/frameworks/angular/">Angular</a></td>
+<td><a href="https://next--6322ce6af69825592bbb28fc.chromatic.com/" rel="nofollow"><img src="https://camo.githubusercontent.com/af17ad1ee55e7654f9bd2d31171324bfec0ddd5ae1f6de6e52ddc09600485d20/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f616e67756c61722f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="Storybook demo" data-canonical-src="https://img.shields.io/npm/v/@storybook/angular/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/frameworks/angular/"><img src="https://camo.githubusercontent.com/dcdca449bc63dafd485e7ad734ef652a201d834aa2d469bc00e42585003a1b99/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f616e67756c61723f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Angular" data-canonical-src="https://img.shields.io/npm/dm/@storybook/angular?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="code/renderers/vue3">Vue 3</a></td>
+<td><a href="https://next--630513346a8e284ae244d415.chromatic.com/" rel="nofollow"><img src="https://camo.githubusercontent.com/21e4bf3d7619747b9d9e37ff7b2f2b50f3726c88b3a6a5c3fbf7bb65d6ea5f3b/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f767565332f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="Storybook demo" data-canonical-src="https://img.shields.io/npm/v/@storybook/vue3/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/renderers/vue3/"><img src="https://camo.githubusercontent.com/370c63af12e7bc6e8c5b8bf8bf8854f24ade58eb0e302261160fa330ee9efc4b/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f767565333f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Vue 3" data-canonical-src="https://img.shields.io/npm/dm/@storybook/vue3?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="code/renderers/web-components">Web components</a></td>
+<td><a href="https://next--638db5bf49adfdfe8cf545e0.chromatic.com/" rel="nofollow"><img src="https://camo.githubusercontent.com/889ffc3376230556076be8cefe8895557007789413285bc4cf702910c7da0b3e/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f7765622d636f6d706f6e656e74732f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="Storybook demo" data-canonical-src="https://img.shields.io/npm/v/@storybook/web-components/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/renderers/web-components"><img src="https://camo.githubusercontent.com/e59d6e27c974fd57cd5b3d837705c3818056437744577dd9861d6fa49a0dbf75/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f7765622d636f6d706f6e656e74733f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Svelte" data-canonical-src="https://img.shields.io/npm/dm/@storybook/web-components?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/react-native">React Native</a></td>
+<td><a href="/"><img src="https://camo.githubusercontent.com/f95bea04dbf5d5f2a3ae3177bc629a68b27346c28213e65c91af032966050552/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f72656163742d6e61746976652f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/v/@storybook/react-native/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="https://github.com/storybookjs/react-native"><img src="https://camo.githubusercontent.com/82687b5b0502049b43a86669dffdd7e0045ddc2a75c029c5c76cda8f9eec438c/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f72656163742d6e61746976653f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="React Native" data-canonical-src="https://img.shields.io/npm/dm/@storybook/react-native?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="code/renderers/html">HTML</a></td>
+<td><a href="https://next--63dd39a158cf6fc05199b4bb.chromatic.com/" rel="nofollow"><img src="https://camo.githubusercontent.com/ee2855cc177db33674f7ef4309b075b14d301e288eb01b1568e17c1d09910870/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f68746d6c2f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="Storybook demo" data-canonical-src="https://img.shields.io/npm/v/@storybook/html/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/renderers/html"><img src="https://camo.githubusercontent.com/6823dba51e7e2732c58c0f877da32901e45ff4aade49b8f3d91c55dce3515214/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f68746d6c3f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="HTML" data-canonical-src="https://img.shields.io/npm/dm/@storybook/html?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="code/frameworks/ember/">Ember</a></td>
+<td><a href="/"><img src="https://camo.githubusercontent.com/4719287e69a07caf21832e66558471124711682ae0f0adbb965bf9546c0f2b6c/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f656d6265722f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/v/@storybook/ember/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/frameworks/ember/"><img src="https://camo.githubusercontent.com/625a75be6e7f8cddc070f986ff05cf89522e4201a2cde2dfb7c6d806e0d0f018/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f656d6265723f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Ember" data-canonical-src="https://img.shields.io/npm/dm/@storybook/ember?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="code/renderers/svelte">Svelte</a></td>
+<td><a href="https://next--630873996e4e3557791c069c.chromatic.com/" rel="nofollow"><img src="https://camo.githubusercontent.com/8d83b225be88b91b4dd0cc9a98188ef475637b4482e9bb53d3fa4216977f7cfb/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f7376656c74652f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="Storybook demo" data-canonical-src="https://img.shields.io/npm/v/@storybook/svelte/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/renderers/svelte"><img src="https://camo.githubusercontent.com/e4edd562d475bcfcab96f760110ee66035be82ec8685c0310dcc8b0843c25801/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f7376656c74653f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Svelte" data-canonical-src="https://img.shields.io/npm/dm/@storybook/svelte?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="code/renderers/preact">Preact</a></td>
+<td><a href="https://next--63b588a512565bfaace15e7c.chromatic.com/" rel="nofollow"><img src="https://camo.githubusercontent.com/4be83d69992862974bf9d1fa01a39aa6faa40c2f5b54609923b7cc6ff74905c0/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f7072656163742f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="Storybook demo" data-canonical-src="https://img.shields.io/npm/v/@storybook/preact/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="code/renderers/preact"><img src="https://camo.githubusercontent.com/64f8b182cae5097f8eb2e0e14dceffacf77284b9ceb2cb9328e17f51bb0917c1/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f7072656163743f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Preact" data-canonical-src="https://img.shields.io/npm/dm/@storybook/preact?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/literalpie/storybook-framework-qwik">Qwik</a></td>
+<td><a href="/"><img src="https://camo.githubusercontent.com/4091ddbf58313ed43d46b3eda606deac54f6ae961d8bc7054c2a43efd7064dfb/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f73746f7279626f6f6b2d6672616d65776f726b2d7177696b2f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/v/storybook-framework-qwik/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="https://github.com/literalpie/storybook-framework-qwik"><img src="https://camo.githubusercontent.com/114a0c88bfa39eb5045297720da49a35c86d46a2adb7bdd61262e50c22df9a64/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f73746f7279626f6f6b2d6672616d65776f726b2d7177696b3f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Qwik" data-canonical-src="https://img.shields.io/npm/dm/storybook-framework-qwik?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/solidjs-community/storybook">SolidJS</a></td>
+<td><a href="/"><img src="https://camo.githubusercontent.com/bc2638959609363932a39dea13480b3bf1da4c497021dc6aa8c77038aa01f1ef/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f73746f7279626f6f6b2d736f6c69646a732d766974652f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/v/storybook-solidjs-vite/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="https://github.com/solidjs-community/storybook"><img src="https://camo.githubusercontent.com/b1751ec10699ee410ee387a3d96690606ab2b9c6e1af8e06455ff786d74d6b73/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f73746f7279626f6f6b2d736f6c69646a732d766974653f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="SolidJS" data-canonical-src="https://img.shields.io/npm/dm/storybook-solidjs-vite?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/native">Android, iOS, Flutter</a></td>
+<td><a href="/"><img src="https://camo.githubusercontent.com/cb8dfe8196316e333e0b74a8fe6af8997e5ab1ed61d6199484f996cf7fae5085/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f4073746f7279626f6f6b2f6e61746976652f6c61746573743f7374796c653d666c61742d73717561726526636f6c6f723d626c7565266c6162656c" alt="" data-canonical-src="https://img.shields.io/npm/v/@storybook/native/latest?style=flat-square&amp;color=blue&amp;label" style="max-width: 100%;"></a></td>
+<td><a href="https://github.com/storybookjs/native"><img src="https://camo.githubusercontent.com/1a76e9059bfcd19dcfee8e8df8873ccb6e05e4d61599eb6f75ea8630d5fd5337/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f4073746f7279626f6f6b2f6e61746976653f7374796c653d666c61742d73717561726526636f6c6f723d656565" alt="Native" data-canonical-src="https://img.shields.io/npm/dm/@storybook/native?style=flat-square&amp;color=eee" style="max-width: 100%;"></a></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Addons</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Addons</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code/addons/a11y/">a11y</a></td>
+<td>Test components for user accessibility in Storybook</td>
+</tr>
+<tr>
+<td><a href="code/core/src/actions/">actions</a></td>
+<td>Log actions as users interact with components in the Storybook UI</td>
+</tr>
+<tr>
+<td><a href="code/core/src/backgrounds">backgrounds</a></td>
+<td>Let users choose backgrounds in the Storybook UI</td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/addon-cssresources">cssresources</a></td>
+<td>Dynamically add/remove CSS resources to the component iframe</td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/addon-design-assets">design assets</a></td>
+<td>View images, videos, and weblinks alongside your story</td>
+</tr>
+<tr>
+<td><a href="code/addons/docs/">docs</a></td>
+<td>Add high quality documentation to your components</td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/addon-events">events</a></td>
+<td>Interactively fire events to components that respond to EventEmitter</td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/addon-google-analytics">google-analytics</a></td>
+<td>Reports google analytics on stories</td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/addon-graphql">graphql</a></td>
+<td>Query a GraphQL server within Storybook stories</td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/addon-jest">jest</a></td>
+<td>View the results of components' unit tests in Storybook</td>
+</tr>
+<tr>
+<td><a href="code/addons/links/">links</a></td>
+<td>Create links between stories</td>
+</tr>
+<tr>
+<td><a href="code/core/src/measure/">measure</a></td>
+<td>Visually inspect the layout and box model within the Storybook UI</td>
+</tr>
+<tr>
+<td><a href="code/core/src/outline/">outline</a></td>
+<td>Visually debug the CSS layout and alignment within the Storybook UI</td>
+</tr>
+<tr>
+<td><a href="https://github.com/storybookjs/addon-queryparams">query params</a></td>
+<td>Mock query params</td>
+</tr>
+<tr>
+<td><a href="code/core/src/viewport/">viewport</a></td>
+<td>Change display sizes and layouts for responsive components using Storybook</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>See <a href="https://storybook.js.org/docs/configure/integration/frameworks-feature-support?ref=readme" rel="nofollow">Addon / Framework Support Table</a></p>
+<p>To continue improving your experience, we have to eventually deprecate or remove certain addons in favor of new and better tools.</p>
+<p>If you're using info/notes, we highly recommend you migrate to <a href="code/addons/docs/">docs</a> instead, and <a href="code/addons/docs/docs/recipes.md#migrating-from-notesinfo-addons">here is a guide</a> to help you.</p>
+<p>If you're using contexts, we highly recommend you migrate to <a href="https://github.com/storybookjs/storybook/tree/next/code/addons/toolbars">toolbars</a> and <a href="https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#deprecated-addon-contexts">here is a guide</a> to help you.</p>
+<p>If you're using addon-storyshots, we highly recommend you migrate to the Storybook <a href="https://github.com/storybookjs/test-runner">test-runner</a> and <a href="https://storybook.js.org/docs/8/writing-tests/snapshot-testing/storyshots-migration-guide?ref=readme" rel="nofollow">here is a guide</a> to help you.</p>
+<h2>Badges &amp; Presentation materials</h2>
+<p>We have a badge! Link it to your live Storybook example.</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/1cc7e35f4ea26b9a7b8d9b2bb62e2a8d73a9e11758feee3ffd80b360328e3ccd/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f73746f7279626f6f6b6a732f6272616e64406d61696e2f62616467652f62616467652d73746f7279626f6f6b2e737667"><img src="https://camo.githubusercontent.com/1cc7e35f4ea26b9a7b8d9b2bb62e2a8d73a9e11758feee3ffd80b360328e3ccd/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f73746f7279626f6f6b6a732f6272616e64406d61696e2f62616467652f62616467652d73746f7279626f6f6b2e737667" alt="Storybook" data-canonical-src="https://cdn.jsdelivr.net/gh/storybookjs/brand@main/badge/badge-storybook.svg" style="max-width: 100%;"></a></p>
+<div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-s">[</span><span class="pl-s">![</span>Storybook<span class="pl-s">]</span><span class="pl-s">(</span><span class="pl-corl">https://cdn.jsdelivr.net/gh/storybookjs/brand@main/badge/badge-storybook.svg</span><span class="pl-s">)]</span>(link to site)</pre></div>
+<p>If you're looking for material to use in your Storybook presentation, such as logos, video material, and the colors we use, you can find it all on our <a href="https://github.com/storybookjs/brand">brand repo</a>.</p>
+<h2>Community</h2>
+<ul>
+<li>Tweeting via <a href="https://x.com/storybookjs" rel="nofollow">@storybookjs</a></li>
+<li>Blogging at <a href="https://storybook.js.org/blog/?ref=readme" rel="nofollow">storybook.js.org</a> and <a href="https://medium.com/storybookjs" rel="nofollow">Medium</a></li>
+<li>Chatting on <a href="https://discord.gg/storybook" rel="nofollow">Discord</a></li>
+<li>Videos and streams at <a href="https://www.youtube.com/channel/UCr7Quur3eIyA_oe8FNYexfg" rel="nofollow">YouTube</a></li>
+</ul>
+<h2>Contributing</h2>
+<p>Contributions to Storybook are always welcome!</p>
+<ul>
+<li>📥 Pull requests and 🌟 Stars are always welcome.</li>
+<li>Read our <a href="CONTRIBUTING.md">contributing guide</a> to get started,<br>
+or find us on <a href="https://discord.gg/storybook" rel="nofollow">Discord</a>, we will take the time to guide you.</li>
+</ul>
+<p>Looking for a first issue to tackle?</p>
+<ul>
+<li>We tag issues with <a href="https://github.com/storybookjs/storybook/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22"><img src="https://camo.githubusercontent.com/0a5a3573782bb08e5cbf8c5b573b21ed5674fa2a8b7beb59604599b667cb9a34/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6973737565732f73746f7279626f6f6b6a732f73746f7279626f6f6b2f676f6f64253230666972737425323069737375652e737667" alt="Good First Issue" data-canonical-src="https://img.shields.io/github/issues/storybookjs/storybook/good%20first%20issue.svg" style="max-width: 100%;"></a> when we think they are well suited for people who are new to the codebase or OSS in general.</li>
+<li><a href="https://discord.gg/storybook" rel="nofollow">Talk to us</a>, we'll find something that suits your skills and learning interests.</li>
+</ul>
+<h3>Development scripts</h3>
+<p>Storybook is organized as a monorepo. Useful scripts include:</p>
+<h4><code class="notranslate">yarn start</code></h4>
+<blockquote>
+<p>Runs a sandbox template storybook with test stories</p>
+</blockquote>
+<h4><code class="notranslate">yarn task</code></h4>
+<blockquote>
+<p>As above, but gives you options to customize the sandbox (e.g. selecting other frameworks)</p>
+</blockquote>
+<h4><code class="notranslate">yarn lint</code></h4>
+<blockquote>
+<p>boolean check if code conforms to linting rules - uses remark &amp; eslint</p>
+</blockquote>
+<ul>
+<li><code class="notranslate">yarn lint:js</code> - will check js</li>
+<li><code class="notranslate">yarn lint:md</code> - will check markdown + code samples</li>
+<li><code class="notranslate">yarn lint:js --fix</code> - will automatically fix js</li>
+</ul>
+<h4><code class="notranslate">yarn test</code></h4>
+<blockquote>
+<p>boolean check if unit tests all pass - uses jest</p>
+</blockquote>
+<ul>
+<li><code class="notranslate">yarn run test --core --watch</code> - will run core tests in watch-mode</li>
+</ul>
+<h3>Sponsors</h3>
+<p>Become a sponsor to have your logo and website URL on our README on Github. [<a href="https://opencollective.com/storybook#sponsor" rel="nofollow">Become a sponsor</a>]</p>
+<p><a href="https://opencollective.com/storybook/tiers/sponsors/0/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/472b2d02e609b46f6a55a536ce00208d657475ed68a36f5ac211274444825daa/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f302f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/0/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/1/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/3c4f016e09518d4b74c91c97bf1d4cf3aeccbf4559d736bd44f79d22cae04bdd/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f312f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/1/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/2/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/2fcc40b79d9212a79606dd7b605b5a6c9f9f6e2cca7e2ebfb42a44665eaacb20/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f322f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/2/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/3/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/6fdbebcc42640235f17b349c219086d129ceb5a7407dd00b72155d54fd808899/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f332f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/3/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/4/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/2f5ca08a9f55128c65da88cea80515d6899db2c5f834e415d6fae3fe5e1dd66e/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f342f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/4/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/5/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/2470e61473552cb1f1f964ce8f3ce2892d5e3a17f712119914366b2dd5f74031/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f352f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/5/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/6/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/26c08fd1efb6cc22d0b99bfbf0f42016ee5ace5f85bf34cad2b93e307aa82362/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f362f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/6/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/7/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/ff41e8bc75d32c9ace0e35bd245b3c1e3a3e48ef647e736f00256126bd277404/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f372f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/7/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/8/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/086c3c3eafcb90d17301fa4978dd8d71bc1f568da7fe08e0aea560be2e344701/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f382f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/8/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/9/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/228f9f2e5ab805a18746640b809bb90e0ea4462ba9edd5df23fa6ff88b493953/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f392f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/9/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/10/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/f0b6e32008eb89dc54a82315103a713e5b5f6f9eedbe9f55659ef4811e8b4fa2/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31302f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/10/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/11/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/49339013c923445f62231f996e1e4c380555265f7c9420959d2e2237d1aad202/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31312f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/11/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/12/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/2da6df597d893aec69060ade7bee0fbe2b1a0b4428ceae0e885d08c46a4d31ce/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31322f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/12/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/13/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/ed2849e3ece9b42251697960212f059abd1e656e815ed3fb081f4e685d5c8975/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31332f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/13/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/14/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/2489e6fecedf290a81f0d886d972b217a97e5fc41c1b33ab859ba1ddae98dd7a/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31342f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/14/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/15/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/7374f301306149a74e822beccff32ea9d699f57a6800d27ae1260b560a4d877a/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31352f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/15/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/16/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/50ed1442e0a68c76dcf819a549529fc0d766b4f9abc1653b429c69f39548ff63/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31362f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/16/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/17/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/c5b12c76e370e49b750d8e2ff3b1d8a814a7d0dd2f1894bbd089299d12e6346a/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31372f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/17/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/18/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/7b630d2058bf073e10d1ac1252eacf3efe9e0ddbcb253b10eb89223212e467ea/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31382f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/18/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/19/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/ae2a8d99dcd1a99e982db90c76d32d6169eb4cdece4063fe6d1e6eaf6e672ec0/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f31392f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/19/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/20/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/5da04af990914632291575b5ff001c6f7229932995599d7d977c43bf910fa43a/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f32302f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/20/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/21/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/f8f5c6f3d5cc58378251af8d70ef17eb856b3da9318fce126113640d246e4400/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f32312f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/21/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/22/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/7c97a7fd249cddbef7fc287b79ad12d6027901c39fe294c7b88fcc7eb43f325d/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f32322f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/22/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/23/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/27031255e94c9fdb04aa0fde0a7fad5699884c44d094f88ea6682d295813cdfc/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f32332f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/23/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/24/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/e1c4ab736e9340fc4b908845d5a80c91fd2a384a457d3ebcd60c372025cc9dec/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f32342f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/24/avatar.svg?requireActive=true" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/storybook/tiers/sponsors/25/website?requireActive=true" rel="nofollow"><img src="https://camo.githubusercontent.com/4641de5fe257d9df60afd15df7122fd77f3a4479be534d24585ae816230f4bef/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f73706f6e736f72732f32352f6176617461722e7376673f726571756972654163746976653d74727565" data-canonical-src="https://opencollective.com/storybook/tiers/sponsors/25/avatar.svg?requireActive=true" style="max-width: 100%;"></a></p>
+<h3>Backers</h3>
+<p>By making a recurring donation, you can support us and our work. [<a href="https://opencollective.com/storybook#backer" rel="nofollow">Become a backer</a>]</p>
+<p><a href="https://opencollective.com/storybook" rel="nofollow"><img src="https://camo.githubusercontent.com/4c98ef3d0324eed8b339a2fd90f8c222b8100247f7ab07556b3d5d9a97d593de/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f73746f7279626f6f6b2f74696572732f6261636b6572732e7376673f6c696d69743d383026627574746f6e3d66616c7365266176617461724865696768743d34362677696474683d373530" data-canonical-src="https://opencollective.com/storybook/tiers/backers.svg?limit=80&amp;button=false&amp;avatarHeight=46&amp;width=750" style="max-width: 100%;"></a></p>
+<h2>License</h2>
+<p><a href="https://github.com/storybookjs/storybook/blob/main/LICENSE">MIT</a></p>
+<p>-the end-</p>

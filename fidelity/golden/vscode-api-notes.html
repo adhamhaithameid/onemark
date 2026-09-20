@@ -1,0 +1,4026 @@
+<p>/*---------------------------------------------------------------------------------------------</p>
+<ul>
+<li>Copyright (c) Microsoft Corporation. All rights reserved.</li>
+<li>Licensed under the MIT License. See License.txt in the project root for license information.<br>
+<em>--------------------------------------------------------------------------------------------</em>/</li>
+</ul>
+<p>import type * as vscode from 'vscode';<br>
+import { asArray } from '../../../base/common/arrays.js';<br>
+import { encodeBase64, VSBuffer } from '../../../base/common/buffer.js';<br>
+import { illegalArgument, SerializedError } from '../../../base/common/errors.js';<br>
+import { IRelativePattern } from '../../../base/common/glob.js';<br>
+import { MarshalledId } from '../../../base/common/marshallingIds.js';<br>
+import { Mimes } from '../../../base/common/mime.js';<br>
+import { nextCharLength } from '../../../base/common/strings.js';<br>
+import { isNumber, isObject, isString, isStringArray } from '../../../base/common/types.js';<br>
+import { isUriComponents, URI } from '../../../base/common/uri.js';<br>
+import { generateUuid } from '../../../base/common/uuid.js';<br>
+import { TextEditorSelectionSource } from '../../../platform/editor/common/editor.js';<br>
+import { ExtensionIdentifier, IExtensionDescription } from '../../../platform/extensions/common/extensions.js';<br>
+import { FileSystemProviderErrorCode, markAsFileSystemProviderError } from '../../../platform/files/common/files.js';<br>
+import { RemoteAuthorityResolverErrorCode } from '../../../platform/remote/common/remoteAuthorityResolver.js';<br>
+import { IRelativePatternDto } from './extHost.protocol.js';<br>
+import { CodeActionKind } from './extHostTypes/codeActionKind.js';<br>
+import { Diagnostic } from './extHostTypes/diagnostic.js';<br>
+import { es5ClassCompat } from './extHostTypes/es5ClassCompat.js';<br>
+import { Location } from './extHostTypes/location.js';<br>
+import { MarkdownString } from './extHostTypes/markdownString.js';<br>
+import { Position } from './extHostTypes/position.js';<br>
+import { Range } from './extHostTypes/range.js';<br>
+import { SnippetString } from './extHostTypes/snippetString.js';<br>
+import { SymbolKind, SymbolTag } from './extHostTypes/symbolInformation.js';<br>
+import { TextEdit } from './extHostTypes/textEdit.js';<br>
+import { WorkspaceEdit } from './extHostTypes/workspaceEdit.js';<br>
+import { HookTypeValue } from '../../contrib/chat/common/promptSyntax/hookTypes.js';</p>
+<p>export { CodeActionKind } from './extHostTypes/codeActionKind.js';<br>
+export {<br>
+Diagnostic, DiagnosticRelatedInformation,<br>
+DiagnosticSeverity, DiagnosticTag<br>
+} from './extHostTypes/diagnostic.js';<br>
+export { Location } from './extHostTypes/location.js';<br>
+export { MarkdownString } from './extHostTypes/markdownString.js';<br>
+export { NotebookCellData, NotebookCellKind, NotebookCellOutput, NotebookCellOutputItem, NotebookData, NotebookEdit, NotebookRange } from './extHostTypes/notebooks.js';<br>
+export { Position } from './extHostTypes/position.js';<br>
+export { Range } from './extHostTypes/range.js';<br>
+export { Selection } from './extHostTypes/selection.js';<br>
+export { SnippetString } from './extHostTypes/snippetString.js';<br>
+export { SnippetTextEdit } from './extHostTypes/snippetTextEdit.js';<br>
+export { SymbolInformation, SymbolKind, SymbolTag } from './extHostTypes/symbolInformation.js';<br>
+export { EndOfLine, TextEdit } from './extHostTypes/textEdit.js';<br>
+export { FileEditType, WorkspaceEdit } from './extHostTypes/workspaceEdit.js';</p>
+<p>export enum TerminalOutputAnchor {<br>
+Top = 0,<br>
+Bottom = 1<br>
+}</p>
+<p>export enum TerminalQuickFixType {<br>
+TerminalCommand = 0,<br>
+Opener = 1,<br>
+Command = 3<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class Disposable {</p>
+<pre class="notranslate"><code class="notranslate">static from(...inDisposables: { dispose(): any }[]): Disposable {
+	let disposables: ReadonlyArray&lt;{ dispose(): any }&gt; | undefined = inDisposables;
+	return new Disposable(function () {
+		if (disposables) {
+			for (const disposable of disposables) {
+				if (disposable &amp;&amp; typeof disposable.dispose === 'function') {
+					disposable.dispose();
+				}
+			}
+			disposables = undefined;
+		}
+	});
+}
+
+#callOnDispose?: () =&gt; any;
+
+constructor(callOnDispose: () =&gt; any) {
+	this.#callOnDispose = callOnDispose;
+}
+
+dispose(): any {
+	if (typeof this.#callOnDispose === 'function') {
+		this.#callOnDispose();
+		this.#callOnDispose = undefined;
+	}
+}
+</code></pre>
+<p>}</p>
+<p>const validateConnectionToken = (connectionToken: string) =&gt; {<br>
+if (typeof connectionToken !== 'string' || connectionToken.length === 0 || !/^[0-9A-Za-z_-]+$/.test(connectionToken)) {<br>
+throw illegalArgument('connectionToken');<br>
+}<br>
+};</p>
+<p>export class ResolvedAuthority {<br>
+public static isResolvedAuthority(resolvedAuthority: any): resolvedAuthority is ResolvedAuthority {<br>
+return resolvedAuthority<br>
+&amp;&amp; typeof resolvedAuthority === 'object'<br>
+&amp;&amp; typeof resolvedAuthority.host === 'string'<br>
+&amp;&amp; typeof resolvedAuthority.port === 'number'<br>
+&amp;&amp; (resolvedAuthority.connectionToken === undefined || typeof resolvedAuthority.connectionToken === 'string');<br>
+}</p>
+<pre class="notranslate"><code class="notranslate">readonly host: string;
+readonly port: number;
+readonly connectionToken: string | undefined;
+
+constructor(host: string, port: number, connectionToken?: string) {
+	if (typeof host !== 'string' || host.length === 0) {
+		throw illegalArgument('host');
+	}
+	if (typeof port !== 'number' || port === 0 || Math.round(port) !== port) {
+		throw illegalArgument('port');
+	}
+	if (typeof connectionToken !== 'undefined') {
+		validateConnectionToken(connectionToken);
+	}
+	this.host = host;
+	this.port = Math.round(port);
+	this.connectionToken = connectionToken;
+}
+</code></pre>
+<p>}</p>
+<p>export class ManagedResolvedAuthority {</p>
+<pre class="notranslate"><code class="notranslate">public static isManagedResolvedAuthority(resolvedAuthority: any): resolvedAuthority is ManagedResolvedAuthority {
+	return resolvedAuthority
+		&amp;&amp; typeof resolvedAuthority === 'object'
+		&amp;&amp; typeof resolvedAuthority.makeConnection === 'function'
+		&amp;&amp; (resolvedAuthority.connectionToken === undefined || typeof resolvedAuthority.connectionToken === 'string');
+}
+
+constructor(public readonly makeConnection: () =&gt; Thenable&lt;vscode.ManagedMessagePassing&gt;, public readonly connectionToken?: string) {
+	if (typeof connectionToken !== 'undefined') {
+		validateConnectionToken(connectionToken);
+	}
+}
+</code></pre>
+<p>}</p>
+<p>export class RemoteAuthorityResolverError extends Error {</p>
+<pre class="notranslate"><code class="notranslate">static NotAvailable(message?: string, handled?: boolean): RemoteAuthorityResolverError {
+	return new RemoteAuthorityResolverError(message, RemoteAuthorityResolverErrorCode.NotAvailable, handled);
+}
+
+static TemporarilyNotAvailable(message?: string): RemoteAuthorityResolverError {
+	return new RemoteAuthorityResolverError(message, RemoteAuthorityResolverErrorCode.TemporarilyNotAvailable);
+}
+
+public readonly _message: string | undefined;
+public readonly _code: RemoteAuthorityResolverErrorCode;
+public readonly _detail: unknown;
+
+constructor(message?: string, code: RemoteAuthorityResolverErrorCode = RemoteAuthorityResolverErrorCode.Unknown, detail?: unknown) {
+	super(message);
+
+	this._message = message;
+	this._code = code;
+	this._detail = detail;
+
+	// workaround when extending builtin objects and when compiling to ES5, see:
+	// https://github.com/microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+	Object.setPrototypeOf(this, RemoteAuthorityResolverError.prototype);
+}
+</code></pre>
+<p>}</p>
+<p>export enum EnvironmentVariableMutatorType {<br>
+Replace = 1,<br>
+Append = 2,<br>
+Prepend = 3<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class Hover {</p>
+<pre class="notranslate"><code class="notranslate">public contents: (vscode.MarkdownString | vscode.MarkedString)[];
+public range: Range | undefined;
+
+constructor(
+	contents: vscode.MarkdownString | vscode.MarkedString | (vscode.MarkdownString | vscode.MarkedString)[],
+	range?: Range
+) {
+	if (!contents) {
+		throw new Error('Illegal argument, contents must be defined');
+	}
+	if (Array.isArray(contents)) {
+		this.contents = contents;
+	} else {
+		this.contents = [contents];
+	}
+	this.range = range;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class VerboseHover extends Hover {</p>
+<pre class="notranslate"><code class="notranslate">public canIncreaseVerbosity: boolean | undefined;
+public canDecreaseVerbosity: boolean | undefined;
+
+constructor(
+	contents: vscode.MarkdownString | vscode.MarkedString | (vscode.MarkdownString | vscode.MarkedString)[],
+	range?: Range,
+	canIncreaseVerbosity?: boolean,
+	canDecreaseVerbosity?: boolean,
+) {
+	super(contents, range);
+	this.canIncreaseVerbosity = canIncreaseVerbosity;
+	this.canDecreaseVerbosity = canDecreaseVerbosity;
+}
+</code></pre>
+<p>}</p>
+<p>export enum HoverVerbosityAction {<br>
+Increase = 0,<br>
+Decrease = 1<br>
+}</p>
+<p>export enum DocumentHighlightKind {<br>
+Text = 0,<br>
+Read = 1,<br>
+Write = 2<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class DocumentHighlight {</p>
+<pre class="notranslate"><code class="notranslate">range: Range;
+kind: DocumentHighlightKind;
+
+constructor(range: Range, kind: DocumentHighlightKind = DocumentHighlightKind.Text) {
+	this.range = range;
+	this.kind = kind;
+}
+
+toJSON(): any {
+	return {
+		range: this.range,
+		kind: DocumentHighlightKind[this.kind]
+	};
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class MultiDocumentHighlight {</p>
+<pre class="notranslate"><code class="notranslate">uri: URI;
+highlights: DocumentHighlight[];
+
+constructor(uri: URI, highlights: DocumentHighlight[]) {
+	this.uri = uri;
+	this.highlights = highlights;
+}
+
+toJSON(): any {
+	return {
+		uri: this.uri,
+		highlights: this.highlights.map(h =&gt; h.toJSON())
+	};
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class DocumentSymbol {</p>
+<pre class="notranslate"><code class="notranslate">static validate(candidate: DocumentSymbol): void {
+	if (!candidate.name) {
+		throw new Error('name must not be falsy');
+	}
+	if (!candidate.range.contains(candidate.selectionRange)) {
+		throw new Error('selectionRange must be contained in fullRange');
+	}
+	candidate.children?.forEach(DocumentSymbol.validate);
+}
+
+name: string;
+detail: string;
+kind: SymbolKind;
+tags?: SymbolTag[];
+range: Range;
+selectionRange: Range;
+children: DocumentSymbol[];
+
+constructor(name: string, detail: string, kind: SymbolKind, range: Range, selectionRange: Range) {
+	this.name = name;
+	this.detail = detail;
+	this.kind = kind;
+	this.range = range;
+	this.selectionRange = selectionRange;
+	this.children = [];
+
+	DocumentSymbol.validate(this);
+}
+</code></pre>
+<p>}</p>
+<p>export enum CodeActionTriggerKind {<br>
+Invoke = 1,<br>
+Automatic = 2,<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class CodeAction {<br>
+title: string;</p>
+<pre class="notranslate"><code class="notranslate">command?: vscode.Command;
+
+edit?: WorkspaceEdit;
+
+diagnostics?: Diagnostic[];
+
+kind?: CodeActionKind;
+
+isPreferred?: boolean;
+
+constructor(title: string, kind?: CodeActionKind) {
+	this.title = title;
+	this.kind = kind;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class SelectionRange {</p>
+<pre class="notranslate"><code class="notranslate">range: Range;
+parent?: SelectionRange;
+
+constructor(range: Range, parent?: SelectionRange) {
+	this.range = range;
+	this.parent = parent;
+
+	if (parent &amp;&amp; !parent.range.contains(this.range)) {
+		throw new Error('Invalid argument: parent must contain this range');
+	}
+}
+</code></pre>
+<p>}</p>
+<p>export class CallHierarchyItem {</p>
+<pre class="notranslate"><code class="notranslate">_sessionId?: string;
+_itemId?: string;
+
+kind: SymbolKind;
+tags?: SymbolTag[];
+name: string;
+detail?: string;
+uri: URI;
+range: Range;
+selectionRange: Range;
+
+constructor(kind: SymbolKind, name: string, detail: string, uri: URI, range: Range, selectionRange: Range) {
+	this.kind = kind;
+	this.name = name;
+	this.detail = detail;
+	this.uri = uri;
+	this.range = range;
+	this.selectionRange = selectionRange;
+}
+</code></pre>
+<p>}</p>
+<p>export class CallHierarchyIncomingCall {</p>
+<pre class="notranslate"><code class="notranslate">from: vscode.CallHierarchyItem;
+fromRanges: vscode.Range[];
+
+constructor(item: vscode.CallHierarchyItem, fromRanges: vscode.Range[]) {
+	this.fromRanges = fromRanges;
+	this.from = item;
+}
+</code></pre>
+<p>}<br>
+export class CallHierarchyOutgoingCall {</p>
+<pre class="notranslate"><code class="notranslate">to: vscode.CallHierarchyItem;
+fromRanges: vscode.Range[];
+
+constructor(item: vscode.CallHierarchyItem, fromRanges: vscode.Range[]) {
+	this.fromRanges = fromRanges;
+	this.to = item;
+}
+</code></pre>
+<p>}</p>
+<p>export enum LanguageStatusSeverity {<br>
+Information = 0,<br>
+Warning = 1,<br>
+Error = 2<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class CodeLens {</p>
+<pre class="notranslate"><code class="notranslate">range: Range;
+
+command: vscode.Command | undefined;
+
+constructor(range: Range, command?: vscode.Command) {
+	this.range = range;
+	this.command = command;
+}
+
+get isResolved(): boolean {
+	return !!this.command;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class ParameterInformation {</p>
+<pre class="notranslate"><code class="notranslate">label: string | [number, number];
+documentation?: string | vscode.MarkdownString;
+
+constructor(label: string | [number, number], documentation?: string | vscode.MarkdownString) {
+	this.label = label;
+	this.documentation = documentation;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class SignatureInformation {</p>
+<pre class="notranslate"><code class="notranslate">label: string;
+documentation?: string | vscode.MarkdownString;
+parameters: ParameterInformation[];
+activeParameter?: number;
+
+constructor(label: string, documentation?: string | vscode.MarkdownString) {
+	this.label = label;
+	this.documentation = documentation;
+	this.parameters = [];
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class SignatureHelp {</p>
+<pre class="notranslate"><code class="notranslate">signatures: SignatureInformation[];
+activeSignature: number = 0;
+activeParameter: number = 0;
+
+constructor() {
+	this.signatures = [];
+}
+</code></pre>
+<p>}</p>
+<p>export enum SignatureHelpTriggerKind {<br>
+Invoke = 1,<br>
+TriggerCharacter = 2,<br>
+ContentChange = 3,<br>
+}</p>
+<p>export enum InlayHintKind {<br>
+Type = 1,<br>
+Parameter = 2,<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class InlayHintLabelPart {</p>
+<pre class="notranslate"><code class="notranslate">value: string;
+tooltip?: string | vscode.MarkdownString;
+location?: Location;
+command?: vscode.Command;
+
+constructor(value: string) {
+	this.value = value;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class InlayHint implements vscode.InlayHint {</p>
+<pre class="notranslate"><code class="notranslate">label: string | InlayHintLabelPart[];
+tooltip?: string | vscode.MarkdownString;
+position: Position;
+textEdits?: TextEdit[];
+kind?: vscode.InlayHintKind;
+paddingLeft?: boolean;
+paddingRight?: boolean;
+
+constructor(position: Position, label: string | InlayHintLabelPart[], kind?: vscode.InlayHintKind) {
+	this.position = position;
+	this.label = label;
+	this.kind = kind;
+}
+</code></pre>
+<p>}</p>
+<p>export enum CompletionTriggerKind {<br>
+Invoke = 0,<br>
+TriggerCharacter = 1,<br>
+TriggerForIncompleteCompletions = 2<br>
+}</p>
+<p>export interface CompletionContext {<br>
+readonly triggerKind: CompletionTriggerKind;<br>
+readonly triggerCharacter: string | undefined;<br>
+}</p>
+<p>export enum CompletionItemKind {<br>
+Text = 0,<br>
+Method = 1,<br>
+Function = 2,<br>
+Constructor = 3,<br>
+Field = 4,<br>
+Variable = 5,<br>
+Class = 6,<br>
+Interface = 7,<br>
+Module = 8,<br>
+Property = 9,<br>
+Unit = 10,<br>
+Value = 11,<br>
+Enum = 12,<br>
+Keyword = 13,<br>
+Snippet = 14,<br>
+Color = 15,<br>
+File = 16,<br>
+Reference = 17,<br>
+Folder = 18,<br>
+EnumMember = 19,<br>
+Constant = 20,<br>
+Struct = 21,<br>
+Event = 22,<br>
+Operator = 23,<br>
+TypeParameter = 24,<br>
+User = 25,<br>
+Issue = 26<br>
+}</p>
+<p>export enum CompletionItemTag {<br>
+Deprecated = 1,<br>
+}</p>
+<p>export interface CompletionItemLabel {<br>
+label: string;<br>
+detail?: string;<br>
+description?: string;<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class CompletionItem implements vscode.CompletionItem {</p>
+<pre class="notranslate"><code class="notranslate">label: string | CompletionItemLabel;
+kind?: CompletionItemKind;
+tags?: CompletionItemTag[];
+detail?: string;
+documentation?: string | vscode.MarkdownString;
+sortText?: string;
+filterText?: string;
+preselect?: boolean;
+insertText?: string | SnippetString;
+keepWhitespace?: boolean;
+range?: Range | { inserting: Range; replacing: Range };
+commitCharacters?: string[];
+textEdit?: TextEdit;
+additionalTextEdits?: TextEdit[];
+command?: vscode.Command;
+
+constructor(label: string | CompletionItemLabel, kind?: CompletionItemKind) {
+	this.label = label;
+	this.kind = kind;
+}
+
+toJSON(): any {
+	return {
+		label: this.label,
+		kind: this.kind &amp;&amp; CompletionItemKind[this.kind],
+		detail: this.detail,
+		documentation: this.documentation,
+		sortText: this.sortText,
+		filterText: this.filterText,
+		preselect: this.preselect,
+		insertText: this.insertText,
+		textEdit: this.textEdit
+	};
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class CompletionList {</p>
+<pre class="notranslate"><code class="notranslate">isIncomplete?: boolean;
+items: vscode.CompletionItem[];
+
+constructor(items: vscode.CompletionItem[] = [], isIncomplete: boolean = false) {
+	this.items = items;
+	this.isIncomplete = isIncomplete;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class InlineSuggestion implements vscode.InlineCompletionItem {</p>
+<pre class="notranslate"><code class="notranslate">filterText?: string;
+insertText: string;
+range?: Range;
+command?: vscode.Command;
+
+constructor(insertText: string, range?: Range, command?: vscode.Command) {
+	this.insertText = insertText;
+	this.range = range;
+	this.command = command;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class InlineSuggestionList implements vscode.InlineCompletionList {<br>
+items: vscode.InlineCompletionItem[];</p>
+<pre class="notranslate"><code class="notranslate">commands: (vscode.Command | { command: vscode.Command; icon: vscode.ThemeIcon })[] | undefined = undefined;
+
+suppressSuggestions: boolean | undefined = undefined;
+
+constructor(items: vscode.InlineCompletionItem[]) {
+	this.items = items;
+}
+</code></pre>
+<p>}</p>
+<p>export interface PartialAcceptInfo {<br>
+kind: PartialAcceptTriggerKind;<br>
+acceptedLength: number;<br>
+}</p>
+<p>export enum PartialAcceptTriggerKind {<br>
+Unknown = 0,<br>
+Word = 1,<br>
+Line = 2,<br>
+Suggest = 3,<br>
+}</p>
+<p>export enum InlineCompletionEndOfLifeReasonKind {<br>
+Accepted = 0,<br>
+Rejected = 1,<br>
+Ignored = 2,<br>
+}</p>
+<p>export enum InlineCompletionDisplayLocationKind {<br>
+Code = 1,<br>
+Label = 2<br>
+}</p>
+<p>export enum ViewColumn {<br>
+Active = -1,<br>
+Beside = -2,<br>
+One = 1,<br>
+Two = 2,<br>
+Three = 3,<br>
+Four = 4,<br>
+Five = 5,<br>
+Six = 6,<br>
+Seven = 7,<br>
+Eight = 8,<br>
+Nine = 9<br>
+}</p>
+<p>export enum StatusBarAlignment {<br>
+Left = 1,<br>
+Right = 2<br>
+}</p>
+<p>export function asStatusBarItemIdentifier(extension: ExtensionIdentifier, id: string): string {<br>
+return <code class="notranslate">${ExtensionIdentifier.toKey(extension)}.${id}</code>;<br>
+}</p>
+<p>export enum TextEditorLineNumbersStyle {<br>
+Off = 0,<br>
+On = 1,<br>
+Relative = 2,<br>
+Interval = 3<br>
+}</p>
+<p>export enum TextDocumentSaveReason {<br>
+Manual = 1,<br>
+AfterDelay = 2,<br>
+FocusOut = 3<br>
+}</p>
+<p>export enum TextEditorRevealType {<br>
+Default = 0,<br>
+InCenter = 1,<br>
+InCenterIfOutsideViewport = 2,<br>
+AtTop = 3<br>
+}</p>
+<p>export enum TextEditorSelectionChangeKind {<br>
+Keyboard = 1,<br>
+Mouse = 2,<br>
+Command = 3<br>
+}</p>
+<p>export enum TextEditorChangeKind {<br>
+Addition = 1,<br>
+Deletion = 2,<br>
+Modification = 3<br>
+}</p>
+<p>export enum TextDocumentChangeReason {<br>
+Undo = 1,<br>
+Redo = 2,<br>
+}</p>
+<p>/**</p>
+<ul>
+<li>These values match very carefully the values of <code class="notranslate">TrackedRangeStickiness</code><br>
+<em>/<br>
+export enum DecorationRangeBehavior {<br>
+/</em>*
+<ul>
+<li>TrackedRangeStickiness.AlwaysGrowsWhenTypingAtEdges<br>
+<em>/<br>
+OpenOpen = 0,<br>
+/</em>*</li>
+<li>TrackedRangeStickiness.NeverGrowsWhenTypingAtEdges<br>
+<em>/<br>
+ClosedClosed = 1,<br>
+/</em>*</li>
+<li>TrackedRangeStickiness.GrowsOnlyWhenTypingBefore<br>
+<em>/<br>
+OpenClosed = 2,<br>
+/</em>*</li>
+<li>TrackedRangeStickiness.GrowsOnlyWhenTypingAfter<br>
+*/<br>
+ClosedOpen = 3<br>
+}</li>
+</ul>
+</li>
+</ul>
+<p>export namespace TextEditorSelectionChangeKind {<br>
+export function fromValue(s: TextEditorSelectionSource | string | undefined) {<br>
+switch (s) {<br>
+case 'keyboard': return TextEditorSelectionChangeKind.Keyboard;<br>
+case 'mouse': return TextEditorSelectionChangeKind.Mouse;<br>
+case TextEditorSelectionSource.PROGRAMMATIC:<br>
+case TextEditorSelectionSource.JUMP:<br>
+case TextEditorSelectionSource.NAVIGATION:<br>
+return TextEditorSelectionChangeKind.Command;<br>
+}<br>
+return undefined;<br>
+}<br>
+}</p>
+<p>export enum SyntaxTokenType {<br>
+Other = 0,<br>
+Comment = 1,<br>
+String = 2,<br>
+RegEx = 3<br>
+}<br>
+export namespace SyntaxTokenType {<br>
+export function toString(v: SyntaxTokenType | unknown): 'other' | 'comment' | 'string' | 'regex' {<br>
+switch (v) {<br>
+case SyntaxTokenType.Other: return 'other';<br>
+case SyntaxTokenType.Comment: return 'comment';<br>
+case SyntaxTokenType.String: return 'string';<br>
+case SyntaxTokenType.RegEx: return 'regex';<br>
+}<br>
+return 'other';<br>
+}<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class DocumentLink {</p>
+<pre class="notranslate"><code class="notranslate">range: Range;
+
+target?: URI;
+
+tooltip?: string;
+
+constructor(range: Range, target: URI | undefined) {
+	if (target &amp;&amp; !(URI.isUri(target))) {
+		throw illegalArgument('target');
+	}
+	if (!Range.isRange(range) || range.isEmpty) {
+		throw illegalArgument('range');
+	}
+	this.range = range;
+	this.target = target;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class Color {<br>
+readonly red: number;<br>
+readonly green: number;<br>
+readonly blue: number;<br>
+readonly alpha: number;</p>
+<pre class="notranslate"><code class="notranslate">constructor(red: number, green: number, blue: number, alpha: number) {
+	this.red = red;
+	this.green = green;
+	this.blue = blue;
+	this.alpha = alpha;
+}
+</code></pre>
+<p>}</p>
+<p>export type IColorFormat = string | { opaque: string; transparent: string };</p>
+<p>@es5ClassCompat<br>
+export class ColorInformation {<br>
+range: Range;</p>
+<pre class="notranslate"><code class="notranslate">color: Color;
+
+constructor(range: Range, color: Color) {
+	if (color &amp;&amp; !(color instanceof Color)) {
+		throw illegalArgument('color');
+	}
+	if (!Range.isRange(range) || range.isEmpty) {
+		throw illegalArgument('range');
+	}
+	this.range = range;
+	this.color = color;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class ColorPresentation {<br>
+label: string;<br>
+textEdit?: TextEdit;<br>
+additionalTextEdits?: TextEdit[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(label: string) {
+	if (!label || typeof label !== 'string') {
+		throw illegalArgument('label');
+	}
+	this.label = label;
+}
+</code></pre>
+<p>}</p>
+<p>export enum ColorFormat {<br>
+RGB = 0,<br>
+HEX = 1,<br>
+HSL = 2<br>
+}</p>
+<p>export enum SourceControlInputBoxValidationType {<br>
+Error = 0,<br>
+Warning = 1,<br>
+Information = 2<br>
+}</p>
+<p>export enum TerminalExitReason {<br>
+Unknown = 0,<br>
+Shutdown = 1,<br>
+Process = 2,<br>
+User = 3,<br>
+Extension = 4<br>
+}</p>
+<p>export enum TerminalShellExecutionCommandLineConfidence {<br>
+Low = 0,<br>
+Medium = 1,<br>
+High = 2<br>
+}</p>
+<p>export enum TerminalShellType {<br>
+Sh = 1,<br>
+Bash = 2,<br>
+Fish = 3,<br>
+Csh = 4,<br>
+Ksh = 5,<br>
+Zsh = 6,<br>
+CommandPrompt = 7,<br>
+GitBash = 8,<br>
+PowerShell = 9,<br>
+Python = 10,<br>
+Julia = 11,<br>
+NuShell = 12,<br>
+Node = 13,<br>
+Xonsh = 14<br>
+}</p>
+<p>export class TerminalLink implements vscode.TerminalLink {<br>
+constructor(<br>
+public startIndex: number,<br>
+public length: number,<br>
+public tooltip?: string<br>
+) {<br>
+if (typeof startIndex !== 'number' || startIndex &lt; 0) {<br>
+throw illegalArgument('startIndex');<br>
+}<br>
+if (typeof length !== 'number' || length &lt; 1) {<br>
+throw illegalArgument('length');<br>
+}<br>
+if (tooltip !== undefined &amp;&amp; typeof tooltip !== 'string') {<br>
+throw illegalArgument('tooltip');<br>
+}<br>
+}<br>
+}</p>
+<p>export class TerminalQuickFixOpener {<br>
+uri: vscode.Uri;<br>
+constructor(uri: vscode.Uri) {<br>
+this.uri = uri;<br>
+}<br>
+}</p>
+<p>export class TerminalQuickFixCommand {<br>
+terminalCommand: string;<br>
+constructor(terminalCommand: string) {<br>
+this.terminalCommand = terminalCommand;<br>
+}<br>
+}</p>
+<p>export enum TerminalLocation {<br>
+Panel = 1,<br>
+Editor = 2,<br>
+}</p>
+<p>export class TerminalProfile implements vscode.TerminalProfile {<br>
+constructor(<br>
+public options: vscode.TerminalOptions | vscode.ExtensionTerminalOptions<br>
+) {<br>
+if (typeof options !== 'object') {<br>
+throw illegalArgument('options');<br>
+}<br>
+}<br>
+}</p>
+<p>export enum TerminalCompletionItemKind {<br>
+File = 0,<br>
+Folder = 1,<br>
+Method = 2,<br>
+Alias = 3,<br>
+Argument = 4,<br>
+Option = 5,<br>
+OptionValue = 6,<br>
+Flag = 7,<br>
+SymbolicLinkFile = 8,<br>
+SymbolicLinkFolder = 9,<br>
+ScmCommit = 10,<br>
+ScmBranch = 11,<br>
+ScmTag = 12,<br>
+ScmStash = 13,<br>
+ScmRemote = 14,<br>
+PullRequest = 15,<br>
+PullRequestDone = 16,<br>
+}</p>
+<p>export class TerminalCompletionItem implements vscode.TerminalCompletionItem {<br>
+label: string | CompletionItemLabel;<br>
+replacementRange: readonly [number, number];<br>
+detail?: string | undefined;<br>
+documentation?: string | vscode.MarkdownString | undefined;<br>
+kind?: TerminalCompletionItemKind | undefined;<br>
+isFile?: boolean | undefined;<br>
+isDirectory?: boolean | undefined;<br>
+isKeyword?: boolean | undefined;</p>
+<pre class="notranslate"><code class="notranslate">constructor(label: string | CompletionItemLabel, replacementRange: readonly [number, number], kind?: TerminalCompletionItemKind, detail?: string, documentation?: string | vscode.MarkdownString, isFile?: boolean, isDirectory?: boolean, isKeyword?: boolean) {
+	this.label = label;
+	this.replacementRange = replacementRange;
+	this.kind = kind;
+	this.detail = detail;
+	this.documentation = documentation;
+	this.isFile = isFile;
+	this.isDirectory = isDirectory;
+	this.isKeyword = isKeyword;
+}
+</code></pre>
+<p>}</p>
+<p>/**</p>
+<ul>
+<li>
+<p>Represents a collection of {<a class="user-mention notranslate" data-hovercard-type="organization" data-hovercard-url="/orgs/link/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/link">@link</a> CompletionItem completion items} to be presented</p>
+</li>
+<li>
+<p>in the editor.<br>
+*/<br>
+export class TerminalCompletionList {</p>
+<p>/**</p>
+<ul>
+<li>Resources should be shown in the completions list<br>
+*/<br>
+resourceOptions?: TerminalCompletionResourceOptions;</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>The completion items.<br>
+*/<br>
+items: T[];</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>Creates a new completion list.</li>
+<li></li>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> items The completion items.</li>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> isIncomplete The list is not complete.<br>
+*/<br>
+constructor(items?: T[], resourceOptions?: TerminalCompletionResourceOptions) {<br>
+this.items = items ?? [];<br>
+this.resourceOptions = resourceOptions;<br>
+}<br>
+}</li>
+</ul>
+</li>
+</ul>
+<p>export interface TerminalCompletionResourceOptions {<br>
+showFiles?: boolean;<br>
+showDirectories?: boolean;<br>
+fileExtensions?: string[];<br>
+cwd?: vscode.Uri;<br>
+}</p>
+<p>export enum TaskRevealKind {<br>
+Always = 1,</p>
+<pre class="notranslate"><code class="notranslate">Silent = 2,
+
+Never = 3
+</code></pre>
+<p>}</p>
+<p>export enum TaskEventKind {<br>
+/** Indicates a task's properties or configuration have changed */<br>
+Changed = 'changed',</p>
+<pre class="notranslate"><code class="notranslate">/** Indicates a task has begun executing */
+ProcessStarted = 'processStarted',
+
+/** Indicates a task process has completed */
+ProcessEnded = 'processEnded',
+
+/** Indicates a task was terminated, either by user action or by the system */
+Terminated = 'terminated',
+
+/** Indicates a task has started running */
+Start = 'start',
+
+/** Indicates a task has acquired all needed input/variables to execute */
+AcquiredInput = 'acquiredInput',
+
+/** Indicates a dependent task has started */
+DependsOnStarted = 'dependsOnStarted',
+
+/** Indicates a task is actively running/processing */
+Active = 'active',
+
+/** Indicates a task is paused/waiting but not complete */
+Inactive = 'inactive',
+
+/** Indicates a task has completed fully */
+End = 'end',
+
+/** Indicates the task's problem matcher has started */
+ProblemMatcherStarted = 'problemMatcherStarted',
+
+/** Indicates the task's problem matcher has ended without errors */
+ProblemMatcherEnded = 'problemMatcherEnded',
+
+/** Indicates the task's problem matcher has ended with errors */
+ProblemMatcherFoundErrors = 'problemMatcherFoundErrors'
+</code></pre>
+<p>}</p>
+<p>export enum TaskPanelKind {<br>
+Shared = 1,</p>
+<pre class="notranslate"><code class="notranslate">Dedicated = 2,
+
+New = 3
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class TaskGroup implements vscode.TaskGroup {</p>
+<pre class="notranslate"><code class="notranslate">isDefault: boolean | undefined;
+private _id: string;
+
+public static Clean: TaskGroup = new TaskGroup('clean', 'Clean');
+
+public static Build: TaskGroup = new TaskGroup('build', 'Build');
+
+public static Rebuild: TaskGroup = new TaskGroup('rebuild', 'Rebuild');
+
+public static Test: TaskGroup = new TaskGroup('test', 'Test');
+
+public static from(value: string) {
+	switch (value) {
+		case 'clean':
+			return TaskGroup.Clean;
+		case 'build':
+			return TaskGroup.Build;
+		case 'rebuild':
+			return TaskGroup.Rebuild;
+		case 'test':
+			return TaskGroup.Test;
+		default:
+			return undefined;
+	}
+}
+
+constructor(id: string, public readonly label: string) {
+	if (typeof id !== 'string') {
+		throw illegalArgument('name');
+	}
+	if (typeof label !== 'string') {
+		throw illegalArgument('name');
+	}
+	this._id = id;
+}
+
+get id(): string {
+	return this._id;
+}
+</code></pre>
+<p>}</p>
+<p>function computeTaskExecutionId(values: string[]): string {<br>
+let id: string = '';<br>
+for (let i = 0; i &lt; values.length; i++) {<br>
+id += values[i].replace(/,/g, ',,') + ',';<br>
+}<br>
+return id;<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class ProcessExecution implements vscode.ProcessExecution {</p>
+<pre class="notranslate"><code class="notranslate">private _process: string;
+private _args: string[];
+private _options: vscode.ProcessExecutionOptions | undefined;
+
+constructor(process: string, options?: vscode.ProcessExecutionOptions);
+constructor(process: string, args: string[], options?: vscode.ProcessExecutionOptions);
+constructor(process: string, varg1?: string[] | vscode.ProcessExecutionOptions, varg2?: vscode.ProcessExecutionOptions) {
+	if (typeof process !== 'string') {
+		throw illegalArgument('process');
+	}
+	this._args = [];
+	this._process = process;
+	if (varg1 !== undefined) {
+		if (Array.isArray(varg1)) {
+			this._args = varg1;
+			this._options = varg2;
+		} else {
+			this._options = varg1;
+		}
+	}
+}
+
+
+get process(): string {
+	return this._process;
+}
+
+set process(value: string) {
+	if (typeof value !== 'string') {
+		throw illegalArgument('process');
+	}
+	this._process = value;
+}
+
+get args(): string[] {
+	return this._args;
+}
+
+set args(value: string[]) {
+	if (!Array.isArray(value)) {
+		value = [];
+	}
+	this._args = value;
+}
+
+get options(): vscode.ProcessExecutionOptions | undefined {
+	return this._options;
+}
+
+set options(value: vscode.ProcessExecutionOptions | undefined) {
+	this._options = value;
+}
+
+public computeId(): string {
+	const props: string[] = [];
+	props.push('process');
+	if (this._process !== undefined) {
+		props.push(this._process);
+	}
+	if (this._args &amp;&amp; this._args.length &gt; 0) {
+		for (const arg of this._args) {
+			props.push(arg);
+		}
+	}
+	return computeTaskExecutionId(props);
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class ShellExecution implements vscode.ShellExecution {</p>
+<pre class="notranslate"><code class="notranslate">private _commandLine: string | undefined;
+private _command: string | vscode.ShellQuotedString | undefined;
+private _args: (string | vscode.ShellQuotedString)[] = [];
+private _options: vscode.ShellExecutionOptions | undefined;
+
+constructor(commandLine: string, options?: vscode.ShellExecutionOptions);
+constructor(command: string | vscode.ShellQuotedString, args: (string | vscode.ShellQuotedString)[], options?: vscode.ShellExecutionOptions);
+constructor(arg0: string | vscode.ShellQuotedString, arg1?: vscode.ShellExecutionOptions | (string | vscode.ShellQuotedString)[], arg2?: vscode.ShellExecutionOptions) {
+	if (Array.isArray(arg1)) {
+		if (!arg0) {
+			throw illegalArgument('command can\'t be undefined or null');
+		}
+		if (typeof arg0 !== 'string' &amp;&amp; typeof arg0.value !== 'string') {
+			throw illegalArgument('command');
+		}
+		this._command = arg0;
+		if (arg1) {
+			this._args = arg1;
+		}
+		this._options = arg2;
+	} else {
+		if (typeof arg0 !== 'string') {
+			throw illegalArgument('commandLine');
+		}
+		this._commandLine = arg0;
+		this._options = arg1;
+	}
+}
+
+get commandLine(): string | undefined {
+	return this._commandLine;
+}
+
+set commandLine(value: string | undefined) {
+	if (typeof value !== 'string') {
+		throw illegalArgument('commandLine');
+	}
+	this._commandLine = value;
+}
+
+get command(): string | vscode.ShellQuotedString {
+	return this._command ? this._command : '';
+}
+
+set command(value: string | vscode.ShellQuotedString) {
+	if (typeof value !== 'string' &amp;&amp; typeof value.value !== 'string') {
+		throw illegalArgument('command');
+	}
+	this._command = value;
+}
+
+get args(): (string | vscode.ShellQuotedString)[] {
+	return this._args;
+}
+
+set args(value: (string | vscode.ShellQuotedString)[] | undefined) {
+	this._args = value || [];
+}
+
+get options(): vscode.ShellExecutionOptions | undefined {
+	return this._options;
+}
+
+set options(value: vscode.ShellExecutionOptions | undefined) {
+	this._options = value;
+}
+
+public computeId(): string {
+	const props: string[] = [];
+	props.push('shell');
+	if (this._commandLine !== undefined) {
+		props.push(this._commandLine);
+	}
+	if (this._command !== undefined) {
+		props.push(typeof this._command === 'string' ? this._command : this._command.value);
+	}
+	if (this._args &amp;&amp; this._args.length &gt; 0) {
+		for (const arg of this._args) {
+			props.push(typeof arg === 'string' ? arg : arg.value);
+		}
+	}
+	return computeTaskExecutionId(props);
+}
+</code></pre>
+<p>}</p>
+<p>export enum ShellQuoting {<br>
+Escape = 1,<br>
+Strong = 2,<br>
+Weak = 3<br>
+}</p>
+<p>export enum TaskScope {<br>
+Global = 1,<br>
+Workspace = 2<br>
+}</p>
+<p>export enum TaskRunOn {<br>
+Default = 1,<br>
+FolderOpen = 2,<br>
+WorktreeCreated = 3,<br>
+}</p>
+<p>export class CustomExecution implements vscode.CustomExecution {<br>
+private _callback: (resolvedDefinition: vscode.TaskDefinition) =&gt; Thenable&lt;vscode.Pseudoterminal&gt;;<br>
+constructor(callback: (resolvedDefinition: vscode.TaskDefinition) =&gt; Thenable&lt;vscode.Pseudoterminal&gt;) {<br>
+this._callback = callback;<br>
+}<br>
+public computeId(): string {<br>
+return 'customExecution' + generateUuid();<br>
+}</p>
+<pre class="notranslate"><code class="notranslate">public set callback(value: (resolvedDefinition: vscode.TaskDefinition) =&gt; Thenable&lt;vscode.Pseudoterminal&gt;) {
+	this._callback = value;
+}
+
+public get callback(): ((resolvedDefinition: vscode.TaskDefinition) =&gt; Thenable&lt;vscode.Pseudoterminal&gt;) {
+	return this._callback;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class Task implements vscode.Task {</p>
+<pre class="notranslate"><code class="notranslate">private static ExtensionCallbackType: string = 'customExecution';
+private static ProcessType: string = 'process';
+private static ShellType: string = 'shell';
+private static EmptyType: string = '$empty';
+
+private __id: string | undefined;
+private __deprecated: boolean = false;
+
+private _definition: vscode.TaskDefinition;
+private _scope: vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder | undefined;
+private _name: string;
+private _execution: ProcessExecution | ShellExecution | CustomExecution | undefined;
+private _problemMatchers: string[];
+private _hasDefinedMatchers: boolean;
+private _isBackground: boolean;
+private _source: string;
+private _group: TaskGroup | undefined;
+private _presentationOptions: vscode.TaskPresentationOptions;
+private _runOptions: vscode.RunOptions;
+private _detail: string | undefined;
+
+constructor(definition: vscode.TaskDefinition, name: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMatchers?: string | string[]);
+constructor(definition: vscode.TaskDefinition, scope: vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder, name: string, source: string, execution?: ProcessExecution | ShellExecution | CustomExecution, problemMatchers?: string | string[]);
+constructor(definition: vscode.TaskDefinition, arg2: string | (vscode.TaskScope.Global | vscode.TaskScope.Workspace) | vscode.WorkspaceFolder, arg3: any, arg4?: any, arg5?: any, arg6?: any) {
+	this._definition = this.definition = definition;
+	let problemMatchers: string | string[];
+	if (typeof arg2 === 'string') {
+		this._name = this.name = arg2;
+		this._source = this.source = arg3;
+		this.execution = arg4;
+		problemMatchers = arg5;
+		this.__deprecated = true;
+	} else if (arg2 === TaskScope.Global || arg2 === TaskScope.Workspace) {
+		this.target = arg2;
+		this._name = this.name = arg3;
+		this._source = this.source = arg4;
+		this.execution = arg5;
+		problemMatchers = arg6;
+	} else {
+		this.target = arg2;
+		this._name = this.name = arg3;
+		this._source = this.source = arg4;
+		this.execution = arg5;
+		problemMatchers = arg6;
+	}
+	if (typeof problemMatchers === 'string') {
+		this._problemMatchers = [problemMatchers];
+		this._hasDefinedMatchers = true;
+	} else if (Array.isArray(problemMatchers)) {
+		this._problemMatchers = problemMatchers;
+		this._hasDefinedMatchers = true;
+	} else {
+		this._problemMatchers = [];
+		this._hasDefinedMatchers = false;
+	}
+	this._isBackground = false;
+	this._presentationOptions = Object.create(null);
+	this._runOptions = Object.create(null);
+}
+
+get _id(): string | undefined {
+	return this.__id;
+}
+
+set _id(value: string | undefined) {
+	this.__id = value;
+}
+
+get _deprecated(): boolean {
+	return this.__deprecated;
+}
+
+private clear(): void {
+	if (this.__id === undefined) {
+		return;
+	}
+	this.__id = undefined;
+	this._scope = undefined;
+	this.computeDefinitionBasedOnExecution();
+}
+
+private computeDefinitionBasedOnExecution(): void {
+	if (this._execution instanceof ProcessExecution) {
+		this._definition = {
+			type: Task.ProcessType,
+			id: this._execution.computeId()
+		};
+	} else if (this._execution instanceof ShellExecution) {
+		this._definition = {
+			type: Task.ShellType,
+			id: this._execution.computeId()
+		};
+	} else if (this._execution instanceof CustomExecution) {
+		this._definition = {
+			type: Task.ExtensionCallbackType,
+			id: this._execution.computeId()
+		};
+	} else {
+		this._definition = {
+			type: Task.EmptyType,
+			id: generateUuid()
+		};
+	}
+}
+
+get definition(): vscode.TaskDefinition {
+	return this._definition;
+}
+
+set definition(value: vscode.TaskDefinition) {
+	if (value === undefined || value === null) {
+		throw illegalArgument('Kind can\'t be undefined or null');
+	}
+	this.clear();
+	this._definition = value;
+}
+
+get scope(): vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder | undefined {
+	return this._scope;
+}
+
+set target(value: vscode.TaskScope.Global | vscode.TaskScope.Workspace | vscode.WorkspaceFolder) {
+	this.clear();
+	this._scope = value;
+}
+
+get name(): string {
+	return this._name;
+}
+
+set name(value: string) {
+	if (typeof value !== 'string') {
+		throw illegalArgument('name');
+	}
+	this.clear();
+	this._name = value;
+}
+
+get execution(): ProcessExecution | ShellExecution | CustomExecution | undefined {
+	return this._execution;
+}
+
+set execution(value: ProcessExecution | ShellExecution | CustomExecution | undefined) {
+	if (value === null) {
+		value = undefined;
+	}
+	this.clear();
+	this._execution = value;
+	const type = this._definition.type;
+	if (Task.EmptyType === type || Task.ProcessType === type || Task.ShellType === type || Task.ExtensionCallbackType === type) {
+		this.computeDefinitionBasedOnExecution();
+	}
+}
+
+get problemMatchers(): string[] {
+	return this._problemMatchers;
+}
+
+set problemMatchers(value: string[]) {
+	if (!Array.isArray(value)) {
+		this.clear();
+		this._problemMatchers = [];
+		this._hasDefinedMatchers = false;
+		return;
+	} else {
+		this.clear();
+		this._problemMatchers = value;
+		this._hasDefinedMatchers = true;
+	}
+}
+
+get hasDefinedMatchers(): boolean {
+	return this._hasDefinedMatchers;
+}
+
+get isBackground(): boolean {
+	return this._isBackground;
+}
+
+set isBackground(value: boolean) {
+	if (value !== true &amp;&amp; value !== false) {
+		value = false;
+	}
+	this.clear();
+	this._isBackground = value;
+}
+
+get source(): string {
+	return this._source;
+}
+
+set source(value: string) {
+	if (typeof value !== 'string' || value.length === 0) {
+		throw illegalArgument('source must be a string of length &gt; 0');
+	}
+	this.clear();
+	this._source = value;
+}
+
+get group(): TaskGroup | undefined {
+	return this._group;
+}
+
+set group(value: TaskGroup | undefined) {
+	if (value === null) {
+		value = undefined;
+	}
+	this.clear();
+	this._group = value;
+}
+
+get detail(): string | undefined {
+	return this._detail;
+}
+
+set detail(value: string | undefined) {
+	if (value === null) {
+		value = undefined;
+	}
+	this._detail = value;
+}
+
+get presentationOptions(): vscode.TaskPresentationOptions {
+	return this._presentationOptions;
+}
+
+set presentationOptions(value: vscode.TaskPresentationOptions) {
+	if (value === null || value === undefined) {
+		value = Object.create(null);
+	}
+	this.clear();
+	this._presentationOptions = value;
+}
+
+get runOptions(): vscode.RunOptions {
+	return this._runOptions;
+}
+
+set runOptions(value: vscode.RunOptions) {
+	if (value === null || value === undefined) {
+		value = Object.create(null);
+	}
+	this.clear();
+	this._runOptions = value;
+}
+</code></pre>
+<p>}</p>
+<p>export enum ProgressLocation {<br>
+SourceControl = 1,<br>
+Window = 10,<br>
+Notification = 15<br>
+}</p>
+<p>export namespace ViewBadge {<br>
+export function isViewBadge(thing: any): thing is vscode.ViewBadge {<br>
+const viewBadgeThing = thing as vscode.ViewBadge;</p>
+<pre class="notranslate"><code class="notranslate">	if (!isNumber(viewBadgeThing.value)) {
+		console.log('INVALID view badge, invalid value', viewBadgeThing.value);
+		return false;
+	}
+	if (viewBadgeThing.tooltip &amp;&amp; !isString(viewBadgeThing.tooltip)) {
+		console.log('INVALID view badge, invalid tooltip', viewBadgeThing.tooltip);
+		return false;
+	}
+	return true;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class TreeItem {</p>
+<pre class="notranslate"><code class="notranslate">label?: string | vscode.TreeItemLabel;
+resourceUri?: URI;
+iconPath?: string | URI | { light: string | URI; dark: string | URI } | ThemeIcon;
+command?: vscode.Command;
+contextValue?: string;
+tooltip?: string | vscode.MarkdownString;
+checkboxState?: vscode.TreeItemCheckboxState;
+
+static isTreeItem(thing: any, extension: IExtensionDescription): thing is TreeItem {
+	const treeItemThing = thing as vscode.TreeItem;
+
+	if (treeItemThing.checkboxState !== undefined) {
+		const checkbox = isNumber(treeItemThing.checkboxState) ? treeItemThing.checkboxState :
+			isObject(treeItemThing.checkboxState) &amp;&amp; isNumber(treeItemThing.checkboxState.state) ? treeItemThing.checkboxState.state : undefined;
+		const tooltip = !isNumber(treeItemThing.checkboxState) &amp;&amp; isObject(treeItemThing.checkboxState) ? treeItemThing.checkboxState.tooltip : undefined;
+		if (checkbox === undefined || (checkbox !== TreeItemCheckboxState.Checked &amp;&amp; checkbox !== TreeItemCheckboxState.Unchecked) || (tooltip !== undefined &amp;&amp; !isString(tooltip))) {
+			console.log('INVALID tree item, invalid checkboxState', treeItemThing.checkboxState);
+			return false;
+		}
+	}
+
+	if (thing instanceof TreeItem) {
+		return true;
+	}
+
+	if (treeItemThing.label !== undefined &amp;&amp; !isString(treeItemThing.label) &amp;&amp; !(treeItemThing.label?.label)) {
+		console.log('INVALID tree item, invalid label', treeItemThing.label);
+		return false;
+	}
+	if ((treeItemThing.id !== undefined) &amp;&amp; !isString(treeItemThing.id)) {
+		console.log('INVALID tree item, invalid id', treeItemThing.id);
+		return false;
+	}
+	if ((treeItemThing.iconPath !== undefined) &amp;&amp; !isString(treeItemThing.iconPath) &amp;&amp; !URI.isUri(treeItemThing.iconPath) &amp;&amp; (!treeItemThing.iconPath || !isString((treeItemThing.iconPath as vscode.ThemeIcon).id))) {
+		const asLightAndDarkThing = treeItemThing.iconPath as { light: string | URI; dark: string | URI } | null;
+		if (!asLightAndDarkThing || (!isString(asLightAndDarkThing.light) &amp;&amp; !URI.isUri(asLightAndDarkThing.light) &amp;&amp; !isString(asLightAndDarkThing.dark) &amp;&amp; !URI.isUri(asLightAndDarkThing.dark))) {
+			console.log('INVALID tree item, invalid iconPath', treeItemThing.iconPath);
+			return false;
+		}
+	}
+	if ((treeItemThing.description !== undefined) &amp;&amp; !isString(treeItemThing.description) &amp;&amp; (typeof treeItemThing.description !== 'boolean')) {
+		console.log('INVALID tree item, invalid description', treeItemThing.description);
+		return false;
+	}
+	if ((treeItemThing.resourceUri !== undefined) &amp;&amp; !URI.isUri(treeItemThing.resourceUri)) {
+		console.log('INVALID tree item, invalid resourceUri', treeItemThing.resourceUri);
+		return false;
+	}
+	if ((treeItemThing.tooltip !== undefined) &amp;&amp; !isString(treeItemThing.tooltip) &amp;&amp; !(treeItemThing.tooltip instanceof MarkdownString)) {
+		console.log('INVALID tree item, invalid tooltip', treeItemThing.tooltip);
+		return false;
+	}
+	if ((treeItemThing.command !== undefined) &amp;&amp; !treeItemThing.command.command) {
+		console.log('INVALID tree item, invalid command', treeItemThing.command);
+		return false;
+	}
+	if ((treeItemThing.collapsibleState !== undefined) &amp;&amp; (treeItemThing.collapsibleState &lt; TreeItemCollapsibleState.None) &amp;&amp; (treeItemThing.collapsibleState &gt; TreeItemCollapsibleState.Expanded)) {
+		console.log('INVALID tree item, invalid collapsibleState', treeItemThing.collapsibleState);
+		return false;
+	}
+	if ((treeItemThing.contextValue !== undefined) &amp;&amp; !isString(treeItemThing.contextValue)) {
+		console.log('INVALID tree item, invalid contextValue', treeItemThing.contextValue);
+		return false;
+	}
+	if ((treeItemThing.accessibilityInformation !== undefined) &amp;&amp; !treeItemThing.accessibilityInformation?.label) {
+		console.log('INVALID tree item, invalid accessibilityInformation', treeItemThing.accessibilityInformation);
+		return false;
+	}
+
+	return true;
+}
+
+constructor(label: string | vscode.TreeItemLabel, collapsibleState?: vscode.TreeItemCollapsibleState);
+constructor(resourceUri: URI, collapsibleState?: vscode.TreeItemCollapsibleState);
+constructor(arg1: string | vscode.TreeItemLabel | URI, public collapsibleState: vscode.TreeItemCollapsibleState = TreeItemCollapsibleState.None) {
+	if (URI.isUri(arg1)) {
+		this.resourceUri = arg1;
+	} else {
+		this.label = arg1;
+	}
+}
+</code></pre>
+<p>}</p>
+<p>export enum TreeItemCollapsibleState {<br>
+None = 0,<br>
+Collapsed = 1,<br>
+Expanded = 2<br>
+}</p>
+<p>export enum TreeItemCheckboxState {<br>
+Unchecked = 0,<br>
+Checked = 1<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class DataTransferItem implements vscode.DataTransferItem {</p>
+<pre class="notranslate"><code class="notranslate">async asString(): Promise&lt;string&gt; {
+	return typeof this.value === 'string' ? this.value : JSON.stringify(this.value);
+}
+
+asFile(): undefined | vscode.DataTransferFile {
+	return undefined;
+}
+
+constructor(
+	public readonly value: any,
+) { }
+</code></pre>
+<p>}</p>
+<p>/**</p>
+<ul>
+<li>A data transfer item that has been created by VS Code instead of by a extension.</li>
+<li></li>
+<li>Intentionally not exported to extensions.<br>
+*/<br>
+export class InternalDataTransferItem extends DataTransferItem { }</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>
+<p>A data transfer item for a file.</p>
+</li>
+<li></li>
+<li>
+<p>Intentionally not exported to extensions as only we can create these.<br>
+*/<br>
+export class InternalFileDataTransferItem extends InternalDataTransferItem {</p>
+<p>readonly #file: vscode.DataTransferFile;</p>
+<p>constructor(file: vscode.DataTransferFile) {<br>
+super('');<br>
+this.#file = file;<br>
+}</p>
+<p>override asFile() {<br>
+return this.#file;<br>
+}<br>
+}</p>
+</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>
+<p>Intentionally not exported to extensions<br>
+*/<br>
+export class DataTransferFile implements vscode.DataTransferFile {</p>
+<p>public readonly name: string;<br>
+public readonly uri: vscode.Uri | undefined;</p>
+<p>public readonly _itemId: string;<br>
+private readonly _getData: () =&gt; Promise;</p>
+<p>constructor(name: string, uri: vscode.Uri | undefined, itemId: string, getData: () =&gt; Promise) {<br>
+this.name = name;<br>
+this.uri = uri;<br>
+this._itemId = itemId;<br>
+this._getData = getData;<br>
+}</p>
+<p>data(): Promise {<br>
+return this._getData();<br>
+}<br>
+}</p>
+</li>
+</ul>
+<p>@es5ClassCompat<br>
+export class DataTransfer implements vscode.DataTransfer {<br>
+#items = new Map&lt;string, vscode.DataTransferItem[]&gt;();</p>
+<pre class="notranslate"><code class="notranslate">constructor(init?: Iterable&lt;readonly [string, vscode.DataTransferItem]&gt;) {
+	for (const [mime, item] of init ?? []) {
+		const existing = this.#items.get(this.#normalizeMime(mime));
+		if (existing) {
+			existing.push(item);
+		} else {
+			this.#items.set(this.#normalizeMime(mime), [item]);
+		}
+	}
+}
+
+get(mimeType: string): vscode.DataTransferItem | undefined {
+	return this.#items.get(this.#normalizeMime(mimeType))?.[0];
+}
+
+set(mimeType: string, value: vscode.DataTransferItem): void {
+	// This intentionally overwrites all entries for a given mimetype.
+	// This is similar to how the DOM DataTransfer type works
+	this.#items.set(this.#normalizeMime(mimeType), [value]);
+}
+
+forEach(callbackfn: (value: vscode.DataTransferItem, key: string, dataTransfer: DataTransfer) =&gt; void, thisArg?: unknown): void {
+	for (const [mime, items] of this.#items) {
+		for (const item of items) {
+			callbackfn.call(thisArg, item, mime, this);
+		}
+	}
+}
+
+*[Symbol.iterator](): IterableIterator&lt;[mimeType: string, item: vscode.DataTransferItem]&gt; {
+	for (const [mime, items] of this.#items) {
+		for (const item of items) {
+			yield [mime, item];
+		}
+	}
+}
+
+#normalizeMime(mimeType: string): string {
+	return mimeType.toLowerCase();
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class DocumentDropEdit {<br>
+title?: string;</p>
+<pre class="notranslate"><code class="notranslate">id: string | undefined;
+
+insertText: string | SnippetString;
+
+additionalEdit?: WorkspaceEdit;
+
+kind?: DocumentDropOrPasteEditKind;
+
+constructor(insertText: string | SnippetString, title?: string, kind?: DocumentDropOrPasteEditKind) {
+	this.insertText = insertText;
+	this.title = title;
+	this.kind = kind;
+}
+</code></pre>
+<p>}</p>
+<p>export enum DocumentPasteTriggerKind {<br>
+Automatic = 0,<br>
+PasteAs = 1,<br>
+}</p>
+<p>export class DocumentDropOrPasteEditKind {<br>
+static Empty: DocumentDropOrPasteEditKind;<br>
+static Text: DocumentDropOrPasteEditKind;<br>
+static TextUpdateImports: DocumentDropOrPasteEditKind;</p>
+<pre class="notranslate"><code class="notranslate">private static sep = '.';
+
+constructor(
+	public readonly value: string
+) { }
+
+public append(...parts: string[]): DocumentDropOrPasteEditKind {
+	return new DocumentDropOrPasteEditKind((this.value ? [this.value, ...parts] : parts).join(DocumentDropOrPasteEditKind.sep));
+}
+
+public intersects(other: DocumentDropOrPasteEditKind): boolean {
+	return this.contains(other) || other.contains(this);
+}
+
+public contains(other: DocumentDropOrPasteEditKind): boolean {
+	return this.value === other.value || other.value.startsWith(this.value + DocumentDropOrPasteEditKind.sep);
+}
+</code></pre>
+<p>}<br>
+DocumentDropOrPasteEditKind.Empty = new DocumentDropOrPasteEditKind('');<br>
+DocumentDropOrPasteEditKind.Text = new DocumentDropOrPasteEditKind('text');<br>
+DocumentDropOrPasteEditKind.TextUpdateImports = DocumentDropOrPasteEditKind.Text.append('updateImports');</p>
+<p>export class DocumentPasteEdit {</p>
+<pre class="notranslate"><code class="notranslate">title: string;
+insertText: string | SnippetString;
+additionalEdit?: WorkspaceEdit;
+kind: DocumentDropOrPasteEditKind;
+
+constructor(insertText: string | SnippetString, title: string, kind: DocumentDropOrPasteEditKind) {
+	this.title = title;
+	this.insertText = insertText;
+	this.kind = kind;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class ThemeIcon {</p>
+<pre class="notranslate"><code class="notranslate">static File: ThemeIcon;
+static Folder: ThemeIcon;
+
+readonly id: string;
+readonly color?: ThemeColor;
+
+constructor(id: string, color?: ThemeColor) {
+	this.id = id;
+	this.color = color;
+}
+
+static isThemeIcon(thing: any) {
+	if (typeof thing.id !== 'string') {
+		console.log('INVALID ThemeIcon, invalid id', thing.id);
+		return false;
+	}
+	return true;
+}
+</code></pre>
+<p>}<br>
+ThemeIcon.File = new ThemeIcon('file');<br>
+ThemeIcon.Folder = new ThemeIcon('folder');</p>
+<p>@es5ClassCompat<br>
+export class ThemeColor {<br>
+id: string;<br>
+constructor(id: string) {<br>
+this.id = id;<br>
+}<br>
+}</p>
+<p>export enum ConfigurationTarget {<br>
+Global = 1,</p>
+<pre class="notranslate"><code class="notranslate">Workspace = 2,
+
+WorkspaceFolder = 3
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class RelativePattern implements IRelativePattern {</p>
+<pre class="notranslate"><code class="notranslate">pattern: string;
+
+private _base!: string;
+get base(): string {
+	return this._base;
+}
+set base(base: string) {
+	this._base = base;
+	this._baseUri = URI.file(base);
+}
+
+private _baseUri!: URI;
+get baseUri(): URI {
+	return this._baseUri;
+}
+set baseUri(baseUri: URI) {
+	this._baseUri = baseUri;
+	this._base = baseUri.fsPath;
+}
+
+constructor(base: vscode.WorkspaceFolder | URI | string, pattern: string) {
+	if (typeof base !== 'string') {
+		if (!base || !URI.isUri(base) &amp;&amp; !URI.isUri(base.uri)) {
+			throw illegalArgument('base');
+		}
+	}
+
+	if (typeof pattern !== 'string') {
+		throw illegalArgument('pattern');
+	}
+
+	if (typeof base === 'string') {
+		this.baseUri = URI.file(base);
+	} else if (URI.isUri(base)) {
+		this.baseUri = base;
+	} else {
+		this.baseUri = base.uri;
+	}
+
+	this.pattern = pattern;
+}
+
+toJSON(): IRelativePatternDto {
+	return {
+		pattern: this.pattern,
+		base: this.base,
+		baseUri: this.baseUri.toJSON()
+	};
+}
+</code></pre>
+<p>}</p>
+<p>const breakpointIds = new WeakMap&lt;Breakpoint, string&gt;();</p>
+<p>/**</p>
+<ul>
+<li>We want to be able to construct Breakpoints internally that have a particular id, but we don't want extensions to be</li>
+<li>able to do this with the exposed Breakpoint classes in extension API.</li>
+<li>We also want "instanceof" to work with debug.breakpoints and the exposed breakpoint classes.</li>
+<li>And private members will be renamed in the built js, so casting to any and setting a private member is not safe.</li>
+<li>So, we store internal breakpoint IDs in a WeakMap. This function must be called after constructing a Breakpoint</li>
+<li>with a known id.<br>
+*/<br>
+export function setBreakpointId(bp: Breakpoint, id: string) {<br>
+breakpointIds.set(bp, id);<br>
+}</li>
+</ul>
+<p>@es5ClassCompat<br>
+export class Breakpoint {</p>
+<pre class="notranslate"><code class="notranslate">private _id: string | undefined;
+
+readonly enabled: boolean;
+readonly condition?: string;
+readonly hitCondition?: string;
+readonly logMessage?: string;
+readonly mode?: string;
+
+protected constructor(enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string, mode?: string) {
+	this.enabled = typeof enabled === 'boolean' ? enabled : true;
+	if (typeof condition === 'string') {
+		this.condition = condition;
+	}
+	if (typeof hitCondition === 'string') {
+		this.hitCondition = hitCondition;
+	}
+	if (typeof logMessage === 'string') {
+		this.logMessage = logMessage;
+	}
+	if (typeof mode === 'string') {
+		this.mode = mode;
+	}
+}
+
+get id(): string {
+	if (!this._id) {
+		this._id = breakpointIds.get(this) ?? generateUuid();
+	}
+	return this._id;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class SourceBreakpoint extends Breakpoint {<br>
+readonly location: Location;</p>
+<pre class="notranslate"><code class="notranslate">constructor(location: Location, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string, mode?: string) {
+	super(enabled, condition, hitCondition, logMessage, mode);
+	if (location === null) {
+		throw illegalArgument('location');
+	}
+	this.location = location;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class FunctionBreakpoint extends Breakpoint {<br>
+readonly functionName: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(functionName: string, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string, mode?: string) {
+	super(enabled, condition, hitCondition, logMessage, mode);
+	this.functionName = functionName;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class DataBreakpoint extends Breakpoint {<br>
+readonly label: string;<br>
+readonly dataId: string;<br>
+readonly canPersist: boolean;</p>
+<pre class="notranslate"><code class="notranslate">constructor(label: string, dataId: string, canPersist: boolean, enabled?: boolean, condition?: string, hitCondition?: string, logMessage?: string, mode?: string) {
+	super(enabled, condition, hitCondition, logMessage, mode);
+	if (!dataId) {
+		throw illegalArgument('dataId');
+	}
+	this.label = label;
+	this.dataId = dataId;
+	this.canPersist = canPersist;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class DebugAdapterExecutable implements vscode.DebugAdapterExecutable {<br>
+readonly command: string;<br>
+readonly args: string[];<br>
+readonly options?: vscode.DebugAdapterExecutableOptions;</p>
+<pre class="notranslate"><code class="notranslate">constructor(command: string, args: string[], options?: vscode.DebugAdapterExecutableOptions) {
+	this.command = command;
+	this.args = args || [];
+	this.options = options;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class DebugAdapterServer implements vscode.DebugAdapterServer {<br>
+readonly port: number;<br>
+readonly host?: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(port: number, host?: string) {
+	this.port = port;
+	this.host = host;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class DebugAdapterNamedPipeServer implements vscode.DebugAdapterNamedPipeServer {<br>
+constructor(public readonly path: string) {<br>
+}<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class DebugAdapterInlineImplementation implements vscode.DebugAdapterInlineImplementation {<br>
+readonly implementation: vscode.DebugAdapter;</p>
+<pre class="notranslate"><code class="notranslate">constructor(impl: vscode.DebugAdapter) {
+	this.implementation = impl;
+}
+</code></pre>
+<p>}</p>
+<p>export class DebugStackFrame implements vscode.DebugStackFrame {<br>
+constructor(<br>
+public readonly session: vscode.DebugSession,<br>
+readonly threadId: number,<br>
+readonly frameId: number) { }<br>
+}</p>
+<p>export class DebugThread implements vscode.DebugThread {<br>
+constructor(<br>
+public readonly session: vscode.DebugSession,<br>
+readonly threadId: number) { }<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class EvaluatableExpression implements vscode.EvaluatableExpression {<br>
+readonly range: vscode.Range;<br>
+readonly expression?: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(range: vscode.Range, expression?: string) {
+	this.range = range;
+	this.expression = expression;
+}
+</code></pre>
+<p>}</p>
+<p>export enum InlineCompletionTriggerKind {<br>
+Invoke = 0,<br>
+Automatic = 1,<br>
+}</p>
+<p>export enum InlineCompletionsDisposeReasonKind {<br>
+Other = 0,<br>
+Empty = 1,<br>
+TokenCancellation = 2,<br>
+LostRace = 3,<br>
+NotTaken = 4,<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class InlineValueText implements vscode.InlineValueText {<br>
+readonly range: Range;<br>
+readonly text: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(range: Range, text: string) {
+	this.range = range;
+	this.text = text;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class InlineValueVariableLookup implements vscode.InlineValueVariableLookup {<br>
+readonly range: Range;<br>
+readonly variableName?: string;<br>
+readonly caseSensitiveLookup: boolean;</p>
+<pre class="notranslate"><code class="notranslate">constructor(range: Range, variableName?: string, caseSensitiveLookup: boolean = true) {
+	this.range = range;
+	this.variableName = variableName;
+	this.caseSensitiveLookup = caseSensitiveLookup;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class InlineValueEvaluatableExpression implements vscode.InlineValueEvaluatableExpression {<br>
+readonly range: Range;<br>
+readonly expression?: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(range: Range, expression?: string) {
+	this.range = range;
+	this.expression = expression;
+}
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class InlineValueContext implements vscode.InlineValueContext {</p>
+<pre class="notranslate"><code class="notranslate">readonly frameId: number;
+readonly stoppedLocation: vscode.Range;
+
+constructor(frameId: number, range: vscode.Range) {
+	this.frameId = frameId;
+	this.stoppedLocation = range;
+}
+</code></pre>
+<p>}</p>
+<p>export enum NewSymbolNameTag {<br>
+AIGenerated = 1<br>
+}</p>
+<p>export enum NewSymbolNameTriggerKind {<br>
+Invoke = 0,<br>
+Automatic = 1,<br>
+}</p>
+<p>export class NewSymbolName implements vscode.NewSymbolName {<br>
+readonly newSymbolName: string;<br>
+readonly tags?: readonly vscode.NewSymbolNameTag[] | undefined;</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	newSymbolName: string,
+	tags?: readonly NewSymbolNameTag[]
+) {
+	this.newSymbolName = newSymbolName;
+	this.tags = tags;
+}
+</code></pre>
+<p>}</p>
+<p>//#region file api</p>
+<p>export enum FileChangeType {<br>
+Changed = 1,<br>
+Created = 2,<br>
+Deleted = 3,<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class FileSystemError extends Error {</p>
+<pre class="notranslate"><code class="notranslate">static FileExists(messageOrUri?: string | URI): FileSystemError {
+	return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileExists, FileSystemError.FileExists);
+}
+static FileNotFound(messageOrUri?: string | URI): FileSystemError {
+	return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileNotFound, FileSystemError.FileNotFound);
+}
+static FileNotADirectory(messageOrUri?: string | URI): FileSystemError {
+	return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileNotADirectory, FileSystemError.FileNotADirectory);
+}
+static FileIsADirectory(messageOrUri?: string | URI): FileSystemError {
+	return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.FileIsADirectory, FileSystemError.FileIsADirectory);
+}
+static NoPermissions(messageOrUri?: string | URI): FileSystemError {
+	return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.NoPermissions, FileSystemError.NoPermissions);
+}
+static Unavailable(messageOrUri?: string | URI): FileSystemError {
+	return new FileSystemError(messageOrUri, FileSystemProviderErrorCode.Unavailable, FileSystemError.Unavailable);
+}
+
+readonly code: string;
+
+constructor(uriOrMessage?: string | URI, code: FileSystemProviderErrorCode = FileSystemProviderErrorCode.Unknown, terminator?: Function) {
+	super(URI.isUri(uriOrMessage) ? uriOrMessage.toString(true) : uriOrMessage);
+
+	this.code = terminator?.name ?? 'Unknown';
+
+	// mark the error as file system provider error so that
+	// we can extract the error code on the receiving side
+	markAsFileSystemProviderError(this, code);
+
+	// workaround when extending builtin objects and when compiling to ES5, see:
+	// https://github.com/microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+	Object.setPrototypeOf(this, FileSystemError.prototype);
+
+	if (typeof Error.captureStackTrace === 'function' &amp;&amp; typeof terminator === 'function') {
+		// nice stack traces
+		Error.captureStackTrace(this, terminator);
+	}
+}
+</code></pre>
+<p>}</p>
+<p>//#endregion</p>
+<p>//#region folding api</p>
+<p>@es5ClassCompat<br>
+export class FoldingRange {</p>
+<pre class="notranslate"><code class="notranslate">start: number;
+
+end: number;
+
+kind?: FoldingRangeKind;
+
+constructor(start: number, end: number, kind?: FoldingRangeKind) {
+	this.start = start;
+	this.end = end;
+	this.kind = kind;
+}
+</code></pre>
+<p>}</p>
+<p>export enum FoldingRangeKind {<br>
+Comment = 1,<br>
+Imports = 2,<br>
+Region = 3<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region Comment<br>
+export enum CommentThreadCollapsibleState {<br>
+/**<br>
+* Determines an item is collapsed<br>
+<em>/<br>
+Collapsed = 0,<br>
+/</em>*<br>
+* Determines an item is expanded<br>
+*/<br>
+Expanded = 1<br>
+}</p>
+<p>export enum CommentMode {<br>
+Editing = 0,<br>
+Preview = 1<br>
+}</p>
+<p>export enum CommentState {<br>
+Published = 0,<br>
+Draft = 1<br>
+}</p>
+<p>export enum CommentThreadState {<br>
+Unresolved = 0,<br>
+Resolved = 1<br>
+}</p>
+<p>export enum CommentThreadApplicability {<br>
+Current = 0,<br>
+Outdated = 1<br>
+}</p>
+<p>export enum CommentThreadFocus {<br>
+Reply = 1,<br>
+Comment = 2<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region Semantic Coloring</p>
+<p>export class SemanticTokensLegend {<br>
+public readonly tokenTypes: string[];<br>
+public readonly tokenModifiers: string[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(tokenTypes: string[], tokenModifiers: string[] = []) {
+	this.tokenTypes = tokenTypes;
+	this.tokenModifiers = tokenModifiers;
+}
+</code></pre>
+<p>}</p>
+<p>function isStrArrayOrUndefined(arg: any): arg is string[] | undefined {<br>
+return ((typeof arg === 'undefined') || isStringArray(arg));<br>
+}</p>
+<p>export class SemanticTokensBuilder {</p>
+<pre class="notranslate"><code class="notranslate">private _prevLine: number;
+private _prevChar: number;
+private _dataIsSortedAndDeltaEncoded: boolean;
+private _data: number[];
+private _dataLen: number;
+private _tokenTypeStrToInt: Map&lt;string, number&gt;;
+private _tokenModifierStrToInt: Map&lt;string, number&gt;;
+private _hasLegend: boolean;
+
+constructor(legend?: vscode.SemanticTokensLegend) {
+	this._prevLine = 0;
+	this._prevChar = 0;
+	this._dataIsSortedAndDeltaEncoded = true;
+	this._data = [];
+	this._dataLen = 0;
+	this._tokenTypeStrToInt = new Map&lt;string, number&gt;();
+	this._tokenModifierStrToInt = new Map&lt;string, number&gt;();
+	this._hasLegend = false;
+	if (legend) {
+		this._hasLegend = true;
+		for (let i = 0, len = legend.tokenTypes.length; i &lt; len; i++) {
+			this._tokenTypeStrToInt.set(legend.tokenTypes[i], i);
+		}
+		for (let i = 0, len = legend.tokenModifiers.length; i &lt; len; i++) {
+			this._tokenModifierStrToInt.set(legend.tokenModifiers[i], i);
+		}
+	}
+}
+
+public push(line: number, char: number, length: number, tokenType: number, tokenModifiers?: number): void;
+public push(range: Range, tokenType: string, tokenModifiers?: string[]): void;
+public push(arg0: any, arg1: any, arg2: any, arg3?: any, arg4?: any): void {
+	if (typeof arg0 === 'number' &amp;&amp; typeof arg1 === 'number' &amp;&amp; typeof arg2 === 'number' &amp;&amp; typeof arg3 === 'number' &amp;&amp; (typeof arg4 === 'number' || typeof arg4 === 'undefined')) {
+		if (typeof arg4 === 'undefined') {
+			arg4 = 0;
+		}
+		// 1st overload
+		return this._pushEncoded(arg0, arg1, arg2, arg3, arg4);
+	}
+	if (Range.isRange(arg0) &amp;&amp; typeof arg1 === 'string' &amp;&amp; isStrArrayOrUndefined(arg2)) {
+		// 2nd overload
+		return this._push(arg0, arg1, arg2);
+	}
+	throw illegalArgument();
+}
+
+private _push(range: vscode.Range, tokenType: string, tokenModifiers?: string[]): void {
+	if (!this._hasLegend) {
+		throw new Error('Legend must be provided in constructor');
+	}
+	if (range.start.line !== range.end.line) {
+		throw new Error('`range` cannot span multiple lines');
+	}
+	if (!this._tokenTypeStrToInt.has(tokenType)) {
+		throw new Error('`tokenType` is not in the provided legend');
+	}
+	const line = range.start.line;
+	const char = range.start.character;
+	const length = range.end.character - range.start.character;
+	const nTokenType = this._tokenTypeStrToInt.get(tokenType)!;
+	let nTokenModifiers = 0;
+	if (tokenModifiers) {
+		for (const tokenModifier of tokenModifiers) {
+			if (!this._tokenModifierStrToInt.has(tokenModifier)) {
+				throw new Error('`tokenModifier` is not in the provided legend');
+			}
+			const nTokenModifier = this._tokenModifierStrToInt.get(tokenModifier)!;
+			nTokenModifiers |= (1 &lt;&lt; nTokenModifier) &gt;&gt;&gt; 0;
+		}
+	}
+	this._pushEncoded(line, char, length, nTokenType, nTokenModifiers);
+}
+
+private _pushEncoded(line: number, char: number, length: number, tokenType: number, tokenModifiers: number): void {
+	if (this._dataIsSortedAndDeltaEncoded &amp;&amp; (line &lt; this._prevLine || (line === this._prevLine &amp;&amp; char &lt; this._prevChar))) {
+		// push calls were ordered and are no longer ordered
+		this._dataIsSortedAndDeltaEncoded = false;
+
+		// Remove delta encoding from data
+		const tokenCount = (this._data.length / 5) | 0;
+		let prevLine = 0;
+		let prevChar = 0;
+		for (let i = 0; i &lt; tokenCount; i++) {
+			let line = this._data[5 * i];
+			let char = this._data[5 * i + 1];
+
+			if (line === 0) {
+				// on the same line as previous token
+				line = prevLine;
+				char += prevChar;
+			} else {
+				// on a different line than previous token
+				line += prevLine;
+			}
+
+			this._data[5 * i] = line;
+			this._data[5 * i + 1] = char;
+
+			prevLine = line;
+			prevChar = char;
+		}
+	}
+
+	let pushLine = line;
+	let pushChar = char;
+	if (this._dataIsSortedAndDeltaEncoded &amp;&amp; this._dataLen &gt; 0) {
+		pushLine -= this._prevLine;
+		if (pushLine === 0) {
+			pushChar -= this._prevChar;
+		}
+	}
+
+	this._data[this._dataLen++] = pushLine;
+	this._data[this._dataLen++] = pushChar;
+	this._data[this._dataLen++] = length;
+	this._data[this._dataLen++] = tokenType;
+	this._data[this._dataLen++] = tokenModifiers;
+
+	this._prevLine = line;
+	this._prevChar = char;
+}
+
+private static _sortAndDeltaEncode(data: number[]): Uint32Array {
+	const pos: number[] = [];
+	const tokenCount = (data.length / 5) | 0;
+	for (let i = 0; i &lt; tokenCount; i++) {
+		pos[i] = i;
+	}
+	pos.sort((a, b) =&gt; {
+		const aLine = data[5 * a];
+		const bLine = data[5 * b];
+		if (aLine === bLine) {
+			const aChar = data[5 * a + 1];
+			const bChar = data[5 * b + 1];
+			return aChar - bChar;
+		}
+		return aLine - bLine;
+	});
+	const result = new Uint32Array(data.length);
+	let prevLine = 0;
+	let prevChar = 0;
+	for (let i = 0; i &lt; tokenCount; i++) {
+		const srcOffset = 5 * pos[i];
+		const line = data[srcOffset + 0];
+		const char = data[srcOffset + 1];
+		const length = data[srcOffset + 2];
+		const tokenType = data[srcOffset + 3];
+		const tokenModifiers = data[srcOffset + 4];
+
+		const pushLine = line - prevLine;
+		const pushChar = (pushLine === 0 ? char - prevChar : char);
+
+		const dstOffset = 5 * i;
+		result[dstOffset + 0] = pushLine;
+		result[dstOffset + 1] = pushChar;
+		result[dstOffset + 2] = length;
+		result[dstOffset + 3] = tokenType;
+		result[dstOffset + 4] = tokenModifiers;
+
+		prevLine = line;
+		prevChar = char;
+	}
+
+	return result;
+}
+
+public build(resultId?: string): SemanticTokens {
+	if (!this._dataIsSortedAndDeltaEncoded) {
+		return new SemanticTokens(SemanticTokensBuilder._sortAndDeltaEncode(this._data), resultId);
+	}
+	return new SemanticTokens(new Uint32Array(this._data), resultId);
+}
+</code></pre>
+<p>}</p>
+<p>export class SemanticTokens {<br>
+readonly resultId: string | undefined;<br>
+readonly data: Uint32Array;</p>
+<pre class="notranslate"><code class="notranslate">constructor(data: Uint32Array, resultId?: string) {
+	this.resultId = resultId;
+	this.data = data;
+}
+</code></pre>
+<p>}</p>
+<p>export class SemanticTokensEdit {<br>
+readonly start: number;<br>
+readonly deleteCount: number;<br>
+readonly data: Uint32Array | undefined;</p>
+<pre class="notranslate"><code class="notranslate">constructor(start: number, deleteCount: number, data?: Uint32Array) {
+	this.start = start;
+	this.deleteCount = deleteCount;
+	this.data = data;
+}
+</code></pre>
+<p>}</p>
+<p>export class SemanticTokensEdits {<br>
+readonly resultId: string | undefined;<br>
+readonly edits: SemanticTokensEdit[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(edits: SemanticTokensEdit[], resultId?: string) {
+	this.resultId = resultId;
+	this.edits = edits;
+}
+</code></pre>
+<p>}</p>
+<p>//#endregion</p>
+<p>//#region debug<br>
+export enum DebugConsoleMode {<br>
+/**<br>
+* Debug session should have a separate debug console.<br>
+*/<br>
+Separate = 0,</p>
+<pre class="notranslate"><code class="notranslate">/**
+ * Debug session should share debug console with its parent session.
+ * This value has no effect for sessions which do not have a parent session.
+ */
+MergeWithParent = 1
+</code></pre>
+<p>}</p>
+<p>export class DebugVisualization {<br>
+iconPath?: URI | { light: URI; dark: URI } | ThemeIcon;<br>
+visualization?: vscode.Command | vscode.TreeDataProvider;</p>
+<pre class="notranslate"><code class="notranslate">constructor(public name: string) { }
+</code></pre>
+<p>}</p>
+<p>//#endregion</p>
+<p>export enum QuickInputButtonLocation {<br>
+Title = 1,<br>
+Inline = 2,<br>
+Input = 3<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class QuickInputButtons {</p>
+<pre class="notranslate"><code class="notranslate">static readonly Back: vscode.QuickInputButton = { iconPath: new ThemeIcon('arrow-left') };
+
+private constructor() { }
+</code></pre>
+<p>}</p>
+<p>export enum QuickPickItemKind {<br>
+Separator = -1,<br>
+Default = 0,<br>
+}</p>
+<p>export enum InputBoxValidationSeverity {<br>
+Info = 1,<br>
+Warning = 2,<br>
+Error = 3<br>
+}</p>
+<p>export enum ExtensionKind {<br>
+UI = 1,<br>
+Workspace = 2<br>
+}</p>
+<p>export class FileDecoration {</p>
+<pre class="notranslate"><code class="notranslate">static validate(d: FileDecoration): boolean {
+	if (typeof d.badge === 'string') {
+		let len = nextCharLength(d.badge, 0);
+		if (len &lt; d.badge.length) {
+			len += nextCharLength(d.badge, len);
+		}
+		if (d.badge.length &gt; len) {
+			throw new Error(`The 'badge'-property must be undefined or a short character`);
+		}
+	} else if (d.badge) {
+		if (!ThemeIcon.isThemeIcon(d.badge)) {
+			throw new Error(`The 'badge'-property is not a valid ThemeIcon`);
+		}
+	}
+	if (!d.color &amp;&amp; !d.badge &amp;&amp; !d.tooltip) {
+		throw new Error(`The decoration is empty`);
+	}
+	return true;
+}
+
+badge?: string | vscode.ThemeIcon;
+tooltip?: string;
+color?: vscode.ThemeColor;
+propagate?: boolean;
+
+constructor(badge?: string | ThemeIcon, tooltip?: string, color?: ThemeColor) {
+	this.badge = badge;
+	this.tooltip = tooltip;
+	this.color = color;
+}
+</code></pre>
+<p>}</p>
+<p>//#region Theming</p>
+<p>@es5ClassCompat<br>
+export class ColorTheme implements vscode.ColorTheme {<br>
+constructor(public readonly kind: ColorThemeKind) {<br>
+}<br>
+}</p>
+<p>export enum ColorThemeKind {<br>
+Light = 1,<br>
+Dark = 2,<br>
+HighContrast = 3,<br>
+HighContrastLight = 4<br>
+}</p>
+<p>//#endregion Theming<br>
+//#region Notebook</p>
+<p>export class CellErrorStackFrame {<br>
+/**<br>
+* <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> label The name of the stack frame<br>
+* <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> file The file URI of the stack frame<br>
+* <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> position The position of the stack frame within the file<br>
+*/<br>
+constructor(<br>
+public label: string,<br>
+public uri?: vscode.Uri,<br>
+public position?: Position,<br>
+) { }<br>
+}</p>
+<p>export enum NotebookCellExecutionState {<br>
+Idle = 1,<br>
+Pending = 2,<br>
+Executing = 3,<br>
+}</p>
+<p>export enum NotebookCellStatusBarAlignment {<br>
+Left = 1,<br>
+Right = 2<br>
+}</p>
+<p>export enum NotebookEditorRevealType {<br>
+Default = 0,<br>
+InCenter = 1,<br>
+InCenterIfOutsideViewport = 2,<br>
+AtTop = 3<br>
+}</p>
+<p>export class NotebookCellStatusBarItem {<br>
+constructor(<br>
+public text: string,<br>
+public alignment: NotebookCellStatusBarAlignment) { }<br>
+}</p>
+<p>export enum NotebookControllerAffinity {<br>
+Default = 1,<br>
+Preferred = 2<br>
+}</p>
+<p>export enum NotebookControllerAffinity2 {<br>
+Default = 1,<br>
+Preferred = 2,<br>
+Hidden = -1<br>
+}</p>
+<p>export class NotebookRendererScript {</p>
+<pre class="notranslate"><code class="notranslate">public provides: readonly string[];
+
+constructor(
+	public uri: vscode.Uri,
+	provides: string | readonly string[] = []
+) {
+	this.provides = asArray(provides);
+}
+</code></pre>
+<p>}</p>
+<p>export class NotebookKernelSourceAction {<br>
+description?: string;<br>
+detail?: string;<br>
+command?: vscode.Command;<br>
+constructor(<br>
+public label: string<br>
+) { }<br>
+}</p>
+<p>export enum NotebookVariablesRequestKind {<br>
+Named = 1,<br>
+Indexed = 2<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region Timeline</p>
+<p>@es5ClassCompat<br>
+export class TimelineItem implements vscode.TimelineItem {<br>
+constructor(public label: string, public timestamp: number) { }<br>
+}</p>
+<p>//#endregion Timeline</p>
+<p>//#region ExtensionContext</p>
+<p>export enum ExtensionMode {<br>
+/**<br>
+* The extension is installed normally (for example, from the marketplace<br>
+* or VSIX) in VS Code.<br>
+*/<br>
+Production = 1,</p>
+<pre class="notranslate"><code class="notranslate">/**
+ * The extension is running from an `--extensionDevelopmentPath` provided
+ * when launching VS Code.
+ */
+Development = 2,
+
+/**
+ * The extension is running from an `--extensionDevelopmentPath` and
+ * the extension host is running unit tests.
+ */
+Test = 3,
+</code></pre>
+<p>}</p>
+<p>export enum ExtensionRuntime {<br>
+/**<br>
+* The extension is running in a NodeJS extension host. Runtime access to NodeJS APIs is available.<br>
+<em>/<br>
+Node = 1,<br>
+/</em>*<br>
+* The extension is running in a Webworker extension host. Runtime access is limited to Webworker APIs.<br>
+*/<br>
+Webworker = 2<br>
+}</p>
+<p>//#endregion ExtensionContext</p>
+<p>export enum StandardTokenType {<br>
+Other = 0,<br>
+Comment = 1,<br>
+String = 2,<br>
+RegEx = 3<br>
+}</p>
+<p>export enum SyntaxHighlightingTokenFontStyle {<br>
+None = 0,<br>
+Italic = 1,<br>
+Bold = 2,<br>
+Underline = 4,<br>
+Strikethrough = 8,<br>
+}</p>
+<p>export class LinkedEditingRanges {<br>
+constructor(public readonly ranges: Range[], public readonly wordPattern?: RegExp) {<br>
+}<br>
+}</p>
+<p>//#region ports<br>
+export class PortAttributes {<br>
+private _autoForwardAction: PortAutoForwardAction;</p>
+<pre class="notranslate"><code class="notranslate">constructor(autoForwardAction: PortAutoForwardAction) {
+	this._autoForwardAction = autoForwardAction;
+}
+
+get autoForwardAction(): PortAutoForwardAction {
+	return this._autoForwardAction;
+}
+</code></pre>
+<p>}<br>
+//#endregion ports</p>
+<p>//#region Testing<br>
+export enum TestResultState {<br>
+Queued = 1,<br>
+Running = 2,<br>
+Passed = 3,<br>
+Failed = 4,<br>
+Skipped = 5,<br>
+Errored = 6<br>
+}</p>
+<p>export enum TestRunProfileKind {<br>
+Run = 1,<br>
+Debug = 2,<br>
+Coverage = 3,<br>
+}</p>
+<p>export class TestRunProfileBase {<br>
+constructor(<br>
+public readonly controllerId: string,<br>
+public readonly profileId: number,<br>
+public readonly kind: vscode.TestRunProfileKind,<br>
+) { }<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class TestRunRequest implements vscode.TestRunRequest {<br>
+constructor(<br>
+public readonly include: vscode.TestItem[] | undefined = undefined,<br>
+public readonly exclude: vscode.TestItem[] | undefined = undefined,<br>
+public readonly profile: vscode.TestRunProfile | undefined = undefined,<br>
+public readonly continuous = false,<br>
+public readonly preserveFocus = true,<br>
+) { }<br>
+}</p>
+<p>@es5ClassCompat<br>
+export class TestMessage implements vscode.TestMessage {<br>
+public expectedOutput?: string;<br>
+public actualOutput?: string;<br>
+public location?: vscode.Location;<br>
+public contextValue?: string;</p>
+<pre class="notranslate"><code class="notranslate">/** proposed: */
+public stackTrace?: TestMessageStackFrame[];
+
+public static diff(message: string | vscode.MarkdownString, expected: string, actual: string) {
+	const msg = new TestMessage(message);
+	msg.expectedOutput = expected;
+	msg.actualOutput = actual;
+	return msg;
+}
+
+constructor(public message: string | vscode.MarkdownString) { }
+</code></pre>
+<p>}</p>
+<p>@es5ClassCompat<br>
+export class TestTag implements vscode.TestTag {<br>
+constructor(public readonly id: string) { }<br>
+}</p>
+<p>export class TestMessageStackFrame {<br>
+/**<br>
+* <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> label The name of the stack frame<br>
+* <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> file The file URI of the stack frame<br>
+* <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/PARAM/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/PARAM">@PARAM</a> position The position of the stack frame within the file<br>
+*/<br>
+constructor(<br>
+public label: string,<br>
+public uri?: vscode.Uri,<br>
+public position?: Position,<br>
+) { }<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region Test Coverage<br>
+export class TestCoverageCount implements vscode.TestCoverageCount {<br>
+constructor(public covered: number, public total: number) {<br>
+validateTestCoverageCount(this);<br>
+}<br>
+}</p>
+<p>export function validateTestCoverageCount(cc?: vscode.TestCoverageCount) {<br>
+if (!cc) {<br>
+return;<br>
+}</p>
+<pre class="notranslate"><code class="notranslate">if (cc.covered &gt; cc.total) {
+	throw new Error(`The total number of covered items (${cc.covered}) cannot be greater than the total (${cc.total})`);
+}
+
+if (cc.total &lt; 0) {
+	throw new Error(`The number of covered items (${cc.total}) cannot be negative`);
+}
+</code></pre>
+<p>}</p>
+<p>export class FileCoverage implements vscode.FileCoverage {<br>
+public static fromDetails(uri: vscode.Uri, details: vscode.FileCoverageDetail[]): vscode.FileCoverage {<br>
+const statements = new TestCoverageCount(0, 0);<br>
+const branches = new TestCoverageCount(0, 0);<br>
+const decl = new TestCoverageCount(0, 0);</p>
+<pre class="notranslate"><code class="notranslate">	for (const detail of details) {
+		if ('branches' in detail) {
+			statements.total += 1;
+			statements.covered += detail.executed ? 1 : 0;
+
+			for (const branch of detail.branches) {
+				branches.total += 1;
+				branches.covered += branch.executed ? 1 : 0;
+			}
+		} else {
+			decl.total += 1;
+			decl.covered += detail.executed ? 1 : 0;
+		}
+	}
+
+	const coverage = new FileCoverage(
+		uri,
+		statements,
+		branches.total &gt; 0 ? branches : undefined,
+		decl.total &gt; 0 ? decl : undefined,
+	);
+
+	coverage.detailedCoverage = details;
+
+	return coverage;
+}
+
+detailedCoverage?: vscode.FileCoverageDetail[];
+
+constructor(
+	public readonly uri: vscode.Uri,
+	public statementCoverage: vscode.TestCoverageCount,
+	public branchCoverage?: vscode.TestCoverageCount,
+	public declarationCoverage?: vscode.TestCoverageCount,
+	public includesTests: vscode.TestItem[] = [],
+) {
+}
+</code></pre>
+<p>}</p>
+<p>export class StatementCoverage implements vscode.StatementCoverage {<br>
+// back compat until finalization:<br>
+get executionCount() { return +this.executed; }<br>
+set executionCount(n: number) { this.executed = n; }</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	public executed: number | boolean,
+	public location: Position | Range,
+	public branches: vscode.BranchCoverage[] = [],
+) { }
+</code></pre>
+<p>}</p>
+<p>export class BranchCoverage implements vscode.BranchCoverage {<br>
+// back compat until finalization:<br>
+get executionCount() { return +this.executed; }<br>
+set executionCount(n: number) { this.executed = n; }</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	public executed: number | boolean,
+	public location: Position | Range,
+	public label?: string,
+) { }
+</code></pre>
+<p>}</p>
+<p>export class DeclarationCoverage implements vscode.DeclarationCoverage {<br>
+// back compat until finalization:<br>
+get executionCount() { return +this.executed; }<br>
+set executionCount(n: number) { this.executed = n; }</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	public readonly name: string,
+	public executed: number | boolean,
+	public location: Position | Range,
+) { }
+</code></pre>
+<p>}<br>
+//#endregion</p>
+<p>export enum ExternalUriOpenerPriority {<br>
+None = 0,<br>
+Option = 1,<br>
+Default = 2,<br>
+Preferred = 3,<br>
+}</p>
+<p>export enum WorkspaceTrustState {<br>
+Untrusted = 0,<br>
+Trusted = 1,<br>
+Unspecified = 2<br>
+}</p>
+<p>export enum PortAutoForwardAction {<br>
+Notify = 1,<br>
+OpenBrowser = 2,<br>
+OpenPreview = 3,<br>
+Silent = 4,<br>
+Ignore = 5,<br>
+OpenBrowserOnce = 6<br>
+}</p>
+<p>export class TypeHierarchyItem {<br>
+_sessionId?: string;<br>
+_itemId?: string;</p>
+<pre class="notranslate"><code class="notranslate">kind: SymbolKind;
+tags?: SymbolTag[];
+name: string;
+detail?: string;
+uri: URI;
+range: Range;
+selectionRange: Range;
+
+constructor(kind: SymbolKind, name: string, detail: string, uri: URI, range: Range, selectionRange: Range) {
+	this.kind = kind;
+	this.name = name;
+	this.detail = detail;
+	this.uri = uri;
+	this.range = range;
+	this.selectionRange = selectionRange;
+}
+</code></pre>
+<p>}</p>
+<p>//#region Tab Inputs</p>
+<p>export class TextTabInput {<br>
+constructor(readonly uri: URI) { }<br>
+}</p>
+<p>export class TextDiffTabInput {<br>
+constructor(readonly original: URI, readonly modified: URI) { }<br>
+}</p>
+<p>export class TextMergeTabInput {<br>
+constructor(readonly base: URI, readonly input1: URI, readonly input2: URI, readonly result: URI) { }<br>
+}</p>
+<p>export class CustomEditorTabInput {<br>
+constructor(readonly uri: URI, readonly viewType: string) { }<br>
+}</p>
+<p>export class WebviewEditorTabInput {<br>
+constructor(readonly viewType: string) { }<br>
+}</p>
+<p>export class NotebookEditorTabInput {<br>
+constructor(readonly uri: URI, readonly notebookType: string) { }<br>
+}</p>
+<p>export class NotebookDiffEditorTabInput {<br>
+constructor(readonly original: URI, readonly modified: URI, readonly notebookType: string) { }<br>
+}</p>
+<p>export class TerminalEditorTabInput {<br>
+constructor() { }<br>
+}<br>
+export class InteractiveWindowInput {<br>
+constructor(readonly uri: URI, readonly inputBoxUri: URI) { }<br>
+}</p>
+<p>export class ChatEditorTabInput {<br>
+constructor() { }<br>
+}</p>
+<p>export class TextMultiDiffTabInput {<br>
+constructor(readonly textDiffs: TextDiffTabInput[]) { }<br>
+}<br>
+//#endregion</p>
+<p>//#region Chat</p>
+<p>export enum InteractiveSessionVoteDirection {<br>
+Down = 0,<br>
+Up = 1<br>
+}</p>
+<p>export enum ChatCopyKind {<br>
+Action = 1,<br>
+Toolbar = 2<br>
+}</p>
+<p>export enum ChatVariableLevel {<br>
+Short = 1,<br>
+Medium = 2,<br>
+Full = 3<br>
+}</p>
+<p>export class ChatCompletionItem implements vscode.ChatCompletionItem {<br>
+id: string;<br>
+label: string | CompletionItemLabel;<br>
+fullName?: string | undefined;<br>
+icon?: vscode.ThemeIcon;<br>
+insertText?: string;<br>
+values: vscode.ChatVariableValue[];<br>
+detail?: string;<br>
+documentation?: string | MarkdownString;<br>
+command?: vscode.Command;</p>
+<pre class="notranslate"><code class="notranslate">constructor(id: string, label: string | CompletionItemLabel, values: vscode.ChatVariableValue[]) {
+	this.id = id;
+	this.label = label;
+	this.values = values;
+}
+</code></pre>
+<p>}</p>
+<p>export enum ChatEditingSessionActionOutcome {<br>
+Accepted = 1,<br>
+Rejected = 2,<br>
+Saved = 3<br>
+}</p>
+<p>export enum ChatRequestEditedFileEventKind {<br>
+Keep = 1,<br>
+Undo = 2,<br>
+UserModification = 3,<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region Interactive Editor</p>
+<p>export enum InteractiveEditorResponseFeedbackKind {<br>
+Unhelpful = 0,<br>
+Helpful = 1,<br>
+Undone = 2,<br>
+Accepted = 3,<br>
+Bug = 4<br>
+}</p>
+<p>export enum ChatResultFeedbackKind {<br>
+Unhelpful = 0,<br>
+Helpful = 1,<br>
+}</p>
+<p>export class ChatResponseMarkdownPart {<br>
+value: vscode.MarkdownString;<br>
+constructor(value: string | vscode.MarkdownString) {<br>
+if (typeof value !== 'string' &amp;&amp; value.isTrusted === true) {<br>
+throw new Error('The boolean form of MarkdownString.isTrusted is NOT supported for chat participants.');<br>
+}</p>
+<pre class="notranslate"><code class="notranslate">	this.value = typeof value === 'string' ? new MarkdownString(value) : value;
+}
+</code></pre>
+<p>}</p>
+<p>/**</p>
+<ul>
+<li>
+<p>TODO if 'vulnerabilities' is finalized, this should be merged with the base ChatResponseMarkdownPart. I just don't see how to do that while keeping</p>
+</li>
+<li>
+<p>vulnerabilities in a seperate API proposal in a clean way.<br>
+*/<br>
+export class ChatResponseMarkdownWithVulnerabilitiesPart {<br>
+value: vscode.MarkdownString;<br>
+vulnerabilities: vscode.ChatVulnerability[];<br>
+constructor(value: string | vscode.MarkdownString, vulnerabilities: vscode.ChatVulnerability[]) {<br>
+if (typeof value !== 'string' &amp;&amp; value.isTrusted === true) {<br>
+throw new Error('The boolean form of MarkdownString.isTrusted is NOT supported for chat participants.');<br>
+}</p>
+<pre class="notranslate"><code class="notranslate"> this.value = typeof value === 'string' ? new MarkdownString(value) : value;
+ this.vulnerabilities = vulnerabilities;
+</code></pre>
+<p>}<br>
+}</p>
+</li>
+</ul>
+<p>export class ChatResponseConfirmationPart {<br>
+title: string;<br>
+message: string | vscode.MarkdownString;<br>
+data: any;<br>
+buttons?: string[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(title: string, message: string | vscode.MarkdownString, data: any, buttons?: string[]) {
+	this.title = title;
+	this.message = message;
+	this.data = data;
+	this.buttons = buttons;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatResponseFileTreePart {<br>
+value: vscode.ChatResponseFileTree[];<br>
+baseUri: vscode.Uri;<br>
+constructor(value: vscode.ChatResponseFileTree[], baseUri: vscode.Uri) {<br>
+this.value = value;<br>
+this.baseUri = baseUri;<br>
+}<br>
+}</p>
+<p>export class ChatResponseMultiDiffPart {<br>
+value: vscode.ChatResponseDiffEntry[];<br>
+title: string;<br>
+readOnly?: boolean;<br>
+constructor(value: vscode.ChatResponseDiffEntry[], title: string, readOnly?: boolean) {<br>
+this.value = value;<br>
+this.title = title;<br>
+this.readOnly = readOnly;<br>
+}<br>
+}</p>
+<p>export class McpToolInvocationContentData {<br>
+mimeType: string;<br>
+data: Uint8Array;<br>
+constructor(data: Uint8Array, mimeType: string) {<br>
+this.data = data;<br>
+this.mimeType = mimeType;<br>
+}<br>
+}</p>
+<p>export class ChatSubagentToolInvocationData {<br>
+description?: string;<br>
+agentName?: string;<br>
+prompt?: string;<br>
+result?: string;<br>
+modelName?: string;<br>
+constructor(description?: string, agentName?: string, prompt?: string, result?: string) {<br>
+this.description = description;<br>
+this.agentName = agentName;<br>
+this.prompt = prompt;<br>
+this.result = result;<br>
+}<br>
+}</p>
+<p>export class ChatResponseExternalEditPart {<br>
+applied: Thenable;<br>
+didGetApplied!: (value: string) =&gt; void;</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	public uris: vscode.Uri[],
+	public callback: () =&gt; Thenable&lt;unknown&gt;,
+) {
+	this.applied = new Promise&lt;string&gt;((resolve) =&gt; {
+		this.didGetApplied = resolve;
+	});
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatResponseAnchorPart implements vscode.ChatResponseAnchorPart {<br>
+value: vscode.Uri | vscode.Location;<br>
+title?: string;</p>
+<pre class="notranslate"><code class="notranslate">value2: vscode.Uri | vscode.Location | vscode.SymbolInformation;
+resolve?(token: vscode.CancellationToken): Thenable&lt;void&gt;;
+
+constructor(value: vscode.Uri | vscode.Location | vscode.SymbolInformation, title?: string) {
+	// eslint-disable-next-line local/code-no-any-casts
+	this.value = value as any;
+	this.value2 = value;
+	this.title = title;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatResponseProgressPart {<br>
+value: string;<br>
+constructor(value: string) {<br>
+this.value = value;<br>
+}<br>
+}</p>
+<p>export class ChatResponseProgressPart2 {<br>
+value: string;<br>
+task?: (progress: vscode.Progress&lt;vscode.ChatResponseWarningPart&gt;) =&gt; Thenable&lt;string | void&gt;;<br>
+constructor(value: string, task?: (progress: vscode.Progress&lt;vscode.ChatResponseWarningPart&gt;) =&gt; Thenable&lt;string | void&gt;) {<br>
+this.value = value;<br>
+this.task = task;<br>
+}<br>
+}</p>
+<p>export class ChatResponseThinkingProgressPart {<br>
+value: string | string[];<br>
+id?: string;<br>
+metadata?: { readonly [key: string]: any };<br>
+constructor(value: string | string[], id?: string, metadata?: { readonly [key: string]: any }) {<br>
+this.value = value;<br>
+this.id = id;<br>
+this.metadata = metadata;<br>
+}<br>
+}</p>
+<p>export class ChatResponseHookPart {<br>
+hookType: HookTypeValue;<br>
+stopReason?: string;<br>
+systemMessage?: string;<br>
+metadata?: { readonly [key: string]: unknown };<br>
+constructor(hookType: HookTypeValue, stopReason?: string, systemMessage?: string, metadata?: { readonly [key: string]: unknown }) {<br>
+this.hookType = hookType;<br>
+this.stopReason = stopReason;<br>
+this.systemMessage = systemMessage;<br>
+this.metadata = metadata;<br>
+}<br>
+}</p>
+<p>export type ChatResponseVoiceProgressStage = 'investigating' | 'planning' | 'editing' | 'validating' | 'recovering';</p>
+<p>export class ChatResponseVoiceProgressPart {<br>
+readonly id: ChatResponseVoiceProgressStage;<br>
+readonly value: string;<br>
+constructor(id: ChatResponseVoiceProgressStage, value: string) {<br>
+this.id = id;<br>
+this.value = value;<br>
+}<br>
+}</p>
+<p>export class ChatResponseAutoModeResolutionPart {<br>
+resolvedModel: { id: string; name: string } | undefined;<br>
+constructor(resolvedModel?: { id: string; name: string }) {<br>
+this.resolvedModel = resolvedModel;<br>
+}<br>
+}</p>
+<p>export class ChatResponseWarningPart {<br>
+value: vscode.MarkdownString;<br>
+constructor(value: string | vscode.MarkdownString) {<br>
+if (typeof value !== 'string' &amp;&amp; value.isTrusted === true) {<br>
+throw new Error('The boolean form of MarkdownString.isTrusted is NOT supported for chat participants.');<br>
+}</p>
+<pre class="notranslate"><code class="notranslate">	this.value = typeof value === 'string' ? new MarkdownString(value) : value;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatResponseInfoPart {<br>
+value: vscode.MarkdownString;<br>
+constructor(value: string | vscode.MarkdownString) {<br>
+if (typeof value !== 'string' &amp;&amp; value.isTrusted === true) {<br>
+throw new Error('The boolean form of MarkdownString.isTrusted is NOT supported for chat participants.');<br>
+}</p>
+<pre class="notranslate"><code class="notranslate">	this.value = typeof value === 'string' ? new MarkdownString(value) : value;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatResponseCommandButtonPart {<br>
+value: vscode.Command;<br>
+constructor(value: vscode.Command) {<br>
+this.value = value;<br>
+}<br>
+}</p>
+<p>export class ChatResponseReferencePart {<br>
+value: vscode.Uri | vscode.Location | { variableName: string; value?: vscode.Uri | vscode.Location } | string;<br>
+iconPath?: vscode.Uri | vscode.ThemeIcon | { light: vscode.Uri; dark: vscode.Uri };<br>
+options?: { status?: { description: string; kind: vscode.ChatResponseReferencePartStatusKind }; diffMeta?: { added: number; removed: number } };<br>
+constructor(value: vscode.Uri | vscode.Location | { variableName: string; value?: vscode.Uri | vscode.Location } | string, iconPath?: vscode.Uri | vscode.ThemeIcon | { light: vscode.Uri; dark: vscode.Uri }, options?: { status?: { description: string; kind: vscode.ChatResponseReferencePartStatusKind } }) {<br>
+this.value = value;<br>
+this.iconPath = iconPath;<br>
+this.options = options;<br>
+}<br>
+}</p>
+<p>export class ChatResponseCodeblockUriPart {<br>
+isEdit?: boolean;<br>
+undoStopId?: string;<br>
+value: vscode.Uri;<br>
+constructor(value: vscode.Uri, isEdit?: boolean, undoStopId?: string) {<br>
+this.value = value;<br>
+this.isEdit = isEdit;<br>
+this.undoStopId = undoStopId;<br>
+}<br>
+}</p>
+<p>export class ChatResponseCodeCitationPart {<br>
+value: vscode.Uri;<br>
+license: string;<br>
+snippet: string;<br>
+constructor(value: vscode.Uri, license: string, snippet: string) {<br>
+this.value = value;<br>
+this.license = license;<br>
+this.snippet = snippet;<br>
+}<br>
+}</p>
+<p>export class ChatResponseMovePart {<br>
+constructor(<br>
+public readonly uri: vscode.Uri,<br>
+public readonly range: vscode.Range,<br>
+) {<br>
+}<br>
+}</p>
+<p>export class ChatResponseExtensionsPart {<br>
+constructor(<br>
+public readonly extensions: string[],<br>
+) {<br>
+}<br>
+}</p>
+<p>export class ChatResponsePullRequestPart {<br>
+public readonly uri?: vscode.Uri;<br>
+public readonly command: vscode.Command;</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	uriOrCommand: vscode.Uri | vscode.Command,
+	public readonly title: string,
+	public readonly description: string,
+	public readonly author: string,
+	public readonly linkTag: string
+) {
+	if (isUriComponents(uriOrCommand)) {
+		this.uri = uriOrCommand as vscode.Uri;
+		this.command = {
+			title: 'Open Pull Request',
+			command: 'vscode.open',
+			arguments: [uriOrCommand]
+		};
+	} else {
+		this.command = uriOrCommand;
+	}
+}
+
+toJSON() {
+	return {
+		$mid: MarshalledId.ChatResponsePullRequestPart,
+		uri: this.uri,
+		title: this.title,
+		description: this.description,
+		author: this.author
+	};
+}
+</code></pre>
+<p>}</p>
+<p>/**</p>
+<ul>
+<li>The type of question for a chat question carousel.<br>
+<em>/<br>
+export enum ChatQuestionType {<br>
+/</em>*
+<ul>
+<li>A free-form text input question.<br>
+<em>/<br>
+Text = 1,<br>
+/</em>*</li>
+<li>A single-select question with radio buttons.<br>
+<em>/<br>
+SingleSelect = 2,<br>
+/</em>*</li>
+<li>A multi-select question with checkboxes.<br>
+*/<br>
+MultiSelect = 3<br>
+}</li>
+</ul>
+</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>
+<p>Represents a question to be displayed in a chat question carousel.</p>
+</li>
+<li>
+<p>Questions can be of type 'text' for free-form input, 'singleSelect' for radio buttons,</p>
+</li>
+<li>
+<p>or 'multiSelect' for checkboxes.<br>
+<em>/<br>
+export class ChatQuestion {<br>
+/</em>* Unique identifier for the question. <em>/<br>
+id: string;<br>
+/</em>* The type of question: Text for free-form input, SingleSelect for radio buttons, MultiSelect for checkboxes. <em>/<br>
+type: ChatQuestionType;<br>
+/</em>* The title/header of the question. <em>/<br>
+title: string;<br>
+/</em>* Optional detailed message or description for the question. <em>/<br>
+message?: string | vscode.MarkdownString;<br>
+/</em>* Options for singleSelect or multiSelect questions. <em>/<br>
+options?: { id: string; label: string; value: unknown }[];<br>
+/</em>* The id(s) of the default selected option(s). <em>/<br>
+defaultValue?: string | string[];<br>
+/</em>* Whether to allow free-form text input in addition to predefined options. */<br>
+allowFreeformInput?: boolean;</p>
+<p>constructor(<br>
+id: string,<br>
+type: ChatQuestionType,<br>
+title: string,<br>
+options?: {<br>
+message?: string | vscode.MarkdownString;<br>
+options?: { id: string; label: string; value: unknown }[];<br>
+defaultValue?: string | string[];<br>
+allowFreeformInput?: boolean;<br>
+}<br>
+) {<br>
+this.id = id;<br>
+this.type = type;<br>
+this.title = title;<br>
+this.message = options?.message;<br>
+this.options = options?.options;<br>
+this.defaultValue = options?.defaultValue;<br>
+this.allowFreeformInput = options?.allowFreeformInput;<br>
+}<br>
+}</p>
+</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>
+<p>A carousel view for presenting multiple questions inline in the chat response.</p>
+</li>
+<li>
+<p>Users can navigate between questions and submit their answers.<br>
+<em>/<br>
+export class ChatResponseQuestionCarouselPart {<br>
+/</em>* The questions to display in the carousel. <em>/<br>
+questions: ChatQuestion[];<br>
+/</em>* Whether users can skip answering the questions. */<br>
+allowSkip: boolean;</p>
+<p>constructor(questions: ChatQuestion[], allowSkip: boolean = true) {<br>
+this.questions = questions;<br>
+this.allowSkip = allowSkip;<br>
+}<br>
+}</p>
+</li>
+</ul>
+<p>export class ChatResponseTextEditPart implements vscode.ChatResponseTextEditPart {<br>
+uri: vscode.Uri;<br>
+edits: vscode.TextEdit[];<br>
+isDone?: boolean;<br>
+constructor(uri: vscode.Uri, editsOrDone: vscode.TextEdit | vscode.TextEdit[] | true) {<br>
+this.uri = uri;<br>
+if (editsOrDone === true) {<br>
+this.isDone = true;<br>
+this.edits = [];<br>
+} else {<br>
+this.edits = Array.isArray(editsOrDone) ? editsOrDone : [editsOrDone];<br>
+}<br>
+}<br>
+}</p>
+<p>export class ChatResponseNotebookEditPart implements vscode.ChatResponseNotebookEditPart {<br>
+uri: vscode.Uri;<br>
+edits: vscode.NotebookEdit[];<br>
+isDone?: boolean;<br>
+constructor(uri: vscode.Uri, editsOrDone: vscode.NotebookEdit | vscode.NotebookEdit[] | true) {<br>
+this.uri = uri;<br>
+if (editsOrDone === true) {<br>
+this.isDone = true;<br>
+this.edits = [];<br>
+} else {<br>
+this.edits = Array.isArray(editsOrDone) ? editsOrDone : [editsOrDone];</p>
+<pre class="notranslate"><code class="notranslate">	}
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatResponseWorkspaceEditPart implements vscode.ChatResponseWorkspaceEditPart {<br>
+edits: vscode.ChatWorkspaceFileEdit[];<br>
+constructor(edits: vscode.ChatWorkspaceFileEdit[]) {<br>
+this.edits = edits;<br>
+}<br>
+}</p>
+<p>export interface ChatTerminalToolInvocationData2 {<br>
+commandLine: {<br>
+original: string;<br>
+userEdited?: string;<br>
+toolEdited?: string;<br>
+};<br>
+language: string;<br>
+}</p>
+<p>export enum ChatTodoStatus {<br>
+NotStarted = 1,<br>
+InProgress = 2,<br>
+Completed = 3<br>
+}</p>
+<p>export enum ChatDebugSubagentStatus {<br>
+Running = 0,<br>
+Completed = 1,<br>
+Failed = 2<br>
+}</p>
+<p>export class ChatToolInvocationPart {<br>
+toolName: string;<br>
+toolCallId: string;<br>
+errorMessage?: string;<br>
+invocationMessage?: string | vscode.MarkdownString;<br>
+originMessage?: string | vscode.MarkdownString;<br>
+pastTenseMessage?: string | vscode.MarkdownString;<br>
+isConfirmed?: boolean;<br>
+isComplete?: boolean;<br>
+toolSpecificData?: ChatTerminalToolInvocationData2;<br>
+subAgentInvocationId?: string;<br>
+subAgentName?: string;<br>
+presentation?: 'hidden' | 'hiddenAfterComplete' | undefined;</p>
+<pre class="notranslate"><code class="notranslate">constructor(toolName: string,
+	toolCallId: string,
+	errorMessage?: string) {
+	this.toolName = toolName;
+	this.toolCallId = toolCallId;
+	this.errorMessage = errorMessage;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatRequestTurn implements vscode.ChatRequestTurn2 {<br>
+constructor(<br>
+readonly prompt: string,<br>
+readonly command: string | undefined,<br>
+readonly references: vscode.ChatPromptReference[],<br>
+readonly participant: string,<br>
+readonly toolReferences: vscode.ChatLanguageModelToolReference[],<br>
+readonly editedFileEvents?: vscode.ChatRequestEditedFileEvent[],<br>
+readonly id?: string,<br>
+readonly modelId?: string,<br>
+readonly modeInstructions2?: vscode.ChatRequestModeInstructions,<br>
+) { }<br>
+}</p>
+<p>export class ChatResponseTurn implements vscode.ChatResponseTurn {</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	readonly response: ReadonlyArray&lt;ChatResponseMarkdownPart | ChatResponseFileTreePart | ChatResponseAnchorPart | ChatResponseCommandButtonPart&gt;,
+	readonly result: vscode.ChatResult,
+	readonly participant: string,
+	readonly command?: string
+) { }
+</code></pre>
+<p>}</p>
+<p>export class ChatResponseTurn2 implements vscode.ChatResponseTurn2 {</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	readonly response: ReadonlyArray&lt;ChatResponseMarkdownPart | ChatResponseFileTreePart | ChatResponseAnchorPart | ChatResponseCommandButtonPart | ChatResponseExtensionsPart | ChatToolInvocationPart&gt;,
+	readonly result: vscode.ChatResult,
+	readonly participant: string,
+	readonly command?: string
+) { }
+</code></pre>
+<p>}</p>
+<p>export enum ChatLocation {<br>
+Panel = 1,<br>
+Terminal = 2,<br>
+Notebook = 3,<br>
+Editor = 4,<br>
+}</p>
+<p>export enum ChatSessionStatus {<br>
+Failed = 0,<br>
+Completed = 1,<br>
+InProgress = 2,<br>
+NeedsInput = 3<br>
+}</p>
+<p>export class ChatSessionCustomizationType {<br>
+static readonly Agent = new ChatSessionCustomizationType('agent');<br>
+static readonly Skill = new ChatSessionCustomizationType('skill');<br>
+static readonly Instructions = new ChatSessionCustomizationType('instructions');<br>
+static readonly Prompt = new ChatSessionCustomizationType('prompt');<br>
+static readonly Hook = new ChatSessionCustomizationType('hook');<br>
+static readonly Plugins = new ChatSessionCustomizationType('plugins');</p>
+<pre class="notranslate"><code class="notranslate">constructor(public readonly id: string) { }
+</code></pre>
+<p>}</p>
+<p>export enum ChatDebugLogLevel {<br>
+Trace = 0,<br>
+Info = 1,<br>
+Warning = 2,<br>
+Error = 3<br>
+}</p>
+<p>export enum ChatDebugToolCallResult {<br>
+Success = 0,<br>
+Error = 1<br>
+}</p>
+<p>export enum ChatDebugHookResult {<br>
+Success = 0,<br>
+Error = 1,<br>
+NonBlockingError = 2<br>
+}</p>
+<p>export class ChatDebugToolCallEvent {<br>
+readonly _kind = 'toolCall';<br>
+id?: string;<br>
+sessionResource?: vscode.Uri;<br>
+created: Date;<br>
+parentEventId?: string;<br>
+toolName: string;<br>
+toolCallId?: string;<br>
+input?: string;<br>
+output?: string;<br>
+result?: ChatDebugToolCallResult;<br>
+durationInMillis?: number;</p>
+<pre class="notranslate"><code class="notranslate">constructor(toolName: string, created: Date) {
+	this.toolName = toolName;
+	this.created = created;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugModelTurnEvent {<br>
+readonly _kind = 'modelTurn';<br>
+id?: string;<br>
+sessionResource?: vscode.Uri;<br>
+created: Date;<br>
+parentEventId?: string;<br>
+model?: string;<br>
+requestName?: string;<br>
+inputTokens?: number;<br>
+outputTokens?: number;<br>
+cachedTokens?: number;<br>
+totalTokens?: number;<br>
+cost?: number;<br>
+copilotUsageNanoAiu?: number;<br>
+durationInMillis?: number;</p>
+<pre class="notranslate"><code class="notranslate">constructor(created: Date) {
+	this.created = created;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugGenericEvent {<br>
+readonly _kind = 'generic';<br>
+id?: string;<br>
+sessionResource?: vscode.Uri;<br>
+created: Date;<br>
+parentEventId?: string;<br>
+name: string;<br>
+details?: string;<br>
+level: ChatDebugLogLevel;<br>
+category?: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(name: string, level: ChatDebugLogLevel, created: Date) {
+	this.name = name;
+	this.level = level;
+	this.created = created;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugSubagentInvocationEvent {<br>
+readonly _kind = 'subagentInvocation';<br>
+id?: string;<br>
+sessionResource?: vscode.Uri;<br>
+created: Date;<br>
+parentEventId?: string;<br>
+agentName: string;<br>
+description?: string;<br>
+status?: ChatDebugSubagentStatus;<br>
+durationInMillis?: number;<br>
+toolCallCount?: number;<br>
+modelTurnCount?: number;</p>
+<pre class="notranslate"><code class="notranslate">constructor(agentName: string, created: Date) {
+	this.agentName = agentName;
+	this.created = created;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugMessageSection {<br>
+name: string;<br>
+content: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(name: string, content: string) {
+	this.name = name;
+	this.content = content;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugUserMessageEvent {<br>
+readonly _kind = 'userMessage';<br>
+id?: string;<br>
+sessionResource?: vscode.Uri;<br>
+created: Date;<br>
+parentEventId?: string;<br>
+message: string;<br>
+sections: ChatDebugMessageSection[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(message: string, created: Date) {
+	this.message = message;
+	this.created = created;
+	this.sections = [];
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugAgentResponseEvent {<br>
+readonly _kind = 'agentResponse';<br>
+id?: string;<br>
+sessionResource?: vscode.Uri;<br>
+created: Date;<br>
+parentEventId?: string;<br>
+message: string;<br>
+sections: ChatDebugMessageSection[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(message: string, created: Date) {
+	this.message = message;
+	this.created = created;
+	this.sections = [];
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugEventTextContent {<br>
+readonly _kind = 'text';<br>
+value: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(value: string) {
+	this.value = value;
+}
+</code></pre>
+<p>}</p>
+<p>export enum ChatDebugMessageContentType {<br>
+User = 0,<br>
+Agent = 1<br>
+}</p>
+<p>export class ChatDebugEventMessageContent {<br>
+readonly _kind = 'messageContent';<br>
+type: ChatDebugMessageContentType;<br>
+message: string;<br>
+sections: ChatDebugMessageSection[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(type: ChatDebugMessageContentType, message: string, sections: ChatDebugMessageSection[]) {
+	this.type = type;
+	this.message = message;
+	this.sections = sections;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugEventToolCallContent {<br>
+readonly _kind = 'toolCallContent';<br>
+toolName: string;<br>
+result?: ChatDebugToolCallResult;<br>
+durationInMillis?: number;<br>
+input?: string;<br>
+output?: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(toolName: string) {
+	this.toolName = toolName;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugEventModelTurnContent {<br>
+readonly _kind = 'modelTurnContent';<br>
+requestName: string;<br>
+model?: string;<br>
+status?: string;<br>
+durationInMillis?: number;<br>
+timeToFirstTokenInMillis?: number;<br>
+requestId?: string;<br>
+maxInputTokens?: number;<br>
+maxOutputTokens?: number;<br>
+inputTokens?: number;<br>
+outputTokens?: number;<br>
+cachedTokens?: number;<br>
+totalTokens?: number;<br>
+requestOptions?: string;<br>
+errorMessage?: string;<br>
+sections?: ChatDebugMessageSection[];</p>
+<pre class="notranslate"><code class="notranslate">constructor(requestName: string) {
+	this.requestName = requestName;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatDebugEventHookContent {<br>
+readonly _kind = 'hookContent';<br>
+hookType: string;<br>
+command?: string;<br>
+result?: ChatDebugHookResult;<br>
+durationInMillis?: number;<br>
+input?: string;<br>
+output?: string;<br>
+exitCode?: number;<br>
+errorMessage?: string;</p>
+<pre class="notranslate"><code class="notranslate">constructor(hookType: string) {
+	this.hookType = hookType;
+}
+</code></pre>
+<p>}</p>
+<p>export class ChatSessionChangedFile {<br>
+constructor(public readonly uri: vscode.Uri, public readonly originalUri: vscode.Uri | undefined, public readonly modifiedUri: vscode.Uri | undefined, public readonly insertions: number, public readonly deletions: number) { }<br>
+}</p>
+<p>export enum ChatResponseReferencePartStatusKind {<br>
+Complete = 1,<br>
+Partial = 2,<br>
+Omitted = 3<br>
+}</p>
+<p>export enum ChatResponseClearToPreviousToolInvocationReason {<br>
+NoReason = 0,<br>
+FilteredContentRetry = 1,<br>
+CopyrightContentRetry = 2,<br>
+}</p>
+<p>export class ChatRequestEditorData implements vscode.ChatRequestEditorData {<br>
+constructor(<br>
+readonly editor: vscode.TextEditor,<br>
+readonly document: vscode.TextDocument,<br>
+readonly selection: vscode.Selection,<br>
+readonly wholeRange: vscode.Range,<br>
+) { }<br>
+}</p>
+<p>export class ChatRequestNotebookData implements vscode.ChatRequestNotebookData {<br>
+constructor(<br>
+readonly cell: vscode.TextDocument<br>
+) { }<br>
+}</p>
+<p>export class ChatReferenceBinaryData implements vscode.ChatReferenceBinaryData {<br>
+mimeType: string;<br>
+data: () =&gt; Thenable;<br>
+reference?: vscode.Uri;<br>
+isPasted?: boolean;<br>
+isURL?: boolean;<br>
+constructor(mimeType: string, data: () =&gt; Thenable, reference?: vscode.Uri, isPasted?: boolean, isURL?: boolean) {<br>
+this.mimeType = mimeType;<br>
+this.data = data;<br>
+this.reference = reference;<br>
+this.isPasted = isPasted;<br>
+this.isURL = isURL;<br>
+}<br>
+}</p>
+<p>export class ChatReferenceDiagnostic implements vscode.ChatReferenceDiagnostic {<br>
+constructor(public readonly diagnostics: [vscode.Uri, vscode.Diagnostic[]][]) { }<br>
+}</p>
+<p>export enum LanguageModelChatMessageRole {<br>
+User = 1,<br>
+Assistant = 2,<br>
+System = 3<br>
+}</p>
+<p>export class LanguageModelToolResultPart implements vscode.LanguageModelToolResultPart {</p>
+<pre class="notranslate"><code class="notranslate">callId: string;
+content: (LanguageModelTextPart | LanguageModelPromptTsxPart | unknown)[];
+isError: boolean;
+
+constructor(callId: string, content: (LanguageModelTextPart | LanguageModelPromptTsxPart | unknown)[], isError?: boolean) {
+	this.callId = callId;
+	this.content = content;
+	this.isError = isError ?? false;
+}
+</code></pre>
+<p>}</p>
+<p>export enum ChatErrorLevel {<br>
+Info = 0,<br>
+Warning = 1,<br>
+Error = 2<br>
+}</p>
+<p>export enum ChatInputNotificationSeverity {<br>
+Info = 0,<br>
+Warning = 1,<br>
+Error = 2,<br>
+}</p>
+<p>export class LanguageModelChatMessage implements vscode.LanguageModelChatMessage {</p>
+<pre class="notranslate"><code class="notranslate">static User(content: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[], name?: string): LanguageModelChatMessage {
+	return new LanguageModelChatMessage(LanguageModelChatMessageRole.User, content, name);
+}
+
+static Assistant(content: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[], name?: string): LanguageModelChatMessage {
+	return new LanguageModelChatMessage(LanguageModelChatMessageRole.Assistant, content, name);
+}
+
+role: vscode.LanguageModelChatMessageRole;
+
+private _content: (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[] = [];
+
+set content(value: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[]) {
+	if (typeof value === 'string') {
+		// we changed this and still support setting content with a string property. this keep the API runtime stable
+		// despite the breaking change in the type definition.
+		this._content = [new LanguageModelTextPart(value)];
+	} else {
+		this._content = value;
+	}
+}
+
+get content(): (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[] {
+	return this._content;
+}
+
+name: string | undefined;
+
+constructor(role: vscode.LanguageModelChatMessageRole, content: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[], name?: string) {
+	this.role = role;
+	this.content = content;
+	this.name = name;
+}
+</code></pre>
+<p>}</p>
+<p>export class LanguageModelChatMessage2 implements vscode.LanguageModelChatMessage2 {</p>
+<pre class="notranslate"><code class="notranslate">static User(content: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[], name?: string): LanguageModelChatMessage2 {
+	return new LanguageModelChatMessage2(LanguageModelChatMessageRole.User, content, name);
+}
+
+static Assistant(content: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[], name?: string): LanguageModelChatMessage2 {
+	return new LanguageModelChatMessage2(LanguageModelChatMessageRole.Assistant, content, name);
+}
+
+role: vscode.LanguageModelChatMessageRole;
+
+private _content: (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart | LanguageModelThinkingPart)[] = [];
+
+set content(value: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart | LanguageModelThinkingPart)[]) {
+	if (typeof value === 'string') {
+		// we changed this and still support setting content with a string property. this keep the API runtime stable
+		// despite the breaking change in the type definition.
+		this._content = [new LanguageModelTextPart(value)];
+	} else {
+		this._content = value;
+	}
+}
+
+get content(): (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart | LanguageModelThinkingPart)[] {
+	return this._content;
+}
+
+// Temp to avoid breaking changes
+set content2(value: (string | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart)[] | undefined) {
+	if (value) {
+		this.content = value.map(part =&gt; {
+			if (typeof part === 'string') {
+				return new LanguageModelTextPart(part);
+			}
+			return part;
+		});
+	}
+}
+
+get content2(): (string | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart | LanguageModelThinkingPart)[] | undefined {
+	return this.content.map(part =&gt; {
+		if (part instanceof LanguageModelTextPart) {
+			return part.value;
+		}
+		return part;
+	});
+}
+
+name: string | undefined;
+
+constructor(role: vscode.LanguageModelChatMessageRole, content: string | (LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart | LanguageModelThinkingPart)[], name?: string) {
+	this.role = role;
+	this.content = content;
+	this.name = name;
+}
+</code></pre>
+<p>}</p>
+<p>export class LanguageModelToolCallPart implements vscode.LanguageModelToolCallPart {<br>
+callId: string;<br>
+name: string;<br>
+input: any;</p>
+<pre class="notranslate"><code class="notranslate">constructor(callId: string, name: string, input: any) {
+	this.callId = callId;
+	this.name = name;
+
+	this.input = input;
+}
+</code></pre>
+<p>}</p>
+<p>export enum LanguageModelPartAudience {<br>
+Assistant = 0,<br>
+User = 1,<br>
+Extension = 2,<br>
+}</p>
+<p>export class LanguageModelTextPart implements vscode.LanguageModelTextPart2 {<br>
+value: string;<br>
+audience: vscode.LanguageModelPartAudience[] | undefined;</p>
+<pre class="notranslate"><code class="notranslate">constructor(value: string, audience?: vscode.LanguageModelPartAudience[]) {
+	this.value = value;
+	audience = audience;
+}
+
+toJSON() {
+	return {
+		$mid: MarshalledId.LanguageModelTextPart,
+		value: this.value,
+		audience: this.audience,
+	};
+}
+</code></pre>
+<p>}</p>
+<p>export class LanguageModelDataPart implements vscode.LanguageModelDataPart2 {<br>
+mimeType: string;<br>
+data: Uint8Array;<br>
+audience: vscode.LanguageModelPartAudience[] | undefined;</p>
+<pre class="notranslate"><code class="notranslate">constructor(data: Uint8Array&lt;ArrayBufferLike&gt;, mimeType: string, audience?: vscode.LanguageModelPartAudience[]) {
+	this.mimeType = mimeType;
+	this.data = data;
+	this.audience = audience;
+}
+
+static image(data: Uint8Array&lt;ArrayBufferLike&gt;, mimeType: string): vscode.LanguageModelDataPart {
+	return new LanguageModelDataPart(data, mimeType);
+}
+
+static json(value: object, mime: string = 'text/x-json'): vscode.LanguageModelDataPart {
+	const rawStr = JSON.stringify(value, undefined, '\t');
+	return new LanguageModelDataPart(VSBuffer.fromString(rawStr).buffer, mime);
+}
+
+static text(value: string, mime: string = Mimes.text): vscode.LanguageModelDataPart {
+	return new LanguageModelDataPart(VSBuffer.fromString(value).buffer, mime);
+}
+
+toJSON() {
+	return {
+		$mid: MarshalledId.LanguageModelDataPart,
+		mimeType: this.mimeType,
+		data: encodeBase64(VSBuffer.wrap(this.data)),
+		audience: this.audience
+	};
+}
+</code></pre>
+<p>}</p>
+<p>export enum ChatImageMimeType {<br>
+PNG = 'image/png',<br>
+JPEG = 'image/jpeg',<br>
+GIF = 'image/gif',<br>
+WEBP = 'image/webp',<br>
+BMP = 'image/bmp',<br>
+}</p>
+<p>export class LanguageModelThinkingPart implements vscode.LanguageModelThinkingPart {<br>
+value: string | string[];<br>
+id?: string;<br>
+metadata?: { readonly [key: string]: any };</p>
+<pre class="notranslate"><code class="notranslate">constructor(value: string | string[], id?: string, metadata?: { readonly [key: string]: any }) {
+	this.value = value;
+	this.id = id;
+	this.metadata = metadata;
+}
+
+toJSON() {
+	return {
+		$mid: MarshalledId.LanguageModelThinkingPart,
+		value: this.value,
+		id: this.id,
+		metadata: this.metadata,
+	};
+}
+</code></pre>
+<p>}</p>
+<p>export class LanguageModelPromptTsxPart {<br>
+value: unknown;</p>
+<pre class="notranslate"><code class="notranslate">constructor(value: unknown) {
+	this.value = value;
+}
+
+toJSON() {
+	return {
+		$mid: MarshalledId.LanguageModelPromptTsxPart,
+		value: this.value,
+	};
+}
+</code></pre>
+<p>}</p>
+<p>/**</p>
+<ul>
+<li><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/deprecated/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/deprecated">@deprecated</a><br>
+*/<br>
+export class LanguageModelChatSystemMessage {<br>
+content: string;<br>
+constructor(content: string) {<br>
+this.content = content;<br>
+}<br>
+}</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>
+<p><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/deprecated/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/deprecated">@deprecated</a><br>
+*/<br>
+export class LanguageModelChatUserMessage {<br>
+content: string;<br>
+name: string | undefined;</p>
+<p>constructor(content: string, name?: string) {<br>
+this.content = content;<br>
+this.name = name;<br>
+}<br>
+}</p>
+</li>
+</ul>
+<p>/**</p>
+<ul>
+<li>
+<p><a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/deprecated/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/deprecated">@deprecated</a><br>
+*/<br>
+export class LanguageModelChatAssistantMessage {<br>
+content: string;<br>
+name?: string;</p>
+<p>constructor(content: string, name?: string) {<br>
+this.content = content;<br>
+this.name = name;<br>
+}<br>
+}</p>
+</li>
+</ul>
+<p>export class LanguageModelError extends Error {</p>
+<pre class="notranslate"><code class="notranslate">static readonly #name = 'LanguageModelError';
+
+static NotFound(message?: string): LanguageModelError {
+	return new LanguageModelError(message, LanguageModelError.NotFound.name);
+}
+
+static NoPermissions(message?: string): LanguageModelError {
+	return new LanguageModelError(message, LanguageModelError.NoPermissions.name);
+}
+
+static Blocked(message?: string): LanguageModelError {
+	return new LanguageModelError(message, LanguageModelError.Blocked.name);
+}
+
+static tryDeserialize(data: SerializedError): LanguageModelError | undefined {
+	if (data.name !== LanguageModelError.#name) {
+		return undefined;
+	}
+	return new LanguageModelError(data.message, data.code, data.cause);
+}
+
+readonly code: string;
+
+constructor(message?: string, code?: string, cause?: Error) {
+	super(message, { cause });
+	this.name = LanguageModelError.#name;
+	this.code = code ?? '';
+}
+</code></pre>
+<p>}</p>
+<p>export class LanguageModelToolResult {<br>
+constructor(public content: (LanguageModelTextPart | LanguageModelPromptTsxPart | LanguageModelDataPart)[]) { }</p>
+<pre class="notranslate"><code class="notranslate">toJSON() {
+	return {
+		$mid: MarshalledId.LanguageModelToolResult,
+		content: this.content,
+	};
+}
+</code></pre>
+<p>}</p>
+<p>export class LanguageModelToolResult2 {<br>
+constructor(public content: (LanguageModelTextPart | LanguageModelPromptTsxPart | LanguageModelDataPart)[]) { }</p>
+<pre class="notranslate"><code class="notranslate">toJSON() {
+	return {
+		$mid: MarshalledId.LanguageModelToolResult,
+		content: this.content,
+	};
+}
+</code></pre>
+<p>}</p>
+<p>export class ExtendedLanguageModelToolResult extends LanguageModelToolResult {<br>
+toolResultMessage?: string | MarkdownString;<br>
+toolResultDetails?: Array&lt;URI | Location&gt;;<br>
+toolMetadata?: unknown;<br>
+hasError?: boolean;<br>
+}</p>
+<p>export enum LanguageModelChatToolMode {<br>
+Auto = 1,<br>
+Required = 2<br>
+}</p>
+<p>export class LanguageModelToolExtensionSource implements vscode.LanguageModelToolExtensionSource {<br>
+constructor(public readonly id: string, public readonly label: string) { }<br>
+}</p>
+<p>export class LanguageModelToolMCPSource implements vscode.LanguageModelToolMCPSource {<br>
+constructor(public readonly label: string, public readonly name: string, public readonly instructions: string | undefined) { }<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region ai</p>
+<p>export enum RelatedInformationType {<br>
+SymbolInformation = 1,<br>
+CommandInformation = 2,<br>
+SearchInformation = 3,<br>
+SettingInformation = 4<br>
+}</p>
+<p>export enum SettingsSearchResultKind {<br>
+EMBEDDED = 1,<br>
+LLM_RANKED = 2,<br>
+CANCELED = 3,<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region Speech</p>
+<p>export enum SpeechToTextStatus {<br>
+Started = 1,<br>
+Recognizing = 2,<br>
+Recognized = 3,<br>
+Stopped = 4,<br>
+Error = 5<br>
+}</p>
+<p>export enum TextToSpeechStatus {<br>
+Started = 1,<br>
+Stopped = 2,<br>
+Error = 3<br>
+}</p>
+<p>export enum KeywordRecognitionStatus {<br>
+Recognized = 1,<br>
+Stopped = 2<br>
+}</p>
+<p>//#endregion</p>
+<p>//#region MCP<br>
+export enum McpToolAvailability {<br>
+Initial = 0,<br>
+Dynamic = 1,<br>
+}</p>
+<p>export class McpStdioServerDefinition implements vscode.McpStdioServerDefinition {<br>
+cwd?: URI;</p>
+<pre class="notranslate"><code class="notranslate">constructor(
+	public label: string,
+	public command: string,
+	public args: string[],
+	public env: Record&lt;string, string | number | null&gt; = {},
+	public version?: string,
+	public metadata?: vscode.McpServerMetadata,
+) { }
+</code></pre>
+<p>}</p>
+<p>export class McpHttpServerDefinition implements vscode.McpHttpServerDefinition {<br>
+constructor(<br>
+public label: string,<br>
+public uri: URI,<br>
+public headers: Record&lt;string, string&gt; = {},<br>
+public version?: string,<br>
+public metadata?: vscode.McpServerMetadata,<br>
+public authentication?: { providerId: string; scopes: string[] },<br>
+) { }<br>
+}<br>
+//#endregion</p>
+<p>//#region Chat Prompt Files<br>
+//#endregion</p>

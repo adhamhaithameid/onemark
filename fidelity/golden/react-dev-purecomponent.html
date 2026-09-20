@@ -1,0 +1,142 @@
+<hr>
+<h2>title: PureComponent</h2>
+
+<p>We recommend defining components as functions instead of classes. <a href="#alternatives">See how to migrate.</a></p>
+
+
+<p><code class="notranslate">PureComponent</code> is similar to <a href="/reference/react/Component"><code class="notranslate">Component</code></a> but it skips re-renders for same props and state. Class components are still supported by React, but we don't recommend using them in new code.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">class</span> <span class="pl-v">Greeting</span> <span class="pl-k">extends</span> <span class="pl-v">PureComponent</span> <span class="pl-kos">{</span>
+  <span class="pl-en">render</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span>Hello, <span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">props</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>!<span class="pl-kos">&lt;/</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+
+
+<hr>
+<h2>Reference {/<em>reference</em>/}</h2>
+<h3><code class="notranslate">PureComponent</code> {/<em>purecomponent</em>/}</h3>
+<p>To skip re-rendering a class component for same props and state, extend <code class="notranslate">PureComponent</code> instead of <a href="/reference/react/Component"><code class="notranslate">Component</code>:</a></p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-v">PureComponent</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Greeting</span> <span class="pl-k">extends</span> <span class="pl-v">PureComponent</span> <span class="pl-kos">{</span>
+  <span class="pl-en">render</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span>Hello, <span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">props</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>!<span class="pl-kos">&lt;/</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><code class="notranslate">PureComponent</code> is a subclass of <code class="notranslate">Component</code> and supports <a href="/reference/react/Component#reference">all the <code class="notranslate">Component</code> APIs.</a> Extending <code class="notranslate">PureComponent</code> is equivalent to defining a custom <a href="/reference/react/Component#shouldcomponentupdate"><code class="notranslate">shouldComponentUpdate</code></a> method that shallowly compares props and state.</p>
+<p><a href="#usage">See more examples below.</a></p>
+<hr>
+<h2>Usage {/<em>usage</em>/}</h2>
+<h3>Skipping unnecessary re-renders for class components {/<em>skipping-unnecessary-re-renders-for-class-components</em>/}</h3>
+<p>React normally re-renders a component whenever its parent re-renders. As an optimization, you can create a component that React will not re-render when its parent re-renders so long as its new props and state are the same as the old props and state. <a href="/reference/react/Component">Class components</a> can opt into this behavior by extending <code class="notranslate">PureComponent</code>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">class</span> <span class="pl-v">Greeting</span> <span class="pl-k">extends</span> <span class="pl-v">PureComponent</span> <span class="pl-kos">{</span>
+  <span class="pl-en">render</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span>Hello, <span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">props</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>!<span class="pl-kos">&lt;/</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>A React component should always have <a href="/learn/keeping-components-pure">pure rendering logic.</a> This means that it must return the same output if its props, state, and context haven't changed. By using <code class="notranslate">PureComponent</code>, you are telling React that your component complies with this requirement, so React doesn't need to re-render as long as its props and state haven't changed. However, your component will still re-render if a context that it's using changes.</p>
+<p>In this example, notice that the <code class="notranslate">Greeting</code> component re-renders whenever <code class="notranslate">name</code> is changed (because that's one of its props), but not when <code class="notranslate">address</code> is changed (because it's not passed to <code class="notranslate">Greeting</code> as a prop):</p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-v">PureComponent</span><span class="pl-kos">,</span> <span class="pl-s1">useState</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Greeting</span> <span class="pl-k">extends</span> <span class="pl-v">PureComponent</span> <span class="pl-kos">{</span>
+  <span class="pl-en">render</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"Greeting was rendered at"</span><span class="pl-kos">,</span> <span class="pl-k">new</span> <span class="pl-v">Date</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">toLocaleTimeString</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">h3</span><span class="pl-c1">&gt;</span>Hello<span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">props</span><span class="pl-kos">.</span><span class="pl-c1">name</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s">', '</span><span class="pl-kos">}</span><span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">props</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>!<span class="pl-kos">&lt;/</span><span class="pl-s1">h3</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-k">function</span> <span class="pl-v">MyApp</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">name</span><span class="pl-kos">,</span> <span class="pl-s1">setName</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">address</span><span class="pl-kos">,</span> <span class="pl-s1">setAddress</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        Name<span class="pl-kos">{</span><span class="pl-s">': '</span><span class="pl-kos">}</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span> <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">e</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">setName</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        Address<span class="pl-kos">{</span><span class="pl-s">': '</span><span class="pl-kos">}</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">address</span><span class="pl-kos">}</span> <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">e</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">setAddress</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">Greeting</span> <span class="pl-c1">name</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-ent">label</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> block;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">16<span class="pl-smi">px</span></span>;
+}</pre></div>
+
+
+<p>We recommend defining components as functions instead of classes. <a href="#alternatives">See how to migrate.</a></p>
+
+<hr>
+<h2>Alternatives {/<em>alternatives</em>/}</h2>
+<h3>Migrating from a <code class="notranslate">PureComponent</code> class component to a function {/<em>migrating-from-a-purecomponent-class-component-to-a-function</em>/}</h3>
+<p>We recommend using function components instead of <a href="/reference/react/Component">class components</a> in new code. If you have some existing class components using <code class="notranslate">PureComponent</code>, here is how you can convert them. This is the original code:</p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-v">PureComponent</span><span class="pl-kos">,</span> <span class="pl-s1">useState</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">class</span> <span class="pl-v">Greeting</span> <span class="pl-k">extends</span> <span class="pl-v">PureComponent</span> <span class="pl-kos">{</span>
+  <span class="pl-en">render</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"Greeting was rendered at"</span><span class="pl-kos">,</span> <span class="pl-k">new</span> <span class="pl-v">Date</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">toLocaleTimeString</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">h3</span><span class="pl-c1">&gt;</span>Hello<span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">props</span><span class="pl-kos">.</span><span class="pl-c1">name</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s">', '</span><span class="pl-kos">}</span><span class="pl-kos">{</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">props</span><span class="pl-kos">.</span><span class="pl-c1">name</span><span class="pl-kos">}</span>!<span class="pl-kos">&lt;/</span><span class="pl-s1">h3</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-k">function</span> <span class="pl-v">MyApp</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">name</span><span class="pl-kos">,</span> <span class="pl-s1">setName</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">address</span><span class="pl-kos">,</span> <span class="pl-s1">setAddress</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        Name<span class="pl-kos">{</span><span class="pl-s">': '</span><span class="pl-kos">}</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span> <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">e</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">setName</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        Address<span class="pl-kos">{</span><span class="pl-s">': '</span><span class="pl-kos">}</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">address</span><span class="pl-kos">}</span> <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">e</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">setAddress</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">Greeting</span> <span class="pl-c1">name</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-ent">label</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> block;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">16<span class="pl-smi">px</span></span>;
+}</pre></div>
+
+<p>When you <a href="/reference/react/Component#alternatives">convert this component from a class to a function,</a> wrap it in <a href="/reference/react/memo"><code class="notranslate">memo</code>:</a></p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">memo</span><span class="pl-kos">,</span> <span class="pl-s1">useState</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-v">Greeting</span> <span class="pl-c1">=</span> <span class="pl-en">memo</span><span class="pl-kos">(</span><span class="pl-k">function</span> <span class="pl-v">Greeting</span><span class="pl-kos">(</span><span class="pl-kos">{</span> name <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"Greeting was rendered at"</span><span class="pl-kos">,</span> <span class="pl-k">new</span> <span class="pl-v">Date</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">toLocaleTimeString</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">h3</span><span class="pl-c1">&gt;</span>Hello<span class="pl-kos">{</span><span class="pl-s1">name</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s">', '</span><span class="pl-kos">}</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span>!<span class="pl-kos">&lt;/</span><span class="pl-s1">h3</span><span class="pl-c1">&gt;</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-k">function</span> <span class="pl-v">MyApp</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">name</span><span class="pl-kos">,</span> <span class="pl-s1">setName</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">address</span><span class="pl-kos">,</span> <span class="pl-s1">setAddress</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-en">useState</span><span class="pl-kos">(</span><span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        Name<span class="pl-kos">{</span><span class="pl-s">': '</span><span class="pl-kos">}</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span> <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">e</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">setName</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+        Address<span class="pl-kos">{</span><span class="pl-s">': '</span><span class="pl-kos">}</span>
+        <span class="pl-c1">&lt;</span><span class="pl-s1">input</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">address</span><span class="pl-kos">}</span> <span class="pl-c1">onChange</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">e</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">setAddress</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">target</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">)</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+      <span class="pl-kos">&lt;/</span><span class="pl-s1">label</span><span class="pl-c1">&gt;</span>
+      <span class="pl-c1">&lt;</span><span class="pl-v">Greeting</span> <span class="pl-c1">name</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">name</span><span class="pl-kos">}</span> <span class="pl-kos">/&gt;</span>
+    <span class="pl-kos">&lt;/</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-ent">label</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> block;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">16<span class="pl-smi">px</span></span>;
+}</pre></div>
+
+
+<p>Unlike <code class="notranslate">PureComponent</code>, <a href="/reference/react/memo"><code class="notranslate">memo</code></a> does not compare the new and the old state. In function components, calling the <a href="/reference/react/useState#setstate"><code class="notranslate">set</code> function</a> with the same state <a href="/reference/react/memo#updating-a-memoized-component-using-state">already prevents re-renders by default,</a> even without <code class="notranslate">memo</code>.</p>

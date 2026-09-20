@@ -1,0 +1,93 @@
+<a href="https://demo-nextjs-with-supabase.vercel.app/" rel="nofollow">
+  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://camo.githubusercontent.com/22d3f0838609dd9262e86e4fb231b2825ced92afeb4aaae763a7d56709493bf5/68747470733a2f2f64656d6f2d6e6578746a732d776974682d73757061626173652e76657263656c2e6170702f6f70656e67726170682d696d6167652e706e67" data-canonical-src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png" style="max-width: 100%;">
+  <h1 align="center">Next.js and Supabase Starter Kit</h1>
+</a>
+<p align="center">
+ The fastest way to build apps with Next.js and Supabase
+</p>
+<p align="center">
+  <a href="#features"><strong>Features</strong></a> ·
+  <a href="#demo"><strong>Demo</strong></a> ·
+  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
+  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
+  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
+  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
+</p>
+<br>
+<h2>Features</h2>
+<ul>
+<li>Works across the entire <a href="https://nextjs.org" rel="nofollow">Next.js</a> stack
+<ul>
+<li>App Router</li>
+<li>Pages Router</li>
+<li>Proxy</li>
+<li>Client</li>
+<li>Server</li>
+<li>It just works!</li>
+</ul>
+</li>
+<li>supabase-ssr. A package to configure Supabase Auth to use cookies</li>
+<li>Password-based authentication block installed via the <a href="https://supabase.com/ui/docs/nextjs/password-based-auth" rel="nofollow">Supabase UI Library</a></li>
+<li>Styling with <a href="https://tailwindcss.com" rel="nofollow">Tailwind CSS</a></li>
+<li>Components with <a href="https://ui.shadcn.com/" rel="nofollow">shadcn/ui</a></li>
+<li>Optional deployment with <a href="#deploy-your-own">Supabase Vercel Integration and Vercel deploy</a>
+<ul>
+<li>Environment variables automatically assigned to Vercel project</li>
+</ul>
+</li>
+</ul>
+<h2>Demo</h2>
+<p>You can view a fully working demo at <a href="https://demo-nextjs-with-supabase.vercel.app/" rel="nofollow">demo-nextjs-with-supabase.vercel.app</a>.</p>
+<h2>Deploy to Vercel</h2>
+<p>Vercel deployment will guide you through creating a Supabase account and project.</p>
+<p>After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.</p>
+<p><a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&amp;project-name=nextjs-with-supabase&amp;repository-name=nextjs-with-supabase&amp;demo-title=nextjs-with-supabase&amp;demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&amp;demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&amp;external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&amp;demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png" rel="nofollow"><img src="https://camo.githubusercontent.com/7015516519ae874ab75537283bc75f86b3d46386ed994093a3790a1180913164/68747470733a2f2f76657263656c2e636f6d2f627574746f6e" alt="Deploy with Vercel" data-canonical-src="https://vercel.com/button" style="max-width: 100%;"></a></p>
+<p>The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.</p>
+<p>If you wish to just develop locally and not deploy to Vercel, <a href="#clone-and-run-locally">follow the steps below</a>.</p>
+<h2>Clone and run locally</h2>
+<ol>
+<li>
+<p>You'll first need a Supabase project which can be made <a href="https://database.new" rel="nofollow">via the Supabase dashboard</a></p>
+</li>
+<li>
+<p>Create a Next.js app using the Supabase Starter template npx command</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npx create-next-app --example with-supabase with-supabase-app</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yarn create next-app --example with-supabase with-supabase-app</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">pnpm create next-app --example with-supabase with-supabase-app</pre></div>
+</li>
+<li>
+<p>Use <code class="notranslate">cd</code> to change into the app's directory</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">cd</span> with-supabase-app</pre></div>
+</li>
+<li>
+<p>Rename <code class="notranslate">.env.example</code> to <code class="notranslate">.env.local</code> and update the following:</p>
+</li>
+</ol>
+<div class="highlight highlight-source-dotenv"><pre class="notranslate"><span class="pl-v">NEXT_PUBLIC_SUPABASE_URL</span><span class="pl-k">=</span><span class="pl-s">[INSERT SUPABASE PROJECT URL]</span>
+<span class="pl-v">NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</span><span class="pl-k">=</span><span class="pl-s">[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]</span></pre></div>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>This example uses <code class="notranslate">NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code>, which refers to Supabase's new <strong>publishable</strong> key format.<br>
+Both legacy <strong>anon</strong> keys and new <strong>publishable</strong> keys can be used with this variable name during the transition period. Supabase's dashboard may show <code class="notranslate">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>; its value can be used in this example.<br>
+See the <a href="https://github.com/orgs/supabase/discussions/29260">full announcement</a> for more information.</p>
+</div>
+<p>Both <code class="notranslate">NEXT_PUBLIC_SUPABASE_URL</code> and <code class="notranslate">NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code> can be found in <a href="https://supabase.com/dashboard/project/_?showConnect=true" rel="nofollow">your Supabase project's API settings</a></p>
+<ol start="5">
+<li>
+<p>You can now run the Next.js local development server:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm run dev</pre></div>
+<p>The starter kit should now be running on <a href="http://localhost:3000/" rel="nofollow">localhost:3000</a>.</p>
+</li>
+<li>
+<p>This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete <code class="notranslate">components.json</code> and <a href="https://ui.shadcn.com/docs/installation/next" rel="nofollow">re-install shadcn/ui</a></p>
+</li>
+</ol>
+<blockquote>
+<p>Check out <a href="https://supabase.com/docs/guides/getting-started/local-development" rel="nofollow">the docs for Local Development</a> to also run Supabase locally.</p>
+</blockquote>
+<h2>Feedback and issues</h2>
+<p>Please file feedback and issues over on the <a href="https://github.com/supabase/supabase/issues/new/choose">Supabase GitHub org</a>.</p>
+<h2>More Supabase examples</h2>
+<ul>
+<li><a href="https://github.com/vercel/nextjs-subscription-payments">Next.js Subscription Payments Starter</a></li>
+<li><a href="https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF" rel="nofollow">Cookie-based Auth and the Next.js 13 App Router (free course)</a></li>
+<li><a href="https://github.com/supabase/supabase/tree/master/examples/auth/nextjs">Supabase Auth and the Next.js App Router</a></li>
+</ul>

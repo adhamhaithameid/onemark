@@ -1,0 +1,189 @@
+<hr>
+<h2>title: 'Using Preload Scripts'<br>
+description: 'This guide will step you through the process of creating a barebones Hello World app in Electron.'<br>
+slug: tutorial-preload<br>
+hide_title: false</h2>
+<p>:::info Follow along the tutorial</p>
+<p>This is <strong>part 3</strong> of the Electron tutorial.</p>
+<ol>
+<li><a href="tutorial-1-prerequisites.md">Prerequisites</a></li>
+<li><a href="tutorial-2-first-app.md">Building your First App</a></li>
+<li><strong><a href="tutorial-3-preload.md">Using Preload Scripts</a></strong></li>
+<li><a href="tutorial-4-adding-features.md">Adding Features</a></li>
+<li><a href="tutorial-5-packaging.md">Packaging Your Application</a></li>
+<li><a href="tutorial-6-publishing-updating.md">Publishing and Updating</a></li>
+</ol>
+<p>:::</p>
+<h2>Learning goals</h2>
+<p>In this part of the tutorial, you will learn what a preload script is and how to use one<br>
+to securely expose privileged APIs into the renderer process. You will also learn how to<br>
+communicate between main and renderer processes with Electron's inter-process<br>
+communication (IPC) modules.</p>
+<h2>What is a preload script?</h2>
+<p>Electron's main process is a Node.js environment that has full operating system access.<br>
+On top of <a href="../api/app.md">Electron modules</a>, you can also access <a href="https://nodejs.org/dist/latest/docs/api/" rel="nofollow">Node.js built-ins</a>,<br>
+as well as any packages installed via npm. On the other hand, renderer processes run web<br>
+pages and do not run Node.js by default for security reasons.</p>
+<p>To bridge Electron's different process types together, we will need to use a special script<br>
+called a <strong>preload</strong>.</p>
+<h2>Augmenting the renderer with a preload script</h2>
+<p>A BrowserWindow's preload script runs in a context that has access to both the HTML DOM<br>
+and a limited subset of Node.js and Electron APIs.</p>
+<p>:::info Preload script sandboxing</p>
+<p>From Electron 20 onwards, preload scripts are <strong>sandboxed</strong> by default and no longer have access<br>
+to a full Node.js environment. Practically, this means that you have a <code class="notranslate">require</code> function<br>
+that can only load the <code class="notranslate">electron</code> module (the renderer process modules), plus a reduced<br>
+<a href="../api/process.md"><code class="notranslate">process</code></a> object and a <code class="notranslate">global</code> alias for <code class="notranslate">globalThis</code>. No Node.js<br>
+built-in modules or Node.js globals are available.</p>
+<p>For more information, check out the <a href="./sandbox.md">Process Sandboxing</a> guide.</p>
+<p>:::</p>
+<p>Preload scripts are injected before a web page loads in the renderer,<br>
+similar to a Chrome extension's <a href="https://developer.chrome.com/docs/extensions/mv3/content_scripts/" rel="nofollow">content scripts</a>. To add features to your renderer<br>
+that require privileged access, you can define <a href="https://developer.mozilla.org/en-US/docs/Glossary/Global_object" rel="nofollow">global</a> objects through the<br>
+<a href="../api/context-bridge.md">contextBridge</a> API.</p>
+<p>To demonstrate this concept, you will create a preload script that exposes your app's<br>
+versions of Chrome, Node, and Electron into the renderer.</p>
+<p>Add a new <code class="notranslate">preload.js</code> script that exposes selected properties of Electron's <code class="notranslate">process.versions</code><br>
+object to the renderer process in a <code class="notranslate">versions</code> global variable.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-kos">{</span> contextBridge <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'electron'</span><span class="pl-kos">)</span>
+
+<span class="pl-s1">contextBridge</span><span class="pl-kos">.</span><span class="pl-en">exposeInMainWorld</span><span class="pl-kos">(</span><span class="pl-s">'versions'</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+  <span class="pl-en">node</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">versions</span><span class="pl-kos">.</span><span class="pl-c1">node</span><span class="pl-kos">,</span>
+  <span class="pl-en">chrome</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">versions</span><span class="pl-kos">.</span><span class="pl-c1">chrome</span><span class="pl-kos">,</span>
+  <span class="pl-en">electron</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">versions</span><span class="pl-kos">.</span><span class="pl-c1">electron</span>
+  <span class="pl-c">// we can also expose variables, not just functions</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>To attach this script to your renderer process, pass its path to the<br>
+<code class="notranslate">webPreferences.preload</code> option in the BrowserWindow constructor:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-kos">{</span> app<span class="pl-kos">,</span> BrowserWindow <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'electron'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">path</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'node:path'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-en">createWindow</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">win</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">BrowserWindow</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+    <span class="pl-c1">width</span>: <span class="pl-c1">800</span><span class="pl-kos">,</span>
+    <span class="pl-c1">height</span>: <span class="pl-c1">600</span><span class="pl-kos">,</span>
+    <span class="pl-c1">webPreferences</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">preload</span>: <span class="pl-s1">path</span><span class="pl-kos">.</span><span class="pl-en">join</span><span class="pl-kos">(</span><span class="pl-s1">__dirname</span><span class="pl-kos">,</span> <span class="pl-s">'preload.js'</span><span class="pl-kos">)</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+  <span class="pl-s1">win</span><span class="pl-kos">.</span><span class="pl-en">loadFile</span><span class="pl-kos">(</span><span class="pl-s">'index.html'</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-s1">app</span><span class="pl-kos">.</span><span class="pl-en">whenReady</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">then</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-en">createWindow</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>:::info</p>
+<p>There are two Node.js concepts that are used here:</p>
+<ul>
+<li>The <a href="https://nodejs.org/api/modules.html#modules_dirname" rel="nofollow"><code class="notranslate">__dirname</code></a> string points to the path of the currently executing script<br>
+(in this case, your project's root folder).</li>
+<li>The <a href="https://nodejs.org/api/path.html#path_path_join_paths" rel="nofollow"><code class="notranslate">path.join</code></a> API joins multiple path segments together, creating a<br>
+combined path string that works across all platforms.</li>
+</ul>
+<p>:::</p>
+<p>At this point, the renderer has access to the <code class="notranslate">versions</code> global, so let's display that<br>
+information in the window. This variable can be accessed via <code class="notranslate">window.versions</code> or simply<br>
+<code class="notranslate">versions</code>. Create a <code class="notranslate">renderer.js</code> script that uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById" rel="nofollow"><code class="notranslate">document.getElementById</code></a><br>
+DOM API to replace the displayed text for the HTML element with <code class="notranslate">info</code> as its <code class="notranslate">id</code> property.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">information</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">getElementById</span><span class="pl-kos">(</span><span class="pl-s">'info'</span><span class="pl-kos">)</span>
+<span class="pl-s1">information</span><span class="pl-kos">.</span><span class="pl-c1">innerText</span> <span class="pl-c1">=</span> <span class="pl-s">`This app is using Chrome (v<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">versions</span><span class="pl-kos">.</span><span class="pl-en">chrome</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">}</span></span>), Node.js (v<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">versions</span><span class="pl-kos">.</span><span class="pl-en">node</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">}</span></span>), and Electron (v<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">versions</span><span class="pl-kos">.</span><span class="pl-en">electron</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">}</span></span>)`</span></pre></div>
+<p>Then, modify your <code class="notranslate">index.html</code> by adding a new element with <code class="notranslate">info</code> as its <code class="notranslate">id</code> property,<br>
+and attach your <code class="notranslate">renderer.js</code> script:</p>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-c1">&lt;!DOCTYPE html<span class="pl-kos">&gt;</span></span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">html</span><span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;</span><span class="pl-ent">head</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">meta</span> <span class="pl-c1">charset</span>="<span class="pl-s">UTF-8</span>"<span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">meta</span>
+      <span class="pl-c1">http-equiv</span>="<span class="pl-s">Content-Security-Policy</span>"
+      <span class="pl-c1">content</span>="<span class="pl-s">default-src 'self'; script-src 'self'</span>"
+    <span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">meta</span>
+      <span class="pl-c1">http-equiv</span>="<span class="pl-s">X-Content-Security-Policy</span>"
+      <span class="pl-c1">content</span>="<span class="pl-s">default-src 'self'; script-src 'self'</span>"
+    <span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">title</span><span class="pl-kos">&gt;</span>Hello from Electron renderer!<span class="pl-kos">&lt;/</span><span class="pl-ent">title</span><span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;/</span><span class="pl-ent">head</span><span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">h1</span><span class="pl-kos">&gt;</span>Hello from Electron renderer!<span class="pl-kos">&lt;/</span><span class="pl-ent">h1</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>👋<span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">p</span> <span class="pl-c1">id</span>="<span class="pl-s">info</span>"<span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;/</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;</span><span class="pl-ent">script</span> <span class="pl-c1">src</span>="<span class="pl-s">./renderer.js</span>"<span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">script</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">html</span><span class="pl-kos">&gt;</span></pre></div>
+<p>After following the above steps, your app should look something like this:</p>
+<p><a target="_blank" rel="noopener noreferrer" href="../images/preload-example.png"><img src="../images/preload-example.png" alt="Electron app showing This app is using Chrome (v102.0.5005.63), Node.js (v16.14.2), and Electron (v19.0.3)" style="max-width: 100%;"></a></p>
+<p>And the code should look like this:</p>
+<pre lang="fiddle" data-meta="docs/fiddles/tutorial-preload" class="notranslate"><code class="notranslate">
+</code></pre>
+<h2>Communicating between processes</h2>
+<p>As we have mentioned above, Electron's main and renderer process have distinct responsibilities<br>
+and are not interchangeable. This means it is not possible to access the Node.js APIs directly<br>
+from the renderer process, nor the HTML Document Object Model (DOM) from the main process.</p>
+<p>The solution for this problem is to use Electron's <code class="notranslate">ipcMain</code> and <code class="notranslate">ipcRenderer</code> modules for<br>
+inter-process communication (IPC). To send a message from your web page to the main process,<br>
+you can set up a main process handler with <code class="notranslate">ipcMain.handle</code> and<br>
+then expose a function that calls <code class="notranslate">ipcRenderer.invoke</code> to trigger the handler in your preload script.</p>
+<p>To illustrate, we will add a global function to the renderer called <code class="notranslate">ping()</code><br>
+that will return a string from the main process.</p>
+<p>First, set up the <code class="notranslate">invoke</code> call in your preload script:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-kos">{</span> contextBridge<span class="pl-kos">,</span> ipcRenderer <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'electron'</span><span class="pl-kos">)</span>
+
+<span class="pl-s1">contextBridge</span><span class="pl-kos">.</span><span class="pl-en">exposeInMainWorld</span><span class="pl-kos">(</span><span class="pl-s">'versions'</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+  <span class="pl-en">node</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">versions</span><span class="pl-kos">.</span><span class="pl-c1">node</span><span class="pl-kos">,</span>
+  <span class="pl-en">chrome</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">versions</span><span class="pl-kos">.</span><span class="pl-c1">chrome</span><span class="pl-kos">,</span>
+  <span class="pl-en">electron</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">versions</span><span class="pl-kos">.</span><span class="pl-c1">electron</span><span class="pl-kos">,</span>
+  <span class="pl-en">ping</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">ipcRenderer</span><span class="pl-kos">.</span><span class="pl-en">invoke</span><span class="pl-kos">(</span><span class="pl-s">'ping'</span><span class="pl-kos">)</span>
+  <span class="pl-c">// we can also expose variables, not just functions</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>:::caution IPC security</p>
+<p>Notice how we wrap the <code class="notranslate">ipcRenderer.invoke('ping')</code> call in a helper function rather<br>
+than expose the <code class="notranslate">ipcRenderer</code> module directly via context bridge. You <strong>never</strong> want to<br>
+directly expose the entire <code class="notranslate">ipcRenderer</code> module via preload. This would give your renderer<br>
+the ability to send arbitrary IPC messages to the main process, which becomes a powerful<br>
+attack vector for malicious code.</p>
+<p>:::</p>
+<p>Then, set up your <code class="notranslate">handle</code> listener in the main process. We do this <em>before</em><br>
+loading the HTML file so that the handler is guaranteed to be ready before<br>
+you send out the <code class="notranslate">invoke</code> call from the renderer.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-kos">{</span> app<span class="pl-kos">,</span> BrowserWindow<span class="pl-kos">,</span> ipcMain <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'electron/main'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">path</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'node:path'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-en">createWindow</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">win</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">BrowserWindow</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+    <span class="pl-c1">width</span>: <span class="pl-c1">800</span><span class="pl-kos">,</span>
+    <span class="pl-c1">height</span>: <span class="pl-c1">600</span><span class="pl-kos">,</span>
+    <span class="pl-c1">webPreferences</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">preload</span>: <span class="pl-s1">path</span><span class="pl-kos">.</span><span class="pl-en">join</span><span class="pl-kos">(</span><span class="pl-s1">__dirname</span><span class="pl-kos">,</span> <span class="pl-s">'preload.js'</span><span class="pl-kos">)</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-s1">win</span><span class="pl-kos">.</span><span class="pl-en">loadFile</span><span class="pl-kos">(</span><span class="pl-s">'index.html'</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span>
+<span class="pl-s1">app</span><span class="pl-kos">.</span><span class="pl-en">whenReady</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">then</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-s1">ipcMain</span><span class="pl-kos">.</span><span class="pl-en">handle</span><span class="pl-kos">(</span><span class="pl-s">'ping'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s">'pong'</span><span class="pl-kos">)</span>
+  <span class="pl-en">createWindow</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>Once you have the sender and receiver set up, you can now send messages from the renderer<br>
+to the main process through the <code class="notranslate">'ping'</code> channel you just defined.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-en">func</span> <span class="pl-c1">=</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">versions</span><span class="pl-kos">.</span><span class="pl-en">ping</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">response</span><span class="pl-kos">)</span> <span class="pl-c">// prints out 'pong'</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-en">func</span><span class="pl-kos">(</span><span class="pl-kos">)</span></pre></div>
+<p>:::info</p>
+<p>For more in-depth explanations on using the <code class="notranslate">ipcRenderer</code> and <code class="notranslate">ipcMain</code> modules,<br>
+check out the full <a href="./ipc.md">Inter-Process Communication</a> guide.</p>
+<p>:::</p>
+<h2>Summary</h2>
+<p>A preload script contains code that runs before your web page is loaded into the browser<br>
+window. It has access to both DOM APIs and Node.js environment, and is often used to<br>
+expose privileged APIs to the renderer via the <code class="notranslate">contextBridge</code> API.</p>
+<p>Because the main and renderer processes have very different responsibilities, Electron<br>
+apps often use the preload script to set up inter-process communication (IPC) interfaces<br>
+to pass arbitrary messages between the two kinds of processes.</p>
+<p>In the next part of the tutorial, we will be showing you resources on adding more<br>
+functionality to your app, then teaching you how to distribute your app to users.</p>
+

@@ -1,0 +1,212 @@
+<h1>exa is unmaintained, use the <a href="https://github.com/eza-community/eza">fork eza</a> instead.</h1>
+<p>(This repository isn’t archived because the only person with the rights to do so is unreachable).</p>
+<hr>
+<div align="center">
+<h1>exa</h1>
+<p><a href="https://the.exa.website/" rel="nofollow">exa</a> is a modern replacement for <em>ls</em>.</p>
+<p><strong>README Sections:</strong> <a href="#options">Options</a> — <a href="#installation">Installation</a> — <a href="#development">Development</a></p>
+<p><a href="https://github.com/ogham/exa/actions/workflows/unit-tests.yml"><img src="https://github.com/ogham/exa/actions/workflows/unit-tests.yml/badge.svg" alt="Unit tests" style="max-width: 100%;"></a></p>
+</div>
+<p><a target="_blank" rel="noopener noreferrer" href="screenshots.png"><img src="screenshots.png" alt="Screenshots of exa" style="max-width: 100%;"></a></p>
+<hr>
+<p><strong>exa</strong> is a modern replacement for the venerable file-listing command-line program <code class="notranslate">ls</code> that ships with Unix and Linux operating systems, giving it more features and better defaults.<br>
+It uses colours to distinguish file types and metadata.<br>
+It knows about symlinks, extended attributes, and Git.<br>
+And it’s <strong>small</strong>, <strong>fast</strong>, and just <strong>one single binary</strong>.</p>
+<p>By deliberately making some decisions differently, exa attempts to be a more featureful, more user-friendly version of <code class="notranslate">ls</code>.<br>
+For more information, see <a href="https://the.exa.website/" rel="nofollow">exa’s website</a>.</p>
+<hr>
+<a id="user-content-options">
+<h1>Command-line options</h1>
+</a>
+<p>exa’s options are almost, but not quite, entirely unlike <code class="notranslate">ls</code>’s.</p>
+<h3>Display options</h3>
+<ul>
+<li><strong>-1</strong>, <strong>--oneline</strong>: display one entry per line</li>
+<li><strong>-G</strong>, <strong>--grid</strong>: display entries as a grid (default)</li>
+<li><strong>-l</strong>, <strong>--long</strong>: display extended details and attributes</li>
+<li><strong>-R</strong>, <strong>--recurse</strong>: recurse into directories</li>
+<li><strong>-T</strong>, <strong>--tree</strong>: recurse into directories as a tree</li>
+<li><strong>-x</strong>, <strong>--across</strong>: sort the grid across, rather than downwards</li>
+<li><strong>-F</strong>, <strong>--classify</strong>: display type indicator by file names</li>
+<li><strong>--colo[u]r</strong>: when to use terminal colours</li>
+<li><strong>--colo[u]r-scale</strong>: highlight levels of file sizes distinctly</li>
+<li><strong>--icons</strong>: display icons</li>
+<li><strong>--no-icons</strong>: don't display icons (always overrides --icons)</li>
+</ul>
+<h3>Filtering options</h3>
+<ul>
+<li><strong>-a</strong>, <strong>--all</strong>: show hidden and 'dot' files</li>
+<li><strong>-d</strong>, <strong>--list-dirs</strong>: list directories like regular files</li>
+<li><strong>-L</strong>, <strong>--level=(depth)</strong>: limit the depth of recursion</li>
+<li><strong>-r</strong>, <strong>--reverse</strong>: reverse the sort order</li>
+<li><strong>-s</strong>, <strong>--sort=(field)</strong>: which field to sort by</li>
+<li><strong>--group-directories-first</strong>: list directories before other files</li>
+<li><strong>-D</strong>, <strong>--only-dirs</strong>: list only directories</li>
+<li><strong>--git-ignore</strong>: ignore files mentioned in <code class="notranslate">.gitignore</code></li>
+<li><strong>-I</strong>, <strong>--ignore-glob=(globs)</strong>: glob patterns (pipe-separated) of files to ignore</li>
+</ul>
+<p>Pass the <code class="notranslate">--all</code> option twice to also show the <code class="notranslate">.</code> and <code class="notranslate">..</code> directories.</p>
+<h3>Long view options</h3>
+<p>These options are available when running with <code class="notranslate">--long</code> (<code class="notranslate">-l</code>):</p>
+<ul>
+<li><strong>-b</strong>, <strong>--binary</strong>: list file sizes with binary prefixes</li>
+<li><strong>-B</strong>, <strong>--bytes</strong>: list file sizes in bytes, without any prefixes</li>
+<li><strong>-g</strong>, <strong>--group</strong>: list each file’s group</li>
+<li><strong>-h</strong>, <strong>--header</strong>: add a header row to each column</li>
+<li><strong>-H</strong>, <strong>--links</strong>: list each file’s number of hard links</li>
+<li><strong>-i</strong>, <strong>--inode</strong>: list each file’s inode number</li>
+<li><strong>-m</strong>, <strong>--modified</strong>: use the modified timestamp field</li>
+<li><strong>-S</strong>, <strong>--blocks</strong>: list each file’s number of file system blocks</li>
+<li><strong>-t</strong>, <strong>--time=(field)</strong>: which timestamp field to use</li>
+<li><strong>-u</strong>, <strong>--accessed</strong>: use the accessed timestamp field</li>
+<li><strong>-U</strong>, <strong>--created</strong>: use the created timestamp field</li>
+<li><strong>-@</strong>, <strong>--extended</strong>: list each file’s extended attributes and sizes</li>
+<li><strong>--changed</strong>: use the changed timestamp field</li>
+<li><strong>--git</strong>: list each file’s Git status, if tracked or ignored</li>
+<li><strong>--time-style</strong>: how to format timestamps</li>
+<li><strong>--no-permissions</strong>: suppress the permissions field</li>
+<li><strong>--octal-permissions</strong>: list each file's permission in octal format</li>
+<li><strong>--no-filesize</strong>: suppress the filesize field</li>
+<li><strong>--no-user</strong>: suppress the user field</li>
+<li><strong>--no-time</strong>: suppress the time field</li>
+</ul>
+<p>Some of the options accept parameters:</p>
+<ul>
+<li>Valid <strong>--color</strong> options are <strong>always</strong>, <strong>automatic</strong>, and <strong>never</strong>.</li>
+<li>Valid sort fields are <strong>accessed</strong>, <strong>changed</strong>, <strong>created</strong>, <strong>extension</strong>, <strong>Extension</strong>, <strong>inode</strong>, <strong>modified</strong>, <strong>name</strong>, <strong>Name</strong>, <strong>size</strong>, <strong>type</strong>, and <strong>none</strong>. Fields starting with a capital letter sort uppercase before lowercase. The modified field has the aliases <strong>date</strong>, <strong>time</strong>, and <strong>newest</strong>, while its reverse has the aliases <strong>age</strong> and <strong>oldest</strong>.</li>
+<li>Valid time fields are <strong>modified</strong>, <strong>changed</strong>, <strong>accessed</strong>, and <strong>created</strong>.</li>
+<li>Valid time styles are <strong>default</strong>, <strong>iso</strong>, <strong>long-iso</strong>, and <strong>full-iso</strong>.</li>
+</ul>
+<hr>
+<a id="user-content-installation">
+<h1>Installation</h1>
+</a>
+<p>exa is available for macOS and Linux.<br>
+More information on how to install exa is available on <a href="https://the.exa.website/install" rel="nofollow">the Installation page</a>.</p>
+<h3>Alpine Linux</h3>
+<p>On Alpine Linux, <a href="https://wiki.alpinelinux.org/wiki/Enable_Community_Repository" rel="nofollow">enable community repository</a> and install the <a href="https://pkgs.alpinelinux.org/package/edge/community/x86_64/exa" rel="nofollow"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">apk add exa
+</code></pre>
+<h3>Arch Linux</h3>
+<p>On Arch, install the <a href="https://www.archlinux.org/packages/community/x86_64/exa/" rel="nofollow"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">pacman -S exa
+</code></pre>
+<h3>Android / Termux</h3>
+<p>On Android / Termux, install the <a href="https://github.com/termux/termux-packages/tree/master/packages/exa"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">pkg install exa
+</code></pre>
+<h3>Debian</h3>
+<p>On Debian, install the <a href="https://packages.debian.org/stable/exa" rel="nofollow"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">apt install exa
+</code></pre>
+<h3>Fedora</h3>
+<p>On Fedora, install the <a href="https://src.fedoraproject.org/modules/exa" rel="nofollow"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">dnf install exa
+</code></pre>
+<h3>Gentoo</h3>
+<p>On Gentoo, install the <a href="https://packages.gentoo.org/packages/sys-apps/exa" rel="nofollow"><code class="notranslate">sys-apps/exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">emerge sys-apps/exa
+</code></pre>
+<h3>Homebrew</h3>
+<p>If you’re using <a href="https://brew.sh/" rel="nofollow">Homebrew</a> on macOS, install the <a href="http://formulae.brew.sh/formula/exa" rel="nofollow"><code class="notranslate">exa</code></a> formula.</p>
+<pre class="notranslate"><code class="notranslate">brew install exa
+</code></pre>
+<h3>MacPorts</h3>
+<p>If you're using <a href="https://www.macports.org/" rel="nofollow">MacPorts</a> on macOS, install the <a href="https://ports.macports.org/port/exa/summary" rel="nofollow"><code class="notranslate">exa</code></a> port.</p>
+<pre class="notranslate"><code class="notranslate">port install exa
+</code></pre>
+<h3>Nix</h3>
+<p>On nixOS, install the <a href="https://github.com/NixOS/nixpkgs/blob/master/pkgs/tools/misc/exa/default.nix"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">nix-env -i exa
+</code></pre>
+<h3>openSUSE</h3>
+<p>On openSUSE, install the <a href="https://software.opensuse.org/package/exa" rel="nofollow"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">zypper install exa
+</code></pre>
+<h3>Ubuntu</h3>
+<p>On Ubuntu 20.10 (Groovy Gorilla) and later, install the <a href="https://packages.ubuntu.com/jammy/exa" rel="nofollow"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">sudo apt install exa
+</code></pre>
+<h3>Void Linux</h3>
+<p>On Void Linux, install the <a href="https://github.com/void-linux/void-packages/blob/master/srcpkgs/exa/template"><code class="notranslate">exa</code></a> package.</p>
+<pre class="notranslate"><code class="notranslate">xbps-install -S exa
+</code></pre>
+<h3>Manual installation from GitHub</h3>
+<p>Compiled binary versions of exa are uploaded to GitHub when a release is made.<br>
+You can install exa manually by <a href="https://github.com/ogham/exa/releases">downloading a release</a>, extracting it, and copying the binary to a directory in your <code class="notranslate">$PATH</code>, such as <code class="notranslate">/usr/local/bin</code>.</p>
+<p>For more information, see the <a href="https://the.exa.website/install/linux#manual" rel="nofollow">Manual Installation page</a>.</p>
+<h3>Cargo</h3>
+<p>If you already have a Rust environment set up, you can use the <code class="notranslate">cargo install</code> command:</p>
+<pre class="notranslate"><code class="notranslate">cargo install exa
+</code></pre>
+<p>Cargo will build the <code class="notranslate">exa</code> binary and place it in <code class="notranslate">$HOME/.cargo</code>.</p>
+<p>To build without Git support, run <code class="notranslate">cargo install --no-default-features exa</code> is also available, if the requisite dependencies are not installed.</p>
+<hr>
+<a id="user-content-development">
+</a><h1>Development
+<a href="https://blog.rust-lang.org/2023/01/10/Rust-1.66.1.html" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/9c761ed71c2fc5d12284a0f5e9739b3bfc475c5eb27c45b0c1fae8eb7b110937/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f72757374632d312e36362e312b2d6c69676874677261792e737667" alt="Rust 1.66.1+" data-canonical-src="https://img.shields.io/badge/rustc-1.66.1+-lightgray.svg" style="max-width: 100%;">
+</a>
+<a href="https://github.com/ogham/exa/blob/master/LICENCE">
+    <img src="https://camo.githubusercontent.com/3ef3a60905856fc0db0e8019fad3d2d1e8cc4691d54cc38e42205735dfa9db15/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e63652d4d49542d677265656e" alt="MIT Licence" data-canonical-src="https://img.shields.io/badge/licence-MIT-green" style="max-width: 100%;">
+</a>
+</h1>
+<p>exa is written in <a href="https://www.rust-lang.org/" rel="nofollow">Rust</a>.<br>
+You will need rustc version 1.66.1 or higher.<br>
+The recommended way to install Rust for development is from the <a href="https://www.rust-lang.org/tools/install" rel="nofollow">official download page</a>, using rustup.</p>
+<p>Once Rust is installed, you can compile exa with Cargo:</p>
+<pre class="notranslate"><code class="notranslate">cargo build
+cargo test
+</code></pre>
+<ul>
+<li>
+<p>The <a href="https://github.com/casey/just">just</a> command runner can be used to run some helpful development commands, in a manner similar to <code class="notranslate">make</code>.<br>
+Run <code class="notranslate">just --list</code> to get an overview of what’s available.</p>
+</li>
+<li>
+<p>If you are compiling a copy for yourself, be sure to run <code class="notranslate">cargo build --release</code> or <code class="notranslate">just build-release</code> to benefit from release-mode optimisations.<br>
+Copy the resulting binary, which will be in the <code class="notranslate">target/release</code> directory, into a folder in your <code class="notranslate">$PATH</code>.<br>
+<code class="notranslate">/usr/local/bin</code> is usually a good choice.</p>
+</li>
+<li>
+<p>To compile and install the manual pages, you will need <a href="https://pandoc.org/" rel="nofollow">pandoc</a>.<br>
+The <code class="notranslate">just man</code> command will compile the Markdown into manual pages, which it will place in the <code class="notranslate">target/man</code> directory.<br>
+To use them, copy them into a directory that <code class="notranslate">man</code> will read.<br>
+<code class="notranslate">/usr/local/share/man</code> is usually a good choice.</p>
+</li>
+<li>
+<p>exa depends on <a href="https://github.com/rust-lang/git2-rs">libgit2</a> for certain features.<br>
+If you’re unable to compile libgit2, you can opt out of Git support by running <code class="notranslate">cargo build --no-default-features</code>.</p>
+</li>
+<li>
+<p>If you intend to compile for musl, you will need to use the flag <code class="notranslate">vendored-openssl</code> if you want to get the Git feature working.<br>
+The full command is <code class="notranslate">cargo build --release --target=x86_64-unknown-linux-musl --features vendored-openssl,git</code>.</p>
+</li>
+</ul>
+<p>For more information, see the <a href="https://the.exa.website/install/source" rel="nofollow">Building from Source page</a>.</p>
+<h3>Testing with Vagrant</h3>
+<p>exa uses <a href="https://www.vagrantup.com/" rel="nofollow">Vagrant</a> to configure virtual machines for testing.</p>
+<p>Programs such as exa that are basically interfaces to the system are <a href="https://eev.ee/blog/2016/08/22/testing-for-people-who-hate-testing/#troublesome-cases" rel="nofollow">notoriously difficult to test</a>.<br>
+Although the internal components have unit tests, it’s impossible to do a complete end-to-end test without mandating the current user’s name, the time zone, the locale, and directory structure to test.<br>
+(And yes, these tests are worth doing. I have missed an edge case on many an occasion.)</p>
+<p>The initial attempt to solve the problem was just to create a directory of “awkward” test cases, run exa on it, and make sure it produced the correct output.<br>
+But even this output would change if, say, the user’s locale formats dates in a different way.<br>
+These can be mocked inside the code, but at the cost of making that code more complicated to read and understand.</p>
+<p>An alternative solution is to fake <em>everything</em>: create a virtual machine with a known state and run the tests on <em>that</em>.<br>
+This is what Vagrant does.<br>
+Although it takes a while to download and set up, it gives everyone the same development environment to test for any obvious regressions.</p>
+<p>First, initialise the VM:</p>
+<pre class="notranslate"><code class="notranslate">host$ vagrant up
+</code></pre>
+<p>The first command downloads the virtual machine image, and then runs our provisioning script, which installs Rust and exa’s build-time dependencies, configures the environment, and generates some awkward files and folders to use as test cases.<br>
+Once this is done, you can SSH in, and build and test:</p>
+<pre class="notranslate"><code class="notranslate">host$ vagrant ssh
+vm$ cd /vagrant
+vm$ cargo build
+vm$ ./xtests/run
+All the tests passed!
+</code></pre>
+<p>Of course, the drawback of having a standard development environment is that you stop noticing bugs that occur outside of it.<br>
+For this reason, Vagrant isn’t a <em>necessary</em> development step — it’s there if you’d like to use it, but exa still gets used and tested on other platforms.<br>
+It can still be built and compiled on any target triple that it supports, VM or no VM, with <code class="notranslate">cargo build</code> and <code class="notranslate">cargo test</code>.</p>

@@ -1,0 +1,327 @@
+<h1>Command Reference</h1>
+<p>Like <code class="notranslate">git</code>, the <code class="notranslate">pyenv</code> command delegates to subcommands based on its<br>
+first argument.</p>
+<p>The most common subcommands are:</p>
+<ul>
+<li><a href="#pyenv-help"><code class="notranslate">pyenv help</code></a></li>
+<li><a href="#pyenv-commands"><code class="notranslate">pyenv commands</code></a></li>
+<li><a href="#pyenv-local"><code class="notranslate">pyenv local</code></a></li>
+<li><a href="#pyenv-global"><code class="notranslate">pyenv global</code></a></li>
+<li><a href="#pyenv-shell"><code class="notranslate">pyenv shell</code></a></li>
+<li><a href="#pyenv-install"><code class="notranslate">pyenv install</code></a></li>
+<li><a href="#pyenv-uninstall"><code class="notranslate">pyenv uninstall</code></a></li>
+<li><a href="#pyenv-rehash"><code class="notranslate">pyenv rehash</code></a></li>
+<li><a href="#pyenv-version"><code class="notranslate">pyenv version</code></a></li>
+<li><a href="#pyenv-versions"><code class="notranslate">pyenv versions</code></a></li>
+<li><a href="#pyenv-which"><code class="notranslate">pyenv which</code></a></li>
+<li><a href="#pyenv-whence"><code class="notranslate">pyenv whence</code></a></li>
+<li><a href="#pyenv-exec"><code class="notranslate">pyenv exec</code></a></li>
+<li><a href="#pyenv-root"><code class="notranslate">pyenv root</code></a></li>
+<li><a href="#pyenv-prefix"><code class="notranslate">pyenv prefix</code></a></li>
+<li><a href="#pyenv-latest"><code class="notranslate">pyenv latest</code></a></li>
+<li><a href="#pyenv-hooks"><code class="notranslate">pyenv hooks</code></a></li>
+<li><a href="#pyenv-shims"><code class="notranslate">pyenv shims</code></a></li>
+<li><a href="#pyenv-init"><code class="notranslate">pyenv init</code></a></li>
+<li><a href="#pyenv-completions"><code class="notranslate">pyenv completions</code></a></li>
+</ul>
+<h2><code class="notranslate">pyenv help</code></h2>
+<p>List all available pyenv commands along with a brief description of what they do. Run <code class="notranslate">pyenv help &lt;command&gt;</code> for information on a specific command. For full documentation, see: <a href="https://github.com/pyenv/pyenv#readme">https://github.com/pyenv/pyenv#readme</a></p>
+<h2><code class="notranslate">pyenv commands</code></h2>
+<p>Lists all available pyenv commands.</p>
+<h2><code class="notranslate">pyenv local</code></h2>
+<p>Sets a local application-specific Python version by writing the version<br>
+name to a <code class="notranslate">.python-version</code> file in the current directory. This version<br>
+overrides the <a href="#pyenv-global">global version</a>, and can be overridden<br>
+itself with the <a href="#pyenv-shell"><code class="notranslate">pyenv shell</code></a> command.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv local 2.7.6
+</code></pre>
+<p>When run without a version number, <code class="notranslate">pyenv local</code> reports the currently<br>
+configured local version. You can also unset the local version:</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv local --unset
+</code></pre>
+<p>Previous versions of pyenv stored local version specifications in a<br>
+file named <code class="notranslate">.pyenv-version</code>. For backwards compatibility, pyenv will<br>
+read a local version specified in an <code class="notranslate">.pyenv-version</code> file, but a<br>
+<code class="notranslate">.python-version</code> file in the same directory will take precedence.</p>
+<h3><code class="notranslate">pyenv local</code> (advanced)</h3>
+<p>You can specify multiple versions as local Python at once.</p>
+<p>Let's say if you have two versions of 2.7.6 and 3.3.3. If you prefer 2.7.6 over 3.3.3,</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv local 2.7.6 3.3.3
+$ pyenv versions
+  system
+* 2.7.6 (set by /Users/yyuu/path/to/project/.python-version)
+* 3.3.3 (set by /Users/yyuu/path/to/project/.python-version)
+$ python --version
+Python 2.7.6
+$ python2.7 --version
+Python 2.7.6
+$ python3.3 --version
+Python 3.3.3
+</code></pre>
+<p>or, if you prefer 3.3.3 over 2.7.6,</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv local 3.3.3 2.7.6
+$ pyenv versions
+  system
+* 2.7.6 (set by /Users/yyuu/path/to/project/.python-version)
+* 3.3.3 (set by /Users/yyuu/path/to/project/.python-version)
+  venv27
+$ python --version
+Python 3.3.3
+$ python2.7 --version
+Python 2.7.6
+$ python3.3 --version
+Python 3.3.3
+</code></pre>
+<p>You can use the <code class="notranslate">-f/--force</code> flag to force setting versions even if some aren't installed.<br>
+This is mainly useful in special cases like provisioning scripts.</p>
+<h2><code class="notranslate">pyenv global</code></h2>
+<p>Sets the global version of Python to be used in all shells by writing<br>
+the version name to the <code class="notranslate">$PYENV_ROOT/version</code> file. This version can be<br>
+overridden with <a href="#pyenv-local"><code class="notranslate">pyenv local</code></a> or <a href="#pyenv-shell"><code class="notranslate">pyenv shell</code></a>.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv global 2.7.6
+</code></pre>
+<p>The special version name <code class="notranslate">system</code> tells pyenv to use the system Python<br>
+(detected by searching your <code class="notranslate">$PATH</code>).</p>
+<p>When run without a version number, <code class="notranslate">pyenv global</code> reports the<br>
+currently configured global version.</p>
+<h3><code class="notranslate">pyenv global</code> (advanced)</h3>
+<p>You can specify multiple versions as global Python at once.</p>
+<p>Let's say if you have two versions of 2.7.6 and 3.3.3. If you prefer 2.7.6 over 3.3.3,</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv global 2.7.6 3.3.3
+$ pyenv versions
+  system
+* 2.7.6 (set by /Users/yyuu/.pyenv/version)
+* 3.3.3 (set by /Users/yyuu/.pyenv/version)
+$ python --version
+Python 2.7.6
+$ python2.7 --version
+Python 2.7.6
+$ python3.3 --version
+Python 3.3.3
+</code></pre>
+<p>or, if you prefer 3.3.3 over 2.7.6,</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv global 3.3.3 2.7.6
+$ pyenv versions
+  system
+* 2.7.6 (set by /Users/yyuu/.pyenv/version)
+* 3.3.3 (set by /Users/yyuu/.pyenv/version)
+  venv27
+$ python --version
+Python 3.3.3
+$ python2.7 --version
+Python 2.7.6
+$ python3.3 --version
+Python 3.3.3
+</code></pre>
+<h2><code class="notranslate">pyenv shell</code></h2>
+<p>Sets a shell-specific Python version by setting the <code class="notranslate">PYENV_VERSION</code><br>
+environment variable in your shell. This version overrides<br>
+application-specific versions and the global version.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv shell pypy-2.2.1
+</code></pre>
+<p>When run without a version number, <code class="notranslate">pyenv shell</code> reports the current<br>
+value of <code class="notranslate">PYENV_VERSION</code>. You can also unset the shell version:</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv shell --unset
+</code></pre>
+<p>Note that you'll need pyenv's shell integration enabled (step 3 of<br>
+the installation instructions) in order to use this command. If you<br>
+prefer not to use shell integration, you may simply set the<br>
+<code class="notranslate">PYENV_VERSION</code> variable yourself:</p>
+<pre class="notranslate"><code class="notranslate">$ export PYENV_VERSION=pypy-2.2.1
+</code></pre>
+<h3><code class="notranslate">pyenv shell</code> (advanced)</h3>
+<p>You can specify multiple versions via <code class="notranslate">PYENV_VERSION</code> at once.</p>
+<p>Let's say if you have two versions of 2.7.6 and 3.3.3. If you prefer 2.7.6 over 3.3.3,</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv shell 2.7.6 3.3.3
+$ pyenv versions
+  system
+* 2.7.6 (set by PYENV_VERSION environment variable)
+* 3.3.3 (set by PYENV_VERSION environment variable)
+$ python --version
+Python 2.7.6
+$ python2.7 --version
+Python 2.7.6
+$ python3.3 --version
+Python 3.3.3
+</code></pre>
+<p>or, if you prefer 3.3.3 over 2.7.6,</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv shell 3.3.3 2.7.6
+$ pyenv versions
+  system
+* 2.7.6 (set by PYENV_VERSION environment variable)
+* 3.3.3 (set by PYENV_VERSION environment variable)
+  venv27
+$ python --version
+Python 3.3.3
+$ python2.7 --version
+Python 2.7.6
+$ python3.3 --version
+Python 3.3.3
+</code></pre>
+<h2><code class="notranslate">pyenv install</code></h2>
+<p>Install a Python version (using <a href="https://github.com/pyenv/pyenv/tree/master/plugins/python-build"><code class="notranslate">python-build</code></a>).</p>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv install [-f] [-kvp] &lt;version&gt;[:&lt;alias&gt;]
+       pyenv install [-f] [-kvp] &lt;definition-file&gt;[:&lt;alias&gt;]
+       pyenv install -l|--list
+
+  -l/--list             List all available versions
+  -f/--force            Install even if the version appears to be installed already
+  -s/--skip-existing    Skip the installation if the version appears to be installed already
+
+  python-build options:
+
+  -k/--keep        Keep source tree in $PYENV_BUILD_ROOT after installation
+                   (defaults to $PYENV_ROOT/sources)
+  -v/--verbose     Verbose mode: print compilation status to stdout
+  -p/--patch       Apply a patch from stdin before building
+  -g/--debug       Build a debug version
+</code></pre>
+<p>To list the all available versions of Python, including Anaconda, Jython, pypy, and stackless, use:</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv install --list
+</code></pre>
+<p>Then install the desired versions:</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv install 2.7.6
+$ pyenv install 2.6.8
+$ pyenv versions
+  system
+  2.6.8
+* 2.7.6 (set by /home/yyuu/.pyenv/version)
+</code></pre>
+<p>You can also install the latest version of Python in a specific version line by supplying a prefix instead of a complete name:</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv install 3.10
+$ pyenv install 3
+</code></pre>
+<p>See the <a href="#pyenv-latest"><code class="notranslate">pyenv latest</code> documentation</a> for details on prefix resolution.</p>
+<p>An older option is to use the <code class="notranslate">:latest</code> syntax. For example, to install the latest patch version for Python 3.8 you could do:</p>
+<pre class="notranslate"><code class="notranslate">pyenv install 3.8:latest
+</code></pre>
+<h2><code class="notranslate">pyenv uninstall</code></h2>
+<p>Uninstall Python versions.</p>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv uninstall [-f|--force] &lt;version&gt; ...
+
+   -f  Attempt to remove the specified version without prompting
+       for confirmation. If the version does not exist, do not
+       display an error message.
+</code></pre>
+<h2><code class="notranslate">pyenv rehash</code></h2>
+<p>Installs shims for all Python binaries known to pyenv (i.e.,<br>
+<code class="notranslate">~/.pyenv/versions/*/bin/*</code>). Run this command after you install a new<br>
+version of Python, or install a package that provides binaries.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv rehash
+</code></pre>
+<h2><code class="notranslate">pyenv version</code></h2>
+<p>Displays the currently active Python version, along with information on<br>
+how it was set.</p>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv version [--bare]
+
+--bare    show just the version name. An alias to `pyenv version-name'
+
+
+$ pyenv version
+2.7.6 (set by /home/yyuu/.pyenv/version)
+$ pyenv version --bare
+2.7.6
+</code></pre>
+<h2><code class="notranslate">pyenv versions</code></h2>
+<p>Lists all Python versions known to pyenv, and shows an asterisk next to<br>
+the currently active version.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv versions
+  2.5.6
+  2.6.8
+* 2.7.6 (set by /home/yyuu/.pyenv/version)
+  3.3.3
+  jython-2.5.3
+  pypy-2.2.1
+</code></pre>
+<h2><code class="notranslate">pyenv which</code></h2>
+<p>Displays the full path to the executable that pyenv will invoke when<br>
+you run the given command.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv which python3.3
+/home/yyuu/.pyenv/versions/3.3.3/bin/python3.3
+</code></pre>
+<p>Use --nosystem argument in case when you don't need to search command in the<br>
+system environment.</p>
+<h2><code class="notranslate">pyenv whence</code></h2>
+<p>Lists all Python versions with the given command installed.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv whence 2to3
+2.6.8
+2.7.6
+3.3.3
+</code></pre>
+<h2><code class="notranslate">pyenv exec</code></h2>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv exec &lt;command&gt; [arg1 arg2...]
+</code></pre>
+<p>Runs an executable by first preparing PATH so that the selected Python<br>
+version's <code class="notranslate">bin</code> directory is at the front.</p>
+<p>For example, if the currently selected Python version is 3.9.7:</p>
+<pre class="notranslate"><code class="notranslate">pyenv exec pip install -r requirements.txt
+</code></pre>
+<p>is equivalent to:</p>
+<pre class="notranslate"><code class="notranslate">PATH="$PYENV_ROOT/versions/3.9.7/bin:$PATH" pip install -r requirements.txt
+</code></pre>
+<h2><code class="notranslate">pyenv root</code></h2>
+<p>Displays the root directory where versions and shims are kept.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv root
+/home/user/.pyenv
+</code></pre>
+<h2><code class="notranslate">pyenv prefix</code></h2>
+<p>Displays the directories where the given Python versions are installed,<br>
+separated by colons. If no version is given, <code class="notranslate">pyenv prefix</code> displays the<br>
+locations of the currently selected versions.</p>
+<pre class="notranslate"><code class="notranslate">$ pyenv prefix 3.9.7
+/home/user/.pyenv/versions/3.9.7
+</code></pre>
+<h2><code class="notranslate">pyenv latest</code></h2>
+<p>Displays the latest installed or known version with the given prefix</p>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv latest [-k|--known] &lt;prefix&gt;
+
+ -k/--known      Select from all known versions instead of installed
+</code></pre>
+<p>Only full prefixes are searched: in the actual name, the given prefix must be followed by a dot or a dash.</p>
+<p>Prereleases and versions with specific suffixes (e.g. <code class="notranslate">-src</code>) are ignored.</p>
+<h2><code class="notranslate">pyenv hooks</code></h2>
+<p>Lists installed hook scripts for a given pyenv command.</p>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv hooks &lt;command&gt;
+</code></pre>
+<h2><code class="notranslate">pyenv shims</code></h2>
+<p>List existing pyenv shims.</p>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv shims [--short]
+
+$ pyenv shims
+/home/user/.pyenv/shims/2to3
+/home/user/.pyenv/shims/2to3-3.9
+/home/user/.pyenv/shims/idle
+/home/user/.pyenv/shims/idle3
+/home/user/.pyenv/shims/idle3.9
+/home/user/.pyenv/shims/pip
+/home/user/.pyenv/shims/pip3
+/home/user/.pyenv/shims/pip3.9
+/home/user/.pyenv/shims/pydoc
+/home/user/.pyenv/shims/pydoc3
+/home/user/.pyenv/shims/pydoc3.9
+/home/user/.pyenv/shims/python
+/home/user/.pyenv/shims/python3
+/home/user/.pyenv/shims/python3.9
+/home/user/.pyenv/shims/python3.9-config
+/home/user/.pyenv/shims/python3.9-gdb.py
+/home/user/.pyenv/shims/python3-config
+/home/user/.pyenv/shims/python-config
+</code></pre>
+<h2><code class="notranslate">pyenv init</code></h2>
+<p>Configure the shell environment for pyenv</p>
+<pre class="notranslate"><code class="notranslate">Usage: eval "$(pyenv init [-|--path] [--no-push-path] [--no-rehash] [&lt;shell&gt;])"
+       pyenv init --install [&lt;shell&gt;]
+       pyenv init --detect-shell [&lt;shell&gt;]
+
+  -                    Initialize shims directory, print PYENV_SHELL variable, completions path
+                       and shell function
+  --path               Print shims path
+  --install            Configure detected shell startup files
+  --no-push-path       Do not push shim to the start of PATH if they're already there
+  --detect-shell       Print shell startup files detected for the current shell
+  --no-rehash          Add no rehash command to output     
+</code></pre>
+<h2><code class="notranslate">pyenv completions</code></h2>
+<p>Lists available completions for a given pyenv command.</p>
+<pre class="notranslate"><code class="notranslate">Usage: pyenv completions &lt;command&gt; [arg1 arg2...]
+</code></pre>

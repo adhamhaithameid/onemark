@@ -1,0 +1,137 @@
+<h1>GraphQL.js</h1>
+<p>The JavaScript reference implementation for GraphQL, a query language for APIs created by Facebook.</p>
+<p><a href="https://badge.fury.io/js/graphql" rel="nofollow"><img src="https://camo.githubusercontent.com/8777e55da860f1ece19a6f4d4b1225a79cbde6be5ef947f0e6de7edf7f59b933/68747470733a2f2f62616467652e667572792e696f2f6a732f6772617068716c2e737667" alt="npm version" data-canonical-src="https://badge.fury.io/js/graphql.svg" style="max-width: 100%;"></a><br>
+<a href="https://github.com/graphql/graphql-js/actions/workflows/push.yml?query=branch%3A17.x.x"><img src="https://github.com/graphql/graphql-js/actions/workflows/push.yml/badge.svg?branch=17.x.x" alt="Build Status" style="max-width: 100%;"></a></p>
+<p>See more complete documentation at <a href="https://graphql.org/" rel="nofollow">https://graphql.org/</a> and<br>
+<a href="https://graphql.org/graphql-js/" rel="nofollow">https://graphql.org/graphql-js/</a>.</p>
+<p>Looking for help? Find resources <a href="https://graphql.org/community/" rel="nofollow">from the community</a>.</p>
+<h2>Getting Started</h2>
+<p>A general overview of GraphQL is available in the<br>
+<a href="https://github.com/graphql/graphql-spec/blob/main/README.md">README</a> for the<br>
+<a href="https://github.com/graphql/graphql-spec">Specification for GraphQL</a>. That overview<br>
+describes a simple set of GraphQL examples that exist as <a href="src/__tests__">tests</a><br>
+in this repository. A good way to get started with this repository is to walk<br>
+through that README and the corresponding tests in parallel.</p>
+<h3>Using GraphQL.js</h3>
+<p>Install GraphQL.js from npm</p>
+<p>With <code class="notranslate">npm</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install --save graphql</pre></div>
+<p>With <code class="notranslate">yarn</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">yarn add graphql</pre></div>
+<p>With <code class="notranslate">bun</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">bun add graphql</pre></div>
+<p>GraphQL.js provides two important capabilities: building a type schema and<br>
+serving queries against that type schema.</p>
+<p>First, build a GraphQL type schema which maps to your codebase.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span>
+  <span class="pl-s1">graphql</span><span class="pl-kos">,</span>
+  <span class="pl-v">GraphQLSchema</span><span class="pl-kos">,</span>
+  <span class="pl-v">GraphQLObjectType</span><span class="pl-kos">,</span>
+  <span class="pl-v">GraphQLString</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'graphql'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">var</span> <span class="pl-s1">schema</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">GraphQLSchema</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">query</span>: <span class="pl-k">new</span> <span class="pl-v">GraphQLObjectType</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+    <span class="pl-c1">name</span>: <span class="pl-s">'RootQueryType'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">fields</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">hello</span>: <span class="pl-kos">{</span>
+        <span class="pl-c1">type</span>: <span class="pl-v">GraphQLString</span><span class="pl-kos">,</span>
+        <span class="pl-en">resolve</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+          <span class="pl-k">return</span> <span class="pl-s">'world'</span><span class="pl-kos">;</span>
+        <span class="pl-kos">}</span><span class="pl-kos">,</span>
+      <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>This defines a simple schema, with one type and one field, that resolves<br>
+to a fixed value. The <code class="notranslate">resolve</code> function can return a value, a promise,<br>
+or an array of promises. A more complex example is included in the top-level <a href="src/__tests__">tests</a> directory.</p>
+<p>Then, serve the result of a query against that type schema.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">source</span> <span class="pl-c1">=</span> <span class="pl-s">'{ hello }'</span><span class="pl-kos">;</span>
+
+<span class="pl-en">graphql</span><span class="pl-kos">(</span><span class="pl-kos">{</span> schema<span class="pl-kos">,</span> source <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">then</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">result</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// Prints</span>
+  <span class="pl-c">// {</span>
+  <span class="pl-c">//   data: { hello: "world" }</span>
+  <span class="pl-c">// }</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">result</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<p>This runs a query fetching the one field defined. The <code class="notranslate">graphql</code> function will<br>
+first ensure the query is syntactically and semantically valid before executing<br>
+it, reporting errors otherwise.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">source</span> <span class="pl-c1">=</span> <span class="pl-s">'{ BoyHowdy }'</span><span class="pl-kos">;</span>
+
+<span class="pl-en">graphql</span><span class="pl-kos">(</span><span class="pl-kos">{</span> schema<span class="pl-kos">,</span> source <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">then</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">result</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// Prints</span>
+  <span class="pl-c">// {</span>
+  <span class="pl-c">//   errors: [</span>
+  <span class="pl-c">//     { message: 'Cannot query field BoyHowdy on RootQueryType',</span>
+  <span class="pl-c">//       locations<span class="pl-smi">: [ { line: 1, column: 3 } ] </span>}</span>
+  <span class="pl-c">//   ]</span>
+  <span class="pl-c">// }</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">result</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<h2>Want to ride the bleeding edge?</h2>
+<p>The <code class="notranslate">npm</code> branch in this repository is automatically maintained to be the last<br>
+commit to <code class="notranslate">17.x.x</code> to pass all tests, in the same form found on npm. It is<br>
+recommended to use builds deployed to npm for many reasons, but if you want to use<br>
+the latest not-yet-released version of graphql-js, you can do so by depending<br>
+directly on this branch:</p>
+<pre class="notranslate"><code class="notranslate">npm install graphql@git://github.com/graphql/graphql-js.git#npm
+</code></pre>
+<h2>Using in a Browser</h2>
+<p>GraphQL.js is a general-purpose library and can be used both in a Node server<br>
+and in the browser. As an example, the <a href="https://github.com/graphql/graphiql/">GraphiQL</a><br>
+tool is built with GraphQL.js!</p>
+<p>Building a project using GraphQL.js with <a href="https://webpack.js.org" rel="nofollow">webpack</a> or<br>
+<a href="https://github.com/rollup/rollup">rollup</a> should just work and only include<br>
+the portions of the library you use. This works because GraphQL.js is distributed<br>
+with both CommonJS (<code class="notranslate">require()</code>) and ESModule (<code class="notranslate">import</code>) files. The <code class="notranslate">exports</code><br>
+map within the project <code class="notranslate">package.json</code> should direct runtimes and bundlers to<br>
+the appropriate files. Tools that do not support <code class="notranslate">exports</code> will find the CommonJS<br>
+and ESModule builds side by side, with the CommonJS code packaged<br>
+in files with the <code class="notranslate">.js</code> extension and the ESModule build within <code class="notranslate">.mjs</code> files.</p>
+<h2>Contributing</h2>
+<p>We actively welcome pull requests. Learn how to <a href="./.github/CONTRIBUTING.md">contribute</a>.</p>
+<p>This repository is managed by EasyCLA. Project participants must sign the free <a href="https://preview-spec-membership.graphql.org" rel="nofollow">GraphQL Specification Membership agreement</a> before making a contribution. You only need to do this one time, and it can be signed by <a href="http://individual-spec-membership.graphql.org/" rel="nofollow">individual contributors</a> or their <a href="http://corporate-spec-membership.graphql.org/" rel="nofollow">employers</a>.</p>
+<p>To initiate the signature process please open a PR against this repo. The EasyCLA bot will block the merge if we still need a membership agreement from you.</p>
+<p>You can find <a href="https://github.com/graphql/graphql-wg/tree/main/membership">detailed information here</a>. If you have issues, please email <a href="mailto:operations@graphql.org">operations@graphql.org</a>.</p>
+<p>If your company benefits from GraphQL and you would like to provide essential financial support for the systems and people that power our community, please also consider membership in the <a href="https://foundation.graphql.org/join" rel="nofollow">GraphQL Foundation</a>.</p>
+<h2>Changelog</h2>
+<p>Changes are tracked as <a href="https://github.com/graphql/graphql-js/releases">GitHub releases</a>.</p>
+<h2>License</h2>
+<p>GraphQL.js is <a href="./LICENSE">MIT-licensed</a>.</p>
+<h2>Version Support</h2>
+<p>GraphQL.JS follows Semantic Versioning (SemVer) for its releases. Our version support policy is as follows:</p>
+<ul>
+<li>Latest Major Version: We provide full support, including bug fixes and security updates, for the latest major version of GraphQL.JS.</li>
+<li>Previous Major Version: We offer feature support for the previous major version for 12 months after the release of the newest major version.<br>
+This means that for 12 months we can backport features for specification changes <em>if</em> they don't cause any breaking changes. We'll continue<br>
+supporting the previous major version with bug and security fixes.</li>
+<li>Older Versions: Versions older than the previous major release are considered unsupported. While the code remains available,<br>
+we do not actively maintain or provide updates for these versions.<br>
+One exception to this rule is when the older version has been released &lt; 1 year ago, in that case we<br>
+will treat it like the "Previous Major Version".</li>
+</ul>
+<h3>Long-Term Support (LTS)</h3>
+<p>We do not currently offer a Long-Term Support version of GraphQL.JS. Users are encouraged to upgrade to the latest stable version<br>
+to receive the most up-to-date features, performance improvements, and security updates.</p>
+<h3>End-of-Life (EOL) Schedule</h3>
+<p>We will announce the EOL date for a major version at least 6 months in advance.<br>
+After a version reaches its EOL, it will no longer receive updates, even for critical security issues.</p>
+<h3>Upgrade Assistance</h3>
+<p>To assist users in upgrading to newer versions:</p>
+<ul>
+<li>We maintain detailed release notes for each version, highlighting new features, breaking changes, and deprecations.</li>
+<li><a href="https://www.graphql-js.org/" rel="nofollow">Our documentation</a> includes migration guides for moving between major versions.</li>
+<li>The <a href="https://discord.graphql.org" rel="nofollow">community forum (Discord channel #graphql-js)</a> is available for users who need additional assistance with upgrades.</li>
+</ul>
+<h3>Security Updates</h3>
+<p>We prioritize the security of GraphQL.JS:</p>
+<ul>
+<li>Critical security updates will be applied to both the current and previous major version.</li>
+<li>For versions that have reached EOL, we strongly recommend upgrading to a supported version to receive security updates.</li>
+</ul>
+<h3>Community Contributions</h3>
+<p>We welcome community contributions for all versions of GraphQL.JS. However, our maintainers will primarily focus on reviewing<br>
+and merging contributions for supported versions.</p>

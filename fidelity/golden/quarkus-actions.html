@@ -1,0 +1,106 @@
+<h1>GitHub Actions setup</h1>
+<p>Quarkus is built using GitHub Actions, with a mix of hosted and self-hosted runners.</p>
+<h2>Setting up a new self-hosted runner on Mac M1</h2>
+<h3>Non-root user</h3>
+<p>GitHub Actions should not run with administrator privileges, so will need to be run in a dedicated account.<br>
+Make an account for the actions runner. The steps below assume the account has the name <code class="notranslate">githubactions</code>.<br>
+It's usually easiest to do account creation in the GUI, via a VNC connection. Users are managed in<br>
+the <strong>Users and Groups</strong> section of the Settings app.</p>
+<p><em>Grant administrator privileges to the account</em> (we will remove them later).</p>
+<h3>System utilities</h3>
+<p>As administrator, install homebrew.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">/bin/bash -c <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span></pre></div>
+<p>Install build and container utilities:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">brew install mvn
+brew install gradle
+brew install podman</pre></div>
+<h3>Podman setup</h3>
+<p>Podman needs some <a href="https://quarkus.io/guides/podman" rel="nofollow">extra configuration</a> to work with test containers and dev services.</p>
+<p>Now log in to the account you created to run the actions.<br>
+As the <code class="notranslate">githubactions</code> user (but with administrator privileges)</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">PODMAN_VERSION=<span class="pl-s"><span class="pl-pds">`</span>podman -v <span class="pl-k">|</span> sed <span class="pl-s"><span class="pl-pds">'</span>s/[a-zA-Z ]*//<span class="pl-pds">'</span></span><span class="pl-pds">`</span></span>
+sudo /opt/homebrew/Cellar/podman/<span class="pl-smi">$PODMAN_VERSION</span>/bin/podman-mac-helper install</pre></div>
+<p>The podman helper install seems to be per-user, but it needs to be done with administrator privileges.</p>
+<p>Again as the <code class="notranslate">githubactions</code> user, edit ~/.testcontainers.properties and add the following line: <code class="notranslate">ryuk.container.privileged=true</code></p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>ryuk.container.privileged=true<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> <span class="pl-k">~</span>/.testcontainers.properties</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate">podman machine <span class="pl-c1">set</span> --rootful
+podman machine start</pre></div>
+<p>Finally, on ARM, an <a href="https://edofic.com/posts/2021-09-12-podman-m1-amd64" rel="nofollow">extra step</a> is required to make AMD64 images work:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">podman machine ssh
+sudo -i
+rpm-ostree install qemu-user-static
+systemctl reboot</pre></div>
+<p>Now remove administrator privileges from the <code class="notranslate">githubactions</code> user.<br>
+As with the user creation, it's usually easiest to do this in the GUI.</p>
+<h3>Rosetta</h3>
+<p>A fresh install of macOS will not have Rosetta installed, so Intel binaries cannot run. Fix this by running:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">softwareupdate --install-rosetta --agree-to-license</pre></div>
+<h3>Stand up the actions runner</h3>
+<h4>Download the runner scripts</h4>
+<p>GitHub provides an installation package of customized runner scripts for each repository.<br>
+Follow <a href="https://docs.github.com/en/actions/hosting-your-own-runners/adding-self-hosted-runners">the instructions</a><br>
+to install the scripts for the repository to be built.</p>
+<p>Choose the default group, a descriptive name, and the default work folder. Add a label <code class="notranslate">macos-arm64-latest</code>.<br>
+If you forget the label, it will need to be added <a href="https://docs.github.com/en/actions/hosting-your-own-runners/using-labels-with-self-hosted-runners">through the UI</a>.</p>
+<h4>Cleanup and setup logic</h4>
+<p>Self-hosted runners do not run on ephemeral hardware, and so workflow runs may need to clean up.<br>
+We also need to start a podman machine before the job if one is not already running.</p>
+<p>To create cleanup and setup scripts and hooks, run:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>rm -rf /Users/githubactions/actions-runner/_work<span class="pl-pds">"</span></span> <span class="pl-k">&gt;</span> /Users/githubactions/runner-cleanup.sh
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>podman machine info | grep Running || podman machine start<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> /Users/githubactions/podman-start.sh
+chmod a+x /Users/githubactions/runner-cleanup.sh
+<span class="pl-c1">echo</span> ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/Users/githubactions/runner-cleanup.sh <span class="pl-k">&gt;&gt;</span> .env
+<span class="pl-c1">echo</span> ACTIONS_RUNNER_HOOK_JOB_STARTED=/Users/githubactions/podman-start.sh <span class="pl-k">&gt;&gt;</span> .env</pre></div>
+<p>In the same script, we also ensure that the podman machine is running before jobs execute.</p>
+<h4>Start the runner</h4>
+<p>To test the runner, run</p>
+<p><code class="notranslate">run.sh</code></p>
+<p>Once you're happy the runner is processing builds correctly, it's time to create it as a daemon.</p>
+<h3>Start the service on reboot</h3>
+<p>Note that GitHub have scripts for this, but theirs run as LaunchAgents, not LaunchDaemons.<br>
+LaunchAgents run when a user logs in, and LaunchDaemons run on boot, so the daemon option seems preferable.</p>
+<p>As administrator, <code class="notranslate">sudo vi /Library/LaunchDaemons/actions.runner.quarkusio-quarkus.macstadium-m1.plist</code>.</p>
+<p>Then add the following:</p>
+<div class="highlight highlight-text-xml"><pre class="notranslate">&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;!<span class="pl-ent">DOCTYPE</span> <span class="pl-e">plist</span> PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;<span class="pl-ent">plist</span> <span class="pl-e">version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span>&gt;
+&lt;<span class="pl-ent">dict</span>&gt;
+    &lt;<span class="pl-ent">key</span>&gt;Label&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">string</span>&gt;actions.runner.quarkusio-quarkus.macstadium-m1&lt;/<span class="pl-ent">string</span>&gt;
+
+    &lt;<span class="pl-ent">key</span>&gt;RunAtLoad&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">true</span>/&gt;
+
+    &lt;<span class="pl-ent">key</span>&gt;KeepAlive&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">true</span>/&gt;
+  
+    &lt;<span class="pl-ent">key</span>&gt;UserName&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">string</span>&gt;githubactions&lt;/<span class="pl-ent">string</span>&gt;
+
+    &lt;<span class="pl-ent">key</span>&gt;ProgramArguments&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">array</span>&gt;
+     &lt;<span class="pl-ent">string</span>&gt;/Users/githubactions/actions-runner/runsvc.sh&lt;/<span class="pl-ent">string</span>&gt;
+    &lt;/<span class="pl-ent">array</span>&gt;
+
+    &lt;<span class="pl-ent">key</span>&gt;WorkingDirectory&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">string</span>&gt;/Users/githubactions/actions-runner&lt;/<span class="pl-ent">string</span>&gt;
+
+    &lt;<span class="pl-ent">key</span>&gt;StandardOutPath&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">string</span>&gt;/tmp/github.runner.plist.stdout&lt;/<span class="pl-ent">string</span>&gt;
+    &lt;<span class="pl-ent">key</span>&gt;StandardErrorPath&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">string</span>&gt;/tmp/github.runner.plist.stderr&lt;/<span class="pl-ent">string</span>&gt;
+
+    &lt;<span class="pl-ent">key</span>&gt;EnvironmentVariables&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">dict</span>&gt;
+      &lt;<span class="pl-ent">key</span>&gt;ACTIONS_RUNNER_SVC&lt;/<span class="pl-ent">key</span>&gt;
+      &lt;<span class="pl-ent">string</span>&gt;1&lt;/<span class="pl-ent">string</span>&gt;
+    &lt;/<span class="pl-ent">dict</span>&gt;
+    &lt;<span class="pl-ent">key</span>&gt;ProcessType&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">string</span>&gt;Interactive&lt;/<span class="pl-ent">string</span>&gt;
+    &lt;<span class="pl-ent">key</span>&gt;SessionCreate&lt;/<span class="pl-ent">key</span>&gt;
+    &lt;<span class="pl-ent">true</span>/&gt;
+  &lt;/<span class="pl-ent">dict</span>&gt;
+&lt;/<span class="pl-ent">plist</span>&gt;</pre></div>
+<p>Finally, run</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sudo launchctl load -w /Library/LaunchDaemons/actions.runner.quarkusio-quarkus.macstadium-m1.plist</pre></div>
+<p>You can check the logs in <code class="notranslate">/tmp/github.runner.plist.stdout</code> to confirm everything is working.</p>

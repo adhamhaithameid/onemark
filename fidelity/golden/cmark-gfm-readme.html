@@ -1,0 +1,162 @@
+<h1>cmark-gfm</h1>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/github/cmark-gfm/actions/workflows/ci.yml/badge.svg"><img src="https://github.com/github/cmark-gfm/actions/workflows/ci.yml/badge.svg" alt="Actions CI" style="max-width: 100%;"></a></p>
+<p><code class="notranslate">cmark-gfm</code> is an extended version of the C reference implementation of<br>
+<a href="http://commonmark.org" rel="nofollow">CommonMark</a>, a rationalized version of Markdown syntax with a spec.  This<br>
+repository adds GitHub Flavored Markdown extensions to<br>
+<a href="https://github.com/jgm/cmark">the upstream implementation</a>, as defined in <a href="https://github.github.com/gfm/">the spec</a>.</p>
+<p>The rest of the README is preserved as-is from the upstream source.  Note that<br>
+the library and binaries produced by this fork are suffixed with <code class="notranslate">-gfm</code> in<br>
+order to distinguish them from the upstream.</p>
+<hr>
+<p>It provides a shared library (<code class="notranslate">libcmark</code>) with functions for parsing<br>
+CommonMark documents to an abstract syntax tree (AST), manipulating<br>
+the AST, and rendering the document to HTML, groff man, LaTeX,<br>
+CommonMark, or an XML representation of the AST.  It also provides a<br>
+command-line program (<code class="notranslate">cmark</code>) for parsing and rendering CommonMark<br>
+documents.</p>
+<p>Advantages of this library:</p>
+<ul>
+<li>
+<p><strong>Portable.</strong>  The library and program are written in standard<br>
+C99 and have no external dependencies.  They have been tested with<br>
+MSVC, gcc, tcc, and clang.</p>
+</li>
+<li>
+<p><strong>Fast.</strong> cmark can render a Markdown version of <em>War and Peace</em> in<br>
+the blink of an eye (127 milliseconds on a ten year old laptop,<br>
+vs. 100-400 milliseconds for an eye blink).  In our <a href="benchmarks.md">benchmarks</a>,<br>
+cmark is 10,000 times faster than the original <code class="notranslate">Markdown.pl</code>, and<br>
+on par with the very fastest available Markdown processors.</p>
+</li>
+<li>
+<p><strong>Accurate.</strong> The library passes all CommonMark conformance tests.</p>
+</li>
+<li>
+<p><strong>Standardized.</strong> The library can be expected to parse CommonMark<br>
+the same way as any other conforming parser.  So, for example,<br>
+you can use <code class="notranslate">commonmark.js</code> on the client to preview content that<br>
+will be rendered on the server using <code class="notranslate">cmark</code>.</p>
+</li>
+<li>
+<p><strong>Robust.</strong> The library has been extensively fuzz-tested using<br>
+<a href="http://lcamtuf.coredump.cx/afl/" rel="nofollow">american fuzzy lop</a>.  The test suite includes pathological cases<br>
+that bring many other Markdown parsers to a crawl (for example,<br>
+thousands-deep nested bracketed text or block quotes).</p>
+</li>
+<li>
+<p><strong>Flexible.</strong> CommonMark input is parsed to an AST which can be<br>
+manipulated programmatically prior to rendering.</p>
+</li>
+<li>
+<p><strong>Multiple renderers.</strong>  Output in HTML, groff man, LaTeX, CommonMark,<br>
+and a custom XML format is supported. And it is easy to write new<br>
+renderers to support other formats.</p>
+</li>
+<li>
+<p><strong>Free.</strong> BSD2-licensed.</p>
+</li>
+</ul>
+<p>It is easy to use <code class="notranslate">libcmark</code> in python, lua, ruby, and other dynamic<br>
+languages: see the <code class="notranslate">wrappers/</code> subdirectory for some simple examples.</p>
+<p>There are also libraries that wrap <code class="notranslate">libcmark</code> for<br>
+<a href="https://github.com/rhinoman/go-commonmark">Go</a>,<br>
+<a href="https://hackage.haskell.org/package/cmark" rel="nofollow">Haskell</a>,<br>
+<a href="https://github.com/gjtorikian/commonmarker">Ruby</a>,<br>
+<a href="https://github.com/jgm/cmark-lua">Lua</a>,<br>
+<a href="https://metacpan.org/release/CommonMark" rel="nofollow">Perl</a>,<br>
+<a href="https://pypi.python.org/pypi/paka.cmark" rel="nofollow">Python</a>,<br>
+<a href="https://cran.r-project.org/package=commonmark" rel="nofollow">R</a>,<br>
+<a href="https://github.com/apnadkarni/tcl-cmark">Tcl</a>,<br>
+<a href="https://github.com/sparsetech/cmark-scala">Scala</a> and<br>
+<a href="https://github.com/killa123/node-cmark">Node.js</a>.</p>
+<h2>Installing</h2>
+<p>Building the C program (<code class="notranslate">cmark</code>) and shared library (<code class="notranslate">libcmark</code>)<br>
+requires <a href="http://www.cmake.org/download/" rel="nofollow">cmake</a>.  If you modify <code class="notranslate">scanners.re</code>, then you will also<br>
+need <a href="http://re2c.org" rel="nofollow">re2c</a> (&gt;= 0.14.2), which is used to generate <code class="notranslate">scanners.c</code> from<br>
+<code class="notranslate">scanners.re</code>.  We have included a pre-generated <code class="notranslate">scanners.c</code> in<br>
+the repository to reduce build dependencies.</p>
+<p>If you have GNU make, you can simply <code class="notranslate">make</code>, <code class="notranslate">make test</code>, and <code class="notranslate">make install</code>.  This calls <a href="http://www.cmake.org/download/" rel="nofollow">cmake</a> to create a <code class="notranslate">Makefile</code> in the <code class="notranslate">build</code><br>
+directory, then uses that <code class="notranslate">Makefile</code> to create the executable and<br>
+library.  The binaries can be found in <code class="notranslate">build/src</code>.  The default<br>
+installation prefix is <code class="notranslate">/usr/local</code>.  To change the installation<br>
+prefix, pass the <code class="notranslate">INSTALL_PREFIX</code> variable if you run <code class="notranslate">make</code> for the<br>
+first time: <code class="notranslate">make INSTALL_PREFIX=path</code>.</p>
+<p>For a more portable method, you can use <a href="http://www.cmake.org/download/" rel="nofollow">cmake</a> manually. <a href="http://www.cmake.org/download/" rel="nofollow">cmake</a> knows<br>
+how to create build environments for many build systems.  For example,<br>
+on FreeBSD:</p>
+<pre class="notranslate"><code class="notranslate">mkdir build
+cd build
+cmake ..  # optionally: -DCMAKE_INSTALL_PREFIX=path
+make      # executable will be created as build/src/cmark
+make test
+make install
+</code></pre>
+<p>Or, to create Xcode project files on OSX:</p>
+<pre class="notranslate"><code class="notranslate">mkdir build
+cd build
+cmake -G Xcode ..
+open cmark.xcodeproj
+</code></pre>
+<p>The GNU Makefile also provides a few other targets for developers.<br>
+To run a benchmark:</p>
+<pre class="notranslate"><code class="notranslate">make bench
+</code></pre>
+<p>For more detailed benchmarks:</p>
+<pre class="notranslate"><code class="notranslate">make newbench
+</code></pre>
+<p>To run a test for memory leaks using <code class="notranslate">valgrind</code>:</p>
+<pre class="notranslate"><code class="notranslate">make leakcheck
+</code></pre>
+<p>To reformat source code using <code class="notranslate">clang-format</code>:</p>
+<pre class="notranslate"><code class="notranslate">make format
+</code></pre>
+<p>To run a "fuzz test" against ten long randomly generated inputs:</p>
+<pre class="notranslate"><code class="notranslate">make fuzztest
+</code></pre>
+<p>To do a more systematic fuzz test with <a href="http://lcamtuf.coredump.cx/afl/" rel="nofollow">american fuzzy lop</a>:</p>
+<pre class="notranslate"><code class="notranslate">AFL_PATH=/path/to/afl_directory make afl
+</code></pre>
+<p>Fuzzing with <a href="http://llvm.org/docs/LibFuzzer.html" rel="nofollow">libFuzzer</a> is also supported but, because libFuzzer is still<br>
+under active development, may not work with your system-installed version of<br>
+clang. Assuming LLVM has been built in <code class="notranslate">$HOME/src/llvm/build</code> the fuzzer can be<br>
+run with:</p>
+<pre class="notranslate"><code class="notranslate">CC="$HOME/src/llvm/build/bin/clang" LIB_FUZZER_PATH="$HOME/src/llvm/lib/Fuzzer/libFuzzer.a" make libFuzzer
+</code></pre>
+<p>To make a release tarball and zip archive:</p>
+<pre class="notranslate"><code class="notranslate">make archive
+</code></pre>
+<h2>Installing (Windows)</h2>
+<p>To compile with MSVC and NMAKE:</p>
+<pre class="notranslate"><code class="notranslate">nmake
+</code></pre>
+<p>You can cross-compile a Windows binary and dll on linux if you have the<br>
+<code class="notranslate">mingw32</code> compiler:</p>
+<pre class="notranslate"><code class="notranslate">make mingw
+</code></pre>
+<p>The binaries will be in <code class="notranslate">build-mingw/windows/bin</code>.</p>
+<h2>Usage</h2>
+<p>Instructions for the use of the command line program and library can<br>
+be found in the man pages in the <code class="notranslate">man</code> subdirectory.</p>
+<h2>Security</h2>
+<p>By default, the library will scrub raw HTML and potentially<br>
+dangerous links (<code class="notranslate">javascript:</code>, <code class="notranslate">vbscript:</code>, <code class="notranslate">data:</code>, <code class="notranslate">file:</code>).</p>
+<p>To allow these, use the option <code class="notranslate">CMARK_OPT_UNSAFE</code> (or<br>
+<code class="notranslate">--unsafe</code>) with the command line program. If doing so, we<br>
+recommend you use a HTML sanitizer specific to your needs to<br>
+protect against <a href="http://en.wikipedia.org/wiki/Cross-site_scripting" rel="nofollow">XSS<br>
+attacks</a>.</p>
+<h2>Contributing</h2>
+<p>There is a <a href="http://talk.commonmark.org" rel="nofollow">forum for discussing<br>
+CommonMark</a>; you should use it instead of<br>
+github issues for questions and possibly open-ended discussions.<br>
+Use the <a href="https://github.com/commonmark/CommonMark/issues">github issue tracker</a><br>
+only for simple, clear, actionable issues.</p>
+<h2>Authors</h2>
+<p>John MacFarlane wrote the original library and program.<br>
+The block parsing algorithm was worked out together with David<br>
+Greenspan. Vicent Marti optimized the C implementation for<br>
+performance, increasing its speed tenfold.  Kārlis Gaņģis helped<br>
+work out a better parsing algorithm for links and emphasis,<br>
+eliminating several worst-case performance issues.<br>
+Nick Wellnhofer contributed many improvements, including<br>
+most of the C library's API and its test harness.</p>

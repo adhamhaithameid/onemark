@@ -1,0 +1,221 @@
+<h1>Custom SVG Shapes Library</h1>
+<p>This library provides a collection of custom SVG shapes, utilities, and helpers for generating diagram components. The shapes are designed to be used within an SVG container and include a variety of common and complex shapes.</p>
+<h2>Overview</h2>
+<h2>Shape Helpers and Utilities</h2>
+<p>Before starting with shape creation, it's essential to familiarize yourself with the utilities provided in the <code class="notranslate">utils.ts</code> file from <code class="notranslate">packages/mermaid/src/rendering-util/rendering-elements/shapes/util.js</code>. These utilities are designed to assist with various aspects of SVG shape manipulation and ensure consistent and accurate rendering.</p>
+<h2>Available Utilities</h2>
+<h3>1. <code class="notranslate">labelHelper</code></h3>
+<ul>
+<li><strong>Purpose</strong>: This function creates and inserts labels inside SVG shapes.</li>
+<li><strong>Features</strong>:
+<ul>
+<li>Handles both HTML labels and plain text.</li>
+<li>Calculates the bounding box dimensions of the label.</li>
+<li>Ensures proper positioning of labels within shapes.</li>
+</ul>
+</li>
+</ul>
+<h3>2. <code class="notranslate">updateNodeBounds</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Updates the bounding box dimensions (width and height) of a node.</li>
+<li><strong>Usage</strong>:
+<ul>
+<li>Adjusts the size of the node to fit the content or shape.</li>
+<li>Useful for ensuring that shapes resize appropriately based on their content.</li>
+</ul>
+</li>
+</ul>
+<h3>3. <code class="notranslate">insertPolygonShape</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Inserts a polygon shape into an SVG container.</li>
+<li><strong>Features</strong>:
+<ul>
+<li>Handles the creation and insertion of complex polygonal shapes.</li>
+<li>Configures the shape's appearance and positioning within the SVG container.</li>
+</ul>
+</li>
+</ul>
+<h3>4. <code class="notranslate">getNodeClasses</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Returns the appropriate CSS classes for a node based on its configuration.</li>
+<li><strong>Usage</strong>:
+<ul>
+<li>Dynamically applies CSS classes to nodes for styling purposes.</li>
+<li>Ensures that nodes adhere to the desired design and theme.</li>
+</ul>
+</li>
+</ul>
+<h3>5. <code class="notranslate">createPathFromPoints</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Generates an SVG path string from an array of points.</li>
+<li><strong>Usage</strong>:
+<ul>
+<li>Converts a list of points into a smooth path.</li>
+<li>Useful for creating custom shapes or paths within the SVG.</li>
+</ul>
+</li>
+</ul>
+<h3>6. <code class="notranslate">generateFullSineWavePoints</code></h3>
+<ul>
+<li><strong>Purpose</strong>: Generates points for a sine wave, useful for creating wavy-edged shapes.</li>
+<li><strong>Usage</strong>:
+<ul>
+<li>Facilitates the creation of shapes with wavy or sine-wave edges.</li>
+<li>Can be used to add decorative or dynamic edges to shapes.</li>
+</ul>
+</li>
+</ul>
+<h2>Getting Started</h2>
+<p>To utilize these utilities, simply import them from the <code class="notranslate">utils.ts</code> file into your shape creation script. These helpers will streamline the process of building and customizing SVG shapes, ensuring consistent results across your projects.</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span>
+  <span class="pl-s1">labelHelper</span><span class="pl-kos">,</span>
+  <span class="pl-s1">updateNodeBounds</span><span class="pl-kos">,</span>
+  <span class="pl-s1">insertPolygonShape</span><span class="pl-kos">,</span>
+  <span class="pl-s1">getNodeClasses</span><span class="pl-kos">,</span>
+  <span class="pl-s1">createPathFromPoints</span><span class="pl-kos">,</span>
+  <span class="pl-s1">generateFullSineWavePoints</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./utils.ts'</span><span class="pl-kos">;</span></pre></div>
+<h2>Example Usage</h2>
+<p>Here’s a basic example of how you might use some of these utilities:</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">labelHelper</span><span class="pl-kos">,</span> <span class="pl-s1">insertPolygonShape</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./utils.ts'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">svgContainer</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">getElementById</span><span class="pl-kos">(</span><span class="pl-s">'svgContainer'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Insert a polygon shape</span>
+<span class="pl-en">insertPolygonShape</span><span class="pl-kos">(</span><span class="pl-s1">svgContainer</span> <span class="pl-c">/* shape-specific parameters */</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-c">// Create and insert a label inside the shape</span>
+<span class="pl-en">labelHelper</span><span class="pl-kos">(</span><span class="pl-s1">svgContainer</span> <span class="pl-c">/* label-specific parameters */</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<h2>Adding New Shapes</h2>
+<h3>1. Create the Shape Function</h3>
+<p>To add a new shape:</p>
+<ul>
+<li>
+<p><strong>Create the shape function</strong>: Create a new file of name of the shape and export a function in the <code class="notranslate">shapes</code> directory that generates your shape. The file and function should follow the pattern used in existing shapes and return an SVG element.</p>
+</li>
+<li>
+<p><strong>Example</strong>:</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-v">Node</span><span class="pl-kos">,</span> <span class="pl-v">RenderOptions</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'../../types.ts'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">export</span> <span class="pl-k">const</span> <span class="pl-en">myNewShape</span> <span class="pl-c1">=</span> <span class="pl-k">async</span> <span class="pl-kos">(</span>
+  <span class="pl-s1">parent</span>: <span class="pl-smi">SVGAElement</span><span class="pl-kos">,</span>
+  <span class="pl-s1">node</span>: <span class="pl-smi">Node</span><span class="pl-kos">,</span>
+  <span class="pl-s1">renderOptions</span>: <span class="pl-smi">RenderOptions</span>
+<span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// Create your shape here</span>
+  <span class="pl-k">const</span> <span class="pl-s1">shape</span> <span class="pl-c1">=</span> <span class="pl-s1">parent</span><span class="pl-kos">.</span><span class="pl-en">insert</span><span class="pl-kos">(</span><span class="pl-s">'g'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">attr</span><span class="pl-kos">(</span><span class="pl-s">'class'</span><span class="pl-kos">,</span> <span class="pl-s">'my-new-shape'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-c">// Add other elements or styles as needed</span>
+  <span class="pl-k">return</span> <span class="pl-s1">shape</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span></pre></div>
+</li>
+</ul>
+<h3>2. Register the Shape</h3>
+<ul>
+<li>
+<p><strong>Register the shape</strong>: Add your shape to the <code class="notranslate">shapes</code> object in the <a href="../rendering-util/rendering-elements/shapes.ts">main shapes module</a>. This allows your shape to be recognized and used within the system.</p>
+</li>
+<li>
+<p><strong>Example</strong>:</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">myNewShape</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./shapes/myNewShape'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">shapes</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+  ...<span class="pl-kos">,</span>
+  <span class="pl-kos">{</span>
+    <span class="pl-c1">semanticName</span>: <span class="pl-s">'My Shape'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">name</span>: <span class="pl-s">'Shape Name'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">shortName</span>: <span class="pl-s">'&lt;short-name&gt;'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">description</span>: <span class="pl-s">'&lt;Description for the shape&gt;'</span><span class="pl-kos">,</span>
+    <span class="pl-c1">aliases</span>: <span class="pl-kos">[</span><span class="pl-s">'&lt;alias-one&gt;'</span><span class="pl-kos">,</span> <span class="pl-s">'&lt;al-on&gt;'</span><span class="pl-kos">,</span> <span class="pl-s">'&lt;alias-two&gt;'</span><span class="pl-kos">,</span> <span class="pl-s">'&lt;al-two&gt;'</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+    <span class="pl-c1">handler</span>: <span class="pl-s1">myNewShape</span><span class="pl-kos">,</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">;</span></pre></div>
+</li>
+</ul>
+<h1>Shape Intersection Algorithms</h1>
+<p>This contains algorithms and utilities for calculating intersection points for various shapes in SVG. Arrow intersection points are crucial for accurately determining where arrows connect with shapes. Ensuring precise intersection points enhances the clarity and accuracy of flowcharts and diagrams.</p>
+<h2>Shape Intersection Functions</h2>
+<h3>1. <code class="notranslate">Ellipse</code></h3>
+<p>Calculates the intersection points for an ellipse.</p>
+<p><strong>Usage</strong>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">intersectEllipse</span> <span class="pl-k">from</span> <span class="pl-s">'./intersect-ellipse.js'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">intersection</span> <span class="pl-c1">=</span> <span class="pl-en">intersectEllipse</span><span class="pl-kos">(</span><span class="pl-s1">node</span><span class="pl-kos">,</span> <span class="pl-s1">rx</span><span class="pl-kos">,</span> <span class="pl-s1">ry</span><span class="pl-kos">,</span> <span class="pl-s1">point</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code class="notranslate">node</code>: The SVG node element.</li>
+<li><code class="notranslate">rx</code>: The x-radius of the ellipse.</li>
+<li><code class="notranslate">ry</code>: The y-radius of the ellipse.</li>
+<li><code class="notranslate">point</code>: The point from which the intersection is calculated.</li>
+</ul>
+</li>
+</ul>
+<h3>2. <code class="notranslate">intersectRect</code></h3>
+<p>Calculates the intersection points for a rectangle.</p>
+<p><strong>Usage</strong>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">intersectRect</span> <span class="pl-k">from</span> <span class="pl-s">'./intersect-rect.js'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">intersection</span> <span class="pl-c1">=</span> <span class="pl-en">intersectRect</span><span class="pl-kos">(</span><span class="pl-s1">node</span><span class="pl-kos">,</span> <span class="pl-s1">point</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code class="notranslate">node</code>: The SVG node element.</li>
+<li><code class="notranslate">point</code>: The point from which the intersection is calculated.</li>
+</ul>
+</li>
+</ul>
+<h3>3. <code class="notranslate">intersectPolygon</code></h3>
+<p>Calculates the intersection points for a polygon.</p>
+<p><strong>Usage</strong>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">intersectPolygon</span> <span class="pl-k">from</span> <span class="pl-s">'./intersect-polygon.js'</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">intersection</span> <span class="pl-c1">=</span> <span class="pl-en">intersectPolygon</span><span class="pl-kos">(</span><span class="pl-s1">node</span><span class="pl-kos">,</span> <span class="pl-s1">polyPoints</span><span class="pl-kos">,</span> <span class="pl-s1">point</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<ul>
+<li><strong>Parameters</strong>:
+<ul>
+<li><code class="notranslate">node</code>: The SVG node element.</li>
+<li><code class="notranslate">polyPoints</code>: Array of points defining the polygon.</li>
+<li><code class="notranslate">point</code>: The point from which the intersection is calculated.</li>
+</ul>
+</li>
+</ul>
+<h2>Cypress Tests</h2>
+<p>To ensure the robustness of the flowchart shapes, there are implementation of comprehensive Cypress test cases in <code class="notranslate">newShapes.spec.ts</code> file. These tests cover various aspects such as:</p>
+<ul>
+<li><strong>Shapes</strong>: Testing new shapes like <code class="notranslate">bowTieRect</code>, <code class="notranslate">waveRectangle</code>, <code class="notranslate">trapezoidalPentagon</code>, etc.</li>
+<li><strong>Looks</strong>: Verifying shapes under different visual styles (<code class="notranslate">classic</code> and <code class="notranslate">handDrawn</code>).</li>
+<li><strong>Directions</strong>: Ensuring correct rendering in all flow directions of arrows :
+<ul>
+<li><code class="notranslate">TB</code> <code class="notranslate">(Top -&gt; Bottom)</code></li>
+<li><code class="notranslate">BT</code> <code class="notranslate">(Bottom -&gt; Top)</code></li>
+<li><code class="notranslate">LR</code> <code class="notranslate">(Left -&gt; Right)</code></li>
+<li><code class="notranslate">RL</code> <code class="notranslate">(Right -&gt; Left)</code></li>
+</ul>
+</li>
+<li><strong>Labels</strong>: Testing shapes with different labels, including:
+<ul>
+<li>No labels</li>
+<li>Short labels</li>
+<li>Very long labels</li>
+<li>Markdown with <code class="notranslate">htmlLabels:true</code> and <code class="notranslate">htmlLabels:false</code></li>
+</ul>
+</li>
+<li><strong>Styles</strong>: Applying custom styles to shapes and verifying correct rendering.</li>
+<li><strong>Class Definitions</strong>: Using <code class="notranslate">classDef</code> to apply custom classes and testing their impact.</li>
+</ul>
+<h3>Running the Tests</h3>
+<p>To run the Cypress tests, follow these steps:</p>
+<ol>
+<li>
+<p>Ensure you have all dependencies installed by running:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">pnpm install</pre></div>
+</li>
+<li>
+<p>Start the Cypress test runner:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cypress open --env updateSnapshots=true
+</pre></div>
+</li>
+<li>
+<p>Select the test suite from the Cypress interface to run all the flowchart shape tests.</p>
+</li>
+</ol>

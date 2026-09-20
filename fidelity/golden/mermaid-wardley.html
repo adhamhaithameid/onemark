@@ -1,0 +1,423 @@
+<h1>Wardley Maps (v11.14.0+)</h1>
+<blockquote>
+<p>Wardley Maps are visual representations of business strategy that map value chains and component evolution. They help identify strategic opportunities, dependencies, and guide technology decisions.</p>
+</blockquote>
+<h2>Introduction</h2>
+<p>Wardley Maps position components along two axes:</p>
+<ul>
+<li><strong>Visibility</strong> (Y-axis): How visible/valuable a component is to users (0.0 = infrastructure, 1.0 = user-facing)</li>
+<li><strong>Evolution</strong> (X-axis): How evolved/mature a component is (0.0 = genesis/novel, 1.0 = commodity/utility)</li>
+</ul>
+<p>This dual positioning enables strategic analysis of:</p>
+<ul>
+<li>Value chain dependencies</li>
+<li>Evolution of components over time</li>
+<li>Build vs. buy decisions</li>
+<li>Inertia and resistance to change</li>
+</ul>
+<h2>Basic Example</h2>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Tea Shop Value Chain
+
+anchor Business [0.95, 0.63]
+component Cup of Tea [0.79, 0.61]
+component Tea [0.63, 0.81]
+component Hot Water [0.52, 0.80]
+component Kettle [0.43, 0.35]
+component Power [0.10, 0.70]
+
+Business -&gt; Cup of Tea
+Cup of Tea -&gt; Tea
+Cup of Tea -&gt; Hot Water
+Hot Water -&gt; Kettle
+Kettle -&gt; Power
+
+evolve Kettle 0.62
+evolve Power 0.89
+
+note "Standardising power allows Kettles to evolve faster" [0.30, 0.49]
+</code></pre>
+<h2>Syntax</h2>
+<h3>Diagram Declaration</h3>
+<p>Every Wardley diagram starts with the <code class="notranslate">wardley-beta</code> keyword:</p>
+<div class="highlight highlight-source-mermaid"><pre class="notranslate">wardley-beta
+title Your Map Title
+size [1100, 600]</pre></div>
+<ul>
+<li><code class="notranslate">wardley-beta</code> - Required diagram type identifier (beta release)</li>
+<li><code class="notranslate">title</code> - Optional title displayed at top</li>
+<li><code class="notranslate">size</code> - Optional canvas dimensions in pixels (default: <code class="notranslate">[1100, 600]</code>)</li>
+</ul>
+<h3>Coordinate System</h3>
+<p><strong>IMPORTANT</strong>: Wardley Maps use the OnlineWardleyMaps (OWM) format: <code class="notranslate">[visibility, evolution]</code></p>
+<ul>
+<li><strong>First value (Visibility)</strong>: 0.0-1.0 (bottom to top) - Y-axis position</li>
+<li><strong>Second value (Evolution)</strong>: 0.0-1.0 (left to right) - X-axis position</li>
+</ul>
+<p>This is <strong>opposite</strong> of typical (x, y) notation!</p>
+<div class="highlight highlight-source-mermaid"><pre class="notranslate">wardley-beta
+title Coordinate Examples
+
+component Infrastructure [0.30, 0.20]        <span class="pl-c"><span class="pl-c">%%</span> Low visibility, low evolution</span>
+component Product [0.70, 0.60]               <span class="pl-c"><span class="pl-c">%%</span> High visibility, mid evolution</span>
+component User Need [0.90, 0.95]             <span class="pl-c"><span class="pl-c">%%</span> High visibility, high evolution</span></pre></div>
+<h3>Components and Anchors</h3>
+<h4>Components</h4>
+<div class="highlight highlight-text-adblock"><pre class="notranslate">component Name [visibility, evolution]
+component Name [visibility, evolution] label [offsetX, offsetY]
+component Name [visibility, evolution] (decorator)</pre></div>
+<p>Example:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Components
+
+component API [0.60, 0.70]
+component Database [0.40, 0.85] label [-50, 10]
+component "Custom Service" [0.55, 0.35]
+</code></pre>
+<p>Names may contain hyphens (<code class="notranslate">real-time processing</code>, <code class="notranslate">end-user</code>) without quoting. Quote a name only if it begins with a non-letter or contains a character the grammar does not otherwise accept.</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Hyphenated Names
+
+component real-time processing [0.55, 0.40]
+component end-user [0.90, 0.95]
+
+end-user -&gt; real-time processing
+</code></pre>
+<h4>Anchors</h4>
+<p>Anchors represent users or customers with bold labels:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Anchors
+
+anchor Customer [0.90, 0.95]
+anchor Business [0.85, 0.90]
+
+component Service [0.70, 0.75]
+
+Customer -&gt; Service
+Business -&gt; Service
+</code></pre>
+<h3>Decorators</h3>
+<h4>Inertia</h4>
+<p>Mark components resistant to change:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Inertia
+
+component Legacy System [0.45, 0.40] (inertia)
+component New Platform [0.65, 0.45]
+
+Legacy System -&gt; New Platform
+</code></pre>
+<h4>Source Strategy</h4>
+<p>Indicate build/buy/outsource decisions:</p>
+<ul>
+<li><code class="notranslate">(build)</code> - Triangle symbol</li>
+<li><code class="notranslate">(buy)</code> - Diamond symbol</li>
+<li><code class="notranslate">(outsource)</code> - Square symbol</li>
+<li><code class="notranslate">(market)</code> - Circle symbol</li>
+</ul>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Sourcing Strategy
+
+anchor Customer [0.80, 0.95]
+component Custom App [0.45, 0.85] (build)
+component Off-the-shelf Tool [0.85, 0.65] (buy)
+component Managed Service [0.60, 0.40] (outsource)
+component Cloud Platform [0.95, 0.25] (market)
+
+Customer -&gt; Custom App
+Custom App -&gt; Off-the-shelf Tool
+Custom App -&gt; Managed Service
+Off-the-shelf Tool -&gt; Cloud Platform
+</code></pre>
+<h3>Links and Dependencies</h3>
+<div class="highlight highlight-text-adblock"><pre class="notranslate">A -&gt; B              %% Basic dependency
+A --&gt; B             %% Basic dependency (alternative style)
+A -&gt; B; label       %% With annotation
+A -.-&gt; B            %% Dashed flow
+A +&gt; B              %% Flow (with arrow marker)
+A +&lt; B              %% Reverse flow
+A +&lt;&gt; B             %% Bi-directional flow
+A +'text'&gt; B        %% Labeled flow</pre></div>
+<p>Example:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Link Types
+
+component User [0.90, 0.95]
+component App [0.75, 0.75]
+component API [0.60, 0.60]
+component Cache [0.65, 0.45]
+component Database [0.15, 0.80]
+
+User -&gt; App
+App +&gt; API
+API -&gt; Database
+API +&lt;&gt; Cache
+Cache +'backup'&gt; Database
+</code></pre>
+<h3>Evolution and Movement</h3>
+<h4>Evolution Arrows</h4>
+<p>Show component evolution with red dashed arrows:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Evolution
+
+component Database [0.40, 0.50]
+component API [0.55, 0.60]
+
+Database -&gt; API
+
+evolve Database 0.75
+evolve API 0.80
+</code></pre>
+<h4>Trend Indicators</h4>
+<p>Show predicted future position:</p>
+<div class="highlight highlight-text-adblock"><pre class="notranslate">Component -.- (x, y)</pre></div>
+<p>Note: Trends use standard (x, y) order, not [visibility, evolution]!</p>
+<h3>Pipelines</h3>
+<p>Pipeline components share visibility and only vary by evolution:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Pipeline Evolution
+
+component Database [0.40, 0.60]
+
+pipeline Database {
+  component "File System" [0.25]
+  component "SQL DB" [0.50]
+  component "NoSQL" [0.70]
+  component "Cloud DB" [0.85]
+}
+</code></pre>
+<h3>Custom Evolution Stages</h3>
+<p>Define custom axis labels:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Custom Stages
+
+evolution Unmodelled -&gt; Divergent -&gt; Convergent -&gt; Modelled
+
+component Raw Data [0.15, 0.20]
+component Analysis [0.45, 0.50]
+component Reports [0.75, 0.70]
+</code></pre>
+<h4>Dual Labels</h4>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Dual Label Stages
+
+evolution Genesis / Concept -&gt; Custom / Emerging -&gt; Product / Converging -&gt; Commodity / Accepted
+
+component Novel Idea [0.05, 0.20]
+component Custom Solution [0.35, 0.50]
+component Product [0.65, 0.70]
+component Utility [0.95, 0.90]
+</code></pre>
+<h4>Custom Stage Widths</h4>
+<p>Specify custom boundary widths using <code class="notranslate">@</code> notation:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Custom Widths
+
+evolution Genesis@0.2 -&gt; Custom@0.4 -&gt; Product@0.75 -&gt; Commodity@1.0
+
+component Novel [0.75, 0.15]
+component Bespoke [0.70, 0.35]
+component Product [0.65, 0.65]
+component Utility [0.60, 0.90]
+</code></pre>
+<h3>Annotations and Notes</h3>
+<h4>Notes</h4>
+<p>Add contextual notes at specific coordinates:</p>
+<pre class="notranslate"><code class="notranslate">note "text" [visibility, evolution]
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>: Text must be enclosed in quotes.</p>
+</blockquote>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Notes
+
+component API [0.60, 0.70]
+component Database [0.40, 0.50]
+
+API -&gt; Database
+
+note "Critical decision point" [0.65, 0.55]
+note "High risk area" [0.40, 0.35]
+</code></pre>
+<h4>Numbered Annotations</h4>
+<p>Create numbered references with optional annotation box:</p>
+<pre class="notranslate"><code class="notranslate">annotations [x, y]              # Optional: position for annotation numbers
+annotation number,[x, y] "text"
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>: Annotation text must be enclosed in quotes.</p>
+</blockquote>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Annotations
+
+component API [0.60, 0.70]
+component Cache [0.50, 0.55]
+component Database [0.40, 0.40]
+
+API -&gt; Cache
+Cache -&gt; Database
+
+annotations [0.10, 0.90]
+annotation 1,[0.60, 0.65] "Critical component"
+annotation 2,[0.50, 0.50] "Performance layer"
+annotation 3,[0.40, 0.35] "Data persistence"
+</code></pre>
+<h3>Visual Elements</h3>
+<h4>Accelerators and Deaccelerators</h4>
+<p>Forces affecting evolution:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Forces
+
+component Legacy [0.20, 0.85]
+component Modern [0.55, 0.60]
+component AI [0.70, 0.35]
+
+Legacy -&gt; Modern
+Modern -&gt; AI
+
+accelerator "AI Adoption" [0.55, 0.25]
+deaccelerator "Legacy Constraints" [0.15, 0.75]
+</code></pre>
+<h2>Advanced Features</h2>
+<h3>Label Positioning</h3>
+<p>Fine-tune label placement:</p>
+<div class="highlight highlight-text-adblock"><pre class="notranslate">component Name [visibility, evolution] label [offsetX, offsetY]</pre></div>
+<p>Negative X moves left, positive X moves right.<br>
+Negative Y moves up, positive Y moves down.</p>
+<h3>Custom Canvas Size</h3>
+<div class="highlight highlight-source-mermaid"><pre class="notranslate">wardley-beta
+title Custom Size
+size [800, 1000]</pre></div>
+<h2>Complete Example</h2>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">wardley-beta
+title Software Platform Strategy
+size [1100, 800]
+
+evolution Genesis@0.25 -&gt; Custom@0.5 -&gt; Product@0.75 -&gt; Commodity@1.0
+
+anchor Customer [0.90, 0.95]
+
+component "Mobile App" [0.80, 0.85] (build)
+component "Web App" [0.75, 0.80] label [-60, 10] (build)
+component "API Gateway" [0.70, 0.65] (buy)
+component "Auth Service" [0.60, 0.55] (outsource)
+component "Database" [0.50, 0.45] (buy) (inertia)
+component "Cloud Platform" [0.30, 0.95] (market)
+
+Customer -&gt; "Mobile App"
+Customer -&gt; "Web App"
+"Mobile App" -&gt; "API Gateway"
+"Web App" -&gt; "API Gateway"
+"API Gateway" -&gt; "Auth Service"
+"API Gateway" -&gt; "Database"
+"Database" -&gt; "Cloud Platform"
+
+evolve "API Gateway" 0.85
+evolve "Database" 0.75
+
+accelerator "Cloud Native" [0.20, 0.85]
+deaccelerator "Legacy Data" [0.45, 0.35]
+
+annotations [0.10, 0.20]
+annotation 1,[0.78, 0.82] "User touchpoints"
+annotation 2,[0.70, 0.60] "Integration layer"
+annotation 3,[0.50, 0.40] "Data persistence"
+
+note "Build mobile-first experience" [0.85, 0.90]
+note "Migrate to cloud-native database" [0.60, 0.50]
+</code></pre>
+<h2>Configuration</h2>
+<p>Wardley Maps support Mermaid's theme system. Use standard Mermaid configuration to customize appearance.</p>
+<h2>Resources</h2>
+<ul>
+<li><a href="https://medium.com/wardleymaps" rel="nofollow">Wardley Mapping Book</a> by Simon Wardley</li>
+<li><a href="https://onlinewardleymaps.com/" rel="nofollow">OnlineWardleyMaps</a> - Interactive mapping tool</li>
+<li><a href="https://community.wardleymaps.com/" rel="nofollow">Wardley Maps Community</a></li>
+<li><a href="https://learnwardleymapping.com/" rel="nofollow">Learn Wardley Mapping</a></li>
+</ul>
+<h2>Syntax Summary</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Element</th>
+<th>Syntax</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagram</td>
+<td><code class="notranslate">wardley-beta</code></td>
+<td><code class="notranslate">wardley-beta</code></td>
+</tr>
+<tr>
+<td>Title</td>
+<td><code class="notranslate">title Text</code></td>
+<td><code class="notranslate">title My Map</code></td>
+</tr>
+<tr>
+<td>Size</td>
+<td><code class="notranslate">size [width, height]</code></td>
+<td><code class="notranslate">size [1100, 800]</code></td>
+</tr>
+<tr>
+<td>Component</td>
+<td><code class="notranslate">component Name [vis, evo]</code></td>
+<td><code class="notranslate">component API [0.6, 0.7]</code></td>
+</tr>
+<tr>
+<td>Anchor</td>
+<td><code class="notranslate">anchor Name [vis, evo]</code></td>
+<td><code class="notranslate">anchor User [0.9, 0.95]</code></td>
+</tr>
+<tr>
+<td>Link</td>
+<td><code class="notranslate">A -&gt; B</code></td>
+<td><code class="notranslate">API -&gt; Database</code></td>
+</tr>
+<tr>
+<td>Flow</td>
+<td><code class="notranslate">A +&gt; B</code></td>
+<td><code class="notranslate">User +&gt; API</code></td>
+</tr>
+<tr>
+<td>Evolve</td>
+<td><code class="notranslate">evolve Name targetEvo</code></td>
+<td><code class="notranslate">evolve API 0.85</code></td>
+</tr>
+<tr>
+<td>Note</td>
+<td><code class="notranslate">note "Text" [vis, evo]</code></td>
+<td><code class="notranslate">note "Key insight" [0.4, 0.5]</code></td>
+</tr>
+<tr>
+<td>Annotation</td>
+<td><code class="notranslate">annotation N,[x,y] "Text"</code></td>
+<td><code class="notranslate">annotation 1,[0.5,0.5] "Critical"</code></td>
+</tr>
+<tr>
+<td>Inertia</td>
+<td><code class="notranslate">(inertia)</code></td>
+<td><code class="notranslate">component DB [0.4, 0.6] (inertia)</code></td>
+</tr>
+<tr>
+<td>Strategy</td>
+<td><code class="notranslate">(build|buy|outsource|market)</code></td>
+<td><code class="notranslate">component API [0.6, 0.7] (buy)</code></td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td><code class="notranslate">pipeline Parent { ... }</code></td>
+<td>See pipeline example above</td>
+</tr>
+<tr>
+<td>Evolution</td>
+<td><code class="notranslate">evolution Stage1 -&gt; Stage2 -&gt; ...</code></td>
+<td>See evolution examples above</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h2>Limitations</h2>
+<ul>
+<li>Handdrawn/rough mode (<code class="notranslate">look: handDrawn</code>) is not currently supported for Wardley Maps. The diagram uses a custom D3 renderer rather than the shared shape system.</li>
+</ul>

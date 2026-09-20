@@ -1,0 +1,332 @@
+<h1>Automated Testing</h1>
+<p>Test automation is an efficient way of validating that your application code works as intended.<br>
+While Electron doesn't actively maintain its own testing solution, this guide will go over a couple<br>
+ways you can run end-to-end automated tests on your Electron app.</p>
+<h2>Using the WebDriver interface</h2>
+<p>From <a href="https://sites.google.com/chromium.org/driver/" rel="nofollow">ChromeDriver - WebDriver for Chrome</a>:</p>
+<blockquote>
+<p>WebDriver is an open source tool for automated testing of web apps across many<br>
+browsers. It provides capabilities for navigating to web pages, user input,<br>
+JavaScript execution, and more. ChromeDriver is a standalone server which<br>
+implements WebDriver's wire protocol for Chromium. It is being developed by<br>
+members of the Chromium and WebDriver teams.</p>
+</blockquote>
+<p>There are a few ways that you can set up testing using WebDriver.</p>
+<h3>With WebdriverIO</h3>
+<p><a href="https://webdriver.io/" rel="nofollow">WebdriverIO</a> (WDIO) is a test automation framework that provides a<br>
+Node.js package for testing with WebDriver. Its ecosystem also includes various plugins<br>
+(e.g. reporter and services) that can help you put together your test setup.</p>
+<p>If you already have an existing WebdriverIO setup, it is recommended to update your dependencies and validate your existing configuration with how it is <a href="https://webdriver.io/docs/desktop-testing/electron#configuration" rel="nofollow">outlined in the docs</a>.</p>
+<h4>Install the test runner</h4>
+<p>If you don't use WebdriverIO in your project yet, you can add it by running the starter toolkit in your project root directory:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm init wdio@latest ./</pre></div>
+<p>This starts a configuration wizard that helps you put together the right setup, installs all necessary packages, and generates a <code class="notranslate">wdio.conf.js</code> configuration file. Make sure to select <em>"Desktop Testing - of Electron Applications"</em> on one of the first questions asking <em>"What type of testing would you like to do?"</em>.</p>
+<h4>Connect WDIO to your Electron app</h4>
+<p>After running the configuration wizard, your <code class="notranslate">wdio.conf.js</code> should include roughly the following content:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">const</span> <span class="pl-s1">config</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// ...</span>
+  <span class="pl-c1">services</span>: <span class="pl-kos">[</span><span class="pl-s">'electron'</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-c1">capabilities</span>: <span class="pl-kos">[</span><span class="pl-kos">{</span>
+    <span class="pl-c1">browserName</span>: <span class="pl-s">'electron'</span><span class="pl-kos">,</span>
+    <span class="pl-s">'wdio:electronServiceOptions'</span>: <span class="pl-kos">{</span>
+      <span class="pl-c">// WebdriverIO can automatically find your bundled application</span>
+      <span class="pl-c">// if you use Electron Forge or electron-builder, otherwise you</span>
+      <span class="pl-c">// can define it here, e.g.:</span>
+      <span class="pl-c">// appBinaryPath: './path/to/bundled/application.exe',</span>
+      <span class="pl-c1">appArgs</span>: <span class="pl-kos">[</span><span class="pl-s">'foo'</span><span class="pl-kos">,</span> <span class="pl-s">'bar=baz'</span><span class="pl-kos">]</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">]</span>
+  <span class="pl-c">// ...</span>
+<span class="pl-kos">}</span></pre></div>
+<h4>Write your tests</h4>
+<p>Use the <a href="https://webdriver.io/docs/api" rel="nofollow">WebdriverIO API</a> to interact with elements on the screen. The framework provides custom "matchers" that make asserting the state of your application easy, e.g.:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">browser</span><span class="pl-kos">,</span> <span class="pl-s1">$</span><span class="pl-kos">,</span> <span class="pl-s1">expect</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@wdio/globals'</span>
+
+<span class="pl-en">describe</span><span class="pl-kos">(</span><span class="pl-s">'keyboard input'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-en">it</span><span class="pl-kos">(</span><span class="pl-s">'should detect keyboard input'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">await</span> <span class="pl-s1">browser</span><span class="pl-kos">.</span><span class="pl-en">keys</span><span class="pl-kos">(</span><span class="pl-kos">[</span><span class="pl-s">'y'</span><span class="pl-kos">,</span> <span class="pl-s">'o'</span><span class="pl-kos">]</span><span class="pl-kos">)</span>
+    <span class="pl-k">await</span> <span class="pl-en">expect</span><span class="pl-kos">(</span><span class="pl-en">$</span><span class="pl-kos">(</span><span class="pl-s">'keypress-count'</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">toHaveText</span><span class="pl-kos">(</span><span class="pl-s">'YO'</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>Furthermore, WebdriverIO allows you to access Electron APIs to get static information about your application:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">browser</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@wdio/globals'</span>
+
+<span class="pl-en">describe</span><span class="pl-kos">(</span><span class="pl-s">'trigger message modal'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-en">it</span><span class="pl-kos">(</span><span class="pl-s">'message modal can be triggered from a test'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">await</span> <span class="pl-s1">browser</span><span class="pl-kos">.</span><span class="pl-c1">electron</span><span class="pl-kos">.</span><span class="pl-en">execute</span><span class="pl-kos">(</span>
+      <span class="pl-kos">(</span><span class="pl-s1">electron</span><span class="pl-kos">,</span> <span class="pl-s1">param1</span><span class="pl-kos">,</span> <span class="pl-s1">param2</span><span class="pl-kos">,</span> <span class="pl-s1">param3</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-k">const</span> <span class="pl-s1">appWindow</span> <span class="pl-c1">=</span> <span class="pl-s1">electron</span><span class="pl-kos">.</span><span class="pl-c1">BrowserWindow</span><span class="pl-kos">.</span><span class="pl-en">getFocusedWindow</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+        <span class="pl-s1">electron</span><span class="pl-kos">.</span><span class="pl-c1">dialog</span><span class="pl-kos">.</span><span class="pl-en">showMessageBox</span><span class="pl-kos">(</span><span class="pl-s1">appWindow</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+          <span class="pl-c1">message</span>: <span class="pl-s">'Hello World!'</span><span class="pl-kos">,</span>
+          <span class="pl-c1">detail</span>: <span class="pl-s">`<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">param1</span><span class="pl-kos">}</span></span> + <span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">param2</span><span class="pl-kos">}</span></span> + <span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">param3</span><span class="pl-kos">}</span></span> = <span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">param1</span> <span class="pl-c1">+</span> <span class="pl-s1">param2</span> <span class="pl-c1">+</span> <span class="pl-s1">param3</span><span class="pl-kos">}</span></span>`</span>
+        <span class="pl-kos">}</span><span class="pl-kos">)</span>
+      <span class="pl-kos">}</span><span class="pl-kos">,</span>
+      <span class="pl-c1">1</span><span class="pl-kos">,</span>
+      <span class="pl-c1">2</span><span class="pl-kos">,</span>
+      <span class="pl-c1">3</span>
+    <span class="pl-kos">)</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<h4>Run your tests</h4>
+<p>To run your tests:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">$ npx wdio run wdio.conf.js</pre></div>
+<p>WebdriverIO helps launch and shut down the application for you.</p>
+<h4>More documentation</h4>
+<p>Find more documentation on Mocking Electron APIs and other useful resources in the <a href="https://webdriver.io/docs/desktop-testing/electron" rel="nofollow">official WebdriverIO documentation</a>.</p>
+<h3>With Selenium</h3>
+<p><a href="https://www.selenium.dev/" rel="nofollow">Selenium</a> is a web automation framework that<br>
+exposes bindings to WebDriver APIs in many languages. Their Node.js bindings<br>
+are available under the <code class="notranslate">selenium-webdriver</code> package on NPM.</p>
+<h4>Run a ChromeDriver server</h4>
+<p>In order to use Selenium with Electron, you need to download the <code class="notranslate">electron-chromedriver</code><br>
+binary, and run it:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install --save-dev electron-chromedriver
+./node_modules/.bin/chromedriver
+Starting ChromeDriver (v2.10.291558) on port 9515
+Only <span class="pl-k">local</span> connections are allowed.</pre></div>
+<p>Remember the port number <code class="notranslate">9515</code>, which will be used later.</p>
+<h4>Connect Selenium to ChromeDriver</h4>
+<p>Next, install Selenium into your project:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install --save-dev selenium-webdriver</pre></div>
+<p>Usage of <code class="notranslate">selenium-webdriver</code> with Electron is the same as with<br>
+normal websites, except that you have to manually specify how to connect<br>
+ChromeDriver and where to find the binary of your Electron app:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">webdriver</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'selenium-webdriver'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">driver</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-s1">webdriver</span><span class="pl-kos">.</span><span class="pl-c1">Builder</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+  <span class="pl-c">// The "9515" is the port opened by ChromeDriver.</span>
+  <span class="pl-kos">.</span><span class="pl-en">usingServer</span><span class="pl-kos">(</span><span class="pl-s">'http://localhost:9515'</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-en">withCapabilities</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+    <span class="pl-s">'goog:chromeOptions'</span>: <span class="pl-kos">{</span>
+      <span class="pl-c">// Here is the path to your Electron binary.</span>
+      <span class="pl-c1">binary</span>: <span class="pl-s">'/Path-to-Your-App.app/Contents/MacOS/Electron'</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-en">forBrowser</span><span class="pl-kos">(</span><span class="pl-s">'chrome'</span><span class="pl-kos">)</span> <span class="pl-c">// note: use .forBrowser('electron') for selenium-webdriver &lt;= 3.6.0</span>
+  <span class="pl-kos">.</span><span class="pl-en">build</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-s1">driver</span><span class="pl-kos">.</span><span class="pl-en">get</span><span class="pl-kos">(</span><span class="pl-s">'https://www.google.com'</span><span class="pl-kos">)</span>
+<span class="pl-s1">driver</span><span class="pl-kos">.</span><span class="pl-en">findElement</span><span class="pl-kos">(</span><span class="pl-s1">webdriver</span><span class="pl-kos">.</span><span class="pl-c1">By</span><span class="pl-kos">.</span><span class="pl-en">name</span><span class="pl-kos">(</span><span class="pl-s">'q'</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">sendKeys</span><span class="pl-kos">(</span><span class="pl-s">'webdriver'</span><span class="pl-kos">)</span>
+<span class="pl-s1">driver</span><span class="pl-kos">.</span><span class="pl-en">findElement</span><span class="pl-kos">(</span><span class="pl-s1">webdriver</span><span class="pl-kos">.</span><span class="pl-c1">By</span><span class="pl-kos">.</span><span class="pl-en">name</span><span class="pl-kos">(</span><span class="pl-s">'btnG'</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">click</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-s1">driver</span><span class="pl-kos">.</span><span class="pl-en">wait</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-s1">driver</span><span class="pl-kos">.</span><span class="pl-en">getTitle</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">then</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">title</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-s1">title</span> <span class="pl-c1">===</span> <span class="pl-s">'webdriver - Google Search'</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">,</span> <span class="pl-c1">1000</span><span class="pl-kos">)</span>
+<span class="pl-s1">driver</span><span class="pl-kos">.</span><span class="pl-en">quit</span><span class="pl-kos">(</span><span class="pl-kos">)</span></pre></div>
+<h2>Using Playwright</h2>
+<p><a href="https://playwright.dev" rel="nofollow">Microsoft Playwright</a> is an end-to-end testing framework built<br>
+using browser-specific remote debugging protocols, similar to the <a href="https://github.com/puppeteer/puppeteer">Puppeteer</a> headless<br>
+Node.js API but geared towards end-to-end testing. Playwright has experimental Electron<br>
+support via Electron's support for the <a href="https://chromedevtools.github.io/devtools-protocol/" rel="nofollow">Chrome DevTools Protocol</a> (CDP).</p>
+<h3>Install dependencies</h3>
+<p>You can install Playwright through your preferred Node.js package manager. It comes with its<br>
+own <a href="https://playwright.dev/docs/intro" rel="nofollow">test runner</a>, which is built for end-to-end testing:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install --save-dev @playwright/test</pre></div>
+<p>:::caution Dependencies<br>
+This tutorial was written with <code class="notranslate">@playwright/test@1.52.0</code>. Check out<br>
+<a href="https://playwright.dev/docs/release-notes" rel="nofollow">Playwright's releases</a> page to learn about<br>
+changes that might affect the code below.<br>
+:::</p>
+<h3>Write your tests</h3>
+<p>Playwright launches your app in development mode through the <code class="notranslate">_electron.launch</code> API.<br>
+To point this API to your Electron app, you can pass the path to your main process<br>
+entry point (here, it is <code class="notranslate">main.js</code>).</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">test</span><span class="pl-kos">,</span> <span class="pl-s1">_electron</span> <span class="pl-k">as</span> <span class="pl-s1">electron</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@playwright/test'</span>
+
+<span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s">'launch app'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">electronApp</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electron</span><span class="pl-kos">.</span><span class="pl-en">launch</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">args</span>: <span class="pl-kos">[</span><span class="pl-s">'.'</span><span class="pl-kos">]</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-c">// close app</span>
+  <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">close</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>After that, you will have access to an instance of Playwright's <code class="notranslate">ElectronApp</code> class. This<br>
+is a powerful class that has access to main process modules for example:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">test</span><span class="pl-kos">,</span> <span class="pl-s1">_electron</span> <span class="pl-k">as</span> <span class="pl-s1">electron</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@playwright/test'</span>
+
+<span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s">'get isPackaged'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">electronApp</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electron</span><span class="pl-kos">.</span><span class="pl-en">launch</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">args</span>: <span class="pl-kos">[</span><span class="pl-s">'.'</span><span class="pl-kos">]</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-k">const</span> <span class="pl-s1">isPackaged</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">evaluate</span><span class="pl-kos">(</span><span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> app <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// This runs in Electron's main process, parameter here is always</span>
+    <span class="pl-c">// the result of the require('electron') in the main app script.</span>
+    <span class="pl-k">return</span> <span class="pl-s1">app</span><span class="pl-kos">.</span><span class="pl-c1">isPackaged</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">isPackaged</span><span class="pl-kos">)</span> <span class="pl-c">// false (because we're in development mode)</span>
+  <span class="pl-c">// close app</span>
+  <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">close</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>It can also create individual <a href="https://playwright.dev/docs/api/class-page" rel="nofollow">Page</a> objects from Electron BrowserWindow instances.<br>
+For example, to grab the first BrowserWindow and save a screenshot:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">test</span><span class="pl-kos">,</span> <span class="pl-s1">_electron</span> <span class="pl-k">as</span> <span class="pl-s1">electron</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@playwright/test'</span>
+
+<span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s">'save screenshot'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">electronApp</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electron</span><span class="pl-kos">.</span><span class="pl-en">launch</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">args</span>: <span class="pl-kos">[</span><span class="pl-s">'.'</span><span class="pl-kos">]</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-k">const</span> <span class="pl-s1">window</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">firstWindow</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+  <span class="pl-k">await</span> <span class="pl-s1">window</span><span class="pl-kos">.</span><span class="pl-en">screenshot</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">path</span>: <span class="pl-s">'intro.png'</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-c">// close app</span>
+  <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">close</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>Putting all this together using the Playwright test-runner, let's create an <code class="notranslate">example.spec.js</code><br>
+test file with a single test and assertion:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">test</span><span class="pl-kos">,</span> <span class="pl-s1">expect</span><span class="pl-kos">,</span> <span class="pl-s1">_electron</span> <span class="pl-k">as</span> <span class="pl-s1">electron</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@playwright/test'</span>
+
+<span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s">'example test'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">electronApp</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electron</span><span class="pl-kos">.</span><span class="pl-en">launch</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">args</span>: <span class="pl-kos">[</span><span class="pl-s">'.'</span><span class="pl-kos">]</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-k">const</span> <span class="pl-s1">isPackaged</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">evaluate</span><span class="pl-kos">(</span><span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> app <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// This runs in Electron's main process, parameter here is always</span>
+    <span class="pl-c">// the result of the require('electron') in the main app script.</span>
+    <span class="pl-k">return</span> <span class="pl-s1">app</span><span class="pl-kos">.</span><span class="pl-c1">isPackaged</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+  <span class="pl-en">expect</span><span class="pl-kos">(</span><span class="pl-s1">isPackaged</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">toBe</span><span class="pl-kos">(</span><span class="pl-c1">false</span><span class="pl-kos">)</span>
+
+  <span class="pl-c">// Wait for the first BrowserWindow to open</span>
+  <span class="pl-c">// and return its Page object</span>
+  <span class="pl-k">const</span> <span class="pl-s1">window</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">firstWindow</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+  <span class="pl-k">await</span> <span class="pl-s1">window</span><span class="pl-kos">.</span><span class="pl-en">screenshot</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">path</span>: <span class="pl-s">'intro.png'</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+  <span class="pl-c">// close app</span>
+  <span class="pl-k">await</span> <span class="pl-s1">electronApp</span><span class="pl-kos">.</span><span class="pl-en">close</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>Then, run Playwright Test using <code class="notranslate">npx playwright test</code>. You should see the test pass in your<br>
+console, and have an <code class="notranslate">intro.png</code> screenshot on your filesystem.</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate"><span class="pl-c1">☁  $ npx playwright test</span>
+
+<span class="pl-c1">Running 1 test using 1 worker</span>
+
+<span class="pl-c1">  ✓  example.spec.js:4:1 › example test (1s)</span></pre></div>
+<p>:::info<br>
+Playwright Test will automatically run any files matching the <code class="notranslate">.*(test|spec)\.(js|ts|mjs)</code> regex.<br>
+You can customize this match in the <a href="https://playwright.dev/docs/api/class-testconfig#test-config-test-match" rel="nofollow">Playwright Test configuration options</a>.<br>
+It also works with TypeScript out of the box.<br>
+:::</p>
+<p>:::tip Further reading<br>
+Check out Playwright's documentation for the full <a href="https://playwright.dev/docs/api/class-electron/" rel="nofollow">Electron</a><br>
+and <a href="https://playwright.dev/docs/api/class-electronapplication" rel="nofollow">ElectronApplication</a> class APIs.<br>
+:::</p>
+<h2>Using a custom test driver</h2>
+<p>It's also possible to write your own custom driver using Node.js' built-in IPC-over-STDIO.<br>
+Custom test drivers require you to write additional app code, but have lower overhead and let you<br>
+expose custom methods to your test suite.</p>
+<p>To create a custom driver, we'll use Node.js' <a href="https://nodejs.org/api/child_process.html" rel="nofollow"><code class="notranslate">child_process</code></a> API.<br>
+The test suite will spawn the Electron process, then establish a simple messaging protocol:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">electronPath</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'electron'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">childProcess</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'node:child_process'</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// spawn the process</span>
+<span class="pl-k">const</span> <span class="pl-s1">env</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span> <span class="pl-c">/* ... */</span> <span class="pl-kos">}</span>
+<span class="pl-k">const</span> <span class="pl-s1">stdio</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-s">'inherit'</span><span class="pl-kos">,</span> <span class="pl-s">'inherit'</span><span class="pl-kos">,</span> <span class="pl-s">'inherit'</span><span class="pl-kos">,</span> <span class="pl-s">'ipc'</span><span class="pl-kos">]</span>
+<span class="pl-k">const</span> <span class="pl-s1">appProcess</span> <span class="pl-c1">=</span> <span class="pl-s1">childProcess</span><span class="pl-kos">.</span><span class="pl-en">spawn</span><span class="pl-kos">(</span><span class="pl-s1">electronPath</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-s">'./app'</span><span class="pl-kos">]</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> stdio<span class="pl-kos">,</span> env <span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// listen for IPC messages from the app</span>
+<span class="pl-s1">appProcess</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">msg</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// ...</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// send an IPC message to the app</span>
+<span class="pl-s1">appProcess</span><span class="pl-kos">.</span><span class="pl-en">send</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">my</span>: <span class="pl-s">'message'</span> <span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>From within the Electron app, you can listen for messages and send replies using the Node.js<br>
+<a href="https://nodejs.org/api/process.html" rel="nofollow"><code class="notranslate">process</code></a> API:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// listen for messages from the test suite</span>
+<span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">msg</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// ...</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// send a message to the test suite</span>
+<span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-en">send</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">my</span>: <span class="pl-s">'message'</span> <span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>We can now communicate from the test suite to the Electron app using the <code class="notranslate">appProcess</code> object.</p>
+<p>For convenience, you may want to wrap <code class="notranslate">appProcess</code> in a driver object that provides more<br>
+high-level functions. Here is an example of how you can do this. Let's start by creating<br>
+a <code class="notranslate">TestDriver</code> class:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">class</span> <span class="pl-v">TestDriver</span> <span class="pl-kos">{</span>
+  <span class="pl-en">constructor</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> path<span class="pl-kos">,</span> args<span class="pl-kos">,</span> env <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">rpcCalls</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-kos">]</span>
+
+    <span class="pl-c">// start child process</span>
+    <span class="pl-s1">env</span><span class="pl-kos">.</span><span class="pl-c1">APP_TEST_DRIVER</span> <span class="pl-c1">=</span> <span class="pl-c1">1</span> <span class="pl-c">// let the app know it should listen for messages</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">process</span> <span class="pl-c1">=</span> <span class="pl-s1">childProcess</span><span class="pl-kos">.</span><span class="pl-en">spawn</span><span class="pl-kos">(</span><span class="pl-s1">path</span><span class="pl-kos">,</span> <span class="pl-s1">args</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> <span class="pl-c1">stdio</span>: <span class="pl-kos">[</span><span class="pl-s">'inherit'</span><span class="pl-kos">,</span> <span class="pl-s">'inherit'</span><span class="pl-kos">,</span> <span class="pl-s">'inherit'</span><span class="pl-kos">,</span> <span class="pl-s">'ipc'</span><span class="pl-kos">]</span><span class="pl-kos">,</span> env <span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+    <span class="pl-c">// handle rpc responses</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">process</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-kos">(</span><span class="pl-s1">message</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-c">// pop the handler</span>
+      <span class="pl-k">const</span> <span class="pl-s1">rpcCall</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">rpcCalls</span><span class="pl-kos">[</span><span class="pl-s1">message</span><span class="pl-kos">.</span><span class="pl-c1">msgId</span><span class="pl-kos">]</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">rpcCall</span><span class="pl-kos">)</span> <span class="pl-k">return</span>
+      <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">rpcCalls</span><span class="pl-kos">[</span><span class="pl-s1">message</span><span class="pl-kos">.</span><span class="pl-c1">msgId</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-c1">null</span>
+      <span class="pl-c">// reject/resolve</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">message</span><span class="pl-kos">.</span><span class="pl-c1">reject</span><span class="pl-kos">)</span> <span class="pl-s1">rpcCall</span><span class="pl-kos">.</span><span class="pl-en">reject</span><span class="pl-kos">(</span><span class="pl-s1">message</span><span class="pl-kos">.</span><span class="pl-c1">reject</span><span class="pl-kos">)</span>
+      <span class="pl-k">else</span> <span class="pl-s1">rpcCall</span><span class="pl-kos">.</span><span class="pl-en">resolve</span><span class="pl-kos">(</span><span class="pl-s1">message</span><span class="pl-kos">.</span><span class="pl-c1">resolve</span><span class="pl-kos">)</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+    <span class="pl-c">// wait for ready</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">isReady</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-en">rpc</span><span class="pl-kos">(</span><span class="pl-s">'isReady'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">catch</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">err</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">error</span><span class="pl-kos">(</span><span class="pl-s">'Application failed to start'</span><span class="pl-kos">,</span> <span class="pl-s1">err</span><span class="pl-kos">)</span>
+      <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-en">stop</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+      <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-en">exit</span><span class="pl-kos">(</span><span class="pl-c1">1</span><span class="pl-kos">)</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// simple RPC call</span>
+  <span class="pl-c">// to use: driver.rpc('method', 1, 2, 3).then(...)</span>
+  <span class="pl-k">async</span> <span class="pl-en">rpc</span> <span class="pl-kos">(</span><span class="pl-s1">cmd</span><span class="pl-kos">,</span> ...<span class="pl-s1">args</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// send rpc request</span>
+    <span class="pl-k">const</span> <span class="pl-s1">msgId</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">rpcCalls</span><span class="pl-kos">.</span><span class="pl-c1">length</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">process</span><span class="pl-kos">.</span><span class="pl-en">send</span><span class="pl-kos">(</span><span class="pl-kos">{</span> msgId<span class="pl-kos">,</span> cmd<span class="pl-kos">,</span> args <span class="pl-kos">}</span><span class="pl-kos">)</span>
+    <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-v">Promise</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">resolve</span><span class="pl-kos">,</span> <span class="pl-s1">reject</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">rpcCalls</span><span class="pl-kos">.</span><span class="pl-en">push</span><span class="pl-kos">(</span><span class="pl-kos">{</span> resolve<span class="pl-kos">,</span> reject <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-en">stop</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">process</span><span class="pl-kos">.</span><span class="pl-en">kill</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-smi">module</span><span class="pl-kos">.</span><span class="pl-c1">exports</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span> TestDriver <span class="pl-kos">}</span></pre></div>
+<p>In your app code, you can then write a simple handler to receive RPC calls:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-c1">METHODS</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+  <span class="pl-en">isReady</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// do any setup needed</span>
+    <span class="pl-k">return</span> <span class="pl-c1">true</span>
+  <span class="pl-kos">}</span>
+  <span class="pl-c">// define your RPC-able methods here</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">const</span> <span class="pl-en">onMessage</span> <span class="pl-c1">=</span> <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> msgId<span class="pl-kos">,</span> cmd<span class="pl-kos">,</span> args <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">let</span> <span class="pl-s1">method</span> <span class="pl-c1">=</span> <span class="pl-c1">METHODS</span><span class="pl-kos">[</span><span class="pl-s1">cmd</span><span class="pl-kos">]</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">method</span><span class="pl-kos">)</span> <span class="pl-s1">method</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-k">new</span> <span class="pl-v">Error</span><span class="pl-kos">(</span><span class="pl-s">'Invalid method: '</span> <span class="pl-c1">+</span> <span class="pl-s1">cmd</span><span class="pl-kos">)</span>
+  <span class="pl-k">try</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">resolve</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">method</span><span class="pl-kos">(</span>...<span class="pl-s1">args</span><span class="pl-kos">)</span>
+    <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-en">send</span><span class="pl-kos">(</span><span class="pl-kos">{</span> msgId<span class="pl-kos">,</span> resolve <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span> <span class="pl-k">catch</span> <span class="pl-kos">(</span><span class="pl-s1">err</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">reject</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+      <span class="pl-c1">message</span>: <span class="pl-s1">err</span><span class="pl-kos">.</span><span class="pl-c1">message</span><span class="pl-kos">,</span>
+      <span class="pl-c1">stack</span>: <span class="pl-s1">err</span><span class="pl-kos">.</span><span class="pl-c1">stack</span><span class="pl-kos">,</span>
+      <span class="pl-c1">name</span>: <span class="pl-s1">err</span><span class="pl-kos">.</span><span class="pl-c1">name</span>
+    <span class="pl-kos">}</span>
+    <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-en">send</span><span class="pl-kos">(</span><span class="pl-kos">{</span> msgId<span class="pl-kos">,</span> reject <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">env</span><span class="pl-kos">.</span><span class="pl-c1">APP_TEST_DRIVER</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'message'</span><span class="pl-kos">,</span> <span class="pl-en">onMessage</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Then, in your test suite, you can use your <code class="notranslate">TestDriver</code> class with the test automation<br>
+framework of your choosing. The following example uses<br>
+<a href="https://www.npmjs.com/package/ava" rel="nofollow"><code class="notranslate">ava</code></a>, but other popular choices like Jest<br>
+or Mocha would work as well:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">electronPath</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'electron'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">test</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'ava'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-kos">{</span> TestDriver <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-en">require</span><span class="pl-kos">(</span><span class="pl-s">'./testDriver'</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">app</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">TestDriver</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">path</span>: <span class="pl-s1">electronPath</span><span class="pl-kos">,</span>
+  <span class="pl-c1">args</span>: <span class="pl-kos">[</span><span class="pl-s">'./app'</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-c1">env</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">NODE_ENV</span>: <span class="pl-s">'test'</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-s1">test</span><span class="pl-kos">.</span><span class="pl-en">before</span><span class="pl-kos">(</span><span class="pl-k">async</span> <span class="pl-s1">t</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">await</span> <span class="pl-s1">app</span><span class="pl-kos">.</span><span class="pl-c1">isReady</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-s1">test</span><span class="pl-kos">.</span><span class="pl-c1">after</span><span class="pl-kos">.</span><span class="pl-en">always</span><span class="pl-kos">(</span><span class="pl-s">'cleanup'</span><span class="pl-kos">,</span> <span class="pl-k">async</span> <span class="pl-s1">t</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">await</span> <span class="pl-s1">app</span><span class="pl-kos">.</span><span class="pl-en">stop</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>

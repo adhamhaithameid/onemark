@@ -1,0 +1,358 @@
+<p align="center">
+  <a target="_blank" rel="noopener noreferrer" href="./docs/bear.jpg"><img src="./docs/bear.jpg" style="max-width: 100%;"></a>
+</p>
+<p><a href="https://github.com/pmndrs/zustand/actions?query=workflow%3ATest"><img src="https://camo.githubusercontent.com/a6d85796d1836d57d1f6d9b3317e51dc4479e93c11084f3f0fdd2c37b79daead/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f616374696f6e732f776f726b666c6f772f7374617475732f706d6e6472732f7a757374616e642f746573742e796d6c3f6272616e63683d6d61696e267374796c653d666c617426636f6c6f72413d30303030303026636f6c6f72423d303030303030" alt="Build Status" data-canonical-src="https://img.shields.io/github/actions/workflow/status/pmndrs/zustand/test.yml?branch=main&amp;style=flat&amp;colorA=000000&amp;colorB=000000" style="max-width: 100%;"></a><br>
+<a href="https://bundlejs.com/?q=zustand" rel="nofollow"><img src="https://camo.githubusercontent.com/786c136a4b07b0a22d2f592d0fb082f8501fb2e87546957f5c567f5471e99e3c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f64796e616d69632f6a736f6e3f75726c3d687474707325334125324625324664656e6f2e62756e646c656a732e636f6d253246253346712533447a757374616e642671756572793d2532342e73697a652e756e636f6d7072657373656453697a65267374796c653d666c6174266c6162656c3d62756e646c6525323073697a6526636f6c6f72413d30303030303026636f6c6f72423d303030303030" alt="Build Size" data-canonical-src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdeno.bundlejs.com%2F%3Fq%3Dzustand&amp;query=%24.size.uncompressedSize&amp;style=flat&amp;label=bundle%20size&amp;colorA=000000&amp;colorB=000000" style="max-width: 100%;"></a><br>
+<a href="https://www.npmjs.com/package/zustand" rel="nofollow"><img src="https://camo.githubusercontent.com/2941823cb974e51896d1f790f8f6b7474f40b4a98953bae8383344426f417d14/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f762f7a757374616e643f7374796c653d666c617426636f6c6f72413d30303030303026636f6c6f72423d303030303030" alt="Version" data-canonical-src="https://img.shields.io/npm/v/zustand?style=flat&amp;colorA=000000&amp;colorB=000000" style="max-width: 100%;"></a><br>
+<a href="https://www.npmjs.com/package/zustand" rel="nofollow"><img src="https://camo.githubusercontent.com/843c4b606f7b79bbc7e823a1e5db6d4e27cafbf45779c4bbf050695dac3c6c59/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f64742f7a757374616e642e7376673f7374796c653d666c617426636f6c6f72413d30303030303026636f6c6f72423d303030303030" alt="Downloads" data-canonical-src="https://img.shields.io/npm/dt/zustand.svg?style=flat&amp;colorA=000000&amp;colorB=000000" style="max-width: 100%;"></a><br>
+<a href="https://discord.gg/poimandres" rel="nofollow"><img src="https://camo.githubusercontent.com/fcf5f51f5cd74150bdbb2e49ca247168c3bf34e13f5026b25edb2730f6df9400/68747470733a2f2f696d672e736869656c64732e696f2f646973636f72642f3734303039303736383136343635313030383f7374796c653d666c617426636f6c6f72413d30303030303026636f6c6f72423d303030303030266c6162656c3d646973636f7264266c6f676f3d646973636f7264266c6f676f436f6c6f723d666666666666" alt="Discord Shield" data-canonical-src="https://img.shields.io/discord/740090768164651008?style=flat&amp;colorA=000000&amp;colorB=000000&amp;label=discord&amp;logo=discord&amp;logoColor=ffffff" style="max-width: 100%;"></a></p>
+<a href="https://dai-shi.github.io/zustand-banner-sponsorship/sponsors/" rel="nofollow">
+  <p align="center">
+    <img src="https://camo.githubusercontent.com/17dbd66cb38024071d19b577f6c337dfeea94c748c1a15601326a442012c1654/68747470733a2f2f6461692d7368692e6769746875622e696f2f7a757374616e642d62616e6e65722d73706f6e736f72736869702f6170692f62616e6e65722e706e67" data-canonical-src="https://dai-shi.github.io/zustand-banner-sponsorship/api/banner.png" style="max-width: 100%;">
+  </p>
+</a>
+<p>A small, fast and scalable bearbones state-management solution using simplified flux principles. Has a comfy API based on hooks, isn't boilerplatey or opinionated.</p>
+<p>Don't disregard it because it's cute. It has quite the claws, lots of time was spent dealing with common pitfalls, like the dreaded <a href="https://react-redux.js.org/api/hooks#stale-props-and-zombie-children" rel="nofollow">zombie child problem</a>, <a href="https://github.com/bvaughn/rfcs/blob/useMutableSource/text/0000-use-mutable-source.md">react concurrency</a>, and <a href="https://github.com/facebook/react/issues/13332" data-hovercard-type="issue" data-hovercard-url="/react/react/issues/13332/hovercard">context loss</a> between mixed renderers. It may be the one state-manager in the React space that gets all of these right.</p>
+<p>You can try a live <a href="https://zustand-demo.pmnd.rs/" rel="nofollow">demo</a> and read the <a href="https://zustand.docs.pmnd.rs/" rel="nofollow">docs</a>.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install zustand</pre></div>
+<p><g-emoji class="g-emoji" alias="warning">⚠️</g-emoji> This readme is written for JavaScript users. If you are a TypeScript user, be sure to check out our <a href="#typescript-usage">TypeScript Usage section</a>.</p>
+<h2>First create a store</h2>
+<p>Your store is a hook! You can put anything in it: primitives, objects, functions. State has to be updated immutably and the <code class="notranslate">set</code> function <a href="./docs/learn/guides/immutable-state-and-merging.md">merges state</a> to help it.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">create</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useBearStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">bears</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+  <span class="pl-en">increasePopulation</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">bears</span>: <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">bears</span> <span class="pl-c1">+</span> <span class="pl-c1">1</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+  <span class="pl-en">removeAllBears</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">bears</span>: <span class="pl-c1">0</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<h2>Then bind your components, and that's it!</h2>
+<p>Use the hook anywhere, no providers are needed. Select your state and the component will re-render on changes.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">function</span> <span class="pl-v">BearCounter</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">bears</span> <span class="pl-c1">=</span> <span class="pl-en">useBearStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">bears</span><span class="pl-kos">)</span>
+  <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span><span class="pl-kos">{</span><span class="pl-s1">bears</span><span class="pl-kos">}</span> around here ...<span class="pl-kos">&lt;/</span><span class="pl-s1">h1</span><span class="pl-c1">&gt;</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-v">Controls</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">increasePopulation</span> <span class="pl-c1">=</span> <span class="pl-en">useBearStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">increasePopulation</span><span class="pl-kos">)</span>
+  <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">button</span> <span class="pl-c1">onClick</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">increasePopulation</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span>one up<span class="pl-kos">&lt;/</span><span class="pl-s1">button</span><span class="pl-c1">&gt;</span>
+<span class="pl-kos">}</span></pre></div>
+<h3>Why zustand over redux?</h3>
+<ul>
+<li>Simple and un-opinionated</li>
+<li>Makes hooks the primary means of consuming state</li>
+<li>Doesn't wrap your app in context providers</li>
+<li><a href="#transient-updates-for-often-occurring-state-changes">Can inform components transiently (without causing render)</a></li>
+</ul>
+<h3>Why zustand over context?</h3>
+<ul>
+<li>Less boilerplate</li>
+<li>Renders components only on changes</li>
+<li>Centralized, action-based state management</li>
+</ul>
+<hr>
+<h1>Recipes</h1>
+<h2>Fetching everything</h2>
+<p>You can, but bear in mind that it will cause the component to update on every state change!</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">state</span> <span class="pl-c1">=</span> <span class="pl-en">useBearStore</span><span class="pl-kos">(</span><span class="pl-kos">)</span></pre></div>
+<h2>Selecting multiple state slices</h2>
+<p>It detects changes with strict-equality (old === new) by default, this is efficient for atomic state picks.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">nuts</span> <span class="pl-c1">=</span> <span class="pl-en">useBearStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">nuts</span><span class="pl-kos">)</span>
+<span class="pl-k">const</span> <span class="pl-s1">honey</span> <span class="pl-c1">=</span> <span class="pl-en">useBearStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">honey</span><span class="pl-kos">)</span></pre></div>
+<p>If you want to construct a single object with multiple state-picks inside, similar to redux's mapStateToProps, you can use <a href="./docs/learn/guides/prevent-rerenders-with-use-shallow.md">useShallow</a> to prevent unnecessary rerenders when the selector output does not change according to shallow equal.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">create</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">useShallow</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/react/shallow'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useBearStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">nuts</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+  <span class="pl-c1">honey</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+  <span class="pl-c1">treats</span>: <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-c">// ...</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// Object pick, re-renders the component when either state.nuts or state.honey change</span>
+<span class="pl-k">const</span> <span class="pl-kos">{</span> nuts<span class="pl-kos">,</span> honey <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-s1">useBearStore</span><span class="pl-kos">(</span>
+  <span class="pl-en">useShallow</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">nuts</span>: <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">nuts</span><span class="pl-kos">,</span> <span class="pl-c1">honey</span>: <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">honey</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span>
+
+<span class="pl-c">// Array pick, re-renders the component when either state.nuts or state.honey change</span>
+<span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">nuts</span><span class="pl-kos">,</span> <span class="pl-s1">honey</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-s1">useBearStore</span><span class="pl-kos">(</span>
+  <span class="pl-en">useShallow</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">[</span><span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">nuts</span><span class="pl-kos">,</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">honey</span><span class="pl-kos">]</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span>
+
+<span class="pl-c">// Mapped picks, re-renders the component when state.treats changes in order, count or keys</span>
+<span class="pl-k">const</span> <span class="pl-s1">treats</span> <span class="pl-c1">=</span> <span class="pl-s1">useBearStore</span><span class="pl-kos">(</span><span class="pl-en">useShallow</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-v">Object</span><span class="pl-kos">.</span><span class="pl-en">keys</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">treats</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<p>For more control over re-rendering, you may provide any custom equality function (this example requires the use of <a href="./docs/reference/migrations/migrating-to-v5.md#using-custom-equality-functions-such-as-shallow"><code class="notranslate">createWithEqualityFn</code></a>).</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">treats</span> <span class="pl-c1">=</span> <span class="pl-en">useBearStore</span><span class="pl-kos">(</span>
+  <span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">treats</span><span class="pl-kos">,</span>
+  <span class="pl-kos">(</span><span class="pl-s1">oldTreats</span><span class="pl-kos">,</span> <span class="pl-s1">newTreats</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">compare</span><span class="pl-kos">(</span><span class="pl-s1">oldTreats</span><span class="pl-kos">,</span> <span class="pl-s1">newTreats</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span></pre></div>
+<h2>Overwriting state</h2>
+<p>The <code class="notranslate">set</code> function has a second argument, <code class="notranslate">false</code> by default. Instead of merging, it will replace the state model. Be careful not to wipe out parts you rely on, like actions.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">useFishStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">salmon</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span>
+  <span class="pl-c1">tuna</span>: <span class="pl-c1">2</span><span class="pl-kos">,</span>
+  <span class="pl-en">deleteEverything</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">,</span> <span class="pl-c1">true</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-c">// clears the entire store, actions included</span>
+  <span class="pl-en">deleteTuna</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">{</span> tuna<span class="pl-kos">,</span> ...<span class="pl-s1">rest</span> <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">rest</span><span class="pl-kos">,</span> <span class="pl-c1">true</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<h2>Async actions</h2>
+<p>Just call <code class="notranslate">set</code> when you're ready, zustand doesn't care if your actions are async or not.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">useFishStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">fishies</span>: <span class="pl-kos">{</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-en">fetch</span>: <span class="pl-k">async</span> <span class="pl-kos">(</span><span class="pl-s1">pond</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-en">fetch</span><span class="pl-kos">(</span><span class="pl-s1">pond</span><span class="pl-kos">)</span>
+    <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">fishies</span>: <span class="pl-k">await</span> <span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-en">json</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<h2>Read from state in actions</h2>
+<p><code class="notranslate">set</code> allows fn-updates <code class="notranslate">set(state =&gt; result)</code>, but you still have access to state outside of it through <code class="notranslate">get</code>.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">useSoundStore</span> <span class="pl-c1">=</span> <span class="pl-s1">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">,</span> <span class="pl-s1">get</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">sound</span>: <span class="pl-s">'grunt'</span><span class="pl-kos">,</span>
+  <span class="pl-c1">action</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">sound</span> <span class="pl-c1">=</span> <span class="pl-s1">get</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">sound</span>
+    <span class="pl-kos">.</span><span class="pl-kos">.</span><span class="pl-kos">.</span></pre></div>
+<h2>Reading/writing state and reacting to changes outside of components</h2>
+<p>Sometimes you need to access state in a non-reactive way or act upon the store. For these cases, the resulting hook has utility functions attached to its prototype.</p>
+<p><g-emoji class="g-emoji" alias="warning">⚠️</g-emoji> This technique is not recommended for adding state in <a href="https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md">React Server Components</a> (typically in Next.js 13 and above). It can lead to unexpected bugs and privacy issues for your users. For more details, see <a href="https://github.com/pmndrs/zustand/discussions/2200" data-hovercard-type="discussion" data-hovercard-url="/pmndrs/zustand/discussions/2200/hovercard">#2200</a>.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">useDogStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">paw</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">snout</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">fur</span>: <span class="pl-c1">true</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// Getting non-reactive fresh state</span>
+<span class="pl-k">const</span> <span class="pl-s1">paw</span> <span class="pl-c1">=</span> <span class="pl-s1">useDogStore</span><span class="pl-kos">.</span><span class="pl-en">getState</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">paw</span>
+<span class="pl-c">// Listening to all changes, fires synchronously on every change</span>
+<span class="pl-k">const</span> <span class="pl-s1">unsub1</span> <span class="pl-c1">=</span> <span class="pl-s1">useDogStore</span><span class="pl-kos">.</span><span class="pl-en">subscribe</span><span class="pl-kos">(</span><span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-c1">log</span><span class="pl-kos">)</span>
+<span class="pl-c">// Updating state, will trigger listeners</span>
+<span class="pl-s1">useDogStore</span><span class="pl-kos">.</span><span class="pl-en">setState</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">paw</span>: <span class="pl-c1">false</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-c">// Unsubscribe listeners</span>
+<span class="pl-s1">unsub1</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+
+<span class="pl-c">// You can of course use the hook as you always would</span>
+<span class="pl-k">function</span> <span class="pl-v">Component</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">paw</span> <span class="pl-c1">=</span> <span class="pl-s1">useDogStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">paw</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-kos">.</span><span class="pl-kos">.</span></pre></div>
+<h3>Using subscribe with selector</h3>
+<p>If you need to subscribe with a selector,<br>
+<code class="notranslate">subscribeWithSelector</code> middleware will help.</p>
+<p>With this middleware <code class="notranslate">subscribe</code> accepts an additional signature:</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-en">subscribe</span><span class="pl-kos">(</span><span class="pl-s1">selector</span><span class="pl-kos">,</span> <span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-s1">options</span>?: <span class="pl-kos">{</span> <span class="pl-s1">equalityFn</span><span class="pl-kos">,</span> <span class="pl-s1">fireImmediately</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>: <span class="pl-v">Unsubscribe</span></pre></div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">subscribeWithSelector</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/middleware'</span>
+<span class="pl-k">const</span> <span class="pl-s1">useDogStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span>
+  <span class="pl-en">subscribeWithSelector</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">paw</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">snout</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span> <span class="pl-c1">fur</span>: <span class="pl-c1">true</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span>
+
+<span class="pl-c">// Listening to selected changes, in this case when "paw" changes</span>
+<span class="pl-k">const</span> <span class="pl-s1">unsub2</span> <span class="pl-c1">=</span> <span class="pl-s1">useDogStore</span><span class="pl-kos">.</span><span class="pl-en">subscribe</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">paw</span><span class="pl-kos">,</span> <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-c1">log</span><span class="pl-kos">)</span>
+<span class="pl-c">// Subscribe also exposes the previous value</span>
+<span class="pl-k">const</span> <span class="pl-s1">unsub3</span> <span class="pl-c1">=</span> <span class="pl-s1">useDogStore</span><span class="pl-kos">.</span><span class="pl-en">subscribe</span><span class="pl-kos">(</span>
+  <span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">paw</span><span class="pl-kos">,</span>
+  <span class="pl-kos">(</span><span class="pl-s1">paw</span><span class="pl-kos">,</span> <span class="pl-s1">previousPaw</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">paw</span><span class="pl-kos">,</span> <span class="pl-s1">previousPaw</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span>
+<span class="pl-c">// Subscribe also supports an optional equality function</span>
+<span class="pl-k">const</span> <span class="pl-s1">unsub4</span> <span class="pl-c1">=</span> <span class="pl-s1">useDogStore</span><span class="pl-kos">.</span><span class="pl-en">subscribe</span><span class="pl-kos">(</span>
+  <span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">[</span><span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">paw</span><span class="pl-kos">,</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">fur</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-c1">log</span><span class="pl-kos">,</span>
+  <span class="pl-kos">{</span> <span class="pl-c1">equalityFn</span>: <span class="pl-s1">shallow</span> <span class="pl-kos">}</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span>
+<span class="pl-c">// Subscribe and fire immediately</span>
+<span class="pl-k">const</span> <span class="pl-s1">unsub5</span> <span class="pl-c1">=</span> <span class="pl-s1">useDogStore</span><span class="pl-kos">.</span><span class="pl-en">subscribe</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">paw</span><span class="pl-kos">,</span> <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-c1">log</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">fireImmediately</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<h2>Using zustand without React</h2>
+<p>Zustand core can be imported and used without the React dependency. The only difference is that the create function does not return a hook, but the API utilities.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">createStore</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/vanilla'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">store</span> <span class="pl-c1">=</span> <span class="pl-en">createStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> ...<span class="pl-kos">)</span>
+<span class="pl-k">const</span> <span class="pl-kos">{</span> getState<span class="pl-kos">,</span> setState<span class="pl-kos">,</span> subscribe<span class="pl-kos">,</span> getInitialState <span class="pl-kos">}</span> <span class="pl-c1">=</span> <span class="pl-s1">store</span>
+
+<span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-s1">store</span></pre></div>
+<p>You can use a vanilla store with <code class="notranslate">useStore</code> hook available since v4.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">useStore</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">vanillaStore</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./vanillaStore'</span>
+
+<span class="pl-k">const</span> <span class="pl-en">useBoundStore</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-s1">selector</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">useStore</span><span class="pl-kos">(</span><span class="pl-s1">vanillaStore</span><span class="pl-kos">,</span> <span class="pl-s1">selector</span><span class="pl-kos">)</span></pre></div>
+<p><g-emoji class="g-emoji" alias="warning">⚠️</g-emoji> Note that middlewares that modify <code class="notranslate">set</code> or <code class="notranslate">get</code> are not applied to <code class="notranslate">getState</code> and <code class="notranslate">setState</code>.</p>
+<h2>Transient updates (for often occurring state-changes)</h2>
+<p>The subscribe function allows components to bind to a state-portion without forcing re-render on changes. Best combine it with useEffect for automatic unsubscribe on unmount. This can make a <a href="https://codesandbox.io/s/peaceful-johnson-txtws" rel="nofollow">drastic</a> performance impact when you are allowed to mutate the view directly.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">useScratchStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">scratches</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span> ... <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-v">Component</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// Fetch initial state</span>
+  <span class="pl-k">const</span> <span class="pl-s1">scratchRef</span> <span class="pl-c1">=</span> <span class="pl-en">useRef</span><span class="pl-kos">(</span><span class="pl-s1">useScratchStore</span><span class="pl-kos">.</span><span class="pl-en">getState</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">scratches</span><span class="pl-kos">)</span>
+  <span class="pl-c">// Connect to the store on mount, disconnect on unmount, catch state-changes in a reference</span>
+  <span class="pl-en">useEffect</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">useScratchStore</span><span class="pl-kos">.</span><span class="pl-en">subscribe</span><span class="pl-kos">(</span>
+    <span class="pl-s1">state</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-s1">scratchRef</span><span class="pl-kos">.</span><span class="pl-c1">current</span> <span class="pl-c1">=</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">scratches</span><span class="pl-kos">)</span>
+  <span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-kos">[</span><span class="pl-kos">]</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-kos">.</span><span class="pl-kos">.</span></pre></div>
+<h2>Sick of reducers and changing nested states? Use Immer!</h2>
+<p>Reducing nested structures is tiresome. Have you tried <a href="https://github.com/mweststrate/immer">immer</a>?</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">produce</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'immer'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useLushStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">lush</span>: <span class="pl-kos">{</span> <span class="pl-c1">forest</span>: <span class="pl-kos">{</span> <span class="pl-c1">contains</span>: <span class="pl-kos">{</span> <span class="pl-c1">a</span>: <span class="pl-s">'bear'</span> <span class="pl-kos">}</span> <span class="pl-kos">}</span> <span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-en">clearForest</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span>
+    <span class="pl-s1">set</span><span class="pl-kos">(</span>
+      <span class="pl-en">produce</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">lush</span><span class="pl-kos">.</span><span class="pl-c1">forest</span><span class="pl-kos">.</span><span class="pl-c1">contains</span> <span class="pl-c1">=</span> <span class="pl-c1">null</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">clearForest</span> <span class="pl-c1">=</span> <span class="pl-s1">useLushStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">clearForest</span><span class="pl-kos">)</span>
+<span class="pl-s1">clearForest</span><span class="pl-kos">(</span><span class="pl-kos">)</span></pre></div>
+<p><a href="./docs/learn/guides/updating-state.md#with-immer">Alternatively, there are some other solutions.</a></p>
+<h2>Persist middleware</h2>
+<p>You can persist your store's data using any kind of storage.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">create</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">persist</span><span class="pl-kos">,</span> <span class="pl-s1">createJSONStorage</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/middleware'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useFishStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span>
+  <span class="pl-en">persist</span><span class="pl-kos">(</span>
+    <span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">,</span> <span class="pl-s1">get</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+      <span class="pl-c1">fishes</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+      <span class="pl-en">addAFish</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">fishes</span>: <span class="pl-s1">get</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">fishes</span> <span class="pl-c1">+</span> <span class="pl-c1">1</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-kos">{</span>
+      <span class="pl-c1">name</span>: <span class="pl-s">'food-storage'</span><span class="pl-kos">,</span> <span class="pl-c">// name of the item in the storage (must be unique)</span>
+      <span class="pl-c1">storage</span>: <span class="pl-en">createJSONStorage</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">sessionStorage</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-c">// (optional) by default, 'localStorage' is used</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span>
+  <span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span></pre></div>
+<p><a href="./docs/reference/integrations/persisting-store-data.md">See the full documentation for this middleware.</a></p>
+<h2>Immer middleware</h2>
+<p>Immer is available as middleware too.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">create</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">immer</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/middleware/immer'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useBeeStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span>
+  <span class="pl-en">immer</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+    <span class="pl-c1">bees</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+    <span class="pl-en">addBees</span>: <span class="pl-kos">(</span><span class="pl-s1">by</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span>
+      <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">bees</span> <span class="pl-c1">+=</span> <span class="pl-s1">by</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span></pre></div>
+<h2>Can't live without redux-like reducers and action types?</h2>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">types</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span> <span class="pl-c1">increase</span>: <span class="pl-s">'INCREASE'</span><span class="pl-kos">,</span> <span class="pl-c1">decrease</span>: <span class="pl-s">'DECREASE'</span> <span class="pl-kos">}</span>
+
+<span class="pl-k">const</span> <span class="pl-en">reducer</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> type<span class="pl-kos">,</span> by <span class="pl-c1">=</span> <span class="pl-c1">1</span> <span class="pl-kos">}</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">switch</span> <span class="pl-kos">(</span><span class="pl-s1">type</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">case</span> <span class="pl-s1">types</span><span class="pl-kos">.</span><span class="pl-c1">increase</span>:
+      <span class="pl-k">return</span> <span class="pl-kos">{</span> <span class="pl-c1">grumpiness</span>: <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">grumpiness</span> <span class="pl-c1">+</span> <span class="pl-s1">by</span> <span class="pl-kos">}</span>
+    <span class="pl-k">case</span> <span class="pl-s1">types</span><span class="pl-kos">.</span><span class="pl-c1">decrease</span>:
+      <span class="pl-k">return</span> <span class="pl-kos">{</span> <span class="pl-c1">grumpiness</span>: <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">grumpiness</span> <span class="pl-c1">-</span> <span class="pl-s1">by</span> <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useGrumpyStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  <span class="pl-c1">grumpiness</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+  <span class="pl-en">dispatch</span>: <span class="pl-kos">(</span><span class="pl-s1">args</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">set</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">reducer</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">,</span> <span class="pl-s1">args</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">dispatch</span> <span class="pl-c1">=</span> <span class="pl-s1">useGrumpyStore</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">dispatch</span><span class="pl-kos">)</span>
+<span class="pl-s1">dispatch</span><span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">type</span>: <span class="pl-s1">types</span><span class="pl-kos">.</span><span class="pl-c1">increase</span><span class="pl-kos">,</span> <span class="pl-c1">by</span>: <span class="pl-c1">2</span> <span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>Or, just use our redux-middleware. It wires up your main-reducer, sets the initial state, and adds a dispatch function to the state itself and the vanilla API.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">redux</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/middleware'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useGrumpyStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-en">redux</span><span class="pl-kos">(</span><span class="pl-s1">reducer</span><span class="pl-kos">,</span> <span class="pl-s1">initialState</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<h2>Redux devtools</h2>
+<p>Install the <a href="https://chromewebstore.google.com/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd" rel="nofollow">Redux DevTools Chrome extension</a> to use the devtools middleware.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">devtools</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/middleware'</span>
+
+<span class="pl-c">// Usage with a plain action store, it will log actions as "setState"</span>
+<span class="pl-k">const</span> <span class="pl-s1">usePlainStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-en">devtools</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> ...<span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-c">// Usage with a redux store, it will log full action types</span>
+<span class="pl-k">const</span> <span class="pl-s1">useReduxStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-en">devtools</span><span class="pl-kos">(</span><span class="pl-en">redux</span><span class="pl-kos">(</span><span class="pl-s1">reducer</span><span class="pl-kos">,</span> <span class="pl-s1">initialState</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<p>One redux devtools connection for multiple stores</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">devtools</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/middleware'</span>
+
+<span class="pl-c">// Usage with a plain action store, it will log actions as "setState"</span>
+<span class="pl-k">const</span> <span class="pl-s1">usePlainStore1</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-en">devtools</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> ...<span class="pl-kos">,</span> <span class="pl-kos">{</span> name<span class="pl-kos">,</span> <span class="pl-c1">store</span>: <span class="pl-s1">storeName1</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-k">const</span> <span class="pl-s1">usePlainStore2</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-en">devtools</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> ...<span class="pl-kos">,</span> <span class="pl-kos">{</span> name<span class="pl-kos">,</span> <span class="pl-c1">store</span>: <span class="pl-s1">storeName2</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-c">// Usage with a redux store, it will log full action types</span>
+<span class="pl-k">const</span> <span class="pl-s1">useReduxStore1</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-en">devtools</span><span class="pl-kos">(</span><span class="pl-en">redux</span><span class="pl-kos">(</span><span class="pl-s1">reducer</span><span class="pl-kos">,</span> <span class="pl-s1">initialState</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> name<span class="pl-kos">,</span> <span class="pl-c1">store</span>: <span class="pl-s1">storeName3</span> <span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-k">const</span> <span class="pl-s1">useReduxStore2</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-kos">(</span><span class="pl-en">devtools</span><span class="pl-kos">(</span><span class="pl-en">redux</span><span class="pl-kos">(</span><span class="pl-s1">reducer</span><span class="pl-kos">,</span> <span class="pl-s1">initialState</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-kos">{</span> name<span class="pl-kos">,</span> <span class="pl-c1">store</span>: <span class="pl-s1">storeName4</span> <span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>Assigning different connection names will separate stores in redux devtools. This also helps group different stores into separate redux devtools connections.</p>
+<p>devtools takes the store function as its first argument, optionally you can name the store or configure <a href="https://github.com/zalmoxisus/redux-devtools-extension/blob/master/docs/API/Arguments.md#serialize">serialize</a> options with a second argument.</p>
+<p>Name store: <code class="notranslate">devtools(..., {name: "MyStore"})</code>, which will create a separate instance named "MyStore" in the devtools.</p>
+<p>Serialize options: <code class="notranslate">devtools(..., { serialize: { options: true } })</code>.</p>
+<h4>Logging Actions</h4>
+<p>devtools will only log actions from each separated store unlike in a typical <em>combined reducers</em> redux store. See an approach to combining stores <a class="issue-link js-issue-link" data-error-text="Failed to load title" data-id="684035790" data-permission-text="Title is private" data-url="https://github.com/pmndrs/zustand/issues/163" data-hovercard-type="issue" data-hovercard-url="/pmndrs/zustand/issues/163/hovercard" href="https://github.com/pmndrs/zustand/issues/163">pmndrs/zustand#163</a></p>
+<p>You can log a specific action type for each <code class="notranslate">set</code> function by passing a third parameter:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">useBearStore</span> <span class="pl-c1">=</span> <span class="pl-s1">create</span><span class="pl-kos">(</span><span class="pl-s1">devtools</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+  ...
+  <span class="pl-en">eatFish</span>: <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=</span><span class="pl-c1">&gt;</span> <span class="pl-s1">set</span><span class="pl-kos">(</span>
+    <span class="pl-kos">(</span><span class="pl-s1">prev</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">fishes</span>: <span class="pl-s1">prev</span><span class="pl-kos">.</span><span class="pl-c1">fishes</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">1</span> ? <span class="pl-s1">prev</span><span class="pl-kos">.</span><span class="pl-c1">fishes</span> <span class="pl-c1">-</span> <span class="pl-c1">1</span> : <span class="pl-c1">0</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-c1">undefined</span><span class="pl-kos">,</span>
+    <span class="pl-s">'bear/eatFish'</span>
+  <span class="pl-kos">)</span><span class="pl-kos">,</span>
+  ...</pre></div>
+<p>You can also log the action's type along with its payload:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate">  ...
+  <span class="pl-s1">addFishes</span>: <span class="pl-kos">(</span><span class="pl-s1">count</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">set</span><span class="pl-kos">(</span>
+    <span class="pl-kos">(</span><span class="pl-s1">prev</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">fishes</span>: <span class="pl-s1">prev</span><span class="pl-kos">.</span><span class="pl-c1">fishes</span> <span class="pl-c1">+</span> <span class="pl-s1">count</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+    <span class="pl-c1">undefined</span><span class="pl-kos">,</span>
+    <span class="pl-kos">{</span> <span class="pl-c1">type</span>: <span class="pl-s">'bear/addFishes'</span><span class="pl-kos">,</span> count<span class="pl-kos">,</span> <span class="pl-kos">}</span>
+  <span class="pl-kos">)</span><span class="pl-kos">,</span>
+  ...</pre></div>
+<p>If an action type is not provided, it is defaulted to "anonymous". You can customize this default value by providing an <code class="notranslate">anonymousActionType</code> parameter:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-en">devtools</span><span class="pl-kos">(</span>...<span class="pl-kos">,</span> <span class="pl-kos">{</span> <span class="pl-c1">anonymousActionType</span>: <span class="pl-s">'unknown'</span><span class="pl-kos">,</span> ... <span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<p>If you wish to disable devtools (on production for instance). You can customize this setting by providing the <code class="notranslate">enabled</code> parameter:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-en">devtools</span><span class="pl-kos">(</span>...<span class="pl-kos">,</span> <span class="pl-kos">{</span> <span class="pl-c1">enabled</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span> ... <span class="pl-kos">}</span><span class="pl-kos">)</span></pre></div>
+<h2>React context</h2>
+<p>The store created with <code class="notranslate">create</code> doesn't require context providers. In some cases, you may want to use contexts for dependency injection or if you want to initialize your store with props from a component. Because the normal store is a hook, passing it as a normal context value may violate the rules of hooks.</p>
+<p>The recommended method available since v4 is to use the vanilla store.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">createContext</span><span class="pl-kos">,</span> <span class="pl-s1">useContext</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">createStore</span><span class="pl-kos">,</span> <span class="pl-s1">useStore</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">store</span> <span class="pl-c1">=</span> <span class="pl-en">createStore</span><span class="pl-kos">(</span>...<span class="pl-kos">)</span> <span class="pl-c">// vanilla store without hooks</span>
+
+<span class="pl-k">const</span> <span class="pl-v">StoreContext</span> <span class="pl-c1">=</span> <span class="pl-en">createContext</span><span class="pl-kos">(</span><span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-v">App</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span>
+  <span class="pl-c1">&lt;</span><span class="pl-v">StoreContext</span><span class="pl-kos">.</span><span class="pl-c1">Provider</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">store</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span>
+    ...
+  <span class="pl-kos">&lt;/</span><span class="pl-v">StoreContext</span><span class="pl-kos">.</span><span class="pl-c1">Provider</span><span class="pl-c1">&gt;</span>
+<span class="pl-kos">)</span>
+
+<span class="pl-k">const</span> <span class="pl-v">Component</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+  <span class="pl-k">const</span> <span class="pl-s1">store</span> <span class="pl-c1">=</span> <span class="pl-en">useContext</span><span class="pl-kos">(</span><span class="pl-v">StoreContext</span><span class="pl-kos">)</span>
+  <span class="pl-k">const</span> <span class="pl-s1">slice</span> <span class="pl-c1">=</span> <span class="pl-en">useStore</span><span class="pl-kos">(</span><span class="pl-s1">store</span><span class="pl-kos">,</span> <span class="pl-s1">selector</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-kos">.</span><span class="pl-kos">.</span></pre></div>
+<h2>TypeScript Usage</h2>
+<p>Basic typescript usage doesn't require anything special except for writing <code class="notranslate">create&lt;State&gt;()(...)</code> instead of <code class="notranslate">create(...)</code>...</p>
+<div class="highlight highlight-source-ts"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">create</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">devtools</span><span class="pl-kos">,</span> <span class="pl-s1">persist</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'zustand/middleware'</span>
+<span class="pl-k">import</span> <span class="pl-k">type</span> <span class="pl-kos">{</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'@redux-devtools/extension'</span> <span class="pl-c">// required for devtools typing</span>
+
+<span class="pl-k">interface</span> <span class="pl-smi">BearState</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">bears</span>: <span class="pl-smi">number</span>
+  <span class="pl-c1">increase</span>: <span class="pl-kos">(</span><span class="pl-s1">by</span>: <span class="pl-smi">number</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-smi"><span class="pl-k">void</span></span>
+<span class="pl-kos">}</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">useBearStore</span> <span class="pl-c1">=</span> <span class="pl-en">create</span><span class="pl-c1">&lt;</span><span class="pl-smi">BearState</span><span class="pl-c1">&gt;</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">(</span>
+  <span class="pl-en">devtools</span><span class="pl-kos">(</span>
+    <span class="pl-en">persist</span><span class="pl-kos">(</span>
+      <span class="pl-kos">(</span><span class="pl-s1">set</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span>
+        <span class="pl-c1">bears</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+        <span class="pl-en">increase</span>: <span class="pl-kos">(</span><span class="pl-s1">by</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-en">set</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">state</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">(</span><span class="pl-kos">{</span> <span class="pl-c1">bears</span>: <span class="pl-s1">state</span><span class="pl-kos">.</span><span class="pl-c1">bears</span> <span class="pl-c1">+</span> <span class="pl-s1">by</span> <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">,</span>
+      <span class="pl-kos">{</span>
+        <span class="pl-c1">name</span>: <span class="pl-s">'bear-storage'</span><span class="pl-kos">,</span>
+      <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-kos">)</span><span class="pl-kos">,</span>
+  <span class="pl-kos">)</span><span class="pl-kos">,</span>
+<span class="pl-kos">)</span></pre></div>
+<p>A more detailed TypeScript guide is <a href="docs/learn/guides/beginner-typescript.md">here</a> and <a href="docs/learn/guides/advanced-typescript.md">there</a>.</p>
+<h2>Best practices</h2>
+<ul>
+<li>You may wonder how to organize your code for better maintenance: <a href="./docs/learn/guides/slices-pattern.md">Splitting the store into separate slices</a>.</li>
+<li>Recommended usage for this unopinionated library: <a href="./docs/learn/guides/flux-inspired-practice.md">Flux inspired practice</a>.</li>
+<li><a href="./docs/learn/guides/event-handler-in-pre-react-18.md">Calling actions outside a React event handler in pre-React 18</a>.</li>
+<li><a href="./docs/learn/guides/testing.md">Testing</a></li>
+<li>For more, have a look <a href="./docs/index.md">in the docs folder</a></li>
+</ul>
+<h2>Third-Party Libraries</h2>
+<p>Some users may want to extend Zustand's feature set which can be done using third-party libraries made by the community. For information regarding third-party libraries with Zustand, visit <a href="./docs/reference/integrations/third-party-libraries.md">the doc</a>.</p>
+<h2>Comparison with other libraries</h2>
+<ul>
+<li><a href="https://zustand.docs.pmnd.rs/learn/getting-started/comparison" rel="nofollow">Difference between zustand and other state management libraries for React</a></li>
+</ul>

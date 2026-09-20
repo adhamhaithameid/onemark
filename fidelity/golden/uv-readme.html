@@ -1,0 +1,217 @@
+<h1>uv</h1>
+<p><a href="https://pypi.python.org/pypi/uv" rel="nofollow"><img src="https://camo.githubusercontent.com/d7aaccb8ac2517fe79039242306933b1dc85049fe6d27db848ce6aa9bebe9601/68747470733a2f2f696d672e736869656c64732e696f2f707970692f762f75762e737667" alt="Latest PyPI version" data-canonical-src="https://img.shields.io/pypi/v/uv.svg" style="max-width: 100%;"></a><br>
+<a href="https://pypi.python.org/pypi/uv" rel="nofollow"><img src="https://camo.githubusercontent.com/3f6dbfc17c4b336ec666e1ecf0c9f74504bc3d09f54a1d8e90a8b464decaa3c8/68747470733a2f2f696d672e736869656c64732e696f2f707970692f707976657273696f6e732f75762e737667" alt="Supported Python versions" data-canonical-src="https://img.shields.io/pypi/pyversions/uv.svg" style="max-width: 100%;"></a><br>
+<a href="https://discord.gg/astral-sh" rel="nofollow"><img src="https://camo.githubusercontent.com/ce606cede6777d8b8e7d6515c1ab0df43eeac0e4ba5975dd43fd66b589e88db1/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f446973636f72642d2532333538363546322e7376673f6c6f676f3d646973636f7264266c6f676f436f6c6f723d7768697465" alt="Discord" data-canonical-src="https://img.shields.io/badge/Discord-%235865F2.svg?logo=discord&amp;logoColor=white" style="max-width: 100%;"></a></p>
+<p>An extremely fast Python package and project manager, written in Rust.</p>
+<p align="center">
+  <themed-picture data-catalyst-inline="true"><picture align="center">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/astral-sh/uv/assets/1309177/03aa9163-1c79-4a87-a31d-7a9311ed9310">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/astral-sh/uv/assets/1309177/629e59c0-9c6e-4013-9ad4-adb2bcf5080d">
+    <img alt="Shows a bar chart with benchmark results." src="https://github.com/astral-sh/uv/assets/1309177/629e59c0-9c6e-4013-9ad4-adb2bcf5080d">
+  </picture></themed-picture>
+</p>
+<p align="center">
+  <i>Installing <a href="https://trio.readthedocs.io/" rel="nofollow">Trio</a>'s dependencies with a warm cache.</i>
+</p>
+<h2>Highlights</h2>
+<ul>
+<li>A single tool to replace <code class="notranslate">pip</code>, <code class="notranslate">pip-tools</code>, <code class="notranslate">pipx</code>, <code class="notranslate">poetry</code>, <code class="notranslate">pyenv</code>, <code class="notranslate">twine</code>, <code class="notranslate">virtualenv</code>, and<br>
+more.</li>
+<li><a href="https://github.com/astral-sh/uv/blob/main/BENCHMARKS.md">10-100x faster</a> than <code class="notranslate">pip</code>.</li>
+<li>Provides <a href="#projects">comprehensive project management</a>, with a<br>
+<a href="https://docs.astral.sh/uv/concepts/projects/layout#the-lockfile" rel="nofollow">universal lockfile</a>.</li>
+<li><a href="#scripts">Runs scripts</a>, with support for<br>
+<a href="https://docs.astral.sh/uv/guides/scripts#declaring-script-dependencies" rel="nofollow">inline dependency metadata</a>.</li>
+<li><a href="#python-versions">Installs and manages</a> Python versions.</li>
+<li><a href="#tools">Runs and installs</a> tools published as Python packages.</li>
+<li>Includes a <a href="#the-pip-interface">pip-compatible interface</a> for a performance boost with a familiar<br>
+CLI.</li>
+<li>Supports Cargo-style <a href="https://docs.astral.sh/uv/concepts/projects/workspaces" rel="nofollow">workspaces</a> for<br>
+scalable projects.</li>
+<li>Disk-space efficient, with a <a href="https://docs.astral.sh/uv/concepts/cache" rel="nofollow">global cache</a> for<br>
+dependency deduplication.</li>
+<li>Installable without Rust or Python via <code class="notranslate">curl</code> or <code class="notranslate">pip</code>.</li>
+<li>Supports macOS, Linux, and Windows.</li>
+</ul>
+<p>uv is backed by <a href="https://astral.sh" rel="nofollow">Astral</a>, the creators of<br>
+<a href="https://github.com/astral-sh/ruff">Ruff</a> and <a href="https://github.com/astral-sh/ty">ty</a>.</p>
+<h2>Installation</h2>
+<p>Install uv with our standalone installers:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> On macOS and Linux.</span>
+curl -LsSf https://astral.sh/uv/install.sh <span class="pl-k">|</span> sh</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> On Windows.</span>
+powershell -ExecutionPolicy ByPass -c <span class="pl-s"><span class="pl-pds">"</span>irm https://astral.sh/uv/install.ps1 | iex<span class="pl-pds">"</span></span></pre></div>
+<p>Or, from <a href="https://pypi.org/project/uv/" rel="nofollow">PyPI</a>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> With pip.</span>
+pip install uv</pre></div>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> Or pipx.</span>
+pipx install uv</pre></div>
+<p>If installed via the standalone installer, uv can update itself to the latest version:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">uv self update</pre></div>
+<p>See the <a href="https://docs.astral.sh/uv/getting-started/installation/" rel="nofollow">installation documentation</a> for<br>
+details and alternative installation methods.</p>
+<h2>Documentation</h2>
+<p>uv's documentation is available at <a href="https://docs.astral.sh/uv" rel="nofollow">docs.astral.sh/uv</a>.</p>
+<p>Additionally, the command line reference documentation can be viewed with <code class="notranslate">uv help</code>.</p>
+<h2>Features</h2>
+<h3>Projects</h3>
+<p>uv manages project dependencies and environments, with support for lockfiles, workspaces, and more,<br>
+similar to <code class="notranslate">rye</code> or <code class="notranslate">poetry</code>:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv init example</span>
+<span class="pl-c1">Initialized project `example` at `/home/user/example`</span>
+
+$ <span class="pl-s1"><span class="pl-c1">cd</span> example</span>
+
+$ <span class="pl-s1">uv add ruff</span>
+<span class="pl-c1">Creating virtual environment at: .venv</span>
+<span class="pl-c1">Resolved 2 packages in 170ms</span>
+<span class="pl-c1">   Built example @ file:///home/user/example</span>
+<span class="pl-c1">Prepared 2 packages in 627ms</span>
+<span class="pl-c1">Installed 2 packages in 1ms</span>
+<span class="pl-c1"> + example==0.1.0 (from file:///home/user/example)</span>
+<span class="pl-c1"> + ruff==0.5.0</span>
+
+$ <span class="pl-s1">uv run ruff check</span>
+<span class="pl-c1">All checks passed!</span>
+
+$ <span class="pl-s1">uv lock</span>
+<span class="pl-c1">Resolved 2 packages in 0.33ms</span>
+
+$ <span class="pl-s1">uv sync</span>
+<span class="pl-c1">Resolved 2 packages in 0.70ms</span>
+<span class="pl-c1">Checked 1 package in 0.02ms</span></pre></div>
+<p>See the <a href="https://docs.astral.sh/uv/guides/projects/" rel="nofollow">project documentation</a> to get started.</p>
+<p>uv also supports building and publishing projects, even if they're not managed with uv. See the<br>
+<a href="https://docs.astral.sh/uv/guides/publish/" rel="nofollow">publish guide</a> to learn more.</p>
+<h3>Scripts</h3>
+<p>uv manages dependencies and environments for single-file scripts.</p>
+<p>Create a new script and add inline metadata declaring its dependencies:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>import requests; print(requests.get("https://astral.sh"))<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> example.py</span>
+
+$ <span class="pl-s1">uv add --script example.py requests</span>
+<span class="pl-c1">Updated `example.py`</span></pre></div>
+<p>Then, run the script in an isolated virtual environment:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv run example.py</span>
+<span class="pl-c1">Reading inline script metadata from: example.py</span>
+<span class="pl-c1">Installed 5 packages in 12ms</span>
+<span class="pl-c1">&lt;Response [200]&gt;</span></pre></div>
+<p>See the <a href="https://docs.astral.sh/uv/guides/scripts/" rel="nofollow">scripts documentation</a> to get started.</p>
+<h3>Tools</h3>
+<p>uv executes and installs command-line tools provided by Python packages, similar to <code class="notranslate">pipx</code>.</p>
+<p>Run a tool in an ephemeral environment using <code class="notranslate">uvx</code> (an alias for <code class="notranslate">uv tool run</code>):</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uvx pycowsay <span class="pl-s"><span class="pl-pds">'</span>hello world!<span class="pl-pds">'</span></span></span>
+<span class="pl-c1">Resolved 1 package in 167ms</span>
+<span class="pl-c1">Installed 1 package in 9ms</span>
+<span class="pl-c1"> + pycowsay==0.0.0.2</span>
+<span class="pl-c1">  """</span>
+
+<span class="pl-c1">  ------------</span>
+<span class="pl-c1">&lt; hello world! &gt;</span>
+<span class="pl-c1">  ------------</span>
+<span class="pl-c1">   \   ^__^</span>
+<span class="pl-c1">    \  (oo)\_______</span>
+<span class="pl-c1">       (__)\       )\/\</span>
+<span class="pl-c1">           ||----w |</span>
+<span class="pl-c1">           ||     ||</span></pre></div>
+<p>Install a tool with <code class="notranslate">uv tool install</code>:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv tool install ruff</span>
+<span class="pl-c1">Resolved 1 package in 6ms</span>
+<span class="pl-c1">Installed 1 package in 2ms</span>
+<span class="pl-c1"> + ruff==0.5.0</span>
+<span class="pl-c1">Installed 1 executable: ruff</span>
+
+$ <span class="pl-s1">ruff --version</span>
+<span class="pl-c1">ruff 0.5.0</span></pre></div>
+<p>See the <a href="https://docs.astral.sh/uv/guides/tools/" rel="nofollow">tools documentation</a> to get started.</p>
+<h3>Python versions</h3>
+<p>uv installs Python and allows quickly switching between versions.</p>
+<p>Install multiple Python versions:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv python install 3.12 3.13 3.14</span>
+<span class="pl-c1">Installed 3 versions in 972ms</span>
+<span class="pl-c1"> + cpython-3.12.12-macos-aarch64-none (python3.12)</span>
+<span class="pl-c1"> + cpython-3.13.9-macos-aarch64-none (python3.13)</span>
+<span class="pl-c1"> + cpython-3.14.0-macos-aarch64-none (python3.14)</span>
+</pre></div>
+<p>Download Python versions as needed:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv venv --python 3.12.0</span>
+<span class="pl-c1">Using Python 3.12.0</span>
+<span class="pl-c1">Creating virtual environment at: .venv</span>
+<span class="pl-c1">Activate with: source .venv/bin/activate</span>
+
+$ <span class="pl-s1">uv run --python pypy@3.8 -- python --version</span>
+<span class="pl-c1">Python 3.8.16 (a9dbdca6fc3286b0addd2240f11d97d8e8de187a, Dec 29 2022, 11:45:30)</span>
+<span class="pl-c1">[PyPy 7.3.11 with GCC Apple LLVM 13.1.6 (clang-1316.0.21.2.5)] on darwin</span>
+<span class="pl-c1">Type "help", "copyright", "credits" or "license" for more information.</span>
+<span class="pl-c1">&gt;&gt;&gt;&gt;</span></pre></div>
+<p>Use a specific Python version in the current directory:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv python pin 3.11</span>
+<span class="pl-c1">Pinned `.python-version` to `3.11`</span></pre></div>
+<p>See the <a href="https://docs.astral.sh/uv/guides/install-python/" rel="nofollow">Python installation documentation</a> to get<br>
+started.</p>
+<h3>The pip interface</h3>
+<p>uv provides a drop-in replacement for common <code class="notranslate">pip</code>, <code class="notranslate">pip-tools</code>, and <code class="notranslate">virtualenv</code> commands.</p>
+<p>uv extends their interfaces with advanced features, such as dependency version overrides,<br>
+platform-independent resolutions, reproducible resolutions, alternative resolution strategies, and<br>
+more.</p>
+<p>Migrate to uv without changing your existing workflows — and experience a 10-100x speedup — with the<br>
+<code class="notranslate">uv pip</code> interface.</p>
+<p>Compile requirements into a platform-independent requirements file:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv pip compile requirements.in \</span>
+<span class="pl-c1">   --universal \</span>
+<span class="pl-c1">   --output-file requirements.txt</span>
+<span class="pl-c1">Resolved 43 packages in 12ms</span></pre></div>
+<p>Create a virtual environment:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv venv</span>
+<span class="pl-c1">Using Python 3.12.3</span>
+<span class="pl-c1">Creating virtual environment at: .venv</span>
+<span class="pl-c1">Activate with: source .venv/bin/activate</span></pre></div>
+<p>Install the locked requirements:</p>
+<div class="highlight highlight-text-shell-session"><pre class="notranslate">$ <span class="pl-s1">uv pip sync requirements.txt</span>
+<span class="pl-c1">Resolved 43 packages in 11ms</span>
+<span class="pl-c1">Installed 43 packages in 208ms</span>
+<span class="pl-c1"> + babel==2.15.0</span>
+<span class="pl-c1"> + black==24.4.2</span>
+<span class="pl-c1"> + certifi==2024.7.4</span>
+<span class="pl-c1"> ...</span></pre></div>
+<p>See the <a href="https://docs.astral.sh/uv/pip/index/" rel="nofollow">pip interface documentation</a> to get started.</p>
+<h2>Contributing</h2>
+<p>We are passionate about supporting contributors of all levels of experience and would love to see<br>
+you get involved in the project. See the<br>
+<a href="https://github.com/astral-sh/uv?tab=contributing-ov-file#contributing">contributing guide</a> to get<br>
+started.</p>
+<h2>FAQ</h2>
+<h4>How do you pronounce uv?</h4>
+<p>It's pronounced as "you - vee" (<a href="https://en.wikipedia.org/wiki/Help:IPA/English#Key" rel="nofollow"><code class="notranslate">/juː viː/</code></a>)</p>
+<h4>How should I stylize uv?</h4>
+<p>Just "uv", please. See the <a href="./STYLE.md#styling-uv">style guide</a> for details.</p>
+<h4>What platforms does uv support?</h4>
+<p>See uv's <a href="https://docs.astral.sh/uv/reference/platforms/" rel="nofollow">platform support</a> document.</p>
+<h4>Is uv ready for production?</h4>
+<p>Yes, uv is stable and widely used in production. See uv's<br>
+<a href="https://docs.astral.sh/uv/reference/versioning/" rel="nofollow">versioning policy</a> document for details.</p>
+<h2>Acknowledgements</h2>
+<p>uv's dependency resolver uses <a href="https://github.com/pubgrub-rs/pubgrub">PubGrub</a> under the hood. We're<br>
+grateful to the PubGrub maintainers, especially <a href="https://github.com/Eh2406">Jacob Finkelman</a>, for<br>
+their support.</p>
+<p>uv's Git implementation is based on <a href="https://github.com/rust-lang/cargo">Cargo</a>.</p>
+<p>Some of uv's optimizations are inspired by the great work we've seen in <a href="https://pnpm.io/" rel="nofollow">pnpm</a>,<br>
+<a href="https://github.com/orogene/orogene">Orogene</a>, and <a href="https://github.com/oven-sh/bun">Bun</a>. We've also<br>
+learned a lot from Nathaniel J. Smith's <a href="https://github.com/njsmith/posy">Posy</a> and adapted its<br>
+<a href="https://github.com/njsmith/posy/tree/main/src/trampolines/windows-trampolines/posy-trampoline">trampoline</a><br>
+for Windows support.</p>
+<h2>License</h2>
+<p>uv is licensed under either of</p>
+<ul>
+<li>Apache License, Version 2.0, (<a href="LICENSE-APACHE">LICENSE-APACHE</a> or<br>
+<a href="https://www.apache.org/licenses/LICENSE-2.0" rel="nofollow">https://www.apache.org/licenses/LICENSE-2.0</a>)</li>
+<li>MIT license (<a href="LICENSE-MIT">LICENSE-MIT</a> or <a href="https://opensource.org/licenses/MIT" rel="nofollow">https://opensource.org/licenses/MIT</a>)</li>
+</ul>
+<p>at your option.</p>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in uv<br>
+by you, as defined in the Apache-2.0 license, shall be dually licensed as above, without any<br>
+additional terms or conditions.</p>
+<div align="center">
+  <a href="https://astral.sh" rel="nofollow">
+    <img src="https://raw.githubusercontent.com/astral-sh/uv/main/assets/svg/Astral.svg" alt="Made by Astral" style="max-width: 100%;">
+  </a>
+</div>

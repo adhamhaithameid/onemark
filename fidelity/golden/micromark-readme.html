@@ -1,0 +1,1240 @@
+<h1 align="center">
+  <a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/micromark/micromark/2e476c9/logo.svg?sanitize=true"><img src="https://raw.githubusercontent.com/micromark/micromark/2e476c9/logo.svg?sanitize=true" alt="micromark" style="max-width: 100%;"></a>
+</h1>
+<p><a href="https://github.com/micromark/micromark/actions"><img src="https://github.com/micromark/micromark/workflows/main/badge.svg" alt="Build" style="max-width: 100%;"></a><br>
+<a href="https://codecov.io/github/micromark/micromark" rel="nofollow"><img src="https://camo.githubusercontent.com/b83ec3e936c9c55e1bb38fa10bddf06544111b2fb05fc50cb36119a234d1c12c/68747470733a2f2f696d672e736869656c64732e696f2f636f6465636f762f632f6769746875622f6d6963726f6d61726b2f6d6963726f6d61726b2e737667" alt="Coverage" data-canonical-src="https://img.shields.io/codecov/c/github/micromark/micromark.svg" style="max-width: 100%;"></a><br>
+<a href="https://www.npmjs.com/package/micromark" rel="nofollow"><img src="https://camo.githubusercontent.com/075534f2cd1ccb3ea46eb34b5816b451e9ee1dea1908ced2f62c523395ab266f/68747470733a2f2f696d672e736869656c64732e696f2f6e706d2f646d2f6d6963726f6d61726b2e737667" alt="Downloads" data-canonical-src="https://img.shields.io/npm/dm/micromark.svg" style="max-width: 100%;"></a><br>
+<a href="https://bundlejs.com/?q=micromark" rel="nofollow"><img src="https://camo.githubusercontent.com/b221455bcba5d4781ba2e4446400a487d2bb745312bedb7df5c20260b9151333/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f64796e616d69632f6a736f6e3f6c6162656c3d6d696e7a697070656425323073697a652671756572793d242e73697a652e636f6d7072657373656453697a652675726c3d68747470733a2f2f64656e6f2e62756e646c656a732e636f6d2f3f713d6d6963726f6d61726b" alt="Size" data-canonical-src="https://img.shields.io/badge/dynamic/json?label=minzipped%20size&amp;query=$.size.compressedSize&amp;url=https://deno.bundlejs.com/?q=micromark" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/unified" rel="nofollow"><img src="https://camo.githubusercontent.com/e459a401144dbd319ea80688b4182a4d81b6c75c42a42e0eb54459a78d2969c8/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f756e69666965642f73706f6e736f72732f62616467652e737667" alt="Sponsors" data-canonical-src="https://opencollective.com/unified/sponsors/badge.svg" style="max-width: 100%;"></a><br>
+<a href="https://opencollective.com/unified" rel="nofollow"><img src="https://camo.githubusercontent.com/fe7e6b8f028193cd735778bac6df793ce64afdb4b158d03227d6e20b03fa5bce/68747470733a2f2f6f70656e636f6c6c6563746976652e636f6d2f756e69666965642f6261636b6572732f62616467652e737667" alt="Backers" data-canonical-src="https://opencollective.com/unified/backers/badge.svg" style="max-width: 100%;"></a><br>
+<a href="https://github.com/micromark/micromark/discussions"><img src="https://camo.githubusercontent.com/3ed048321d1c371044186cbf89fee5b647bc4aa18fe4d79edfe0d5d55a544dda/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f636861742d64697363757373696f6e732d737563636573732e737667" alt="Chat" data-canonical-src="https://img.shields.io/badge/chat-discussions-success.svg" style="max-width: 100%;"></a></p>
+<p>The smallest CommonMark compliant markdown parser.<br>
+With positional info and concrete tokens.</p>
+<h2>Feature highlights</h2>
+
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <strong><a href="#commonmark">compliant</a></strong> (100% to CommonMark)</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <strong><a href="#list-of-extensions">extensions</a></strong> (100% <a href="https://github.com/micromark/micromark-extension-gfm">GFM</a>, 100% <a href="https://github.com/micromark/micromark-extension-mdxjs">MDX.js</a>, <a href="https://github.com/micromark/micromark-extension-directive">directives</a>,<br>
+<a href="https://github.com/micromark/micromark-extension-frontmatter">frontmatter</a>, <a href="https://github.com/micromark/micromark-extension-math">math</a>)</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <strong><a href="#security">safe</a></strong> (by default)</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <strong><a href="#test">robust</a></strong> (±2k tests, 100% coverage, fuzz testing)</li>
+<li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" aria-label="Completed task" checked=""> <strong><a href="#size--debug">small</a></strong> (smallest CM parser at ±14kb)</li>
+</ul>
+<h2>Contents</h2>
+<ul>
+<li><a href="#when-should-i-use-this">When should I use this?</a></li>
+<li><a href="#what-is-this">What is this?</a></li>
+<li><a href="#install">Install</a></li>
+<li><a href="#use">Use</a></li>
+<li><a href="#api">API</a></li>
+<li><a href="#extensions">Extensions</a>
+<ul>
+<li><a href="#list-of-extensions">List of extensions</a></li>
+<li><a href="#syntaxextension"><code class="notranslate">SyntaxExtension</code></a></li>
+<li><a href="#htmlextension"><code class="notranslate">HtmlExtension</code></a></li>
+<li><a href="#extending-markdown">Extending markdown</a></li>
+<li><a href="#creating-a-micromark-extension">Creating a micromark extension</a></li>
+</ul>
+</li>
+<li><a href="#architecture">Architecture</a>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#preprocess">Preprocess</a></li>
+<li><a href="#parse">Parse</a></li>
+<li><a href="#postprocess">Postprocess</a></li>
+<li><a href="#compile">Compile</a></li>
+</ul>
+</li>
+<li><a href="#examples">Examples</a>
+<ul>
+<li><a href="#github-flavored-markdown-gfm">GitHub flavored markdown (GFM)</a></li>
+<li><a href="#math">Math</a></li>
+<li><a href="#syntax-tree">Syntax tree</a></li>
+</ul>
+</li>
+<li><a href="#markdown">Markdown</a>
+<ul>
+<li><a href="#commonmark">CommonMark</a></li>
+<li><a href="#grammar">Grammar</a></li>
+</ul>
+</li>
+<li><a href="#project">Project</a>
+<ul>
+<li><a href="#comparison">Comparison</a></li>
+<li><a href="#test">Test</a></li>
+<li><a href="#size--debug">Size &amp; debug</a></li>
+<li><a href="#version">Version</a></li>
+<li><a href="#security">Security</a></li>
+<li><a href="#contribute">Contribute</a></li>
+<li><a href="#sponsor">Sponsor</a></li>
+<li><a href="#origin-story">Origin story</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+</li>
+</ul>
+<h2>When should I use this?</h2>
+
+<ul>
+<li>If you <em>just</em> want to turn markdown into HTML (with maybe a few extensions)</li>
+<li>If you want to do <em>really complex things</em> with markdown</li>
+</ul>
+<p>See <a href="#comparison">§ Comparison</a> for more info</p>
+<h2>What is this?</h2>
+
+<p><code class="notranslate">micromark</code> is an open source markdown parser written in JavaScript.<br>
+It’s implemented as a state machine that emits concrete tokens, so that every<br>
+byte is accounted for, with positional info.<br>
+It then compiles those tokens directly to HTML, but other tools can take the<br>
+data and for example build an AST which is easier to work with<br>
+(<a href="https://github.com/syntax-tree/mdast-util-to-markdown"><code class="notranslate">mdast-util-to-markdown</code></a>).</p>
+<p>While most markdown parsers work towards compliancy with CommonMark (or GFM),<br>
+this project goes further by following how the reference parsers (<code class="notranslate">cmark</code>,<br>
+<code class="notranslate">cmark-gfm</code>) work, which is confirmed with thousands of extra tests.</p>
+<p>Other than CommonMark and GFM, micromark also supports common extensions to<br>
+markdown such as MDX, math, and frontmatter.</p>
+<p>These npm packages have a sibling project in Rust:<br>
+<a href="https://github.com/wooorm/markdown-rs"><code class="notranslate">markdown-rs</code></a>.</p>
+<ul>
+<li>to learn markdown, see this <a href="https://commonmark.org/help/" rel="nofollow">cheatsheet and tutorial</a></li>
+<li>for more about us, see <a href="https://unifiedjs.com" rel="nofollow"><code class="notranslate">unifiedjs.com</code></a></li>
+<li>for questions, see <a href="https://github.com/micromark/micromark/discussions">Discussions</a></li>
+<li>to help, see <a href="#contribute">contribute</a> and <a href="#sponsor">sponsor</a> below</li>
+</ul>
+<h2>Install</h2>
+
+<p>This package is <a href="https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c">ESM only</a>.<br>
+In Node.js (version 16+), install with <a href="https://docs.npmjs.com/cli/install" rel="nofollow">npm</a>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install micromark</pre></div>
+<p>In Deno with <a href="https://esm.sh" rel="nofollow"><code class="notranslate">esm.sh</code></a>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'https://esm.sh/micromark@3'</span></pre></div>
+<p>In browsers with <a href="https://esm.sh" rel="nofollow"><code class="notranslate">esm.sh</code></a>:</p>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">script</span> <span class="pl-c1">type</span>="<span class="pl-s">module</span>"<span class="pl-kos">&gt;</span>
+  <span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'https://esm.sh/micromark@3?bundle'</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">script</span><span class="pl-kos">&gt;</span></pre></div>
+<h2>Use</h2>
+
+<p>Typical use (buffering):</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark'</span>
+
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-en">micromark</span><span class="pl-kos">(</span><span class="pl-s">'## Hello, *world*!'</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<p>Yields:</p>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>Hello, <span class="pl-kos">&lt;</span><span class="pl-ent">em</span><span class="pl-kos">&gt;</span>world<span class="pl-kos">&lt;/</span><span class="pl-ent">em</span><span class="pl-kos">&gt;</span>!<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span></pre></div>
+<p>You can pass extensions (in this case <a href="https://github.com/micromark/micromark-extension-gfm"><code class="notranslate">micromark-extension-gfm</code></a>):</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">gfmHtml</span><span class="pl-kos">,</span> <span class="pl-s1">gfm</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark-extension-gfm'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">value</span> <span class="pl-c1">=</span> <span class="pl-s">'* [x] contact@example.com ~~strikethrough~~'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">result</span> <span class="pl-c1">=</span> <span class="pl-en">micromark</span><span class="pl-kos">(</span><span class="pl-s1">value</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+  <span class="pl-c1">extensions</span>: <span class="pl-kos">[</span><span class="pl-en">gfm</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-c1">htmlExtensions</span>: <span class="pl-kos">[</span><span class="pl-en">gfmHtml</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">]</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span>
+
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">result</span><span class="pl-kos">)</span></pre></div>
+<p>Yields:</p>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">ul</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">li</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">input</span> <span class="pl-c1">checked</span>="" <span class="pl-c1">disabled</span>="" <span class="pl-c1">type</span>="<span class="pl-s">checkbox</span>"<span class="pl-kos">&gt;</span> <span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>="<span class="pl-s">mailto:contact@example.com</span>"<span class="pl-kos">&gt;</span>contact@example.com<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span> <span class="pl-kos">&lt;</span><span class="pl-ent">del</span><span class="pl-kos">&gt;</span>strikethrough<span class="pl-kos">&lt;/</span><span class="pl-ent">del</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">li</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">ul</span><span class="pl-kos">&gt;</span></pre></div>
+<p>Streaming interface:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">createReadStream</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'node:fs'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">stream</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark/stream'</span>
+
+<span class="pl-en">createReadStream</span><span class="pl-kos">(</span><span class="pl-s">'example.md'</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-en">on</span><span class="pl-kos">(</span><span class="pl-s">'error'</span><span class="pl-kos">,</span> <span class="pl-s1">handleError</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-en">pipe</span><span class="pl-kos">(</span><span class="pl-en">stream</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+  <span class="pl-kos">.</span><span class="pl-en">pipe</span><span class="pl-kos">(</span><span class="pl-s1">process</span><span class="pl-kos">.</span><span class="pl-c1">stdout</span><span class="pl-kos">)</span>
+
+<span class="pl-k">function</span> <span class="pl-en">handleError</span><span class="pl-kos">(</span><span class="pl-s1">error</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// Handle your error here!</span>
+  <span class="pl-k">throw</span> <span class="pl-s1">error</span>
+<span class="pl-kos">}</span></pre></div>
+<h2>API</h2>
+<p>See <a href="https://github.com/micromark/micromark/blob/main/packages/micromark/readme.md#api">§ API</a> in the <code class="notranslate">micromark</code> readme.</p>
+<h2>Extensions</h2>
+<p>micromark supports extensions.<br>
+There are two types of extensions for micromark:<br>
+<a href="#syntaxextension"><code class="notranslate">SyntaxExtension</code></a>,<br>
+which change how markdown is parsed, and <a href="#htmlextension"><code class="notranslate">HtmlExtension</code></a>,<br>
+which change how it compiles.<br>
+They can be passed in <a href="https://github.com/micromark/micromark/blob/main/packages/micromark/readme.md#extensions"><code class="notranslate">options.extensions</code></a> or<br>
+<a href="https://github.com/micromark/micromark/blob/main/packages/micromark/readme.md#htmlextensions"><code class="notranslate">options.htmlExtensions</code></a>, respectively.</p>
+<p>As a user of extensions, refer to each extension’s readme for more on how to use<br>
+them.<br>
+As a (potential) author of extensions, refer to<br>
+<a href="#extending-markdown">§ Extending markdown</a> and<br>
+<a href="#creating-a-micromark-extension">§ Creating a micromark extension</a>.</p>
+<h3>List of extensions</h3>
+<ul>
+<li><a href="https://github.com/micromark/micromark-extension-directive"><code class="notranslate">micromark/micromark-extension-directive</code></a><br>
+— support directives (generic extensions)</li>
+<li><a href="https://github.com/micromark/micromark-extension-frontmatter"><code class="notranslate">micromark/micromark-extension-frontmatter</code></a><br>
+— support frontmatter (YAML, TOML, etc)</li>
+<li><a href="https://github.com/micromark/micromark-extension-gfm"><code class="notranslate">micromark/micromark-extension-gfm</code></a><br>
+— support GFM (GitHub Flavored Markdown)</li>
+<li><a href="https://github.com/micromark/micromark-extension-gfm-autolink-literal"><code class="notranslate">micromark/micromark-extension-gfm-autolink-literal</code></a><br>
+— support GFM autolink literals</li>
+<li><a href="https://github.com/micromark/micromark-extension-gfm-footnote"><code class="notranslate">micromark/micromark-extension-gfm-footnote</code></a><br>
+— support GFM footnotes</li>
+<li><a href="https://github.com/micromark/micromark-extension-gfm-strikethrough"><code class="notranslate">micromark/micromark-extension-gfm-strikethrough</code></a><br>
+— support GFM strikethrough</li>
+<li><a href="https://github.com/micromark/micromark-extension-gfm-table"><code class="notranslate">micromark/micromark-extension-gfm-table</code></a><br>
+— support GFM tables</li>
+<li><a href="https://github.com/micromark/micromark-extension-gfm-tagfilter"><code class="notranslate">micromark/micromark-extension-gfm-tagfilter</code></a><br>
+— support GFM tagfilter</li>
+<li><a href="https://github.com/micromark/micromark-extension-gfm-task-list-item"><code class="notranslate">micromark/micromark-extension-gfm-task-list-item</code></a><br>
+— support GFM tasklists</li>
+<li><a href="https://github.com/micromark/micromark-extension-math"><code class="notranslate">micromark/micromark-extension-math</code></a><br>
+— support math</li>
+<li><a href="https://github.com/micromark/micromark-extension-mdx"><code class="notranslate">micromark/micromark-extension-mdx</code></a><br>
+— support MDX</li>
+<li><a href="https://github.com/micromark/micromark-extension-mdxjs"><code class="notranslate">micromark/micromark-extension-mdxjs</code></a><br>
+— support MDX.js</li>
+<li><a href="https://github.com/micromark/micromark-extension-mdx-expression"><code class="notranslate">micromark/micromark-extension-mdx-expression</code></a><br>
+— support MDX (or MDX.js) expressions</li>
+<li><a href="https://github.com/micromark/micromark-extension-mdx-jsx"><code class="notranslate">micromark/micromark-extension-mdx-jsx</code></a><br>
+— support MDX (or MDX.js) JSX</li>
+<li><a href="https://github.com/micromark/micromark-extension-mdx-md"><code class="notranslate">micromark/micromark-extension-mdx-md</code></a><br>
+— support misc MDX changes</li>
+<li><a href="https://github.com/micromark/micromark-extension-mdxjs-esm"><code class="notranslate">micromark/micromark-extension-mdxjs-esm</code></a><br>
+— support MDX.js import/exports</li>
+</ul>
+<h4>Community extensions</h4>
+<ul>
+<li><a href="https://github.com/wataru-chocola/micromark-extension-definition-list"><code class="notranslate">wataru-chocola/micromark-extension-definition-list</code></a><br>
+— support definition lists</li>
+</ul>
+<h3><code class="notranslate">SyntaxExtension</code></h3>
+<p>A syntax extension is an object whose fields are typically the names of hooks,<br>
+referring to where constructs “hook” into.<br>
+The fields at such objects are character codes, mapping to constructs as values.</p>
+<p>The built in <a href="/packages/micromark/dev/lib/constructs.js">constructs</a> are an example.<br>
+See it and <a href="#list-of-extensions">existing extensions</a> for inspiration.</p>
+<h3><code class="notranslate">HtmlExtension</code></h3>
+<p>An HTML extension is an object whose fields are typically <code class="notranslate">enter</code> or <code class="notranslate">exit</code><br>
+(reflecting whether a token is entered or exited).<br>
+The values at such objects are names of tokens mapping to handlers.</p>
+<p>See <a href="#list-of-extensions">existing extensions</a> for inspiration.</p>
+<h3>Extending markdown</h3>
+<p>micromark lets you change markdown syntax, yes, but there are alternatives.<br>
+The alternatives are often better.</p>
+<p>Over the years, many micromark and remark users have asked about their unique<br>
+goals for markdown.<br>
+Some exemplary goals are:</p>
+<ol>
+<li>I want to add <code class="notranslate">rel="nofollow"</code> to external links</li>
+<li>I want to add links from headings to themselves</li>
+<li>I want line breaks in paragraphs to become hard breaks</li>
+<li>I want to support embedded music sheets</li>
+<li>I want authors to add arbitrary attributes</li>
+<li>I want authors to mark certain blocks with meaning, such as tip, warning,<br>
+etc</li>
+<li>I want to combine markdown with JS(X)</li>
+<li>I want to support our legacy flavor of markdown-like syntax</li>
+</ol>
+<p>These can be solved in different ways and which solution is best is both<br>
+subjective and dependent on unique needs.<br>
+Often, there is already a solution in the form of an existing remark or rehype<br>
+plugin.<br>
+Respectively, their solutions are:</p>
+<ol>
+<li><a href="https://github.com/remarkjs/remark-external-links"><code class="notranslate">remark-external-links</code></a></li>
+<li><a href="https://github.com/rehypejs/rehype-autolink-headings"><code class="notranslate">rehype-autolink-headings</code></a></li>
+<li><a href="https://github.com/remarkjs/remark-breaks"><code class="notranslate">remark-breaks</code></a></li>
+<li>custom plugin similar to<br>
+<a href="https://github.com/remarkjs/remark-math/tree/main/packages/rehype-katex"><code class="notranslate">rehype-katex</code></a><br>
+but integrating <a href="https://www.abcjs.net" rel="nofollow"><code class="notranslate">abcjs</code></a></li>
+<li>either <a href="https://github.com/remarkjs/remark-directive"><code class="notranslate">remark-directive</code></a><br>
+and a custom plugin or with<br>
+<a href="https://github.com/jaywcjlove/rehype-attr"><code class="notranslate">rehype-attr</code></a></li>
+<li><a href="https://github.com/remarkjs/remark-directive"><code class="notranslate">remark-directive</code></a><br>
+combined with a custom plugin</li>
+<li>combining the existing micromark MDX extensions however you please, such as<br>
+done by <a href="https://github.com/mdx-js/mdx"><code class="notranslate">mdx-js/mdx</code></a> or<br>
+<a href="https://github.com/wooorm/xdm"><code class="notranslate">xdm</code></a></li>
+<li>Writing a micromark extension</li>
+</ol>
+<p>Looking at these from a higher level, they can be categorized:</p>
+<ul>
+<li>
+<p><strong>Changing the output by transforming syntax trees</strong><br>
+(1 and 2)</p>
+<p>This category is nice as the format remains plain markdown that authors are<br>
+already familiar with and which will work with existing tools and platforms.</p>
+<p>Implementations will deal with the syntax tree<br>
+(<a href="https://github.com/syntax-tree/mdast"><code class="notranslate">mdast</code></a>) and the ecosystems<br>
+<strong><a href="https://github.com/remarkjs/remark">remark</a></strong> and <strong><a href="https://github.com/rehypejs/rehype">rehype</a></strong>.<br>
+There are many existing<br>
+<a href="https://github.com/syntax-tree/mdast#list-of-utilities">utilities for working with that tree</a>.<br>
+Many <a href="https://github.com/remarkjs/remark/blob/main/doc/plugins.md#list-of-plugins">remark plugins</a> and<br>
+<a href="https://github.com/rehypejs/rehype/blob/main/doc/plugins.md#list-of-plugins">rehype plugins</a> also exist.</p>
+</li>
+<li>
+<p><strong>Using and abusing markdown to add new meaning</strong><br>
+(3, 4, potentially 5)</p>
+<p>This category is similar to <em>Changing the output by transforming syntax<br>
+trees</em>, but adds a new meaning to certain things which already have<br>
+semantics in markdown.</p>
+<p>Some examples in pseudocode:</p>
+<div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-v">*</span>   <span class="pl-s">**</span>A list item with the first paragraph bold<span class="pl-s">**</span>
+
+    And then more content, is turned into <span class="pl-s">`</span><span class="pl-c1">&lt;dl&gt;</span><span class="pl-s">`</span> / <span class="pl-s">`</span><span class="pl-c1">&lt;dt&gt;</span><span class="pl-s">`</span> / <span class="pl-s">`</span><span class="pl-c1">&lt;dd&gt;</span><span class="pl-s">`</span> elements
+
+Or, the title attributes on links or images is <span class="pl-s">[</span>overloaded<span class="pl-s">]</span><span class="pl-s">(</span><span class="pl-corl">/url</span> <span class="pl-s">'</span><span class="pl-s">rel:nofollow</span><span class="pl-s">')</span>
+with a new meaning.
+
+<span class="pl-s">```</span><span class="pl-en">csv</span><span class="pl-c1"></span>
+<span class="pl-c1">fenced,code,can,include,data</span>
+<span class="pl-c1">which,is,turned,into,a,graph</span>
+<span class="pl-c1"></span><span class="pl-s">```</span>
+
+<span class="pl-s">```</span><span class="pl-en">js</span> data can="be" passed=true
+<span class="pl-c"><span class="pl-c">//</span> after the code language name</span>
+<span class="pl-s">```</span>
+
+HTML, especially comments, could be used as <span class="pl-s">**</span>markers<span class="pl-s">**</span><span class="pl-c"><span class="pl-c">&lt;!--</span>id="markers"<span class="pl-c">--&gt;</span></span></pre></div>
+</li>
+<li>
+<p><strong>Arbitrary extension mechanism</strong><br>
+(potentially 5; 6)</p>
+<p>This category is nice when content should contain embedded “components”.<br>
+Often this means it’s required for authors to have some programming<br>
+experience.<br>
+There are three good ways to solve arbitrary extensions.</p>
+<p><strong>HTML</strong>: Markdown already has an arbitrary extension syntax.<br>
+It works in most places and authors are already familiar with the syntax,<br>
+but it’s reasonably hard to implement securely.<br>
+Certain platforms will remove HTML completely, others sanitize it to varying<br>
+degrees.<br>
+HTML also supports custom elements.<br>
+These could be used and enhanced by client side JavaScript or enhanced when<br>
+transforming the syntax tree.</p>
+<p><strong>Generic directives</strong>: although<br>
+<a href="https://talk.commonmark.org/t/generic-directives-plugins-syntax/444" rel="nofollow">a proposal</a><br>
+and not supported on most platforms, directives do work with many tools<br>
+already.<br>
+They’re not the easiest to author compared to, say, a heading, but sometimes<br>
+that’s okay.<br>
+They do have potential: they nicely solve the need for an infinite number of<br>
+potential extensions to markdown in a single markdown-esque way.</p>
+<p><strong>MDX</strong> also adds support for components by swapping HTML out for JS(X).<br>
+JSX is an extension to JavaScript, so MDX is something along the lines of<br>
+literate programming.<br>
+This does require knowledge of React (or Vue) and JavaScript, excluding some<br>
+authors.</p>
+</li>
+<li>
+<p><strong>Extending markdown syntax</strong><br>
+(7 and 8)</p>
+<p>Extend the syntax of markdown means:</p>
+<ul>
+<li>Authors won’t be familiar with the syntax</li>
+<li>Content won’t work in other places (such as on GitHub)</li>
+<li>Defeating the purpose of markdown: being simple to author and looking<br>
+like what it means</li>
+</ul>
+<p>…and it’s hard to do as it requires some in-depth knowledge of JavaScript<br>
+and parsing.<br>
+But it’s possible and in certain cases very powerful.</p>
+</li>
+</ul>
+<h3>Creating a micromark extension</h3>
+<p>This section shows how to create an extension for micromark that parses<br>
+“variables” (a way to render some data) and one to turn a default construct off.</p>
+<blockquote>
+<p>Stuck?<br>
+See <a href="https://github.com/micromark/.github/blob/main/support.md"><code class="notranslate">support.md</code></a>.</p>
+</blockquote>
+<h4>Prerequisites</h4>
+<ul>
+<li>You should possess an intermediate to high understanding of JavaScript:<br>
+it’s going to get a bit complex</li>
+<li>Read the readme of <a href="https://github.com/unifiedjs/unified">unified</a> (until you hit the API section) to better<br>
+understand where micromark fits</li>
+<li>Read the <a href="#architecture">§ Architecture</a> section to understand how micromark<br>
+works</li>
+<li>Read the <a href="#extending-markdown">§ Extending markdown</a> section to understand<br>
+whether it’s a good idea to extend the syntax of markdown</li>
+</ul>
+<h4>Extension basics</h4>
+<p>micromark supports two types of extensions.<br>
+Syntax extensions change how markdown is parsed.<br>
+HTML extensions change how it compiles.</p>
+<p>HTML extensions are not always needed, as micromark is often used through<br>
+<a href="https://github.com/syntax-tree/mdast-util-from-markdown"><code class="notranslate">mdast-util-from-markdown</code></a> to parse to a markdown<br>
+syntax tree.<br>
+So instead of an HTML extension a <code class="notranslate">from-markdown</code> utility is needed.<br>
+Then, a <a href="https://github.com/syntax-tree/mdast-util-to-markdown"><code class="notranslate">mdast-util-to-markdown</code></a> utility, which is<br>
+responsible for serializing syntax trees to markdown, is also needed.</p>
+<p>When developing something for internal use only, you can pick and choose which<br>
+parts you need.<br>
+When open sourcing your extensions, it should probably contain four parts:<br>
+syntax extension, HTML extension, <code class="notranslate">from-markdown</code> utility, and a <code class="notranslate">to-markdown</code><br>
+utility.</p>
+<p>On to our first case!</p>
+<h4>Case: variables</h4>
+<p>Let’s first outline what we want to make: render some data, similar to how<br>
+<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">Liquid</a> and the<br>
+like work, in our markdown.<br>
+It could look like this:</p>
+<div class="highlight highlight-text-md"><pre class="notranslate">Hello, {planet}!</pre></div>
+<p>Turned into:</p>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>Hello, Venus!<span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span></pre></div>
+<p>An opening curly brace, followed by one or more characters, and then a closing<br>
+brace.<br>
+We’ll then look up <code class="notranslate">planet</code> in some object and replace the variable with its<br>
+corresponding value, to get something like <code class="notranslate">Venus</code> out.</p>
+<p>It looks simple enough, but with markdown there are often a couple more things<br>
+to think about.<br>
+For this case, I can see the following:</p>
+<ul>
+<li>Is there a “block” version too?</li>
+<li>Are spaces allowed?<br>
+Line endings?<br>
+Should initial and final white space be ignored?</li>
+<li>Balanced nested braces?<br>
+Superfluous ones such as <code class="notranslate">{{planet}}</code> or meaningful ones such as<br>
+<code class="notranslate">{a {pla} net}</code>?</li>
+<li>Character escapes (<code class="notranslate">{pla\}net}</code>) and character references<br>
+(<code class="notranslate">{pla&amp;#x7d;net}</code>)?</li>
+</ul>
+<p>To keep things as simple as possible, let’s not support a block syntax, see<br>
+spaces as special, support line endings, or support nested braces.<br>
+But to learn interesting things, we <em>will</em> support character escapes and<br>
+-references.</p>
+<p>Note that this particular case is already solved quite nicely by<br>
+<a href="https://github.com/micromark/micromark-extension-mdx-expression"><code class="notranslate">micromark-extension-mdx-expression</code></a>.<br>
+It’s a bit more powerful and does more things, but it can be used to solve this<br>
+case and otherwise serve as inspiration.</p>
+<h5>Setup</h5>
+<p>Create a new folder, enter it, and set up a new package:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">mkdir example
+<span class="pl-c1">cd</span> example
+npm init -y</pre></div>
+<p>In this example we’ll use ESM, so add <code class="notranslate">type: 'module'</code> to <code class="notranslate">package.json</code>:</p>
+<div class="highlight highlight-source-diff"><pre class="notranslate"><span class="pl-mdr">@@ -2,6 +2,7 @@</span>
+   "name": "example",
+   "version": "1.0.0",
+   "description": "",
+<span class="pl-mi1"><span class="pl-mi1">+</span>  "type": "module",</span>
+   "main": "index.js",
+   "scripts": {
+     "test": "echo \"Error: no test specified\" &amp;&amp; exit 1"</pre></div>
+<p>Add a markdown file, <code class="notranslate">example.md</code>, with the following text:</p>
+<div class="highlight highlight-text-md"><pre class="notranslate">Hello, {planet}!
+
+{pla<span class="pl-c1">\}</span>net} and {pla<span class="pl-c1">&amp;#x<span class="pl-c1">7d</span>;</span>net}.</pre></div>
+<p>To check if our extension works, add an <code class="notranslate">example.js</code> module, with the following<br>
+code:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">fs</span> <span class="pl-k">from</span> <span class="pl-s">'node:fs/promises'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">variables</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./index.js'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">buf</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">fs</span><span class="pl-kos">.</span><span class="pl-en">readFile</span><span class="pl-kos">(</span><span class="pl-s">'example.md'</span><span class="pl-kos">)</span>
+<span class="pl-k">const</span> <span class="pl-s1">out</span> <span class="pl-c1">=</span> <span class="pl-en">micromark</span><span class="pl-kos">(</span><span class="pl-s1">buf</span><span class="pl-kos">,</span> <span class="pl-kos">{</span><span class="pl-c1">extensions</span>: <span class="pl-kos">[</span><span class="pl-s1">variables</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-kos">)</span>
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">out</span><span class="pl-kos">)</span></pre></div>
+<p>While working on the extension, run <code class="notranslate">node example</code> to see whether things work.<br>
+Feel free to add more examples of the variables syntax in <code class="notranslate">example.md</code> if<br>
+needed.</p>
+<p>Our extension doesn’t work yet, for one because <code class="notranslate">micromark</code> is not installed:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">npm install micromark --save-dev</pre></div>
+<p>…and we need to write our extension.<br>
+Let’s do that in <code class="notranslate">index.js</code>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">const</span> <span class="pl-s1">variables</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span><span class="pl-kos">}</span></pre></div>
+<p>Although our extension doesn’t do anything, running <code class="notranslate">node example</code> now somewhat<br>
+works!</p>
+<h5>Syntax extension</h5>
+<p>Much in micromark is based on character codes (see <a href="#preprocess">§ Preprocess</a>).<br>
+For this extension, the relevant codes are:</p>
+<ul>
+<li><code class="notranslate">-5</code><br>
+— M-0005 CARRIAGE RETURN (CR)</li>
+<li><code class="notranslate">-4</code><br>
+— M-0004 LINE FEED (LF)</li>
+<li><code class="notranslate">-3</code><br>
+— M-0003 CARRIAGE RETURN LINE FEED (CRLF)</li>
+<li><code class="notranslate">null</code><br>
+— EOF (end of the stream)</li>
+<li><code class="notranslate">92</code><br>
+— U+005C BACKSLASH (<code class="notranslate">\</code>)</li>
+<li><code class="notranslate">123</code><br>
+— U+007B LEFT CURLY BRACE (<code class="notranslate">{</code>)</li>
+<li><code class="notranslate">125</code><br>
+— U+007D RIGHT CURLY BRACE (<code class="notranslate">}</code>)</li>
+</ul>
+<p>Also relevant are the content types (see <a href="#content-types">§ Content types</a>).<br>
+This extension is a <em>text</em> construct, as it’s parsed alongsides links and such.<br>
+The content inside it (between the braces) is <em>string</em>, to support character<br>
+escapes and -references.</p>
+<p>Let’s write our extension.<br>
+Add the following code to <code class="notranslate">index.js</code>:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">const</span> <span class="pl-s1">variableConstruct</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span><span class="pl-c1">name</span>: <span class="pl-s">'variable'</span><span class="pl-kos">,</span> <span class="pl-c1">tokenize</span>: <span class="pl-s1">variableTokenize</span><span class="pl-kos">}</span>
+
+<span class="pl-k">export</span> <span class="pl-k">const</span> <span class="pl-s1">variables</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span><span class="pl-c1">text</span>: <span class="pl-kos">{</span><span class="pl-c1">123</span>: <span class="pl-s1">variableConstruct</span><span class="pl-kos">}</span><span class="pl-kos">}</span>
+
+<span class="pl-k">function</span> <span class="pl-en">variableTokenize</span><span class="pl-kos">(</span><span class="pl-s1">effects</span><span class="pl-kos">,</span> <span class="pl-s1">ok</span><span class="pl-kos">,</span> <span class="pl-s1">nok</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-s1">start</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">start</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">'start:'</span><span class="pl-kos">,</span> <span class="pl-s1">effects</span><span class="pl-kos">,</span> <span class="pl-s1">code</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-s1">nok</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>The above code exports an extension with the identifier <code class="notranslate">variables</code>.<br>
+The extension defines a <em>text</em> construct for the character code <code class="notranslate">123</code>.<br>
+The construct has a <code class="notranslate">name</code>, so that it can be turned off (optional, see next<br>
+case), and it has a <code class="notranslate">tokenize</code> function that sets up a state machine, which<br>
+receives <code class="notranslate">effects</code> and the <code class="notranslate">ok</code> and <code class="notranslate">nok</code> states.<br>
+<code class="notranslate">ok</code> can be used when successful, <code class="notranslate">nok</code> when not, and so constructs are a bit<br>
+similar to how promises can <em>resolve</em> or <em>reject</em>.<br>
+<code class="notranslate">tokenize</code> returns the initial state, <code class="notranslate">start</code>, which itself receives the current<br>
+character code, prints some debugging information, and then returns a call<br>
+to <code class="notranslate">nok</code>.</p>
+<p>Ensure that things work by running <code class="notranslate">node example</code> and see what it prints.</p>
+<p>Now we need to define our states and figure out how variables work.<br>
+Some people prefer sketching a diagram of the flow.<br>
+I often prefer writing it down in pseudo-code prose.<br>
+I’ve also found that test driven development works well, where I write unit<br>
+tests for how it should work, then write the state machine, and finally use a<br>
+code coverage tool to ensure I’ve thought of everything.</p>
+<p>In prose, what we have to code looks like this:</p>
+<ul>
+<li><strong>start</strong>:<br>
+Receive <code class="notranslate">123</code> as <code class="notranslate">code</code>, enter a token for the whole (let’s call it<br>
+<code class="notranslate">variable</code>), enter a token for the marker (<code class="notranslate">variableMarker</code>), consume<br>
+<code class="notranslate">code</code>, exit the marker token, enter a token for the contents<br>
+(<code class="notranslate">variableString</code>), switch to <em>begin</em></li>
+<li><strong>begin</strong>:<br>
+If <code class="notranslate">code</code> is <code class="notranslate">125</code>, reconsume in <em>nok</em>.<br>
+Else, reconsume in <em>inside</em></li>
+<li><strong>inside</strong>:<br>
+If <code class="notranslate">code</code> is <code class="notranslate">-5</code>, <code class="notranslate">-4</code>, <code class="notranslate">-3</code>, or <code class="notranslate">null</code>, reconsume in <code class="notranslate">nok</code>.<br>
+Else, if <code class="notranslate">code</code> is <code class="notranslate">125</code>, exit the string token, enter a <code class="notranslate">variableMarker</code>,<br>
+consume <code class="notranslate">code</code>, exit the marker token, exit the variable token, and switch<br>
+to <em>ok</em>.<br>
+Else, consume, and remain in <em>inside</em>.</li>
+</ul>
+<p>That should be it!<br>
+Replace <code class="notranslate">variableTokenize</code> with the following to include the needed states:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">function</span> <span class="pl-en">variableTokenize</span><span class="pl-kos">(</span><span class="pl-s1">effects</span><span class="pl-kos">,</span> <span class="pl-s1">ok</span><span class="pl-kos">,</span> <span class="pl-s1">nok</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-s1">start</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">start</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">enter</span><span class="pl-kos">(</span><span class="pl-s">'variable'</span><span class="pl-kos">)</span>
+    <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">enter</span><span class="pl-kos">(</span><span class="pl-s">'variableMarker'</span><span class="pl-kos">)</span>
+    <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">consume</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span>
+    <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">exit</span><span class="pl-kos">(</span><span class="pl-s">'variableMarker'</span><span class="pl-kos">)</span>
+    <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">enter</span><span class="pl-kos">(</span><span class="pl-s">'variableString'</span><span class="pl-kos">)</span>
+    <span class="pl-k">return</span> <span class="pl-s1">begin</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">begin</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span> <span class="pl-s1">code</span> <span class="pl-c1">===</span> <span class="pl-c1">125</span> ? <span class="pl-s1">nok</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span> : <span class="pl-en">inside</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">inside</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">code</span> <span class="pl-c1">===</span> <span class="pl-c1">-</span><span class="pl-c1">5</span> <span class="pl-c1">||</span> <span class="pl-s1">code</span> <span class="pl-c1">===</span> <span class="pl-c1">-</span><span class="pl-c1">4</span> <span class="pl-c1">||</span> <span class="pl-s1">code</span> <span class="pl-c1">===</span> <span class="pl-c1">-</span><span class="pl-c1">3</span> <span class="pl-c1">||</span> <span class="pl-s1">code</span> <span class="pl-c1">===</span> <span class="pl-c1">null</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-k">return</span> <span class="pl-s1">nok</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span>
+    <span class="pl-kos">}</span>
+
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">code</span> <span class="pl-c1">===</span> <span class="pl-c1">125</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">exit</span><span class="pl-kos">(</span><span class="pl-s">'variableString'</span><span class="pl-kos">)</span>
+      <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">enter</span><span class="pl-kos">(</span><span class="pl-s">'variableMarker'</span><span class="pl-kos">)</span>
+      <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">consume</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span>
+      <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">exit</span><span class="pl-kos">(</span><span class="pl-s">'variableMarker'</span><span class="pl-kos">)</span>
+      <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">exit</span><span class="pl-kos">(</span><span class="pl-s">'variable'</span><span class="pl-kos">)</span>
+      <span class="pl-k">return</span> <span class="pl-s1">ok</span>
+    <span class="pl-kos">}</span>
+
+    <span class="pl-s1">effects</span><span class="pl-kos">.</span><span class="pl-en">consume</span><span class="pl-kos">(</span><span class="pl-s1">code</span><span class="pl-kos">)</span>
+    <span class="pl-k">return</span> <span class="pl-s1">inside</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Run <code class="notranslate">node example</code> again and see what it prints!<br>
+The HTML compiler ignores things it doesn’t know, so variables are now removed.</p>
+<p>We have our first syntax extension, and it sort of works, but we don’t handle<br>
+character escapes and -references yet.<br>
+We need to do two things to make that work:<br>
+a) skip over <code class="notranslate">\\</code> and <code class="notranslate">\}</code> in our algorithm,<br>
+b) tell micromark to parse them.</p>
+<p>Change the code in <code class="notranslate">index.js</code> to support escapes like so:</p>
+<div class="highlight highlight-source-diff"><pre class="notranslate"><span class="pl-mdr">@@ -23,6 +23,11 @@</span> function variableTokenize(effects, ok, nok) {
+       return nok(code)
+     }
+
+<span class="pl-mi1"><span class="pl-mi1">+</span>    if (code === 92) {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>      effects.consume(code)</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>      return insideEscape</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    }</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span></span>
+     if (code === 125) {
+       effects.exit('variableString')
+       effects.enter('variableMarker')
+<span class="pl-mdr">@@ -35,4 +40,13 @@</span> function variableTokenize(effects, ok, nok) {
+     effects.consume(code)
+     return inside
+   }
+<span class="pl-mi1"><span class="pl-mi1">+</span></span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  function insideEscape(code) {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    if (code === 92 || code === 125) {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>      effects.consume(code)</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>      return inside</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    }</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span></span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    return inside(code)</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  }</span>
+ }</pre></div>
+<p>Finally add support for character references and character escapes between<br>
+braces by adding a special token that defines a content type:</p>
+<div class="highlight highlight-source-diff"><pre class="notranslate"><span class="pl-mdr">@@ -11,6 +11,7 @@</span> function variableTokenize(effects, ok, nok) {
+     effects.consume(code)
+     effects.exit('variableMarker')
+     effects.enter('variableString')
+<span class="pl-mi1"><span class="pl-mi1">+</span>    effects.enter('chunkString', {contentType: 'string'})</span>
+     return begin
+   }
+
+<span class="pl-mdr">@@ -29,6 +30,7 @@</span> function variableTokenize(effects, ok, nok) {
+     }
+
+     if (code === 125) {
+<span class="pl-mi1"><span class="pl-mi1">+</span>      effects.exit('chunkString')</span>
+       effects.exit('variableString')
+       effects.enter('variableMarker')
+       effects.consume(code)</pre></div>
+<p>Tokens with a <code class="notranslate">contentType</code> will be replaced by <em>postprocess</em> (see<br>
+<a href="#postprocess">§ Postprocess</a>) by the tokens belonging to that content type.</p>
+<h5>HTML extension</h5>
+<p>Up next is an HTML extension to replace variables with data.<br>
+Change <code class="notranslate">example.js</code> to use one like so:</p>
+<div class="highlight highlight-source-diff"><pre class="notranslate"><span class="pl-mdr">@@ -1,11 +1,12 @@</span>
+ import fs from 'node:fs/promises'
+ import {micromark} from 'micromark'
+<span class="pl-md"><span class="pl-md">-</span>import {variables} from './index.js'</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>import {variablesHtml, variables} from './index.js'</span>
+
+ const buf = await fs.readFile('example.md')
+<span class="pl-md"><span class="pl-md">-</span>const out = micromark(buf, {extensions: [variables]})</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>const html = variablesHtml({planet: '1', 'pla}net': '2'})</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>const out = micromark(buf, {extensions: [variables], htmlExtensions: [html]})</span>
+ console.log(out)</pre></div>
+<p>And add the HTML extension, <code class="notranslate">variablesHtml</code>, to <code class="notranslate">index.js</code> like so:</p>
+<div class="highlight highlight-source-diff"><pre class="notranslate"><span class="pl-mdr">@@ -52,3 +52,19 @@</span> function variableTokenize(effects, ok, nok) {
+     return inside(code)
+   }
+ }
+<span class="pl-mi1"><span class="pl-mi1">+</span></span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>export function variablesHtml(data = {}) {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  return {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    enter: {variableString: enterVariableString},</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    exit: {variableString: exitVariableString},</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  }</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span></span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  function enterVariableString() {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    this.buffer()</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  }</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span></span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  function exitVariableString() {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    var id = this.resume()</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    if (id in data) {</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>      this.raw(this.encode(data[id]))</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>    }</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>  }</span>
+<span class="pl-mi1"><span class="pl-mi1">+</span>}</span></pre></div>
+<p><code class="notranslate">variablesHtml</code> is a function that receives an object mapping “variables” to<br>
+strings and returns an HTML extension.<br>
+The extension hooks two functions to <code class="notranslate">variableString</code>, one when it starts,<br>
+the other when it ends.<br>
+We don’t need to do anything to handle the other tokens as they’re already<br>
+ignored by default.<br>
+<code class="notranslate">enterVariableString</code> calls <code class="notranslate">buffer</code>, which is a function that “stashes” what<br>
+would otherwise be emitted.<br>
+<code class="notranslate">exitVariableString</code> calls <code class="notranslate">resume</code>, which is the inverse of <code class="notranslate">buffer</code> and<br>
+returns the stashed value.<br>
+If the variable is defined, we ensure it’s made safe (with <code class="notranslate">this.encode</code>) and<br>
+finally output that (with <code class="notranslate">this.raw</code>).</p>
+<h5>Further exercises</h5>
+<p>It works!<br>
+We’re done!<br>
+Of course, it can be better, such as with the following potential features:</p>
+<ul>
+<li>Add support for empty variables</li>
+<li>Add support for spaces between markers and string</li>
+<li>Add support for line endings in variables</li>
+<li>Add support for nested braces</li>
+<li>Add support for blocks</li>
+<li>Add warnings on undefined variables</li>
+<li>Use <code class="notranslate">micromark-build</code>, and use <code class="notranslate">devlop</code>, <code class="notranslate">debug</code>, and<br>
+<code class="notranslate">micromark-util-symbol</code> (see <a href="#size--debug">§ Size &amp; debug</a>)</li>
+<li>Add <a href="https://github.com/syntax-tree/mdast-util-from-markdown"><code class="notranslate">mdast-util-from-markdown</code></a> and<br>
+<a href="https://github.com/syntax-tree/mdast-util-to-markdown"><code class="notranslate">mdast-util-to-markdown</code></a> utilities to parse and<br>
+serialize the AST</li>
+</ul>
+<h4>Case: turn off constructs</h4>
+<p>Sometimes it’s needed to turn a default construct off.<br>
+That’s possible through a syntax extension.<br>
+Note that not everything can be turned off (such as paragraphs) and even if it’s<br>
+possible to turn something off, it could break micromark (such as character<br>
+escapes).</p>
+<p>To disable constructs, refer to them by name in an array at the <code class="notranslate">disable.null</code><br>
+field of an extension:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">extension</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span><span class="pl-c1">disable</span>: <span class="pl-kos">{</span><span class="pl-c1">null</span>: <span class="pl-kos">[</span><span class="pl-s">'codeIndented'</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-kos">}</span>
+
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-en">micromark</span><span class="pl-kos">(</span><span class="pl-s">'\ta'</span><span class="pl-kos">,</span> <span class="pl-kos">{</span><span class="pl-c1">extensions</span>: <span class="pl-kos">[</span><span class="pl-s1">extension</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<p>Yields:</p>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>a<span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span></pre></div>
+<h2>Architecture</h2>
+<p>micromark is maintained as a monorepo.<br>
+Many of its internals, which are used in <code class="notranslate">micromark</code> (core) but also useful for<br>
+developers of extensions or integrations, are available as separate modules.<br>
+Each module maintained here is available in <a href="packages/"><code class="notranslate">packages/</code></a>.</p>
+<h3>Overview</h3>
+<p>The naming scheme in <a href="packages/"><code class="notranslate">packages/</code></a> is as follows:</p>
+<ul>
+<li><code class="notranslate">micromark-build</code><br>
+— Small CLI to build dev code into production code</li>
+<li><code class="notranslate">micromark-core-commonmark</code><br>
+— CommonMark constructs used in micromark</li>
+<li><code class="notranslate">micromark-factory-*</code><br>
+— Reusable subroutines used to parse parts of constructs</li>
+<li><code class="notranslate">micromark-util-*</code><br>
+— Reusable helpers often needed when parsing markdown</li>
+<li><code class="notranslate">micromark</code><br>
+— Core module</li>
+</ul>
+<p>micromark has two interfaces: buffering (maintained in<br>
+<a href="https://github.com/micromark/micromark/blob/main/packages/micromark/dev/index.js"><code class="notranslate">micromark/dev/index.js</code></a>)<br>
+and streaming (maintained in<br>
+<a href="https://github.com/micromark/micromark/blob/main/packages/micromark/dev/stream.js"><code class="notranslate">micromark/dev/stream.js</code></a>).<br>
+The first takes all input at once whereas the last uses a Node.js stream to take<br>
+input separately.<br>
+They thinly wrap how data flows through micromark:</p>
+<pre lang="text" class="notranslate"><code class="notranslate">                                            micromark
++-----------------------------------------------------------------------------------------------+
+|            +------------+         +-------+         +-------------+         +---------+       |
+| -markdown-&gt;+ preprocess +-chunks-&gt;+ parse +-events-&gt;+ postprocess +-events-&gt;+ compile +-html- |
+|            +------------+         +-------+         +-------------+         +---------+       |
++-----------------------------------------------------------------------------------------------+
+</code></pre>
+<h3>Preprocess</h3>
+<p>The <strong>preprocessor</strong><br>
+(<a href="https://github.com/micromark/micromark/blob/main/packages/micromark/dev/lib/preprocess.js"><code class="notranslate">micromark/dev/lib/preprocess.js</code></a>)<br>
+takes markdown and turns it into chunks.</p>
+<p>A <strong>chunk</strong> is either a character code or a slice of a buffer in the form of a<br>
+string.<br>
+Chunks are used because strings are more efficient storage than character codes,<br>
+but limited in what they can represent.<br>
+For example, the input <code class="notranslate">ab\ncd</code> is represented as <code class="notranslate">['ab', -4, 'cd']</code> in chunks.</p>
+<p>A character <strong>code</strong> is often the same as what <code class="notranslate">String#charCodeAt()</code> yields but<br>
+micromark adds meaning to certain other values.</p>
+<p>In micromark, the actual character U+0009 CHARACTER TABULATION (HT) is replaced<br>
+by one M-0002 HORIZONTAL TAB (HT) and between 0 and 3 M-0001 VIRTUAL SPACE (VS)<br>
+characters, depending on the column at which the tab occurred.<br>
+For example, the input <code class="notranslate">\ta</code> is represented as <code class="notranslate">[-2, -1, -1, -1, 97]</code> and <code class="notranslate">a\tb</code><br>
+as <code class="notranslate">[97, -2, -1, -1, 98]</code> in character codes.</p>
+<p>The characters U+000A LINE FEED (LF) and U+000D CARRIAGE RETURN (CR) are<br>
+replaced by virtual characters depending on whether they occur together: M-0003<br>
+CARRIAGE RETURN LINE FEED (CRLF), M-0004 LINE FEED (LF), and M-0005 CARRIAGE<br>
+RETURN (CR).<br>
+For example, the input <code class="notranslate">a\r\nb\nc\rd</code> is represented as<br>
+<code class="notranslate">[97, -5, 98, -4, 99, -3, 100]</code> in character codes.</p>
+<p>The <code class="notranslate">0</code> (U+0000 NUL) character code is replaced by U+FFFD REPLACEMENT CHARACTER<br>
+(<code class="notranslate">�</code>).</p>
+<p>The <code class="notranslate">null</code> code represents the end of the input stream (called <em>eof</em> for end of<br>
+file).</p>
+<h3>Parse</h3>
+<p>The <strong>parser</strong><br>
+(<a href="https://github.com/micromark/micromark/blob/main/packages/micromark/dev/lib/parse.js"><code class="notranslate">micromark/dev/lib/parse.js</code></a>)<br>
+takes chunks and turns them into events.</p>
+<p>An <strong>event</strong> is the start or end of a token amongst other events.<br>
+Tokens can “contain” other tokens, even though they are stored in a flat list,<br>
+by entering before and exiting after them.</p>
+<p>A <strong>token</strong> is a span of one or more codes.<br>
+Tokens are most of what micromark produces: the built in HTML compiler or other<br>
+tools can turn them into different things.<br>
+Tokens are essentially names attached to a slice, such as <code class="notranslate">lineEndingBlank</code> for<br>
+certain line endings, or <code class="notranslate">codeFenced</code> for a whole fenced code.</p>
+<p>Sometimes, more info is attached to tokens, such as <code class="notranslate">_open</code> and <code class="notranslate">_close</code> by<br>
+<code class="notranslate">attention</code> (strong, emphasis) to signal whether the sequence can open or close<br>
+an attention run.<br>
+These fields have to do with how the parser works, which is complex and not<br>
+always pretty.</p>
+<p>Certain fields (<code class="notranslate">previous</code>, <code class="notranslate">next</code>, and <code class="notranslate">contentType</code>) are used in many cases:<br>
+linked tokens for subcontent.<br>
+Linked tokens are used because outer constructs are parsed first.<br>
+Take for example:</p>
+<div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-v">-</span> <span class="pl-s">*</span>a
+  b<span class="pl-s">*</span>.</pre></div>
+<ol>
+<li>The list marker and the space after it is parsed first</li>
+<li>The rest of the line is a <code class="notranslate">chunkFlow</code> token</li>
+<li>The two spaces on the second line are a <code class="notranslate">linePrefix</code> of the list</li>
+<li>The rest of the line is another <code class="notranslate">chunkFlow</code> token</li>
+</ol>
+<p>The two <code class="notranslate">chunkFlow</code> tokens are linked together and the chunks they span are<br>
+passed through the flow tokenizer.<br>
+There the chunks are seen as <code class="notranslate">chunkContent</code> and passed through the content<br>
+tokenizer.<br>
+There the chunks are seen as a paragraph and seen as <code class="notranslate">chunkText</code> and passed<br>
+through the text tokenizer.<br>
+Finally, the attention (emphasis) and data (“raw” characters) is parsed there,<br>
+and we’re done!</p>
+<h4>Content types</h4>
+<p>The parser starts out with a document tokenizer.<br>
+<em>Document</em> is the top-most content type, which includes containers such as block<br>
+quotes and lists.<br>
+Containers in markdown come from the margin and include more constructs<br>
+on the lines that define them.</p>
+<p><em>Flow</em> represents the sections (block constructs such as ATX and setext<br>
+headings, HTML, indented and fenced code, thematic breaks), which like<br>
+<em>document</em> are also parsed per line.<br>
+An example is HTML, which has a certain starting condition (such as <code class="notranslate">&lt;script&gt;</code><br>
+on its own line), then continues for a while, until an end condition is found<br>
+(such as <code class="notranslate">&lt;/style&gt;</code>).<br>
+If that line with an end condition is never found, that flow goes until the end.</p>
+<p><em>Content</em> is zero or more definitions, and then zero or one paragraph.<br>
+It’s a weird one, and needed to make certain edge cases around definitions spec<br>
+compliant.<br>
+Definitions are unlike other things in markdown, in that they behave like <em>text</em><br>
+in that they can contain arbitrary line endings, but <em>have</em> to end at a line<br>
+ending.<br>
+If they end in something else, the whole definition instead is seen as a<br>
+paragraph.</p>
+<p>The content in markdown first needs to be parsed up to this level to figure out<br>
+which things are defined, for the whole document, before continuing on with<br>
+<em>text</em>, as whether a link or image reference forms or not depends on whether<br>
+it’s defined.<br>
+This unfortunately prevents a true streaming markdown parser.</p>
+<p><em>Text</em> contains phrasing content (rich inline text: autolinks, character escapes<br>
+and -references, code, hard breaks, HTML, images, links, emphasis, strong).</p>
+<p><em>String</em> is a limited <em>text</em>-like content type which only allows character<br>
+references and character escapes.<br>
+It exists in things such as identifiers (media references, definitions),<br>
+titles, or URLs and such.</p>
+<h4>Constructs</h4>
+<p>Constructs are the things that make up markdown.<br>
+Some examples are lists, thematic breaks, or character references.</p>
+<p>Note that, as a general rule of thumb, markdown is <em>really weird</em>.<br>
+It’s essentially made up of edge cases rather than logical rules.<br>
+When browsing the built in constructs, or venturing to build your own, you’ll<br>
+find confusing new things and run into complex custom hooks.</p>
+<p>One more reasonable construct is the thematic break<br>
+(<a href="https://github.com/micromark/micromark/blob/main/packages/micromark-core-commonmark/dev/lib/thematic-break.js">see code</a>).<br>
+It’s an object that defines a <code class="notranslate">name</code> and a <code class="notranslate">tokenize</code> function.<br>
+Most of what constructs do is defined in their required <code class="notranslate">tokenize</code> function,<br>
+which sets up a state machine to handle character codes streaming in.</p>
+<h3>Postprocess</h3>
+<p>The <strong>postprocessor</strong><br>
+(<a href="https://github.com/micromark/micromark/blob/main/packages/micromark/dev/lib/postprocess.js"><code class="notranslate">micromark/dev/lib/postprocess.js</code></a>)<br>
+is a small step that takes events, ensures all their<br>
+nested content is parsed, and returns the modified events.</p>
+<h3>Compile</h3>
+<p>The <strong>compiler</strong><br>
+(<a href="https://github.com/micromark/micromark/blob/main/packages/micromark/dev/lib/compile.js"><code class="notranslate">micromark/dev/lib/compile.js</code></a>)<br>
+takes events and turns them into HTML.<br>
+While micromark was created mostly to advance markdown parsing irrespective of<br>
+compiling to HTML, the common case of doing so is built in.<br>
+A built in HTML compiler is useful because it allows us to check for compliancy<br>
+to CommonMark, the de facto norm of markdown, specified in roughly 650<br>
+input/output cases.<br>
+The parsing parts can still be used separately to build ASTs, CSTs, or many<br>
+other output formats.</p>
+<p>The compiler has an interface that accepts lists of events instead of the whole<br>
+at once, but because markdown can’t truly stream, events are buffered before<br>
+compiling and outputting the final result.</p>
+<h2>Examples</h2>
+<h3>GitHub flavored markdown (GFM)</h3>
+<p>To support GFM (autolink literals, strikethrough, tables, and tasklists) use<br>
+<a href="https://github.com/micromark/micromark-extension-gfm"><code class="notranslate">micromark-extension-gfm</code></a>.<br>
+Say we have a file like this:</p>
+<div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-mh"># <span class="pl-en">GFM</span></span>
+
+<span class="pl-mh">## <span class="pl-en">Autolink literals</span></span>
+
+<span class="pl-corl">www.example.com</span>, <span class="pl-corl">https://example.com</span>, and <span class="pl-corl">contact@example.com</span>.
+
+<span class="pl-mh">## <span class="pl-en">Footnote</span></span>
+
+A note<span class="pl-s">[</span><span class="pl-s">^</span><span class="pl-en">1</span><span class="pl-s">]</span>
+
+<span class="pl-s">[</span><span class="pl-s">^</span><span class="pl-en">1</span><span class="pl-s">]</span>: Big note.
+
+<span class="pl-mh">## <span class="pl-en">Strikethrough</span></span>
+
+<span class="pl-s">~</span>one<span class="pl-s">~</span> or <span class="pl-s">~~</span>two<span class="pl-s">~~</span> tildes.
+
+<span class="pl-mh">## <span class="pl-en">Table</span></span>
+
+<span class="pl-ml">|</span> a <span class="pl-ml">|</span> b  <span class="pl-ml">|</span>  c <span class="pl-ml">|</span>  d  <span class="pl-ml">|</span>
+<span class="pl-ml">|</span> - <span class="pl-ml">|</span> :- <span class="pl-ml">|</span> -: <span class="pl-ml">|</span> :-: <span class="pl-ml">|</span>
+
+<span class="pl-mh">## <span class="pl-en">Tag filter</span></span>
+
+&lt;<span class="pl-ent">plaintext</span>&gt;
+
+<span class="pl-mh">## <span class="pl-en">Tasklist</span></span>
+
+<span class="pl-v">*</span> <span class="pl-k">[ ]</span> to do
+<span class="pl-v">*</span> <span class="pl-k">[x]</span> done</pre></div>
+<p>Then do something like this:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">fs</span> <span class="pl-k">from</span> <span class="pl-s">'node:fs/promises'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">gfmHtml</span><span class="pl-kos">,</span> <span class="pl-s1">gfm</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark-extension-gfm'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">doc</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">fs</span><span class="pl-kos">.</span><span class="pl-en">readFile</span><span class="pl-kos">(</span><span class="pl-s">'example.md'</span><span class="pl-kos">)</span>
+
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-en">micromark</span><span class="pl-kos">(</span><span class="pl-s1">doc</span><span class="pl-kos">,</span> <span class="pl-kos">{</span><span class="pl-c1">extensions</span>: <span class="pl-kos">[</span><span class="pl-en">gfm</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">,</span> <span class="pl-c1">htmlExtensions</span>: <span class="pl-kos">[</span><span class="pl-en">gfmHtml</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<details>
+<summary>Show equivalent HTML</summary>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">h1</span><span class="pl-kos">&gt;</span>GFM<span class="pl-kos">&lt;/</span><span class="pl-ent">h1</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>Autolink literals<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>="<span class="pl-s">http://www.example.com</span>"<span class="pl-kos">&gt;</span>www.example.com<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span>, <span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>="<span class="pl-s">https://example.com</span>"<span class="pl-kos">&gt;</span>https://example.com<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span>, and <span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>="<span class="pl-s">mailto:contact@example.com</span>"<span class="pl-kos">&gt;</span>contact@example.com<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span>.<span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>Footnote<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>A note<span class="pl-kos">&lt;</span><span class="pl-ent">sup</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>="<span class="pl-s">#user-content-fn-1</span>" <span class="pl-c1">id</span>="<span class="pl-s">user-content-fnref-1</span>" <span class="pl-c1">data-footnote-ref</span>="" <span class="pl-c1">aria-describedby</span>="<span class="pl-s">footnote-label</span>"<span class="pl-kos">&gt;</span>1<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">sup</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>Strikethrough<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">del</span><span class="pl-kos">&gt;</span>one<span class="pl-kos">&lt;/</span><span class="pl-ent">del</span><span class="pl-kos">&gt;</span> or <span class="pl-kos">&lt;</span><span class="pl-ent">del</span><span class="pl-kos">&gt;</span>two<span class="pl-kos">&lt;/</span><span class="pl-ent">del</span><span class="pl-kos">&gt;</span> tildes.<span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>Table<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">table</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">thead</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">tr</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">th</span><span class="pl-kos">&gt;</span>a<span class="pl-kos">&lt;/</span><span class="pl-ent">th</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">th</span> <span class="pl-c1">align</span>="<span class="pl-s">left</span>"<span class="pl-kos">&gt;</span>b<span class="pl-kos">&lt;/</span><span class="pl-ent">th</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">th</span> <span class="pl-c1">align</span>="<span class="pl-s">right</span>"<span class="pl-kos">&gt;</span>c<span class="pl-kos">&lt;/</span><span class="pl-ent">th</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">th</span> <span class="pl-c1">align</span>="<span class="pl-s">center</span>"<span class="pl-kos">&gt;</span>d<span class="pl-kos">&lt;/</span><span class="pl-ent">th</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">tr</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">thead</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">table</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>Tag filter<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>
+&amp;lt;plaintext&amp;gt;
+<span class="pl-kos">&lt;</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>Tasklist<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">ul</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">li</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">input</span> <span class="pl-c1">disabled</span>="" <span class="pl-c1">type</span>="<span class="pl-s">checkbox</span>"<span class="pl-kos">&gt;</span> to do<span class="pl-kos">&lt;/</span><span class="pl-ent">li</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">li</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">input</span> <span class="pl-c1">checked</span>="" <span class="pl-c1">disabled</span>="" <span class="pl-c1">type</span>="<span class="pl-s">checkbox</span>"<span class="pl-kos">&gt;</span> done<span class="pl-kos">&lt;/</span><span class="pl-ent">li</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">ul</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">section</span> <span class="pl-c1">data-footnotes</span>="" <span class="pl-c1">class</span>="<span class="pl-s">footnotes</span>"<span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">h2</span> <span class="pl-c1">id</span>="<span class="pl-s">footnote-label</span>" <span class="pl-c1">class</span>="<span class="pl-s">sr-only</span>"<span class="pl-kos">&gt;</span>Footnotes<span class="pl-kos">&lt;/</span><span class="pl-ent">h2</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">ol</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">li</span> <span class="pl-c1">id</span>="<span class="pl-s">user-content-fn-1</span>"<span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>Big note. <span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>="<span class="pl-s">#user-content-fnref-1</span>" <span class="pl-c1">data-footnote-backref</span>="" <span class="pl-c1">class</span>="<span class="pl-s">data-footnote-backref</span>" <span class="pl-c1">aria-label</span>="<span class="pl-s">Back to content</span>"<span class="pl-kos">&gt;</span>↩<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">li</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">ol</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">section</span><span class="pl-kos">&gt;</span></pre></div>
+</details>
+<h3>Math</h3>
+<p>To support math use <a href="https://github.com/micromark/micromark-extension-math"><code class="notranslate">micromark-extension-math</code></a>.<br>
+Say we have a file like this:</p>
+<div class="highlight highlight-text-md"><pre class="notranslate">Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+
+<span class="pl-s">$$</span><span class="pl-c1"></span>
+<span class="pl-c1">L = \frac{1}{2} \rho v^2 S C_L</span>
+<span class="pl-c1"></span><span class="pl-s">$$</span></pre></div>
+<p>Then do something like this:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">fs</span> <span class="pl-k">from</span> <span class="pl-s">'node:fs/promises'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">micromark</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark'</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">mathHtml</span><span class="pl-kos">,</span> <span class="pl-s1">math</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'micromark-extension-math'</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">doc</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">fs</span><span class="pl-kos">.</span><span class="pl-en">readFile</span><span class="pl-kos">(</span><span class="pl-s">'example.md'</span><span class="pl-kos">)</span>
+
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-en">micromark</span><span class="pl-kos">(</span><span class="pl-s1">doc</span><span class="pl-kos">,</span> <span class="pl-kos">{</span><span class="pl-c1">extensions</span>: <span class="pl-kos">[</span><span class="pl-s1">math</span><span class="pl-kos">]</span><span class="pl-kos">,</span> <span class="pl-c1">htmlExtensions</span>: <span class="pl-kos">[</span><span class="pl-en">mathHtml</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">)</span></pre></div>
+<details>
+<summary>Show equivalent HTML</summary>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>Lift(<span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">math math-inline</span>"<span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">katex</span>"<span class="pl-kos">&gt;</span>…<span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span>) can be determined by Lift Coefficient (<span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">math math-inline</span>"<span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">katex</span>"<span class="pl-kos">&gt;</span>…<span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span>) like the following equation.<span class="pl-kos">&lt;/</span><span class="pl-ent">p</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">div</span> <span class="pl-c1">class</span>="<span class="pl-s">math math-display</span>"<span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">katex-display</span>"<span class="pl-kos">&gt;</span><span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">katex</span>"<span class="pl-kos">&gt;</span>…<span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-ent">div</span><span class="pl-kos">&gt;</span></pre></div>
+</details>
+<h3>Syntax tree</h3>
+<p>A higher level project, <a href="https://github.com/syntax-tree/mdast-util-from-markdown"><code class="notranslate">mdast-util-from-markdown</code></a>,<br>
+can give you an AST.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-s1">fromMarkdown</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'mdast-util-from-markdown'</span> <span class="pl-c">// This wraps micromark.</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">result</span> <span class="pl-c1">=</span> <span class="pl-en">fromMarkdown</span><span class="pl-kos">(</span><span class="pl-s">'## Hello, *world*!'</span><span class="pl-kos">)</span>
+
+<span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">result</span><span class="pl-kos">.</span><span class="pl-c1">children</span><span class="pl-kos">[</span><span class="pl-c1">0</span><span class="pl-kos">]</span><span class="pl-kos">)</span></pre></div>
+<p>Yields:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">{</span>
+  <span class="pl-c1">type</span>: <span class="pl-s">'heading'</span><span class="pl-kos">,</span>
+  <span class="pl-c1">depth</span>: <span class="pl-c1">2</span><span class="pl-kos">,</span>
+  <span class="pl-c1">children</span>: <span class="pl-kos">[</span>
+    <span class="pl-kos">{</span><span class="pl-c1">type</span>: <span class="pl-s">'text'</span><span class="pl-kos">,</span> <span class="pl-c1">value</span>: <span class="pl-s">'Hello, '</span><span class="pl-kos">,</span> <span class="pl-c1">position</span>: <span class="pl-kos">[</span><span class="pl-v">Object</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-kos">{</span><span class="pl-c1">type</span>: <span class="pl-s">'emphasis'</span><span class="pl-kos">,</span> <span class="pl-c1">children</span>: <span class="pl-kos">[</span><span class="pl-v">Array</span><span class="pl-kos">]</span><span class="pl-kos">,</span> <span class="pl-c1">position</span>: <span class="pl-kos">[</span><span class="pl-v">Object</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-kos">{</span><span class="pl-c1">type</span>: <span class="pl-s">'text'</span><span class="pl-kos">,</span> <span class="pl-c1">value</span>: <span class="pl-s">'!'</span><span class="pl-kos">,</span> <span class="pl-c1">position</span>: <span class="pl-kos">[</span><span class="pl-v">Object</span><span class="pl-kos">]</span><span class="pl-kos">}</span>
+  <span class="pl-kos">]</span><span class="pl-kos">,</span>
+  <span class="pl-c1">position</span>: <span class="pl-kos">{</span>
+    <span class="pl-c1">start</span>: <span class="pl-kos">{</span><span class="pl-c1">line</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c1">column</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c1">offset</span>: <span class="pl-c1">0</span><span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-c1">end</span>: <span class="pl-kos">{</span><span class="pl-c1">line</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c1">column</span>: <span class="pl-c1">19</span><span class="pl-kos">,</span> <span class="pl-c1">offset</span>: <span class="pl-c1">18</span><span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p>Another level up is <a href="https://github.com/remarkjs/remark"><strong>remark</strong></a>, which provides a nice interface and<br>
+hundreds of plugins.</p>
+<h2>Markdown</h2>
+<h3>CommonMark</h3>
+<p>The first definition of “Markdown” gave several examples of how it worked,<br>
+showing input Markdown and output HTML, and came with a reference implementation<br>
+(<code class="notranslate">Markdown.pl</code>).<br>
+When new implementations followed, they mostly followed the first definition,<br>
+but deviated from the first implementation, and added extensions, thus making<br>
+the format a family of formats.</p>
+<p>Some years later, an attempt was made to standardize the differences between<br>
+implementations, by specifying how several edge cases should be handled, through<br>
+more input and output examples.<br>
+This is known as <a href="https://commonmark.org" rel="nofollow">CommonMark</a>, and many implementations now<br>
+work towards some degree of CommonMark compliancy.<br>
+Still, CommonMark describes what the output in HTML should be given some<br>
+input, which leaves many edge cases up for debate, and does not answer what<br>
+should happen for other output formats.</p>
+<p>micromark passes all tests from CommonMark and has many more tests to match the<br>
+CommonMark reference parsers.<br>
+Finally, it comes with <a href="https://github.com/micromark/common-markup-state-machine">CMSM</a>, which describes how to parse markup, instead<br>
+of documenting input and output examples.</p>
+<h3>Grammar</h3>
+<p>The syntax of markdown can be described in Backus–Naur form (BNF) as:</p>
+<div class="highlight highlight-source-abnf"><pre class="notranslate"><span class="pl-en">markdown</span> <span class="pl-k">::=</span> .<span class="pl-k">*</span></pre></div>
+<p>No, that’s <a href="http://trevorjim.com/a-specification-for-markdown/" rel="nofollow">not a typo</a>:<br>
+markdown has no syntax errors; anything thrown at it renders <em>something</em>.</p>
+<h2>Project</h2>
+<h3>Comparison</h3>
+<p>There are many other markdown parsers out there and maybe they’re better suited<br>
+to your use case!<br>
+Here is a short comparison of a couple in JavaScript.<br>
+Note that this list is made by the folks who make <code class="notranslate">micromark</code> and <code class="notranslate">remark</code>, so<br>
+there is some bias.</p>
+<p><strong>Note</strong>: these are, in fact, not really comparable: micromark (and remark)<br>
+focus on completely different things than other markdown parsers do.<br>
+Sure, you can generate HTML from markdown with them, but micromark (and remark)<br>
+are created for (abstract or concrete) syntax trees—to inspect, transform, and<br>
+generate content, so that you can make things like <a href="https://github.com/mdx-js/mdx">MDX</a>, <a href="https://github.com/prettier/prettier">Prettier</a>, or<br>
+<a href="https://github.com/withastro/astro">Astro</a>.</p>
+<h6><code class="notranslate">micromark</code></h6>
+<p>micromark can be used in two different ways.<br>
+It can either be used, optionally with existing extensions, to get HTML easily.<br>
+Or, it can give tremendous power, such as access to all tokens with positional<br>
+info, at the cost of being hard to get into.<br>
+It’s super small, pretty fast, and has 100% CommonMark compliance.<br>
+It has syntax extensions, such as supporting 100% GFM compliance (with<br>
+<code class="notranslate">micromark-extension-gfm</code>), but they’re rather complex to write.<br>
+It’s the newest parser on the block, which means it’s fresh and well suited for<br>
+contemporary markdown needs, but it’s also battle-tested, and already the 3rd<br>
+most popular markdown parser in JavaScript.</p>
+<p>If you’re looking for fine grained control, use micromark.<br>
+If you just want HTML from markdown, use micromark.</p>
+<h6><code class="notranslate">remark</code></h6>
+<p><a href="https://github.com/remarkjs/remark">remark</a> is the most popular markdown parser.<br>
+It’s built on top of <code class="notranslate">micromark</code> and boasts syntax trees.<br>
+For an analogy, it’s like if Babel, ESLint, and more, were one project.<br>
+It supports the syntax extensions that micromark has (so it’s 100% CM compliant<br>
+and can be 100% GFM compliant), but most of the work is done in plugins that<br>
+transform or inspect the tree, and there’s <em>tons</em> of them.<br>
+Transforming the tree is relatively easy: it’s a JSON object that can be<br>
+manipulated directly.<br>
+remark is stable, widely used, and extremely powerful for handling complex data.</p>
+<p>You probably should use <a href="https://github.com/remarkjs/remark">remark</a>.</p>
+<h6><code class="notranslate">marked</code></h6>
+<p><a href="https://github.com/markedjs/marked">marked</a> is the oldest markdown parser on the block.<br>
+It’s been around for ages, is battle tested, small, popular, and has a bunch of<br>
+extensions, but doesn’t match CommonMark or GFM, and is unsafe by default.</p>
+<p>If you have markdown you trust and want to turn it into HTML without a fuss, and<br>
+don’t care about perfect compatibility with CommonMark or GFM, but do appreciate<br>
+a small bundle size and stability, use <a href="https://github.com/markedjs/marked">marked</a>.</p>
+<h6><code class="notranslate">markdown-it</code></h6>
+<p><a href="https://github.com/markdown-it/markdown-it">markdown-it</a> is a good, stable, and essentially CommonMark compliant markdown<br>
+parser, with (optional) support for some GFM features as well.<br>
+It’s used a lot as a direct dependency in packages, but is rather big.<br>
+It shines at syntax extensions, where you want to support not just markdown, but<br>
+<em>your</em> (company’s) version of markdown.</p>
+<p>If you need a couple of custom syntax extensions to your otherwise<br>
+CommonMark-compliant markdown, and want to get HTML out, use <a href="https://github.com/markdown-it/markdown-it">markdown-it</a>.</p>
+<h6>Others</h6>
+<p>There are lots of other markdown parsers!<br>
+Some say they’re small, or fast, or that they’re CommonMark compliant—but<br>
+that’s not always true.<br>
+This list is not supposed to be exhaustive (but it’s the most relevant ones).<br>
+This list of markdown parsers is a snapshot in time of why (not) to use<br>
+(alternatives to) <code class="notranslate">micromark</code>: they’re all good choices, depending on what your<br>
+goals are.</p>
+<h3>Test</h3>
+<p>micromark is tested with the ~650 CommonMark tests and more than 1.2k extra<br>
+tests confirmed with CM reference parsers.<br>
+These tests reach all branches in the code, which means that this project has<br>
+100% code coverage.<br>
+Finally, we use fuzz testing to ensure micromark is stable, reliable, and<br>
+secure.</p>
+<p>To build, format, and test the codebase, use <code class="notranslate">$ npm test</code> after clone and<br>
+install.<br>
+The <code class="notranslate">$ npm run test-api</code> and <code class="notranslate">$ npm run test-coverage</code> scripts check either the<br>
+unit tests, or both them and their coverage, respectively.</p>
+<p>The <code class="notranslate">$ npm run test-fuzz</code> script does fuzz testing for 30 minutes.</p>
+<h3>Size &amp; debug</h3>
+<p>micromark is really small.<br>
+A ton of time went into making sure it minifies well, by the way code is written<br>
+but also through custom build scripts to pre-evaluate certain expressions.<br>
+Furthermore, care went into making it compress well with gzip and brotli.</p>
+<p>Normally, you’ll use the pre-evaluated version of micromark.<br>
+While developing, debugging, or testing your code, you <em>should</em> switch to use<br>
+code instrumented with assertions and debug messages:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">node --conditions development module.js</pre></div>
+<p>To see debug messages, use a <code class="notranslate">DEBUG</code> env variable set to <code class="notranslate">micromark</code>:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">DEBUG=<span class="pl-s"><span class="pl-pds">"</span>*<span class="pl-pds">"</span></span> node --conditions development module.js</pre></div>
+<h3>Version</h3>
+<p>micromark adheres to <a href="https://semver.org" rel="nofollow">semver</a> since 3.0.0.</p>
+<h3>Security</h3>
+<p>The typical security aspect discussed for markdown is <a href="https://en.wikipedia.org/wiki/Cross-site_scripting" rel="nofollow">cross-site scripting<br>
+(XSS)</a> attacks.<br>
+Markdown itself is safe if it does not include embedded HTML or dangerous<br>
+protocols in links/images (such as <code class="notranslate">javascript:</code> or <code class="notranslate">data:</code>).<br>
+micromark makes any markdown safe by default, even if HTML is embedded or<br>
+dangerous protocols are used, as it encodes or drops them.<br>
+Turning on the <code class="notranslate">allowDangerousHtml</code> or <code class="notranslate">allowDangerousProtocol</code> options for<br>
+user-provided markdown opens you up to XSS attacks.</p>
+<p>Another security aspect is DDoS attacks.<br>
+For example, an attacker could throw a 100mb file at micromark, in which case<br>
+the JavaScript engine will run out of memory and crash.<br>
+It is also possible to crash micromark with smaller payloads, notably when<br>
+thousands of links, images, emphasis, or strong are opened but not closed.<br>
+It is wise to cap the accepted size of input (500kb can hold a big book) and to<br>
+process content in a different thread or worker so that it can be stopped when<br>
+needed.</p>
+<p>Using extensions might also be unsafe, refer to their documentation for more<br>
+information.</p>
+<p>For more information on markdown sanitation, see<br>
+<a href="https://github.com/ChALkeR/notes/blob/master/Improper-markup-sanitization.md"><code class="notranslate">improper-markup-sanitization.md</code></a> by <a href="https://github.com/ChALkeR"><strong>@chalker</strong></a>.</p>
+<p>See <a href="https://github.com/micromark/.github/blob/main/security.md"><code class="notranslate">security.md</code></a> in <a href="https://github.com/micromark/.github"><code class="notranslate">micromark/.github</code></a> for how to<br>
+submit a security report.</p>
+<h3>Contribute</h3>
+<p>See <a href="https://github.com/micromark/.github/blob/main/contributing.md"><code class="notranslate">contributing.md</code></a> in <a href="https://github.com/micromark/.github"><code class="notranslate">micromark/.github</code></a> for ways<br>
+to get started.<br>
+See <a href="https://github.com/micromark/.github/blob/main/support.md"><code class="notranslate">support.md</code></a> for ways to get help.</p>
+<p>This project has a <a href="https://github.com/micromark/.github/blob/main/code-of-conduct.md">code of conduct</a>.<br>
+By interacting with this repository, organisation, or community you agree to<br>
+abide by its terms.</p>
+<h3>Sponsor</h3>
+
+<p>Support this effort and give back by sponsoring on <a href="https://opencollective.com/unified" rel="nofollow">OpenCollective</a>!</p>
+<markdown-accessiblity-table><table role="table">
+<tbody><tr valign="middle">
+<td width="100%" align="center" colspan="10">
+  <br>
+  <a href="https://www.salesforce.com" rel="nofollow">Salesforce</a> 🏅<br><br>
+  <a href="https://www.salesforce.com" rel="nofollow"><img src="https://camo.githubusercontent.com/e8183e95aab2ad33068990feffb76168fbc5aa8fe5c2e4868d9421f56b828edd/68747470733a2f2f696d616765732e6f70656e636f6c6c6563746976652e636f6d2f73616c6573666f7263652f636138663939372f6c6f676f2f3531322e706e67" width="256" data-canonical-src="https://images.opencollective.com/salesforce/ca8f997/logo/512.png" style="max-width: 100%;"></a>
+</td>
+</tr>
+<tr valign="middle">
+<td width="20%" align="center" rowspan="2" colspan="2">
+  <a href="https://vercel.com" rel="nofollow">Vercel</a><br><br>
+  <a href="https://vercel.com" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/14985020?s=256&amp;v=4" width="128" style="max-width: 100%;"></a>
+</td>
+<td width="20%" align="center" rowspan="2" colspan="2">
+  <a href="https://motif.land" rel="nofollow">Motif</a><br><br>
+  <a href="https://motif.land" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/74457950?s=256&amp;v=4" width="128" style="max-width: 100%;"></a>
+</td>
+<td width="20%" align="center" rowspan="2" colspan="2">
+  <a href="https://www.hashicorp.com" rel="nofollow">HashiCorp</a><br><br>
+  <a href="https://www.hashicorp.com" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/761456?s=256&amp;v=4" width="128" style="max-width: 100%;"></a>
+</td>
+<td width="20%" align="center" rowspan="2" colspan="2">
+  <a href="https://www.gitbook.com" rel="nofollow">GitBook</a><br><br>
+  <a href="https://www.gitbook.com" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/7111340?s=256&amp;v=4" width="128" style="max-width: 100%;"></a>
+</td>
+<td width="20%" align="center" rowspan="2" colspan="2">
+  <a href="https://www.gatsbyjs.org" rel="nofollow">Gatsby</a><br><br>
+  <a href="https://www.gatsbyjs.org" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/12551863?s=256&amp;v=4" width="128" style="max-width: 100%;"></a>
+</td>
+</tr>
+<tr valign="middle">
+</tr>
+<tr valign="middle">
+<td width="20%" align="center" rowspan="2" colspan="2">
+  <a href="https://www.netlify.com" rel="nofollow">Netlify</a><br><br>
+  
+  <a href="https://www.netlify.com" rel="nofollow"><img src="https://camo.githubusercontent.com/ebe9782164d37418d58c2628d3f3daad0aea73d666307b668555fc95f95bb83c/68747470733a2f2f696d616765732e6f70656e636f6c6c6563746976652e636f6d2f6e65746c6966792f343038376465322f6c6f676f2f3235362e706e67" width="128" data-canonical-src="https://images.opencollective.com/netlify/4087de2/logo/256.png" style="max-width: 100%;"></a>
+</td>
+<td width="10%" align="center">
+  <a href="https://www.coinbase.com" rel="nofollow">Coinbase</a><br><br>
+  <a href="https://www.coinbase.com" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/1885080?s=256&amp;v=4" width="64" style="max-width: 100%;"></a>
+</td>
+<td width="10%" align="center">
+  <a href="https://themeisle.com" rel="nofollow">ThemeIsle</a><br><br>
+  <a href="https://themeisle.com" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/58979018?s=128&amp;v=4" width="64" style="max-width: 100%;"></a>
+</td>
+<td width="10%" align="center">
+  <a href="https://expo.io" rel="nofollow">Expo</a><br><br>
+  <a href="https://expo.io" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/12504344?s=128&amp;v=4" width="64" style="max-width: 100%;"></a>
+</td>
+<td width="10%" align="center">
+  <a href="https://boostnote.io" rel="nofollow">Boost Note</a><br><br>
+  <a href="https://boostnote.io" rel="nofollow"><img src="https://camo.githubusercontent.com/f404e4c1d91b3e30225241dd34b035d372acaa4e92600a29df2cc9730a35f83b/68747470733a2f2f696d616765732e6f70656e636f6c6c6563746976652e636f6d2f626f6f73746875622f363331383038332f6c6f676f2f3132382e706e67" width="64" data-canonical-src="https://images.opencollective.com/boosthub/6318083/logo/128.png" style="max-width: 100%;"></a>
+</td>
+<td width="10%" align="center">
+  <a href="https://markdown.space" rel="nofollow">Markdown Space</a><br><br>
+  <a href="https://markdown.space" rel="nofollow"><img src="https://camo.githubusercontent.com/8afc02ef0ff42d7d9bf4daeb0eae29679f1ce114ff3bd117cc5f5a12f09cc8bb/68747470733a2f2f696d616765732e6f70656e636f6c6c6563746976652e636f6d2f6d61726b646f776e2d73706163652f653130333865642f6c6f676f2f3132382e706e67" width="64" data-canonical-src="https://images.opencollective.com/markdown-space/e1038ed/logo/128.png" style="max-width: 100%;"></a>
+</td>
+<td width="10%" align="center">
+  <a href="https://www.holloway.com" rel="nofollow">Holloway</a><br><br>
+  <a href="https://www.holloway.com" rel="nofollow"><img src="https://avatars1.githubusercontent.com/u/35904294?s=128&amp;v=4" width="64" style="max-width: 100%;"></a>
+</td>
+<td width="10%"></td>
+<td width="10%"></td>
+</tr>
+<tr valign="middle">
+<td width="100%" align="center" colspan="8">
+  <br>
+  <a href="https://opencollective.com/unified" rel="nofollow"><strong>You?</strong></a>
+  <br><br>
+</td>
+</tr>
+</tbody></table></markdown-accessiblity-table>
+<h3>Origin story</h3>
+<p>Over the summer of 2018, micromark was planned, and the idea shared in August<br>
+with a couple of friends and potential sponsors.<br>
+The problem I (<strong><a href="https://github.com/wooorm">@wooorm</a></strong>) had was that issues were piling up in remark and<br>
+other repos, but my day job (teaching) was fun, fulfilling, and deserved time<br>
+too.<br>
+It was getting hard to combine the two.<br>
+The thought was to feed two birds with one scone: fix the issues in remark with<br>
+a new markdown parser (codename marydown) while being financially supported by<br>
+sponsors building fancy stuff on top, such as Gatsby, Contentful, and Vercel<br>
+(ZEIT at the time).<br>
+<strong><a href="https://github.com/johno">@johno</a></strong> was making MDX on top of remark at the time (important historical<br>
+note: several other folks were working on JSX + markdown too).<br>
+We bundled our strengths: MDX was getting some traction and we thought together<br>
+we could perhaps make something sustainable.</p>
+<p>In November 2018, we launched with the idea for micromark to solve all existing<br>
+bugs, sustaining the existing hundreds of projects, and furthering the exciting<br>
+high-level project MDX.<br>
+We pushed a single name: unified (which back then was a small but essential<br>
+part of the chain).<br>
+Gatsby and Vercel were immediate sponsors.<br>
+We didn’t know whether it would work, and it worked.<br>
+But now you have a new problem: you are getting some financial support (much<br>
+more than other open source projects) but it’s not enough money for rent, and<br>
+too much money to print stickers with.<br>
+You still have your job and issues are still piling up.</p>
+<p>At the start of summer 2019, after a couple months of saving up donations, I<br>
+quit my job and worked on unified through fall.<br>
+That got the number of open issues down significantly and set up a strong<br>
+governance and maintenance system for the collective.<br>
+But when the time came to work on micromark, the money was gone again, so I<br>
+contracted through winter 2019, and in spring 2020 I could do about half open<br>
+source, half contracting.<br>
+One of the contracting gigs was to write a new MDX parser, for which I also<br>
+documented how to do that with a state machine <a href="https://github.com/micromark/mdx-state-machine">in prose</a>.<br>
+That gave me the insight into how the same could be done for markdown: I drafted<br>
+<a href="https://github.com/micromark/common-markup-state-machine">CMSM</a>, which was some of the core ideas for micromark, but in prose.</p>
+<p>In May 2020, Salesforce reached out: they saw the bugs in remark, how micromark<br>
+could help, and the initial work on CMSM.<br>
+And they had thousands of Markdown files.<br>
+In a for open source uncharacteristic move, they decided to fund my work on<br>
+micromark.<br>
+A large part of what maintaining open source means, is putting out fires,<br>
+triaging issues, and making sure users and sponsors are happy, so it was<br>
+amazing to get several months to just focus and make something new.<br>
+I remember feeling that this project would probably be the hardest thing I’d<br>
+work on: yeah, parsers are pretty difficult, but markdown is on another level.<br>
+Markdown is such a giant stack of edge cases on edge cases on even more<br>
+weirdness, what a mess.<br>
+On August 20, 2020, I released <a href="https://github.com/micromark/micromark/releases/tag/2.0.0">2.0.0</a>, the first working version of<br>
+micromark.<br>
+And it’s hard to describe how that moment felt.<br>
+It was great.</p>
+<p>In 2022, Vercel paid me to make a Rust version: <a href="https://github.com/wooorm/markdown-rs"><code class="notranslate">markdown-rs</code></a>.<br>
+Super cool that I got to continue this work and bring it to a new language.</p>
+<h3>License</h3>
+<p><a href="https://github.com/micromark/micromark/blob/main/license">MIT</a> © <a href="https://wooorm.com" rel="nofollow">Titus Wormer</a></p>

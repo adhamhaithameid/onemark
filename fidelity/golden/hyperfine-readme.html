@@ -1,0 +1,242 @@
+<h1>hyperfine</h1>
+<p><a href="https://github.com/sharkdp/hyperfine/actions/workflows/CICD.yml"><img src="https://github.com/sharkdp/hyperfine/actions/workflows/CICD.yml/badge.svg" alt="CICD" style="max-width: 100%;"></a><br>
+<a href="https://crates.io/crates/hyperfine" rel="nofollow"><img src="https://camo.githubusercontent.com/4af931df7bf9e73aacaee8cb02726d66b185b9537c1f74f16c2ff063f6fce1f0/68747470733a2f2f696d672e736869656c64732e696f2f6372617465732f762f687970657266696e652e737667" alt="Version info" data-canonical-src="https://img.shields.io/crates/v/hyperfine.svg" style="max-width: 100%;"></a><br>
+<a href="https://github.com/chinanf-boy/hyperfine-zh">中文</a></p>
+<p>A command-line benchmarking tool.</p>
+<p><strong>Demo</strong>: Benchmarking <a href="https://github.com/sharkdp/fd"><code class="notranslate">fd</code></a> and<br>
+<a href="https://www.gnu.org/software/findutils/" rel="nofollow"><code class="notranslate">find</code></a>:</p>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/8629d3eaba0870a727fb1a8ffee7289f757cf1f92b3f18c109ff1855bc815e5c/68747470733a2f2f692e696d6775722e636f6d2f7a31394f5978452e676966"><img src="https://camo.githubusercontent.com/8629d3eaba0870a727fb1a8ffee7289f757cf1f92b3f18c109ff1855bc815e5c/68747470733a2f2f692e696d6775722e636f6d2f7a31394f5978452e676966" alt="hyperfine" data-canonical-src="https://i.imgur.com/z19OYxE.gif" style="max-width: 100%;"></a></p>
+<h2>Features</h2>
+<ul>
+<li>Statistical analysis across multiple runs.</li>
+<li>Support for arbitrary shell commands.</li>
+<li>Constant feedback about the benchmark progress and current estimates.</li>
+<li>Warmup runs can be executed before the actual benchmark.</li>
+<li>Cache-clearing commands can be set up before each timing run.</li>
+<li>Statistical outlier detection to detect interference from other programs and caching effects.</li>
+<li>Export results to various formats: CSV, JSON, Markdown, AsciiDoc.</li>
+<li>Parameterized benchmarks (e.g. vary the number of threads).</li>
+<li>Cross-platform</li>
+</ul>
+<h2>Usage</h2>
+<h3>Basic benchmarks</h3>
+<p>To run a benchmark, you can simply call <code class="notranslate">hyperfine &lt;command&gt;...</code>. The argument(s) can be any<br>
+shell command. For example:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine <span class="pl-s"><span class="pl-pds">'</span>sleep 0.3<span class="pl-pds">'</span></span></pre></div>
+<p>Hyperfine will automatically determine the number of runs to perform for each command. By default,<br>
+it will perform <em>at least</em> 10 benchmarking runs and measure for at least 3 seconds. To change this,<br>
+you can use the <code class="notranslate">-r</code>/<code class="notranslate">--runs</code> option:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine --runs 5 <span class="pl-s"><span class="pl-pds">'</span>sleep 0.3<span class="pl-pds">'</span></span></pre></div>
+<p>If you want to compare the runtimes of different programs, you can pass multiple commands:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine <span class="pl-s"><span class="pl-pds">'</span>hexdump file<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>xxd file<span class="pl-pds">'</span></span></pre></div>
+<h3>Warmup runs and preparation commands</h3>
+<p>For programs that perform a lot of disk I/O, the benchmarking results can be heavily influenced<br>
+by disk caches and whether they are cold or warm.</p>
+<p>If you want to run the benchmark on a warm cache, you can use the <code class="notranslate">-w</code>/<code class="notranslate">--warmup</code> option to<br>
+perform a certain number of program executions before the actual benchmark:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine --warmup 3 <span class="pl-s"><span class="pl-pds">'</span>grep -R TODO *<span class="pl-pds">'</span></span></pre></div>
+<p>Conversely, if you want to run the benchmark for a cold cache, you can use the <code class="notranslate">-p</code>/<code class="notranslate">--prepare</code><br>
+option to run a special command before <em>each</em> timing run. For example, to clear harddisk caches<br>
+on Linux, you can run</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">sync<span class="pl-k">;</span> <span class="pl-c1">echo</span> 3 <span class="pl-k">|</span> sudo tee /proc/sys/vm/drop_caches</pre></div>
+<p>To use this specific command with hyperfine, call <code class="notranslate">sudo -v</code> to temporarily gain sudo permissions<br>
+and then call:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine --prepare <span class="pl-s"><span class="pl-pds">'</span>sync; echo 3 | sudo tee /proc/sys/vm/drop_caches<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>grep -R TODO *<span class="pl-pds">'</span></span></pre></div>
+<h3>Parameterized benchmarks</h3>
+<p>If you want to run a series of benchmarks where a single parameter is varied (say, the number of<br>
+threads), you can use the <code class="notranslate">-P</code>/<code class="notranslate">--parameter-scan</code> option and call:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine --prepare <span class="pl-s"><span class="pl-pds">'</span>make clean<span class="pl-pds">'</span></span> --parameter-scan num_threads 1 12 <span class="pl-s"><span class="pl-pds">'</span>make -j {num_threads}<span class="pl-pds">'</span></span></pre></div>
+<p>This also works with decimal numbers. The <code class="notranslate">-D</code>/<code class="notranslate">--parameter-step-size</code> option can be used<br>
+to control the step size:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine --parameter-scan delay 0.3 0.7 -D 0.2 <span class="pl-s"><span class="pl-pds">'</span>sleep {delay}<span class="pl-pds">'</span></span></pre></div>
+<p>This runs <code class="notranslate">sleep 0.3</code>, <code class="notranslate">sleep 0.5</code> and <code class="notranslate">sleep 0.7</code>.</p>
+<p>For non-numeric parameters, you can also supply a list of values with the <code class="notranslate">-L</code>/<code class="notranslate">--parameter-list</code><br>
+option:</p>
+<pre class="notranslate"><code class="notranslate">hyperfine -L compiler gcc,clang '{compiler} -O2 main.cpp'
+</code></pre>
+<h3>Intermediate shell</h3>
+<p>By default, commands are executed using a predefined shell (<code class="notranslate">/bin/sh</code> on Unix, <code class="notranslate">cmd.exe</code> on Windows).<br>
+If you want to use a different shell, you can use the <code class="notranslate">-S, --shell &lt;SHELL&gt;</code> option:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine --shell zsh <span class="pl-s"><span class="pl-pds">'</span>for i in {1..10000}; do echo test; done<span class="pl-pds">'</span></span></pre></div>
+<p>Note that hyperfine always <em>corrects for the shell spawning time</em>. To do this, it performs a calibration<br>
+procedure where it runs the shell with an empty command (multiple times), to measure the startup time<br>
+of the shell. It will then subtract this time from the total to show the actual time used by the command<br>
+in question.</p>
+<p>If you want to run a benchmark <em>without an intermediate shell</em>, you can use the <code class="notranslate">-N</code> or <code class="notranslate">--shell=none</code><br>
+option. This is helpful for very fast commands (&lt; 5 ms) where the shell startup overhead correction would<br>
+produce a significant amount of noise. Note that you cannot use shell syntax like <code class="notranslate">*</code> or <code class="notranslate">~</code> in this case.</p>
+<pre class="notranslate"><code class="notranslate">hyperfine -N 'grep TODO /home/user'
+</code></pre>
+<h3>Shell functions and aliases</h3>
+<p>If you are using bash, you can export shell functions to directly benchmark them with hyperfine:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-en">my_function</span>() { sleep 1<span class="pl-k">;</span> }
+<span class="pl-k">export</span> -f my_function
+hyperfine --shell=bash my_function</pre></div>
+<p>Otherwise, inline them into or source them from the benchmarked program:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">hyperfine <span class="pl-s"><span class="pl-pds">'</span>my_function() { sleep 1; }; my_function<span class="pl-pds">'</span></span>
+
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>alias my_alias="sleep 1"<span class="pl-pds">'</span></span> <span class="pl-k">&gt;</span> /tmp/my_alias.sh
+hyperfine <span class="pl-s"><span class="pl-pds">'</span>. /tmp/my_alias.sh; my_alias<span class="pl-pds">'</span></span></pre></div>
+<h3>Exporting results</h3>
+<p>Hyperfine has multiple options for exporting benchmark results to CSV, JSON, Markdown and other<br>
+formats (see <code class="notranslate">--help</code> text for details).</p>
+<h4>Markdown</h4>
+<p>You can use the <code class="notranslate">--export-markdown &lt;file&gt;</code> option to create tables like the following:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th align="left">Command</th>
+<th align="right">Mean [s]</th>
+<th align="right">Min [s]</th>
+<th align="right">Max [s]</th>
+<th align="right">Relative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code class="notranslate">find . -iregex '.*[0-9]\.jpg$'</code></td>
+<td align="right">2.275 ± 0.046</td>
+<td align="right">2.243</td>
+<td align="right">2.397</td>
+<td align="right">9.79 ± 0.22</td>
+</tr>
+<tr>
+<td align="left"><code class="notranslate">find . -iname '*[0-9].jpg'</code></td>
+<td align="right">1.427 ± 0.026</td>
+<td align="right">1.405</td>
+<td align="right">1.468</td>
+<td align="right">6.14 ± 0.13</td>
+</tr>
+<tr>
+<td align="left"><code class="notranslate">fd -HI '.*[0-9]\.jpg$'</code></td>
+<td align="right">0.232 ± 0.002</td>
+<td align="right">0.230</td>
+<td align="right">0.236</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h4>JSON</h4>
+<p>The JSON output is useful if you want to analyze the benchmark results in more detail. The<br>
+<a href="https://github.com/sharkdp/hyperfine/tree/master/scripts"><code class="notranslate">scripts/</code></a> folder includes a lot<br>
+of helpful Python programs to further analyze benchmark results and create helpful<br>
+visualizations, like a histogram of runtimes or a whisker plot to compare<br>
+multiple benchmarks:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th align="right"><a target="_blank" rel="noopener noreferrer" href="doc/histogram.png"><img src="doc/histogram.png" alt="" style="max-width: 100%;"></a></th>
+<th align="right"><a target="_blank" rel="noopener noreferrer" href="doc/whisker.png"><img src="doc/whisker.png" alt="" style="max-width: 100%;"></a></th>
+</tr>
+</thead>
+</table></markdown-accessiblity-table>
+<h3>Detailed benchmark flowchart</h3>
+<p>The following chart explains the execution order of various timing runs when using options<br>
+like <code class="notranslate">--warmup</code>, <code class="notranslate">--prepare &lt;cmd&gt;</code>, <code class="notranslate">--setup &lt;cmd&gt;</code> or <code class="notranslate">--cleanup &lt;cmd&gt;</code>:</p>
+<p><a target="_blank" rel="noopener noreferrer" href="doc/execution-order.png"><img src="doc/execution-order.png" alt="" style="max-width: 100%;"></a></p>
+<h2>Installation</h2>
+<p><a href="https://repology.org/project/hyperfine/versions" rel="nofollow"><img src="https://camo.githubusercontent.com/7818036a8255333755b66f9540d1a0b0470deb304285dd02caff233668b39f9b/68747470733a2f2f7265706f6c6f67792e6f72672f62616467652f766572746963616c2d616c6c7265706f732f687970657266696e652e7376673f636f6c756d6e733d33266578636c7564655f756e737570706f727465643d31" alt="Packaging status" data-canonical-src="https://repology.org/badge/vertical-allrepos/hyperfine.svg?columns=3&amp;exclude_unsupported=1" style="max-width: 100%;"></a></p>
+<h3>On Ubuntu</h3>
+<p>On Ubuntu, hyperfine can be installed <a href="https://launchpad.net/ubuntu/+source/rust-hyperfine" rel="nofollow">from the official repositories</a>:</p>
+<pre class="notranslate"><code class="notranslate">apt install hyperfine
+</code></pre>
+<p>Alternatively, for the latest version, you can download the appropriate <code class="notranslate">.deb</code> package from the <a href="https://github.com/sharkdp/hyperfine/releases">Release page</a> and install it via <code class="notranslate">dpkg</code>:</p>
+<pre class="notranslate"><code class="notranslate">wget https://github.com/sharkdp/hyperfine/releases/download/v1.20.0/hyperfine_1.20.0_amd64.deb
+sudo dpkg -i hyperfine_1.20.0_amd64.deb
+</code></pre>
+<h3>On Fedora</h3>
+<p>On Fedora, hyperfine can be installed from the official repositories:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">dnf install hyperfine</pre></div>
+<h3>On Alpine Linux</h3>
+<p>On Alpine Linux, hyperfine can be installed <a href="https://pkgs.alpinelinux.org/packages?name=hyperfine" rel="nofollow">from the official repositories</a>:</p>
+<pre class="notranslate"><code class="notranslate">apk add hyperfine
+</code></pre>
+<h3>On Arch Linux</h3>
+<p>On Arch Linux, hyperfine can be installed <a href="https://archlinux.org/packages/extra/x86_64/hyperfine/" rel="nofollow">from the official repositories</a>:</p>
+<pre class="notranslate"><code class="notranslate">pacman -S hyperfine
+</code></pre>
+<h3>On Debian Linux</h3>
+<p>On Debian Linux, hyperfine can be installed <a href="https://packages.debian.org/hyperfine" rel="nofollow">from the official repositories</a>:</p>
+<pre class="notranslate"><code class="notranslate">apt install hyperfine
+</code></pre>
+<h3>On Exherbo Linux</h3>
+<p>On Exherbo Linux, hyperfine can be installed <a href="https://gitlab.exherbo.org/exherbo/rust/-/tree/master/packages/sys-apps/hyperfine" rel="nofollow">from the rust repositories</a>:</p>
+<pre class="notranslate"><code class="notranslate">cave resolve -x repository/rust
+cave resolve -x hyperfine
+</code></pre>
+<h3>On Funtoo Linux</h3>
+<p>On Funtoo Linux, hyperfine can be installed <a href="https://github.com/funtoo/core-kit/tree/1.4-release/app-benchmarks/hyperfine">from core-kit</a>:</p>
+<pre class="notranslate"><code class="notranslate">emerge app-benchmarks/hyperfine
+</code></pre>
+<h3>On NixOS</h3>
+<p>On NixOS, hyperfine can be installed <a href="https://nixos.org/nixos/packages.html?query=hyperfine" rel="nofollow">from the official repositories</a>:</p>
+<pre class="notranslate"><code class="notranslate">nix-env -i hyperfine
+</code></pre>
+<h3>On Flox</h3>
+<p>On Flox, hyperfine can be installed as follows.</p>
+<pre class="notranslate"><code class="notranslate">flox install hyperfine
+</code></pre>
+<p>Hyperfine's version in Flox follows that of Nix.</p>
+<h3>On openSUSE</h3>
+<p>On openSUSE, hyperfine can be installed <a href="https://software.opensuse.org/package/hyperfine" rel="nofollow">from the official repositories</a>:</p>
+<pre class="notranslate"><code class="notranslate">zypper install hyperfine
+</code></pre>
+<h3>On Void Linux</h3>
+<p>Hyperfine can be installed via xbps</p>
+<pre class="notranslate"><code class="notranslate">xbps-install -S hyperfine
+</code></pre>
+<h3>On macOS</h3>
+<p>Hyperfine can be installed via <a href="https://brew.sh" rel="nofollow">Homebrew</a>:</p>
+<pre class="notranslate"><code class="notranslate">brew install hyperfine
+</code></pre>
+<p>Or you can install using <a href="https://www.macports.org" rel="nofollow">MacPorts</a>:</p>
+<pre class="notranslate"><code class="notranslate">sudo port selfupdate
+sudo port install hyperfine
+</code></pre>
+<h3>On FreeBSD</h3>
+<p>Hyperfine can be installed via pkg:</p>
+<pre class="notranslate"><code class="notranslate">pkg install hyperfine
+</code></pre>
+<h3>On OpenBSD</h3>
+<pre class="notranslate"><code class="notranslate">doas pkg_add hyperfine
+</code></pre>
+<h3>On Windows</h3>
+<p>Hyperfine can be installed via <a href="https://community.chocolatey.org/packages/hyperfine" rel="nofollow">Chocolatey</a>, <a href="https://scoop.sh/#/apps?q=hyperfine&amp;s=0&amp;d=1&amp;o=true&amp;id=8f7c10f75ecf5f9e42a862c615257328e2f70f61" rel="nofollow">Scoop</a>, or <a href="https://github.com/microsoft/winget-pkgs/tree/master/manifests/s/sharkdp/hyperfine">Winget</a>:</p>
+<pre class="notranslate"><code class="notranslate">choco install hyperfine
+</code></pre>
+<pre class="notranslate"><code class="notranslate">scoop install hyperfine
+</code></pre>
+<pre class="notranslate"><code class="notranslate">winget install hyperfine
+</code></pre>
+<h3>With conda</h3>
+<p>Hyperfine can be installed via <a href="https://conda.io/en/latest/" rel="nofollow"><code class="notranslate">conda</code></a> from the <a href="https://anaconda.org/conda-forge/hyperfine" rel="nofollow"><code class="notranslate">conda-forge</code></a> channel:</p>
+<pre class="notranslate"><code class="notranslate">conda install -c conda-forge hyperfine
+</code></pre>
+<h3>With cargo (Linux, macOS, Windows)</h3>
+<p>Hyperfine can be installed from source via <a href="https://doc.rust-lang.org/cargo/" rel="nofollow">cargo</a>:</p>
+<pre class="notranslate"><code class="notranslate">cargo install --locked hyperfine
+</code></pre>
+<p>Make sure that you use Rust 1.76 or newer.</p>
+<h3>From binaries (Linux, macOS, Windows)</h3>
+<p>Download the corresponding archive from the <a href="https://github.com/sharkdp/hyperfine/releases">Release page</a>.</p>
+<h2>Alternative tools</h2>
+<p>Hyperfine is inspired by <a href="https://github.com/Gabriella439/bench">bench</a>.</p>
+<h2>Integration with other tools</h2>
+<p><a href="https://github.com/dandavison/chronologer">Chronologer</a> is a tool that uses <code class="notranslate">hyperfine</code> to<br>
+visualize changes in benchmark timings across your Git history.</p>
+<p><a href="https://github.com/bencherdev/bencher">Bencher</a> is a continuous benchmarking tool that supports <code class="notranslate">hyperfine</code> to<br>
+track benchmarks and catch performance regressions in CI.</p>
+<p>Drop hyperfine JSON outputs onto the <a href="https://try.venz.dev" rel="nofollow">Venz</a> chart to visualize the results,<br>
+and manage hyperfine configurations.</p>
+<p>Make sure to check out the <a href="https://github.com/sharkdp/hyperfine/tree/master/scripts"><code class="notranslate">scripts</code> folder</a><br>
+in this repository for a set of tools to work with <code class="notranslate">hyperfine</code> benchmark results.</p>
+<h2>Origin of the name</h2>
+<p>The name <em>hyperfine</em> was chosen in reference to the hyperfine levels of caesium 133 which play a crucial role in the<br>
+<a href="https://en.wikipedia.org/wiki/Second#History_of_definition" rel="nofollow">definition of our base unit of time</a><br>
+— the second.</p>
+<h2>Citing hyperfine</h2>
+<p>Thank you for considering to cite hyperfine in your research work. Please see the information<br>
+in the sidebar on how to properly cite hyperfine.</p>
+<h2>License</h2>
+<p><code class="notranslate">hyperfine</code> is dual-licensed under the terms of the MIT License and the Apache License 2.0.</p>
+<p>See the <a href="LICENSE-APACHE">LICENSE-APACHE</a> and <a href="LICENSE-MIT">LICENSE-MIT</a> files for details.</p>

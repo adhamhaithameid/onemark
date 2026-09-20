@@ -1,0 +1,281 @@
+<h1>python-build</h1>
+<p>python-build is a <a href="https://github.com/pyenv/pyenv">pyenv</a> plugin that<br>
+provides a <code class="notranslate">pyenv install</code> command to compile and install different versions<br>
+of Python on UNIX-like systems.</p>
+<p>You can also use python-build without pyenv in environments where you need<br>
+precise control over Python version installation.</p>
+<p>See the <a href="https://github.com/pyenv/pyenv/releases">list of releases</a><br>
+for changes in each version.</p>
+<h2>Installation</h2>
+<h3>Installing as a pyenv plugin (recommended)</h3>
+<p>Since python-build is bundled with pyenv by<br>
+default, you do not need to do anything.</p>
+<h3>Installing as a standalone program (advanced)</h3>
+<p>Installing python-build as a standalone program will give you access to the<br>
+<code class="notranslate">python-build</code> command for precise control over Python version installation. If you<br>
+have pyenv installed, you will also be able to use the <code class="notranslate">pyenv install</code> command.</p>
+<pre class="notranslate"><code class="notranslate">git clone https://github.com/pyenv/pyenv.git
+cd pyenv/plugins/python-build
+./install.sh
+</code></pre>
+<p>This will install python-build into <code class="notranslate">/usr/local</code>. If you do not have write<br>
+permission to <code class="notranslate">/usr/local</code>, you will need to run <code class="notranslate">sudo ./install.sh</code> instead.<br>
+You can install to a different prefix by setting the <code class="notranslate">PREFIX</code> environment<br>
+variable.</p>
+<p>To update python-build after it has been installed, run <code class="notranslate">git pull</code> in your cloned<br>
+copy of the repository, then re-run the install script.</p>
+<h3>Installing with Homebrew (for OS X users)</h3>
+<p>Mac OS X users can install python-build with the <a href="http://brew.sh" rel="nofollow">Homebrew</a><br>
+package manager. This will give you access to the <code class="notranslate">python-build</code> command. If you<br>
+have pyenv installed, you will also be able to use the <code class="notranslate">pyenv install</code> command.</p>
+<p><em>This is the recommended method of installation if you installed pyenv with<br>
+Homebrew.</em></p>
+<pre class="notranslate"><code class="notranslate">brew install pyenv
+</code></pre>
+<p>Or, if you would like to install the latest development release:</p>
+<pre class="notranslate"><code class="notranslate">brew install --HEAD pyenv
+</code></pre>
+<h2>Usage</h2>
+<p>On Ubuntu, Debian, and Mint, install the recommended build dependencies with:</p>
+<pre class="notranslate"><code class="notranslate">pyenv install-prerequisites
+</code></pre>
+<p>For other environments, see our <a href="https://github.com/pyenv/pyenv/wiki#suggested-build-environment">build environment recommendations</a>.</p>
+<h3>Using <code class="notranslate">pyenv install</code> with pyenv</h3>
+<p>To install a Python version for use with pyenv, run <code class="notranslate">pyenv install</code> with<br>
+exact name of the version you want to install. For example,</p>
+<pre class="notranslate"><code class="notranslate">pyenv install 2.7.4
+</code></pre>
+<p>Python versions will be installed into a directory of the same name under<br>
+<code class="notranslate">~/.pyenv/versions</code>.</p>
+<p>To install a version under a different name -- for instance, to keep several<br>
+builds of the same version side by side -- append <code class="notranslate">:&lt;alias&gt;</code> to the version:</p>
+<pre class="notranslate"><code class="notranslate">pyenv install 3.12.0:3.12-custom
+</code></pre>
+<p>This installs into <code class="notranslate">~/.pyenv/versions/3.12-custom</code>.</p>
+<p>To see a list of all available Python versions, run <code class="notranslate">pyenv install --list</code>. You<br>
+may also tab-complete available Python versions if your pyenv installation is<br>
+properly configured.</p>
+<h3>Using <code class="notranslate">python-build</code> standalone</h3>
+<p>If you have installed python-build as a standalone program, you can use the<br>
+<code class="notranslate">python-build</code> command to compile and install Python versions into specific<br>
+locations.</p>
+<p>Run the <code class="notranslate">python-build</code> command with the exact name of the version you want to<br>
+install and the full path where you want to install it. For example,</p>
+<pre class="notranslate"><code class="notranslate">python-build 2.7.4 ~/local/python-2.7.4
+</code></pre>
+<p>To see a list of all available Python versions, run <code class="notranslate">python-build --definitions</code>.</p>
+<p>Pass the <code class="notranslate">-v</code> or <code class="notranslate">--verbose</code> flag to <code class="notranslate">python-build</code> as the first argument to see<br>
+what's happening under the hood.</p>
+<h3>Custom definitions</h3>
+<p>Both <code class="notranslate">pyenv install</code> and <code class="notranslate">python-build</code> accept a path to a custom definition file<br>
+in place of a version name. Custom definitions let you develop and install<br>
+versions of Python that are not yet supported by python-build.</p>
+<p>See the <a href="https://github.com/pyenv/pyenv/tree/master/plugins/python-build/share/python-build">python-build built-in definitions</a> as a starting point for<br>
+custom definition files.</p>
+<h4>Adding definitions with a Pyenv plugin</h4>
+<p>You can add your own definitions with a <a href="https://github.com/pyenv/pyenv?tab=readme-ov-file#pyenv-plugins">Pyenv plugin</a> by placing them under<br>
+<code class="notranslate">$PYENV_ROOT/plugins/your_plugin_name/share/python-build</code>.</p>
+<h3>Default build configuration</h3>
+<p>Without the user customizing the build with environment variables (see below),<br>
+<code class="notranslate">python-build</code> builds Python with mostly default Configure options<br>
+to maintain the principle of the least surprise.</p>
+<p>The exceptions -- non-default options that are set by default -- are listed below:</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Option/Behavior</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">--enable-shared</code> is on by default. Pass <code class="notranslate">--disable-shared</code> to Configure options to override</td>
+<td>The official CPython Docker image uses it. It's required to embed CPython.</td>
+</tr>
+<tr>
+<td>argument to <code class="notranslate">--enable-universalsdk</code> is ignored and set to <code class="notranslate">/</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">--with-universal-archs</code> defaults to <code class="notranslate">universal2</code> on ARM64 architecture</td>
+<td>the only dual-architecture Macs in use today are Apple Silicon which can only build that one</td>
+</tr>
+<tr>
+<td>argument to <code class="notranslate">--enable-framework</code> is ignored and set to a specific value</td>
+<td>CPython's build logic requires a very specific argument to avoid installing the <code class="notranslate">Applications</code> part globally</td>
+</tr>
+<tr>
+<td>argument to <code class="notranslate">--enable-unicode</code> in non-MacOS is overridden to <code class="notranslate">ucs4</code> for 2.x-3.3</td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">MACOSX_DEPLOYMENT_TARGET</code> defaults to the running MacOS version</td>
+<td></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h4>Integration with 3rd-party package ecosystems</h4>
+<h5>Homebrew</h5>
+<p>Homebrew is used to find dependency packages if <code class="notranslate">brew</code> is found on <code class="notranslate">PATH</code>:</p>
+<ul>
+<li>In MacOS, or</li>
+<li>If the running Pyenv itself is installed with Homebrew</li>
+</ul>
+<p>Set <code class="notranslate">PYTHON_BUILD_USE_HOMEBREW</code> or <code class="notranslate">PYTHON_BUILD_SKIP_HOMEBREW</code> to override this default.</p>
+<p>When Homebrew is used, its <code class="notranslate">include</code> and <code class="notranslate">lib</code> paths are added to compiler search path (the latter is also set as <code class="notranslate">rpath</code>),<br>
+and also Python dependencies that are typically keg-only are searched for in the Homebrew installation and added individually.</p>
+<p><strong>NOTE:</strong> Homebrew is not used in Linux by default because it's rolling-release which causes a problem.<br>
+Upgrading a Python dependency in Homebrew to a new major version (that <code class="notranslate">brew</code> does without warning)<br>
+would break all Pyenv-managed installations that depend on it.<br>
+You can use a <a href="https://github.com/pyenv/pyenv/wiki/Plugins#community-plugins">community plugin <code class="notranslate">fix-version</code></a><br>
+to fix installations in such a case.</p>
+<h5>MacPorts</h5>
+<p>MacPorts Homebrew is used to find dependency packages if <code class="notranslate">port</code> is found on <code class="notranslate">PATH</code> in MacOS.</p>
+<p>Set <code class="notranslate">PYTHON_BUILD_USE_MACPORTS</code> or <code class="notranslate">PYTHON_BUILD_SKIP_MACPORTS</code> to override this default.</p>
+<h6>Interaction with Homebrew</h6>
+<p>If both Homebrew and MacPorts are installed and allowed to be used, Homebrew takes preference.<br>
+There first ecosystem where any of the required dependency packages is found is used.</p>
+<h5>Portage</h5>
+<p>In FreeBSD, if <code class="notranslate">pkg</code> is on PATH, Ports are searched for some dependencies that Configure is known to not search for via <code class="notranslate">pkg-config</code>.<br>
+(Later versions of CPython search for more packages via <code class="notranslate">pkg-config</code> so this may eventually become redundant.)</p>
+<h3>Special environment variables</h3>
+<p>You can set certain environment variables to control the build process.</p>
+<ul>
+<li><code class="notranslate">TMPDIR</code> sets the location where python-build stores temporary files.</li>
+<li><code class="notranslate">PYTHON_BUILD_BUILD_PATH</code> sets the location in which sources are downloaded and<br>
+built. By default, this is a subdirectory of <code class="notranslate">TMPDIR</code>.</li>
+<li><code class="notranslate">PYTHON_BUILD_CACHE_PATH</code>, if set, specifies a directory to use for caching<br>
+downloaded package files.</li>
+<li><code class="notranslate">PYTHON_BUILD_MIRROR_URL</code> overrides the default mirror URL root to one of your<br>
+choosing.</li>
+<li><code class="notranslate">PYTHON_BUILD_MIRROR_URL_SKIP_CHECKSUM</code>, if set, does not append the SHA2<br>
+checksum of the file to the mirror URL.</li>
+<li><code class="notranslate">PYTHON_BUILD_SKIP_MIRROR</code>, if set, forces python-build to download packages from<br>
+their original source URLs instead of using a mirror.</li>
+<li><code class="notranslate">PYTHON_BUILD_HTTP_CLIENT</code>, explicitly specify the HTTP client type to use. <code class="notranslate">aria2</code>, <code class="notranslate">curl</code> and <code class="notranslate">wget</code> are the supported values and by default, are searched in that order.</li>
+<li><code class="notranslate">PYTHON_BUILD_CURL_OPTS</code>, <code class="notranslate">PYTHON_BUILD_WGET_OPTS</code>, <code class="notranslate">PYTHON_BUILD_ARIA2_OPTS</code> pass additional parameters to the corresponding HTTP client.</li>
+<li><code class="notranslate">PYTHON_BUILD_SKIP_HOMEBREW</code>, if set, will not search for libraries installed by Homebrew when it would normally will.</li>
+<li><code class="notranslate">PYTHON_BUILD_USE_HOMEBREW</code>, if set, will search for libraries installed by Homebrew when it would normally not.</li>
+<li><code class="notranslate">PYTHON_BUILD_HOMEBREW_OPENSSL_FORMULA</code>, override the Homebrew OpenSSL formula to use.</li>
+<li><code class="notranslate">PYTHON_BUILD_MACPORTS_OPENSSL_FORMULA</code>, override the MacPorts OpenSSL formula to use. The default is <code class="notranslate">openssl3 openssl</code>.</li>
+<li><code class="notranslate">PYTHON_BUILD_TCLTK_FORMULA</code>, override the Homebrew Tcl/Tk formula to use.</li>
+<li><code class="notranslate">PYTHON_BUILD_SKIP_MACPORTS</code>, if set, will not search for libraries installed by MacPorts when it would normally will.</li>
+<li><code class="notranslate">PYTHON_BUILD_USE_MACPORTS</code>, if set, will search for libraries installed by MacPorts when it would normally not.</li>
+<li><code class="notranslate">PYTHON_BUILD_ROOT</code> overrides the default location from where build definitions<br>
+in <code class="notranslate">share/python-build/</code> are looked up.</li>
+<li><code class="notranslate">PYTHON_BUILD_DEFINITIONS</code> can be a list of colon-separated paths that get<br>
+additionally searched when looking up build definitions.</li>
+<li><code class="notranslate">CC</code> sets the path to the C compiler.</li>
+<li><code class="notranslate">CONFIGURE_OPTS</code> lets you pass additional options to <code class="notranslate">./configure</code>.</li>
+<li><code class="notranslate">MAKE</code> lets you override the command to use for <code class="notranslate">make</code>. Useful for specifying<br>
+GNU make (<code class="notranslate">gmake</code>) on some systems.</li>
+<li><code class="notranslate">MAKE_OPTS</code> (or <code class="notranslate">MAKEOPTS</code>) lets you pass additional options to <code class="notranslate">make</code>.</li>
+<li><code class="notranslate">MAKE_INSTALL_OPTS</code> lets you pass additional options to <code class="notranslate">make install</code>.</li>
+<li><code class="notranslate">&lt;PACKAGE&gt;_CFLAGS</code>, <code class="notranslate">&lt;PACKAGE&gt;_CPPFLAGS</code>, <code class="notranslate">&lt;PACKAGE&gt;_LDFLAGS</code> let you pass additional options to <code class="notranslate">CFLAGS</code>/<code class="notranslate">CPPFLAGS</code>/<code class="notranslate">LDFLAGS</code> specifically for building <code class="notranslate">&lt;package&gt;</code> (Python itself or a dependency library) from source as part of the build script. <code class="notranslate">&lt;PACKAGE&gt;</code> should be a capitalized name of the package without version (technically, capitalized first argument to <code class="notranslate">install_package</code> without version). E.g. for CPython, it's "<code class="notranslate">PYTHON</code>", for Readline, "<code class="notranslate">READLINE</code>", for PyPy (only applies when building it from source), "<code class="notranslate">PYPY</code>". Check the source of the build script you're using if unsure.</li>
+<li><code class="notranslate">&lt;PACKAGE&gt;_CONFIGURE_OPTS</code>, <code class="notranslate">&lt;PACKAGE&gt;_MAKE_OPTS</code>, <code class="notranslate">&lt;PACKAGE&gt;_MAKE_INSTALL_OPTS</code>, <code class="notranslate">&lt;PACKAGE&gt;_MAKE_INSTALL_TARGET</code> allow<br>
+you to specify configure and make options for building <code class="notranslate">&lt;package&gt;</code> (same as above). "Make install target" would replace "<code class="notranslate">install</code>" in the <code class="notranslate">make install</code> invocation.</li>
+</ul>
+<h3>Applying patches to Python before compiling</h3>
+<p>Both <code class="notranslate">pyenv install</code> and <code class="notranslate">python-build</code> support the <code class="notranslate">--patch</code> (<code class="notranslate">-p</code>) flag that<br>
+signals that a patch from stdin should be applied to Python, Jython or PyPy<br>
+source code before the <code class="notranslate">./configure</code> and compilation steps.</p>
+<p>Example usage:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c"><span class="pl-c">#</span> applying a single patch</span>
+$ pyenv install --patch 2.7.10 <span class="pl-k">&lt;</span> /path/to/python.patch
+
+<span class="pl-c"><span class="pl-c">#</span> applying a patch from HTTP</span>
+$ pyenv install --patch 2.7.10 <span class="pl-k">&lt;</span> <span class="pl-s"><span class="pl-pds">&lt;(</span>curl -sSL http://git.io/python.patch<span class="pl-pds">)</span></span>
+
+<span class="pl-c"><span class="pl-c">#</span> applying multiple patches</span>
+$ cat fix1.patch fix2.patch <span class="pl-k">|</span> pyenv install --patch 2.7.10</pre></div>
+<h3>Building for maximum performance</h3>
+<p>Building CPython with <code class="notranslate">--enable-optimizations</code> will result in a faster<br>
+interpreter at the cost of significantly longer build times. Most notably, this<br>
+enables PGO (profile guided optimization). While your mileage may vary, it is<br>
+common for performance improvement from this to be in the ballpark of 30%.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">env PYTHON_CONFIGURE_OPTS=<span class="pl-s"><span class="pl-pds">'</span>--enable-optimizations --with-lto<span class="pl-pds">'</span></span> PYTHON_CFLAGS=<span class="pl-s"><span class="pl-pds">'</span>-march=native -mtune=native<span class="pl-pds">'</span></span> pyenv install --verbose 3.6.0</pre></div>
+<p>You can also customize the task used for profile guided optimization by setting<br>
+the <code class="notranslate">PROFILE_TASK</code> environment variable, for instance, <code class="notranslate">PROFILE_TASK='-m test.regrtest --pgo -j0'</code> will run much faster than the default task.</p>
+<h3>Checksum verification</h3>
+<p>If you have the <code class="notranslate">shasum</code>, <code class="notranslate">openssl</code>, or <code class="notranslate">sha256sum</code> tool installed, python-build will<br>
+automatically verify the SHA2 checksum of each downloaded package before<br>
+installing it.</p>
+<p>Checksums are optional and specified as anchors on the package URL in each<br>
+definition. (All bundled definitions include checksums.)</p>
+<h3>Package download mirrors</h3>
+<p>python-build will first attempt to download package files from a mirror hosted on<br>
+GitHub Pages. If this fails, it will fall back to the<br>
+official URL specified in the definition file.</p>
+<p>You can point python-build to another mirror by specifying the<br>
+<code class="notranslate">PYTHON_BUILD_MIRROR_URL</code> environment variable.</p>
+<p>Package mirror URLs are constructed by joining<br>
+<code class="notranslate">$PYTHON_BUILD_MIRROR_URL</code> with the SHA2 checksum of the package file as specified in the URL<br>
+in the installation script (the part after the hash sign). E.g.:</p>
+<pre class="notranslate"><code class="notranslate">https://mycache.example.com/0419e9085bf51b7a672009b3f50dbf1859acdf18ba725d0ec19aa5c8503f0ea3
+</code></pre>
+<p>If you have replicated the directory structure of an official site, the easiest way to adapt<br>
+would be to make symlinks at the mirror's root:</p>
+<pre class="notranslate"><code class="notranslate">0419e9085bf51b7a672009b3f50dbf1859acdf18ba725d0ec19aa5c8503f0ea3 -&gt; 3.10.10/Python-3.10.10.tar.xz
+</code></pre>
+<p>The rationale is to abstract away difference between directory structures of sites<br>
+of various Python flavors and their occasional changes as well as to accommodate<br>
+people who only wish to cache some select downloads. This also allows to mirror multiple sites at once.</p>
+<p>If the mirror being used does not have the same checksum (<em>e.g.</em> with a<br>
+pull-through cache like Artifactory), you can set the<br>
+<code class="notranslate">PYTHON_BUILD_MIRROR_URL_SKIP_CHECKSUM</code> environment variable.</p>
+<p>If you don't have an SHA2 program installed, python-build will skip the download<br>
+mirror and use official URLs instead. You can force python-build to bypass the<br>
+mirror by setting the <code class="notranslate">PYTHON_BUILD_SKIP_MIRROR</code> environment variable.</p>
+<p>The official python-build download mirror is provided by<br>
+<a href="http://yyuu.github.io/pythons/" rel="nofollow">GitHub Pages</a>.</p>
+<h3>Package download cache</h3>
+<p>Python-build will keep a cache of downloaded package files<br>
+at the location specified by the <code class="notranslate">PYTHON_BUILD_CACHE_PATH</code> environment variable<br>
+if it exists. The default is <code class="notranslate">~/.pyenv/cache</code>, so you can<br>
+enable caching by just creating that directory.</p>
+<p>The name of the would-be cached file is reported by Pyenv in the "Downloading &lt;filename&gt;..." message.<br>
+It's possible to warm up the cache by manually putting the file there under an appropriate name.</p>
+<h3>Keeping the build directory after installation</h3>
+<p>Both <code class="notranslate">python-build</code> and <code class="notranslate">pyenv install</code> accept the <code class="notranslate">-k</code> or <code class="notranslate">--keep</code> flag, which<br>
+tells python-build to keep the downloaded source after installation. This can be<br>
+useful if you need to use <code class="notranslate">gdb</code> and <code class="notranslate">memprof</code> with Python.</p>
+<p>Source code will be kept in a parallel directory tree <code class="notranslate">~/.pyenv/sources</code> when<br>
+using <code class="notranslate">--keep</code> with the <code class="notranslate">pyenv install</code> command. You should specify the<br>
+location of the source code with the <code class="notranslate">PYTHON_BUILD_BUILD_PATH</code> environment<br>
+variable when using <code class="notranslate">--keep</code> with <code class="notranslate">python-build</code>.</p>
+<h2>Getting Help</h2>
+<p>Please see the <a href="https://github.com/pyenv/pyenv/wiki">pyenv wiki</a> for solutions to common problems.</p>
+<p>If you can't find an answer on the wiki, open an issue on the <a href="https://github.com/pyenv/pyenv/issues">issue<br>
+tracker</a>. Be sure to include<br>
+the full build log for build failures.</p>
+<h2>Contributing</h2>
+<h3>Testing new python versions</h3>
+<p>If you are contributing a new python version for python-build,<br>
+you can test the build in a <a href="https://www.docker.com/" rel="nofollow">docker</a> container based on Ubuntu 18.04.</p>
+<p>With docker installed:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">docker build -t my_container <span class="pl-c1">.</span>
+docker run my_container pyenv install <span class="pl-k">&lt;</span>my_version<span class="pl-k">&gt;</span></pre></div>
+<p>To enter a shell which will allow you to build and then test a python version,<br>
+replace the second line with</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">docker run -it my_container</pre></div>
+<p>The container will need to be rebuilt whenever you change the repo,<br>
+but after the first build, this will be very fast,<br>
+as the layer including the build dependencies will be cached.</p>
+<p>Changes made inside the container will not be persisted.</p>
+<p>To test <em>all</em> new versions since a particular revision (e.g. <code class="notranslate">master</code>), <code class="notranslate">cd</code> to the root of your <code class="notranslate">pyenv</code> repo, and run this script:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate"><span class="pl-c1">set</span> -e
+<span class="pl-c1">set</span> -x
+
+docker build -t pyenv-test-container <span class="pl-c1">.</span>
+
+git diff --name-only master \
+  <span class="pl-k">|</span> grep <span class="pl-s"><span class="pl-pds">'</span>^plugins/python-build/share/python-build/<span class="pl-pds">'</span></span> \
+  <span class="pl-k">|</span> awk -F <span class="pl-s"><span class="pl-pds">'</span>/<span class="pl-pds">'</span></span> <span class="pl-s"><span class="pl-pds">'</span>{print $NF}<span class="pl-pds">'</span></span> \
+  <span class="pl-k">|</span> xargs -I _ docker run pyenv-test-container pyenv install _</pre></div>
+<ul>
+<li>Build the docker image with the <strong>t</strong>ag pyenv-test-container</li>
+<li>Look for the names files changed since revision <code class="notranslate">master</code></li>
+<li>Filter out any which don't live where python-build keeps its build scripts</li>
+<li>Look only at the file name (i.e. the python version name)</li>
+<li>Run a new docker container for each, building that version</li>
+</ul>

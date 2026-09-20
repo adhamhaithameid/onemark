@@ -1,0 +1,525 @@
+{
+  "seedDescription": "mulberry32(28494); curated pool (389 candidates); strata targets {\"readme_majority\":55,\"longform_docs\":25,\"gfm_rich\":12,\"adversarial\":8}",
+  "generatedAt": "2026-09-20T01:02:19.291Z",
+  "documents": [
+    {
+      "id": "cmark-gfm-readme",
+      "sourceUrl": "https://github.com/github/cmark-gfm/blob/fdd7851bbc7238022a6c3d6221ad2d9541435352/README.md",
+      "commitSha": "fdd7851bbc7238022a6c3d6221ad2d9541435352",
+      "strata": "readme_majority",
+      "bytes": 7334
+    },
+    {
+      "id": "systemd-network-online",
+      "sourceUrl": "https://github.com/systemd/systemd/blob/0922f62126297e59c03bc9e1b1f4bd6c362604ba/docs/NETWORK_ONLINE.md",
+      "commitSha": "0922f62126297e59c03bc9e1b1f4bd6c362604ba",
+      "strata": "longform_docs",
+      "bytes": 13542
+    },
+    {
+      "id": "dioxus-readme",
+      "sourceUrl": "https://github.com/DioxusLabs/dioxus/blob/c77315b7072ce2b69824c808f1e6eb6bb24cf698/README.md",
+      "commitSha": "c77315b7072ce2b69824c808f1e6eb6bb24cf698",
+      "strata": "gfm_rich",
+      "bytes": 11936
+    },
+    {
+      "id": "content-index",
+      "sourceUrl": "https://github.com/mdn/content/blob/e2c34c75df6238fbeff790100cea1ab7e552e49e/files/en-us/web/css/reference/selectors/attribute_selectors/index.md",
+      "commitSha": "e2c34c75df6238fbeff790100cea1ab7e552e49e",
+      "strata": "longform_docs",
+      "bytes": 7920
+    },
+    {
+      "id": "uv-readme",
+      "sourceUrl": "https://github.com/astral-sh/uv/blob/6fb60d87fb39b3e0e83f1083058817d4584d3c11/README.md",
+      "commitSha": "6fb60d87fb39b3e0e83f1083058817d4584d3c11",
+      "strata": "gfm_rich",
+      "bytes": 9853
+    },
+    {
+      "id": "mdn-document-api",
+      "sourceUrl": "https://github.com/mdn/content/blob/a23122d0e86fb376234614beb5b350b217068054/files/en-us/web/api/document/index.md",
+      "commitSha": "a23122d0e86fb376234614beb5b350b217068054",
+      "strata": "adversarial",
+      "bytes": 30824
+    },
+    {
+      "id": "storybook-readme",
+      "sourceUrl": "https://github.com/storybookjs/storybook/blob/913b164bcae87923a5dfefd402c865e5e41ead60/README.md",
+      "commitSha": "913b164bcae87923a5dfefd402c865e5e41ead60",
+      "strata": "readme_majority",
+      "bytes": 21914
+    },
+    {
+      "id": "vscode-api-notes",
+      "sourceUrl": "https://github.com/microsoft/vscode/blob/f98b810984a7d016281e8f5e0be486b933f2afb4/src/vs/workbench/api/common/extHostTypes.ts",
+      "commitSha": "f98b810984a7d016281e8f5e0be486b933f2afb4",
+      "strata": "longform_docs",
+      "bytes": 110481
+    },
+    {
+      "id": "typescript-replay-minimizer",
+      "sourceUrl": "https://github.com/microsoft/TypeScript/blob/5f647a841a6a4dec9d8594854c320d5808134809/.github/agents/replay-minimizer.md",
+      "commitSha": "5f647a841a6a4dec9d8594854c320d5808134809",
+      "strata": "gfm_rich",
+      "bytes": 8086
+    },
+    {
+      "id": "mermaid-adding-new-shape",
+      "sourceUrl": "https://github.com/mermaid-js/mermaid/blob/339c6708391c37d1546ca1152276fe1c997a51cc/packages/mermaid/src/docs/adding-new-shape.md",
+      "commitSha": "339c6708391c37d1546ca1152276fe1c997a51cc",
+      "strata": "adversarial",
+      "bytes": 7182
+    },
+    {
+      "id": "react-overview",
+      "sourceUrl": "https://github.com/facebook/react/blob/7dfc7ccd12d0294debc69b9b9b4e9dd1fd42e08a/packages/react-devtools/OVERVIEW.md",
+      "commitSha": "7dfc7ccd12d0294debc69b9b9b4e9dd1fd42e08a",
+      "strata": "gfm_rich",
+      "bytes": 15348
+    },
+    {
+      "id": "react-useeffect-ref",
+      "sourceUrl": "https://github.com/reactjs/react.dev/blob/e377252563aaec455d98f0c325ec989bef09065e/src/content/reference/react/useEffect.md",
+      "commitSha": "e377252563aaec455d98f0c325ec989bef09065e",
+      "strata": "longform_docs",
+      "bytes": 65265
+    },
+    {
+      "id": "yarn-berry-readme",
+      "sourceUrl": "https://github.com/yarnpkg/berry/blob/eda754082cb3e7fdf4f49b914b317b6ab8414c5c/README.md",
+      "commitSha": "eda754082cb3e7fdf4f49b914b317b6ab8414c5c",
+      "strata": "gfm_rich",
+      "bytes": 17473
+    },
+    {
+      "id": "micromark-readme",
+      "sourceUrl": "https://github.com/micromark/micromark/blob/774a70c6bae6dd94486d3385dbd9a0f14550b709/readme.md",
+      "commitSha": "774a70c6bae6dd94486d3385dbd9a0f14550b709",
+      "strata": "readme_majority",
+      "bytes": 57422
+    },
+    {
+      "id": "electron-tutorial-3-preload",
+      "sourceUrl": "https://github.com/electron/electron/blob/05f60b5068bc8f86fb6e4585f709b02cbf75a45d/docs/tutorial/tutorial-3-preload.md",
+      "commitSha": "05f60b5068bc8f86fb6e4585f709b02cbf75a45d",
+      "strata": "longform_docs",
+      "bytes": 9588
+    },
+    {
+      "id": "mermaid-timeline",
+      "sourceUrl": "https://github.com/mermaid-js/mermaid/blob/1282309896845691fdbef53703f481dcedaca0e1/packages/mermaid/src/docs/syntax/timeline.md",
+      "commitSha": "1282309896845691fdbef53703f481dcedaca0e1",
+      "strata": "adversarial",
+      "bytes": 11710
+    },
+    {
+      "id": "got-readme",
+      "sourceUrl": "https://github.com/sindresorhus/got/blob/e3924aa1e53a6ca3eb93a43618ce532442a89b40/readme.md",
+      "commitSha": "e3924aa1e53a6ca3eb93a43618ce532442a89b40",
+      "strata": "readme_majority",
+      "bytes": 24233
+    },
+    {
+      "id": "bootstrap-readme",
+      "sourceUrl": "https://github.com/twbs/bootstrap/blob/cc867751d7202aeb9f60d971dcc3ca104a872bab/README.md",
+      "commitSha": "cc867751d7202aeb9f60d971dcc3ca104a872bab",
+      "strata": "adversarial",
+      "bytes": 13302
+    },
+    {
+      "id": "git-readme",
+      "sourceUrl": "https://github.com/git/git/blob/5c9be4c9d6cfe32a77782116f6b66940fa19c86b/git-gui/README.md",
+      "commitSha": "5c9be4c9d6cfe32a77782116f6b66940fa19c86b",
+      "strata": "readme_majority",
+      "bytes": 6255
+    },
+    {
+      "id": "moby-contributing",
+      "sourceUrl": "https://github.com/moby/moby/blob/8e242c97bc95f3befbc5e4d2895b7728e1892346/CONTRIBUTING.md",
+      "commitSha": "8e242c97bc95f3befbc5e4d2895b7728e1892346",
+      "strata": "longform_docs",
+      "bytes": 21358
+    },
+    {
+      "id": "website-kubernetes-cloud-native-and-the-future-of-software",
+      "sourceUrl": "https://github.com/kubernetes/website/blob/7573ddddf59dccedff1674ec2583485de6d8ddf5/content/en/blog/_posts/2019/kubernetes-cloud-native-and-the-future-of-software.md",
+      "commitSha": "7573ddddf59dccedff1674ec2583485de6d8ddf5",
+      "strata": "gfm_rich",
+      "bytes": 7048
+    },
+    {
+      "id": "brew-readme",
+      "sourceUrl": "https://github.com/Homebrew/brew/blob/d24d7338851f8dbb9f9c0ca79035a00e9def381e/README.md",
+      "commitSha": "d24d7338851f8dbb9f9c0ca79035a00e9def381e",
+      "strata": "adversarial",
+      "bytes": 7818
+    },
+    {
+      "id": "vscode-readme",
+      "sourceUrl": "https://github.com/microsoft/vscode/blob/07d17622fddd3b3e6ff518a74cf98debd42634de/README.md",
+      "commitSha": "07d17622fddd3b3e6ff518a74cf98debd42634de",
+      "strata": "readme_majority",
+      "bytes": 6726
+    },
+    {
+      "id": "electron-contributing",
+      "sourceUrl": "https://github.com/electron/electron/blob/052efc9727a3658a4590553de7e55b11c3f63920/CONTRIBUTING.md",
+      "commitSha": "052efc9727a3658a4590553de7e55b11c3f63920",
+      "strata": "longform_docs",
+      "bytes": 5642
+    },
+    {
+      "id": "go-abi-internal",
+      "sourceUrl": "https://github.com/golang/go/blob/baa6b1f2bf258a857dedddf8be9cb1779bad797a/src/cmd/compile/abi-internal.md",
+      "commitSha": "baa6b1f2bf258a857dedddf8be9cb1779bad797a",
+      "strata": "gfm_rich",
+      "bytes": 42628
+    },
+    {
+      "id": "mermaid-wardley",
+      "sourceUrl": "https://github.com/mermaid-js/mermaid/blob/91b9f01e8f0356666cd6806df14f0e7ccfcda05e/packages/mermaid/src/docs/syntax/wardley.md",
+      "commitSha": "91b9f01e8f0356666cd6806df14f0e7ccfcda05e",
+      "strata": "adversarial",
+      "bytes": 11109
+    },
+    {
+      "id": "react-native-readme",
+      "sourceUrl": "https://github.com/facebook/react-native/blob/ba398a5581f9322e060f533929456366955fe85e/README.md",
+      "commitSha": "ba398a5581f9322e060f533929456366955fe85e",
+      "strata": "readme_majority",
+      "bytes": 6195
+    },
+    {
+      "id": "eslint-keyword-spacing",
+      "sourceUrl": "https://github.com/eslint/eslint/blob/418717f1150bb794c40014eca60c9116de2b0488/docs/src/rules/keyword-spacing.md",
+      "commitSha": "418717f1150bb794c40014eca60c9116de2b0488",
+      "strata": "longform_docs",
+      "bytes": 6830
+    },
+    {
+      "id": "reference-functions",
+      "sourceUrl": "https://github.com/rust-lang/reference/blob/4063aaf1858ea91f53dffc8bf33b652ed21075d5/src/items/functions.md",
+      "commitSha": "4063aaf1858ea91f53dffc8bf33b652ed21075d5",
+      "strata": "gfm_rich",
+      "bytes": 28223
+    },
+    {
+      "id": "fd-readme",
+      "sourceUrl": "https://github.com/sharkdp/fd/blob/81efb5028c7e664faade9baec17d3f7de95fc151/README.md",
+      "commitSha": "81efb5028c7e664faade9baec17d3f7de95fc151",
+      "strata": "readme_majority",
+      "bytes": 28045
+    },
+    {
+      "id": "systemd-coredump",
+      "sourceUrl": "https://github.com/systemd/systemd/blob/0922f62126297e59c03bc9e1b1f4bd6c362604ba/docs/COREDUMP.md",
+      "commitSha": "0922f62126297e59c03bc9e1b1f4bd6c362604ba",
+      "strata": "longform_docs",
+      "bytes": 6698
+    },
+    {
+      "id": "quarkus-actions",
+      "sourceUrl": "https://github.com/quarkusio/quarkus/blob/840c1f395842ba93b04143b43a8c4bf22fce76a9/ACTIONS.md",
+      "commitSha": "840c1f395842ba93b04143b43a8c4bf22fce76a9",
+      "strata": "gfm_rich",
+      "bytes": 5418
+    },
+    {
+      "id": "electron-automated-testing",
+      "sourceUrl": "https://github.com/electron/electron/blob/459a88f78810e58ebe8ec2a3801f8cd984383304/docs/tutorial/automated-testing.md",
+      "commitSha": "459a88f78810e58ebe8ec2a3801f8cd984383304",
+      "strata": "longform_docs",
+      "bytes": 14588
+    },
+    {
+      "id": "pyenv-commands",
+      "sourceUrl": "https://github.com/pyenv/pyenv/blob/a27d2723d6d4cc00439faa0fd277db700add717f/COMMANDS.md",
+      "commitSha": "a27d2723d6d4cc00439faa0fd277db700add717f",
+      "strata": "gfm_rich",
+      "bytes": 11758
+    },
+    {
+      "id": "docs-provide-inject",
+      "sourceUrl": "https://github.com/vuejs/docs/blob/6717f8d56bb6511555841aa9d175b16f0ff14798/src/guide/components/provide-inject.md",
+      "commitSha": "6717f8d56bb6511555841aa9d175b16f0ff14798",
+      "strata": "longform_docs",
+      "bytes": 12934
+    },
+    {
+      "id": "tensorflow-gpu-supported-ops",
+      "sourceUrl": "https://github.com/tensorflow/tensorflow/blob/a40008122c9fcc5386ca2653285f54ef092e4cce/tensorflow/compiler/tf2xla/g3doc/gpu_supported_ops.md",
+      "commitSha": "a40008122c9fcc5386ca2653285f54ef092e4cce",
+      "strata": "gfm_rich",
+      "bytes": 22196
+    },
+    {
+      "id": "pyenv-readme",
+      "sourceUrl": "https://github.com/pyenv/pyenv/blob/265b0dcefa0e71d7d89f1596309ecb677816750f/plugins/python-build/README.md",
+      "commitSha": "265b0dcefa0e71d7d89f1596309ecb677816750f",
+      "strata": "readme_majority",
+      "bytes": 16302
+    },
+    {
+      "id": "node-connectexample",
+      "sourceUrl": "https://github.com/nodejs/node/blob/d7d321b071789f08c65dbb11a0e4b3b6a299af44/deps/npm/node_modules/socks/docs/examples/javascript/connectExample.md",
+      "commitSha": "d7d321b071789f08c65dbb11a0e4b3b6a299af44",
+      "strata": "longform_docs",
+      "bytes": 7567
+    },
+    {
+      "id": "website-system-traces",
+      "sourceUrl": "https://github.com/kubernetes/website/blob/eaf7596b82d8e514eba73ab482ad4f0d44cc7cce/content/en/docs/concepts/cluster-administration/system-traces.md",
+      "commitSha": "eaf7596b82d8e514eba73ab482ad4f0d44cc7cce",
+      "strata": "longform_docs",
+      "bytes": 6219
+    },
+    {
+      "id": "react-readme",
+      "sourceUrl": "https://github.com/facebook/react/blob/4e482f490405c0c601d8712a0625fd17c04978e4/README.md",
+      "commitSha": "4e482f490405c0c601d8712a0625fd17c04978e4",
+      "strata": "readme_majority",
+      "bytes": 5317
+    },
+    {
+      "id": "react-dev-purecomponent",
+      "sourceUrl": "https://github.com/reactjs/react.dev/blob/dd65dcac3b57eed6725b6359a195e5c1a3f095f3/src/content/reference/react/PureComponent.md",
+      "commitSha": "dd65dcac3b57eed6725b6359a195e5c1a3f095f3",
+      "strata": "longform_docs",
+      "bytes": 5902
+    },
+    {
+      "id": "mermaid-readme",
+      "sourceUrl": "https://github.com/mermaid-js/mermaid/blob/223be9293482c878a61448c52cf55082498a0198/README.md",
+      "commitSha": "223be9293482c878a61448c52cf55082498a0198",
+      "strata": "readme_majority",
+      "bytes": 24957
+    },
+    {
+      "id": "website-resource-quotas",
+      "sourceUrl": "https://github.com/kubernetes/website/blob/b4811b23fdc1a199b0d9754edf90579aa93b45de/content/en/docs/concepts/policy/resource-quotas.md",
+      "commitSha": "b4811b23fdc1a199b0d9754edf90579aa93b45de",
+      "strata": "longform_docs",
+      "bytes": 31090
+    },
+    {
+      "id": "openssl-readme",
+      "sourceUrl": "https://github.com/openssl/openssl/blob/da1a85b8dc9a205949922f93e9799189564fb8cf/README.md",
+      "commitSha": "da1a85b8dc9a205949922f93e9799189564fb8cf",
+      "strata": "readme_majority",
+      "bytes": 8616
+    },
+    {
+      "id": "react-dev-index",
+      "sourceUrl": "https://github.com/reactjs/react.dev/blob/e377252563aaec455d98f0c325ec989bef09065e/src/content/reference/react-dom/components/index.md",
+      "commitSha": "e377252563aaec455d98f0c325ec989bef09065e",
+      "strata": "longform_docs",
+      "bytes": 19958
+    },
+    {
+      "id": "katex-support-table",
+      "sourceUrl": "https://github.com/KaTeX/KaTeX/blob/cd5ec4fb23803a6645ba90cccca2eeb7bc7be8dd/docs/support_table.md",
+      "commitSha": "cd5ec4fb23803a6645ba90cccca2eeb7bc7be8dd",
+      "strata": "longform_docs",
+      "bytes": 52532
+    },
+    {
+      "id": "element-plus-readme",
+      "sourceUrl": "https://github.com/element-plus/element-plus/blob/cce2d1522e8e61c647515ccade8506648ecfcdac/README.md",
+      "commitSha": "cce2d1522e8e61c647515ccade8506648ecfcdac",
+      "strata": "readme_majority",
+      "bytes": 6381
+    },
+    {
+      "id": "react-book-thinking",
+      "sourceUrl": "https://github.com/reactjs/react.dev/blob/e377252563aaec455d98f0c325ec989bef09065e/src/content/learn/thinking-in-react.md",
+      "commitSha": "e377252563aaec455d98f0c325ec989bef09065e",
+      "strata": "longform_docs",
+      "bytes": 22965
+    },
+    {
+      "id": "cargo-rust-version",
+      "sourceUrl": "https://github.com/rust-lang/cargo/blob/31ccf24131b959efcd81f9d071e447eae3e80e99/doc/book/src/reference/rust-version.md",
+      "commitSha": "31ccf24131b959efcd81f9d071e447eae3e80e99",
+      "strata": "longform_docs",
+      "bytes": 8871
+    },
+    {
+      "id": "yt-dlp-readme",
+      "sourceUrl": "https://github.com/yt-dlp/yt-dlp/blob/6224a3898821965a7d6a2cb9cc2de40a0fd6e6bc/yt_dlp/extractor/youtube/jsc/README.md",
+      "commitSha": "6224a3898821965a7d6a2cb9cc2de40a0fd6e6bc",
+      "strata": "readme_majority",
+      "bytes": 5979
+    },
+    {
+      "id": "react-dev-suspense",
+      "sourceUrl": "https://github.com/reactjs/react.dev/blob/521d4c2db22c415bb1211e5fc20f91fd67a8ac84/src/content/reference/react/Suspense.md",
+      "commitSha": "521d4c2db22c415bb1211e5fc20f91fd67a8ac84",
+      "strata": "longform_docs",
+      "bytes": 81917
+    },
+    {
+      "id": "preact-readme",
+      "sourceUrl": "https://github.com/preactjs/preact/blob/654b473faedbb85812dddb882f24ad0ffec5823f/README.md",
+      "commitSha": "654b473faedbb85812dddb882f24ad0ffec5823f",
+      "strata": "readme_majority",
+      "bytes": 14886
+    },
+    {
+      "id": "cargo-cargo-init",
+      "sourceUrl": "https://github.com/rust-lang/cargo/blob/d6131319eb04d4d124770bc75d488c1450f2bd7e/doc/book/src/commands/cargo-init.md",
+      "commitSha": "d6131319eb04d4d124770bc75d488c1450f2bd7e",
+      "strata": "longform_docs",
+      "bytes": 7657
+    },
+    {
+      "id": "tanstack-query-readme",
+      "sourceUrl": "https://github.com/TanStack/query/blob/46d7f02f1c7b9fcd3255082cc7103e8bfa3dab76/README.md",
+      "commitSha": "46d7f02f1c7b9fcd3255082cc7103e8bfa3dab76",
+      "strata": "readme_majority",
+      "bytes": 5448
+    },
+    {
+      "id": "docs-docker-compose",
+      "sourceUrl": "https://github.com/docker/docs/blob/97cee42f3c6cffa71822112476bc5926b42b16b6/content/guides/docker-compose.md",
+      "commitSha": "97cee42f3c6cffa71822112476bc5926b42b16b6",
+      "strata": "longform_docs",
+      "bytes": 6767
+    },
+    {
+      "id": "excalidraw-readme",
+      "sourceUrl": "https://github.com/excalidraw/excalidraw/blob/e18c1dd213000dde0ae94ef7eb00aab537b39708/README.md",
+      "commitSha": "e18c1dd213000dde0ae94ef7eb00aab537b39708",
+      "strata": "readme_majority",
+      "bytes": 7710,
+      "knownGap": "raw-html-sanitiser-boundaries"
+    },
+    {
+      "id": "eslint-function-paren-newline",
+      "sourceUrl": "https://github.com/eslint/eslint/blob/418717f1150bb794c40014eca60c9116de2b0488/docs/src/rules/function-paren-newline.md",
+      "commitSha": "418717f1150bb794c40014eca60c9116de2b0488",
+      "strata": "longform_docs",
+      "bytes": 5379
+    },
+    {
+      "id": "grafana-trace-integration",
+      "sourceUrl": "https://github.com/grafana/grafana/blob/2a26f82b7fcceafc9a45dba41c4086b3543d902e/docs/sources/visualizations/explore/trace-integration.md",
+      "commitSha": "2a26f82b7fcceafc9a45dba41c4086b3543d902e",
+      "strata": "longform_docs",
+      "bytes": 12287
+    },
+    {
+      "id": "exa-readme",
+      "sourceUrl": "https://github.com/ogham/exa/blob/3d1edbb47052cb416ef9478106c3907586da5150/README.md",
+      "commitSha": "3d1edbb47052cb416ef9478106c3907586da5150",
+      "strata": "readme_majority",
+      "bytes": 11430
+    },
+    {
+      "id": "tokio-readme",
+      "sourceUrl": "https://github.com/tokio-rs/tokio/blob/cf782c5b917b7ea21b6f97f07104ebf16d35f5f8/README.md",
+      "commitSha": "cf782c5b917b7ea21b6f97f07104ebf16d35f5f8",
+      "strata": "readme_majority",
+      "bytes": 9352
+    },
+    {
+      "id": "redux-readme",
+      "sourceUrl": "https://github.com/reduxjs/redux/blob/4f579534471e6ed1c2b31b062c75b23c0740a961/README.md",
+      "commitSha": "4f579534471e6ed1c2b31b062c75b23c0740a961",
+      "strata": "readme_majority",
+      "bytes": 8029
+    },
+    {
+      "id": "moby-readme",
+      "sourceUrl": "https://github.com/moby/moby/blob/24ca48a69e983f689d1a5f5bd594e8883f12a3be/README.md",
+      "commitSha": "24ca48a69e983f689d1a5f5bd594e8883f12a3be",
+      "strata": "readme_majority",
+      "bytes": 5487
+    },
+    {
+      "id": "hugo-readme",
+      "sourceUrl": "https://github.com/gohugoio/hugo/blob/dd3f2731e0612b3b402d1464d5612fd9fc342748/README.md",
+      "commitSha": "dd3f2731e0612b3b402d1464d5612fd9fc342748",
+      "strata": "readme_majority",
+      "bytes": 16523
+    },
+    {
+      "id": "hyperfine-readme",
+      "sourceUrl": "https://github.com/sharkdp/hyperfine/blob/f12f3d9f86f3643b3b7deace5e160b1f0f44d2b7/README.md",
+      "commitSha": "f12f3d9f86f3643b3b7deace5e160b1f0f44d2b7",
+      "strata": "readme_majority",
+      "bytes": 11025
+    },
+    {
+      "id": "axios-readme",
+      "sourceUrl": "https://github.com/axios/axios/blob/18e7dfedf30c96e58652887f930642ae82e0130c/README.md",
+      "commitSha": "18e7dfedf30c96e58652887f930642ae82e0130c",
+      "strata": "readme_majority",
+      "bytes": 108208
+    },
+    {
+      "id": "lipgloss-readme",
+      "sourceUrl": "https://github.com/charmbracelet/lipgloss/blob/9e39a0ad4f4fc779d620f17783cee3494da6ae29/README.md",
+      "commitSha": "9e39a0ad4f4fc779d620f17783cee3494da6ae29",
+      "strata": "readme_majority",
+      "bytes": 25992
+    },
+    {
+      "id": "ytdlp-readme",
+      "sourceUrl": "https://github.com/yt-dlp/yt-dlp/blob/e164eebe19a6cb1aa1db4b45a8d6eb46ed7fbb48/README.md",
+      "commitSha": "e164eebe19a6cb1aa1db4b45a8d6eb46ed7fbb48",
+      "strata": "readme_majority",
+      "bytes": 179142
+    },
+    {
+      "id": "next-js-readme",
+      "sourceUrl": "https://github.com/vercel/next.js/blob/fc4f062ba96f37f971bcbab8858d96e413d86bf9/examples/with-supabase/README.md",
+      "commitSha": "fc4f062ba96f37f971bcbab8858d96e413d86bf9",
+      "strata": "readme_majority",
+      "bytes": 5328
+    },
+    {
+      "id": "comrak-readme",
+      "sourceUrl": "https://github.com/kivikakk/comrak/blob/7fc5e976367eaa915087eb81d8b188e7517bac52/README.md",
+      "commitSha": "7fc5e976367eaa915087eb81d8b188e7517bac52",
+      "strata": "readme_majority",
+      "bytes": 19508
+    },
+    {
+      "id": "ansible-readme",
+      "sourceUrl": "https://github.com/ansible/ansible/blob/1378412a9e70dfbfe0ed4a0c42b43f4bcb166f9b/README.md",
+      "commitSha": "1378412a9e70dfbfe0ed4a0c42b43f4bcb166f9b",
+      "strata": "readme_majority",
+      "bytes": 6154
+    },
+    {
+      "id": "node-readme",
+      "sourceUrl": "https://github.com/nodejs/node/blob/afbfccc30c8ebcd526ca1e24faa2c58c378adc2a/README.md",
+      "commitSha": "afbfccc30c8ebcd526ca1e24faa2c58c378adc2a",
+      "strata": "readme_majority",
+      "bytes": 41791
+    },
+    {
+      "id": "graphql-js-readme",
+      "sourceUrl": "https://github.com/graphql/graphql-js/blob/d7c2409fb43d80ae864fa0551c34ec18038f3482/README.md",
+      "commitSha": "d7c2409fb43d80ae864fa0551c34ec18038f3482",
+      "strata": "readme_majority",
+      "bytes": 7638
+    },
+    {
+      "id": "istio-readme",
+      "sourceUrl": "https://github.com/istio/istio/blob/8f56d6dea922a5635379c7acf4701cc6a750fbc1/pkg/kube/krt/README.md",
+      "commitSha": "8f56d6dea922a5635379c7acf4701cc6a750fbc1",
+      "strata": "readme_majority",
+      "bytes": 12081
+    },
+    {
+      "id": "zustand-readme",
+      "sourceUrl": "https://github.com/pmndrs/zustand/blob/ea612a500b7dad2c6bf51ea5d8f3e50944da70a1/README.md",
+      "commitSha": "ea612a500b7dad2c6bf51ea5d8f3e50944da70a1",
+      "strata": "readme_majority",
+      "bytes": 17827
+    }
+  ]
+}

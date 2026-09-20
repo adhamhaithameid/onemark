@@ -1,0 +1,923 @@
+<hr>
+<h2>title: Document<br>
+slug: Web/API/Document<br>
+page-type: web-api-interface<br>
+browser-compat: api.Document</h2>
+<p>{{APIRef("DOM")}}</p>
+<p>The <strong><code class="notranslate">Document</code></strong> interface represents any web page loaded in the browser and serves as an entry point into the web page's content, which is the <a href="/en-US/docs/Web/API/Document_Object_Model#what_is_a_dom_tree">DOM tree</a>.</p>
+<p>The DOM tree includes elements such as {{HTMLElement("body")}} and {{HTMLElement("table")}}, among <a href="/en-US/docs/Web/HTML/Reference/Elements">many others</a>. It provides functionality globally to the document, like how to obtain the page's URL and create new elements in the document.</p>
+<p>{{InheritanceDiagram}}</p>
+<p>The <code class="notranslate">Document</code> interface describes the common properties and methods for any kind of document. Depending on the document's type (e.g., <a href="/en-US/docs/Web/HTML">HTML</a>, <a href="/en-US/docs/Web/XML">XML</a>, SVG, …), a larger API is available: HTML documents, served with the <code class="notranslate">"text/html"</code> content type, also implement the {{DOMxRef("HTMLDocument")}} interface, whereas XML and SVG documents implement the {{DOMxRef("XMLDocument")}} interface.</p>
+<h2>Constructor</h2>
+<ul>
+<li>{{DOMxRef("Document.Document", "Document()")}}
+<ul>
+<li>: Creates a new <code class="notranslate">Document</code> object.</li>
+</ul>
+</li>
+</ul>
+<h2>Instance properties</h2>
+<p><em>This interface also inherits from the {{DOMxRef("Node")}} and {{DOMxRef("EventTarget")}} interfaces.</em></p>
+<ul>
+<li>{{DOMxRef("Document.activeElement")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the {{DOMxRef('Element')}} that currently has focus.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.activeViewTransition")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns a {{DOMxRef('ViewTransition')}} instance representing the <a href="/en-US/docs/Web/API/View_Transition_API">view transition</a> currently active on the document, or <code class="notranslate">null</code> if there is no active view transition.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.adoptedStyleSheets")}}
+<ul>
+<li>: Add an array of constructed stylesheets to be used by the document.<br>
+These stylesheets may also be shared with shadow DOM subtrees of the same document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.body")}}
+<ul>
+<li>: Returns the {{HTMLElement("body")}} or {{htmlelement("frameset")}} node of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.characterSet")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the character set being used by the document.</li>
+</ul>
+</li>
+<li>{{domxref("Document.childElementCount")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the number of child elements of the current document.</li>
+</ul>
+</li>
+<li>{{domxref("Document.children")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the child elements of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.compatMode")}} {{ReadOnlyInline}}
+<ul>
+<li>: Indicates whether the document is rendered in <em>quirks</em> or <em>strict</em> mode.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.contentType")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the Content-Type from the MIME Header of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.currentScript")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the {{HTMLElement("script")}} element whose script is currently being processed and <a href="https://github.com/whatwg/html/issues/997" data-hovercard-type="issue" data-hovercard-url="/whatwg/html/issues/997/hovercard">isn't a JavaScript module</a>.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.customElementRegistry")}} {{ReadOnlyInline}}
+<ul>
+<li>: The {{domxref("CustomElementRegistry")}} object associated with this document, or <code class="notranslate">null</code> if one has not been set.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.doctype")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the Document Type Definition (DTD) of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.documentElement")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the {{DOMxRef("Element")}} that is a direct child of the document. For HTML documents, this is normally the {{DOMxRef("HTMLHtmlElement")}} object representing the document's {{HTMLElement("html")}} element.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.documentURI")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the document location as a string.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.embeds")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns an {{DOMxRef("HTMLCollection")}} of the embedded {{HTMLElement('embed')}} elements in the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.featurePolicy")}} {{Experimental_Inline}} {{ReadOnlyInline}} {{non-standard_inline}}
+<ul>
+<li>: Returns the {{DOMxRef("FeaturePolicy")}} interface with the feature policies applied to the document.</li>
+</ul>
+</li>
+<li>{{domxref("Document.firstElementChild")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the first child element of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.fonts")}}
+<ul>
+<li>: Returns the {{DOMxRef("FontFaceSet")}} interface of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.forms")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns an {{DOMxRef("HTMLCollection")}} of the {{HTMLElement("form")}} elements in the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.fragmentDirective")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the {{domxref("FragmentDirective")}} for the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.fullscreenElement")}} {{ReadOnlyInline}}
+<ul>
+<li>: The element that's currently in fullscreen mode for this document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.head")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the {{HTMLElement("head")}} element of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.hidden")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns a Boolean value indicating if the page is considered hidden or not.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.images")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns an {{DOMxRef("HTMLCollection")}} of the images in the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.implementation")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the DOM implementation associated with the current document.</li>
+</ul>
+</li>
+<li>{{domxref("Document.lastElementChild")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the last child element of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.links")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns an {{DOMxRef("HTMLCollection")}} of the hyperlinks in the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.pictureInPictureElement")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the {{DOMxRef('Element')}} currently being presented in picture-in-picture mode in this document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.pictureInPictureEnabled")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns true if the picture-in-picture feature is enabled.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.plugins")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns an {{DOMxRef("HTMLCollection")}} of the available plugins.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.pointerLockElement")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the element set as the target for mouse events while the pointer is locked. <code class="notranslate">null</code> if lock is pending, pointer is unlocked, or if the target is in another document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.prerendering")}} {{ReadOnlyInline}} {{experimental_inline}}
+<ul>
+<li>: Returns a boolean that indicates whether the document is currently in the process of prerendering, as initiated via the <a href="/en-US/docs/Web/API/Speculation_Rules_API">Speculation Rules API</a>.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.scripts")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns an {{DOMxRef("HTMLCollection")}} of the {{HTMLElement("script")}} elements in the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.scrollingElement")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns a reference to the {{DOMxRef("Element")}} that scrolls the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.styleSheets")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns a {{DOMxRef('StyleSheetList')}} of {{DOMxRef('CSSStyleSheet')}} objects for stylesheets explicitly linked into, or embedded in a document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.timeline")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns timeline as a special instance of {{domxref("DocumentTimeline")}} that is automatically created on page load.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.visibilityState")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns a <code class="notranslate">string</code> denoting the visibility state of the document. Possible values are <code class="notranslate">visible</code>, <code class="notranslate">hidden</code>, and <code class="notranslate">unloaded</code>.</li>
+</ul>
+</li>
+</ul>
+<h3>Extensions for HTMLDocument</h3>
+<p><em>The <code class="notranslate">Document</code> interface for HTML documents inherits from the {{DOMxRef("HTMLDocument")}} interface or is extended for such documents.</em></p>
+<ul>
+<li>{{DOMxRef("Document.cookie")}}
+<ul>
+<li>: Returns a semicolon-separated list of the cookies for that document or sets a single cookie.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.defaultView")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns a reference to the window object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.designMode")}}
+<ul>
+<li>: Gets/sets the ability to edit the whole document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.dir")}}
+<ul>
+<li>: Gets/sets directionality (rtl/ltr) of the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.fullscreenEnabled")}} {{ReadOnlyInline}}
+<ul>
+<li>: Indicates whether fullscreen mode is available.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.lastModified")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the date on which the document was last modified.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.location")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the URI of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.readyState")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns loading status of the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.referrer")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the URI of the page that linked to this page.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.title")}}
+<ul>
+<li>: Sets or gets the title of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.URL")}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns the document location as a string.</li>
+</ul>
+</li>
+<li>Named properties
+<ul>
+<li>
+<p>: Some elements in the document are also exposed as properties:</p>
+<ul>
+<li>For each {{HTMLElement("embed")}}, {{HTMLElement("form")}}, {{HTMLElement("iframe")}}, {{HTMLElement("img")}}, and {{HTMLElement("object")}} element, its <code class="notranslate">name</code> (if non-empty) is exposed.<br>
+For example, if the document contains <code class="notranslate">&lt;form name="my_form"&gt;</code>, then <code class="notranslate">document["my_form"]</code> (and its equivalent <code class="notranslate">document.my_form</code>) returns a reference to that element.</li>
+<li>For each {{HTMLElement("object")}} element, its <code class="notranslate">id</code> (if non-empty) is exposed.</li>
+<li>For each {{HTMLElement("img")}} element with non-empty <code class="notranslate">name</code>, its <code class="notranslate">id</code> (if non-empty) is exposed.</li>
+</ul>
+<p>If a property corresponds to a single element, that element is directly returned. If that single element is an iframe, then its {{domxref("HTMLIFrameElement/contentWindow", "contentWindow")}} is returned instead. If the property corresponds to multiple elements, then an {{domxref("HTMLCollection")}} is returned containing all of them.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Deprecated properties</h3>
+<ul>
+<li>{{DOMxRef("Document.alinkColor")}} {{Deprecated_Inline}}
+<ul>
+<li>: Returns or sets the color of active links in the document body.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.all")}} {{Deprecated_Inline}}
+<ul>
+<li>: Provides access to all elements in the document — it returns an {{DOMxRef('HTMLAllCollection')}} rooted at the document node. This is a legacy, non-standard property and should not be used.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.anchors")}} {{Deprecated_Inline}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns a list of all of the anchors in the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.applets")}} {{Deprecated_Inline}} {{ReadOnlyInline}}
+<ul>
+<li>: Returns an empty {{domxref("HTMLCollection")}}. Legacy property that used to return the list of applets within a document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.bgColor")}} {{Deprecated_Inline}}
+<ul>
+<li>: Gets/sets the background color of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.characterSet","Document.charset")}} {{Deprecated_Inline}} {{ReadOnlyInline}}
+<ul>
+<li>: Alias of {{DOMxRef("Document.characterSet")}}. Use this property instead.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.domain")}} {{Deprecated_Inline}}
+<ul>
+<li>: Gets/sets the domain of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.fgColor")}} {{Deprecated_Inline}}
+<ul>
+<li>: Gets/sets the foreground color, or text color, of the current document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.fullscreen")}} {{Deprecated_Inline}}
+<ul>
+<li>: Returns <code class="notranslate">true</code> when the document is in <a href="/en-US/docs/Web/API/Fullscreen_API">fullscreen mode</a>.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.characterSet", "Document.inputEncoding")}} {{Deprecated_Inline}} {{ReadOnlyInline}}
+<ul>
+<li>: Alias of {{DOMxRef("Document.characterSet")}}. Use this property instead.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.lastStyleSheetSet")}} {{Deprecated_Inline}} {{ReadOnlyInline}} {{Non-standard_Inline}}
+<ul>
+<li>: Returns the name of the style sheet set that was last enabled. Has the value <code class="notranslate">null</code> until the style sheet is changed by setting the value of {{DOMxRef("Document.selectedStyleSheetSet","selectedStyleSheetSet")}}.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.linkColor")}} {{Deprecated_Inline}}
+<ul>
+<li>: Gets/sets the color of hyperlinks in the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.preferredStyleSheetSet")}} {{Deprecated_Inline}} {{ReadOnlyInline}} {{Non-standard_Inline}}
+<ul>
+<li>: Returns the preferred style sheet set as specified by the page author.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.rootElement")}} {{Deprecated_Inline}}
+<ul>
+<li>: Like {{DOMxRef("Document.documentElement")}}, but only for {{SVGElement("svg")}} root elements. Use this property instead.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.selectedStyleSheetSet")}} {{Deprecated_Inline}} {{Non-standard_Inline}}
+<ul>
+<li>: Returns which style sheet set is currently in use.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.styleSheetSets")}} {{Deprecated_Inline}} {{ReadOnlyInline}} {{Non-standard_Inline}}
+<ul>
+<li>: Returns a list of the style sheet sets available on the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.vlinkColor")}} {{Deprecated_Inline}}
+<ul>
+<li>: Gets/sets the color of visited hyperlinks.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.xmlEncoding")}} {{Deprecated_Inline}}
+<ul>
+<li>: Returns the encoding as determined by the XML declaration.</li>
+</ul>
+</li>
+<li><code class="notranslate">Document.xmlStandalone</code> {{Deprecated_Inline}}
+<ul>
+<li>: Returns <code class="notranslate">true</code> if the XML declaration specifies the document to be standalone (<em>e.g.,</em> An external part of the DTD affects the document's content), else <code class="notranslate">false</code>.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.xmlVersion")}} {{Deprecated_Inline}}
+<ul>
+<li>: Returns the version number as specified in the XML declaration or <code class="notranslate">"1.0"</code> if the declaration is absent.</li>
+</ul>
+</li>
+</ul>
+<h2>Instance methods</h2>
+<p><em>This interface also inherits from the {{DOMxRef("Node")}} and {{DOMxRef("EventTarget")}} interfaces.</em></p>
+<ul>
+<li>{{DOMxRef("Document.adoptNode()")}}
+<ul>
+<li>: Adopt node from an external document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.append()")}}
+<ul>
+<li>: Inserts a set of {{domxref("Node")}} objects or strings after the last child of the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.ariaNotify()")}}
+<ul>
+<li>: Specifies that a given string of text should be announced by a screen reader.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.browsingTopics()")}} {{non-standard_inline}} {{deprecated_inline}}
+<ul>
+<li>: Returns a promise that fulfills with an array of objects representing the top topics for the user, one from each of the last three epochs. By default, the method also causes the browser to record the current page visit as observed by the caller, so the page's hostname can later be used in topics calculation. See the <a href="/en-US/docs/Web/API/Topics_API">Topics API</a> for more details.</li>
+</ul>
+</li>
+<li><code class="notranslate">Document.captureEvents()</code> {{Deprecated_Inline}}
+<ul>
+<li>: See {{DOMxRef("Window.captureEvents")}}.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.caretPositionFromPoint()")}}
+<ul>
+<li>: Returns a {{DOMxRef('CaretPosition')}} object containing the DOM node containing the caret, and caret's character offset within that node.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.caretRangeFromPoint()")}} {{Non-standard_Inline}}
+<ul>
+<li>: Gets a {{DOMxRef("Range")}} object for the document fragment under the specified coordinates.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createAttribute()")}}
+<ul>
+<li>: Creates a new {{DOMxRef("Attr")}} object and returns it.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createAttributeNS()")}}
+<ul>
+<li>: Creates a new attribute node in a given namespace and returns it.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createCDATASection()")}}
+<ul>
+<li>: Creates a new CDATA node and returns it.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createComment()")}}
+<ul>
+<li>: Creates a new comment node and returns it.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createDocumentFragment()")}}
+<ul>
+<li>: Creates a new document fragment.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createElement()")}}
+<ul>
+<li>: Creates a new element with the given tag name.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createElementNS()")}}
+<ul>
+<li>: Creates a new element with the given tag name and namespace URI.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createEvent()")}} {{deprecated_inline}}
+<ul>
+<li>: Creates an event object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createNodeIterator()")}}
+<ul>
+<li>: Creates a {{DOMxRef("NodeIterator")}} object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createProcessingInstruction()")}}
+<ul>
+<li>: Creates a new {{DOMxRef("ProcessingInstruction")}} object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createRange()")}}
+<ul>
+<li>: Creates a {{DOMxRef("Range")}} object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createTextNode()")}}
+<ul>
+<li>: Creates a text node.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createTouch()")}} {{Deprecated_Inline}} {{Non-standard_Inline}}
+<ul>
+<li>: Creates a {{DOMxRef("Touch")}} object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createTouchList()")}} {{Deprecated_Inline}} {{Non-standard_Inline}}
+<ul>
+<li>: Creates a {{DOMxRef("TouchList")}} object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createTreeWalker()")}}
+<ul>
+<li>: Creates a {{DOMxRef("TreeWalker")}} object.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.elementFromPoint()")}}
+<ul>
+<li>: Returns the topmost element at the specified coordinates.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.elementsFromPoint()")}}
+<ul>
+<li>: Returns an array of all elements at the specified coordinates.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.enableStyleSheetsForSet()")}} {{Deprecated_Inline}} {{Non-standard_Inline}}
+<ul>
+<li>: Enables the style sheets for the specified style sheet set.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.exitFullscreen()")}}
+<ul>
+<li>: Stops document's fullscreen element from being displayed fullscreen.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.exitPictureInPicture()")}}
+<ul>
+<li>: Remove the video from the floating picture-in-picture window back to its original container.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.exitPointerLock()")}}
+<ul>
+<li>: Release the pointer lock.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.getAnimations()")}}
+<ul>
+<li>: Returns an array of all {{DOMxRef("Animation")}} objects currently in effect, whose target elements are descendants of the <code class="notranslate">document</code>.</li>
+</ul>
+</li>
+<li><code class="notranslate">Document.getBoxQuads()</code> {{Experimental_Inline}}
+<ul>
+<li>: Returns a list of {{domxref("DOMQuad")}} objects representing the CSS fragments of the node.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.getElementById", "Document.getElementById()")}}
+<ul>
+<li>: Returns an object reference to the identified element.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.getElementsByClassName()")}}
+<ul>
+<li>: Returns a list of elements with the given class name.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.getElementsByTagName()")}}
+<ul>
+<li>: Returns a list of elements with the given tag name.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.getElementsByTagNameNS()")}}
+<ul>
+<li>: Returns a list of elements with the given tag name and namespace.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.getSelection()")}}
+<ul>
+<li>: Returns a {{DOMxRef('Selection')}} object representing the range of text selected by the user, or the current position of the caret.</li>
+</ul>
+</li>
+<li>{{domxref("Document.hasPrivateToken()")}} {{experimental_inline}}
+<ul>
+<li>: Returns a promise that fulfills with a boolean indicating whether the browser has a <a href="/en-US/docs/Web/API/Private_State_Token_API">private state token</a> stored from a particular issuer.</li>
+</ul>
+</li>
+<li>{{domxref("Document.hasRedemptionRecord()")}} {{experimental_inline}}
+<ul>
+<li>: Returns a promise that fulfills with a boolean indicating whether the browser has a <a href="/en-US/docs/Web/API/Private_State_Token_API/Using#redeeming_tokens">redemption record</a> originating from a particular issuer.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.hasStorageAccess()")}}
+<ul>
+<li>: Returns a {{jsxref("Promise")}} that resolves with a boolean value indicating whether the document has access to unpartitioned cookies.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.hasUnpartitionedCookieAccess()")}}
+<ul>
+<li>: New name for {{DOMxRef("Document.hasStorageAccess()")}}.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.importNode()")}}
+<ul>
+<li>: Returns a clone of a node from an external document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.moveBefore()")}}
+<ul>
+<li>: Moves a given {{domxref("Node")}} inside the <code class="notranslate">Document</code> DOM node as a direct child, before a given reference node, without removing and then inserting the node.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.mozSetImageElement()")}} {{Non-standard_Inline}}
+<ul>
+<li>: Allows you to change the element being used as the background image for a specified element ID.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.prepend()")}}
+<ul>
+<li>: Inserts a set of {{domxref("Node")}} objects or strings before the first child of the document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.querySelector()")}}
+<ul>
+<li>: Returns the first Element node within the document, in document order, that matches the specified selectors.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.querySelectorAll()")}}
+<ul>
+<li>: Returns a list of all the Element nodes within the document that match the specified selectors.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.releaseCapture()")}} {{Non-standard_Inline}}
+<ul>
+<li>: Releases the current mouse capture if it's on an element in this document.</li>
+</ul>
+</li>
+<li><code class="notranslate">Document.releaseEvents()</code> {{Deprecated_Inline}}
+<ul>
+<li>: See {{DOMxRef("Window.releaseEvents()")}}.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.replaceChildren()")}}
+<ul>
+<li>: Replaces the existing children of a document with a specified new set of children.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.requestStorageAccess()")}}
+<ul>
+<li>: Allows a document loaded in a third-party context (i.e., embedded in an {{htmlelement("iframe")}}) to request access to unpartitioned cookies, in cases where user agents by default block access to unpartitioned cookies by sites loaded in a third-party context to improve privacy.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.requestStorageAccessFor()")}} {{deprecated_inline}} {{non-standard_inline}}
+<ul>
+<li>: Allows top-level sites to request third-party cookie access on behalf of embedded content originating from another site in the same <a href="https://privacysandbox.google.com/cookies/related-website-sets-integration" rel="nofollow">related website set</a>.</li>
+</ul>
+</li>
+<li>{{domxref("Document.startViewTransition()")}}
+<ul>
+<li>: Starts a new {{domxref("View Transition API", "view transition", "", "nocode")}} and returns a {{domxref("ViewTransition")}} object to represent it.</li>
+</ul>
+</li>
+</ul>
+<p>The <code class="notranslate">Document</code> interface is extended with the {{DOMxRef("XPathEvaluator")}} interface:</p>
+<ul>
+<li>{{DOMxRef("Document.createExpression()")}}
+<ul>
+<li>: Compiles an <a href="/en-US/docs/Web/API/XPathExpression"><code class="notranslate">XPathExpression</code></a> which can then be used for (repeated) evaluations.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.createNSResolver()")}} {{deprecated_inline}}
+<ul>
+<li>: Returns the input node as-is.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.evaluate()")}}
+<ul>
+<li>: Evaluates an XPath expression.</li>
+</ul>
+</li>
+</ul>
+<h3>Extension for HTML documents</h3>
+<p>The <code class="notranslate">Document</code> interface for HTML documents inherit from the {{DOMxRef("HTMLDocument")}} interface or is extended for such documents:</p>
+<ul>
+<li>{{DOMxRef("Document.clear()")}} {{Deprecated_Inline}}
+<ul>
+<li>: This method does nothing.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.close()")}}
+<ul>
+<li>: Closes a document stream for writing.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.execCommand()")}} {{Deprecated_Inline}} {{non-standard_inline}}
+<ul>
+<li>: On an editable document, executes a formatting command.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.getElementsByName()")}}
+<ul>
+<li>: Returns a list of elements with the given name.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.hasFocus()")}}
+<ul>
+<li>: Returns <code class="notranslate">true</code> if the focus is currently located anywhere inside the specified document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.open()")}}
+<ul>
+<li>: Opens a document stream for writing.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.queryCommandEnabled()")}} {{Deprecated_Inline}} {{Non-standard_Inline}}
+<ul>
+<li>: Returns true if the formatting command can be executed on the current range.</li>
+</ul>
+</li>
+<li><code class="notranslate">Document.queryCommandIndeterm()</code> {{Deprecated_Inline}} {{non-standard_inline}}
+<ul>
+<li>: Returns true if the formatting command is in an indeterminate state on the current range.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.queryCommandState()")}} {{Deprecated_Inline}} {{Non-standard_Inline}}
+<ul>
+<li>: Returns true if the formatting command has been executed on the current range.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.queryCommandSupported()")}} {{Deprecated_Inline}} {{Non-standard_Inline}}
+<ul>
+<li>: Returns true if the formatting command is supported on the current range.</li>
+</ul>
+</li>
+<li><code class="notranslate">Document.queryCommandValue()</code> {{Deprecated_Inline}} {{non-standard_inline}}
+<ul>
+<li>: Returns the current value of the current range for a formatting command.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.write()")}} {{deprecated_inline}}
+<ul>
+<li>: Writes text in a document.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.writeln()")}} {{deprecated_inline}}
+<ul>
+<li>: Writes a line of text in a document.</li>
+</ul>
+</li>
+</ul>
+<h2>Static methods</h2>
+<p><em>This interface also inherits from the {{DOMxRef("Node")}} and {{DOMxRef("EventTarget")}} interfaces.</em></p>
+<ul>
+<li>{{domxref("Document/parseHTML_static", "Document.parseHTML()")}}
+<ul>
+<li>: Creates a new <code class="notranslate">Document</code> object from a string of HTML in an XSS-safe manner with sanitization.</li>
+</ul>
+</li>
+<li>{{domxref("Document/parseHTMLUnsafe_static", "Document.parseHTMLUnsafe()")}}
+<ul>
+<li>: Creates a new <code class="notranslate">Document</code> object from a string of HTML without performing sanitization.<br>
+The string may contain declarative shadow roots.</li>
+</ul>
+</li>
+</ul>
+<h2>Events</h2>
+<p>Listen to these events using <code class="notranslate">addEventListener()</code> or by assigning an event listener to the <code class="notranslate">oneventname</code> property of this interface. In addition to the events listed below, many events can bubble from {{domxref("Node", "nodes", "", "nocode")}} contained in the document tree.</p>
+<ul>
+<li>{{DOMxRef("Document.afterscriptexecute_event", "afterscriptexecute")}} {{Non-standard_Inline}} {{deprecated_inline}}
+<ul>
+<li>: Fired when a static {{HTMLElement("script")}} element finishes executing its script</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.beforescriptexecute_event", "beforescriptexecute")}} {{Non-standard_Inline}} {{deprecated_inline}}
+<ul>
+<li>: Fired when a static {{HTMLElement("script")}} is about to start executing.</li>
+</ul>
+</li>
+<li>{{domxref("Document.prerenderingchange_event", "prerenderingchange")}} {{experimental_inline}}
+<ul>
+<li>: Fired on a prerendered document when it is activated (i.e., the user views the page).</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document.securitypolicyviolation_event", "securitypolicyviolation")}}
+<ul>
+<li>: Fired when a content security policy is violated.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document/visibilitychange_event", "visibilitychange")}}
+<ul>
+<li>: Fired when the content of a tab has become visible or has been hidden.</li>
+</ul>
+</li>
+</ul>
+<h3>Fullscreen events</h3>
+<ul>
+<li>{{DOMxRef("Document/fullscreenchange_event", "fullscreenchange")}}
+<ul>
+<li>: Fired when the <code class="notranslate">Document</code> transitions into or out of <a href="/en-US/docs/Web/API/Fullscreen_API/Guide">fullscreen</a> mode.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document/fullscreenerror_event", "fullscreenerror")}}
+<ul>
+<li>: Fired if an error occurs while attempting to switch into or out of <a href="/en-US/docs/Web/API/Fullscreen_API/Guide">fullscreen</a> mode.</li>
+</ul>
+</li>
+</ul>
+<h3>Load &amp; unload events</h3>
+<ul>
+<li>{{DOMxRef("Document/DOMContentLoaded_event", "DOMContentLoaded")}}
+<ul>
+<li>: Fired when the document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document/readystatechange_event", "readystatechange")}}
+<ul>
+<li>: Fired when the {{DOMxRef("Document/readyState", "readyState")}} attribute of a document has changed.</li>
+</ul>
+</li>
+</ul>
+<h3>Pointer lock events</h3>
+<ul>
+<li>{{DOMxRef("Document/pointerlockchange_event", "pointerlockchange")}}
+<ul>
+<li>: Fired when the pointer is locked/unlocked.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document/pointerlockerror_event", "pointerlockerror")}}
+<ul>
+<li>: Fired when locking the pointer failed.</li>
+</ul>
+</li>
+</ul>
+<h3>Scroll events</h3>
+<ul>
+<li>{{DOMxRef("Document/scroll_event", "scroll")}}
+<ul>
+<li>: Fired when the document view or an element has been scrolled.</li>
+</ul>
+</li>
+<li>{{DOMxRef("Document/scrollend_event", "scrollend")}}
+<ul>
+<li>: Fired when the document view or an element has completed scrolling.</li>
+</ul>
+</li>
+<li>{{domxref("Document/scrollsnapchange_event", "scrollsnapchange")}} {{experimental_inline}}
+<ul>
+<li>: Fired on the scroll container at the end of a scrolling operation when a new scroll snap target has been selected.</li>
+</ul>
+</li>
+<li>{{domxref("Document/scrollsnapchanging_event", "scrollsnapchanging")}} {{experimental_inline}}
+<ul>
+<li>: Fired on the scroll container when the browser determines a new scroll snap target is pending, i.e., it will be selected when the current scroll gesture ends.</li>
+</ul>
+</li>
+</ul>
+<h3>Selection events</h3>
+<ul>
+<li>{{DOMxRef("Document/selectionchange_event", "selectionchange")}}
+<ul>
+<li>: Fired when the current text selection on a document is changed.</li>
+</ul>
+</li>
+</ul>
+<h3>Bubbled events</h3>
+<p>Not all events that bubble can reach the <code class="notranslate">Document</code> object. Only the following do and can be listened for on the <code class="notranslate">Document</code> object:</p>
+<ul>
+<li><code class="notranslate">abort</code></li>
+<li>{{domxref("Element/auxclick_event", "auxclick")}}</li>
+<li>{{domxref("Element/beforeinput_event", "beforeinput")}}</li>
+<li>{{domxref("Element/beforematch_event", "beforematch")}}</li>
+<li>{{domxref("HTMLElement/beforetoggle_event", "beforetoggle")}}</li>
+<li>{{domxref("Element/blur_event", "blur")}}</li>
+<li><code class="notranslate">cancel</code></li>
+<li>{{domxref("HTMLMediaElement/canplay_event", "canplay")}}</li>
+<li>{{domxref("HTMLMediaElement/canplaythrough_event", "canplaythrough")}}</li>
+<li>{{domxref("HTMLElement/change_event", "change")}}</li>
+<li>{{domxref("Element/click_event", "click")}}</li>
+<li>{{domxref("HTMLDialogElement/close_event", "close")}}</li>
+<li>{{domxref("HTMLCanvasElement/contextlost_event", "contextlost")}}</li>
+<li>{{domxref("Element/contextmenu_event", "contextmenu")}}</li>
+<li>{{domxref("HTMLCanvasElement/contextrestored_event", "contextrestored")}}</li>
+<li>{{domxref("Element/copy_event", "copy")}}</li>
+<li>{{domxref("HTMLTrackElement/cuechange_event", "cuechange")}}</li>
+<li>{{domxref("Element/cut_event", "cut")}}</li>
+<li>{{domxref("Element/dblclick_event", "dblclick")}}</li>
+<li>{{domxref("HTMLElement/drag_event", "drag")}}</li>
+<li>{{domxref("HTMLElement/dragend_event", "dragend")}}</li>
+<li>{{domxref("HTMLElement/dragenter_event", "dragenter")}}</li>
+<li>{{domxref("HTMLElement/dragleave_event", "dragleave")}}</li>
+<li>{{domxref("HTMLElement/dragover_event", "dragover")}}</li>
+<li>{{domxref("HTMLElement/dragstart_event", "dragstart")}}</li>
+<li>{{domxref("HTMLElement/drop_event", "drop")}}</li>
+<li>{{domxref("HTMLMediaElement/durationchange_event", "durationchange")}}</li>
+<li>{{domxref("HTMLMediaElement/emptied_event", "emptied")}}</li>
+<li>{{domxref("HTMLMediaElement/ended_event", "ended")}}</li>
+<li>{{domxref("HTMLElement/error_event", "error")}}</li>
+<li>{{domxref("Element/focus_event", "focus")}}</li>
+<li>{{domxref("HTMLFormElement/formdata_event", "formdata")}}</li>
+<li>{{domxref("Element/input_event", "input")}}</li>
+<li>{{domxref("HTMLInputElement/invalid_event", "invalid")}}</li>
+<li>{{domxref("Element/keydown_event", "keydown")}}</li>
+<li>{{domxref("Element/keypress_event", "keypress")}}</li>
+<li>{{domxref("Element/keyup_event", "keyup")}}</li>
+<li>{{domxref("HTMLElement/load_event", "load")}}</li>
+<li>{{domxref("HTMLMediaElement/loadeddata_event", "loadeddata")}}</li>
+<li>{{domxref("HTMLMediaElement/loadedmetadata_event", "loadedmetadata")}}</li>
+<li>{{domxref("HTMLMediaElement/loadstart_event", "loadstart")}}</li>
+<li>{{domxref("Element/mousedown_event", "mousedown")}}</li>
+<li>{{domxref("Element/mouseenter_event", "mouseenter")}}</li>
+<li>{{domxref("Element/mouseleave_event", "mouseleave")}}</li>
+<li>{{domxref("Element/mousemove_event", "mousemove")}}</li>
+<li>{{domxref("Element/mouseout_event", "mouseout")}}</li>
+<li>{{domxref("Element/mouseover_event", "mouseover")}}</li>
+<li>{{domxref("Element/mouseup_event", "mouseup")}}</li>
+<li>{{domxref("Element/paste_event", "paste")}}</li>
+<li>{{domxref("HTMLMediaElement/pause_event", "pause")}}</li>
+<li>{{domxref("HTMLMediaElement/play_event", "play")}}</li>
+<li>{{domxref("HTMLMediaElement/playing_event", "playing")}}</li>
+<li>{{domxref("HTMLMediaElement/progress_event", "progress")}}</li>
+<li>{{domxref("HTMLMediaElement/ratechange_event", "ratechange")}}</li>
+<li>{{domxref("HTMLFormElement/reset_event", "reset")}}</li>
+<li>{{domxref("HTMLVideoElement/resize_event", "resize")}}</li>
+<li>{{domxref("Element/scroll_event", "scroll")}}</li>
+<li>{{domxref("Element/scrollend_event", "scrollend")}}</li>
+<li>{{domxref("Element/securitypolicyviolation_event", "securitypolicyviolation")}}</li>
+<li>{{domxref("HTMLMediaElement/seeked_event", "seeked")}}</li>
+<li>{{domxref("HTMLMediaElement/seeking_event", "seeking")}}</li>
+<li>{{domxref("HTMLInputElement/select_event", "select")}}</li>
+<li>{{domxref("HTMLSlotElement/slotchange_event", "slotchange")}}</li>
+<li>{{domxref("HTMLMediaElement/stalled_event", "stalled")}}</li>
+<li>{{domxref("HTMLFormElement/submit_event", "submit")}}</li>
+<li>{{domxref("HTMLMediaElement/suspend_event", "suspend")}}</li>
+<li>{{domxref("HTMLMediaElement/timeupdate_event", "timeupdate")}}</li>
+<li>{{domxref("HTMLElement/toggle_event", "toggle")}}</li>
+<li>{{domxref("HTMLMediaElement/volumechange_event", "volumechange")}}</li>
+<li>{{domxref("HTMLMediaElement/waiting_event", "waiting")}}</li>
+<li>{{domxref("Element/wheel_event", "wheel")}}</li>
+</ul>
+<h2>Specifications</h2>
+<p>{{Specifications}}</p>
+<h2>Browser compatibility</h2>
+<p>{{Compat}}</p>

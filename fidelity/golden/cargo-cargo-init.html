@@ -1,0 +1,125 @@
+<h1>cargo-init(1)</h1>
+<h2>NAME</h2>
+<p>cargo-init --- Create a new Cargo package in an existing directory</p>
+<h2>SYNOPSIS</h2>
+<p><code class="notranslate">cargo init</code> [<em>options</em>] [<em>path</em>]</p>
+<h2>DESCRIPTION</h2>
+<p>This command will create a new Cargo manifest in the current directory. Give a<br>
+path as an argument to create in the given directory.</p>
+<p>If there are typically-named Rust source files already in the directory, those<br>
+will be used. If not, then a sample <code class="notranslate">src/main.rs</code> file will be created, or<br>
+<code class="notranslate">src/lib.rs</code> if <code class="notranslate">--lib</code> is passed.</p>
+<p>If the directory is not already in a VCS repository, then a new repository<br>
+is created (see <code class="notranslate">--vcs</code> below).</p>
+<p>See <a href="cargo-new.html">cargo-new(1)</a> for a similar command which will create a new package in<br>
+a new directory.</p>
+<h2>OPTIONS</h2>
+<h3>Init Options</h3>
+<dl>
+<dt id="user-content-option-cargo-init---bin"><a href="#option-cargo-init---bin"><code class="notranslate">--bin</code></a></dt>
+<dd><p>Create a package with a binary target (<code class="notranslate">src/main.rs</code>).
+This is the default behavior.</p>
+</dd>
+<dt id="user-content-option-cargo-init---lib"><a href="#option-cargo-init---lib"><code class="notranslate">--lib</code></a></dt>
+<dd><p>Create a package with a library target (<code class="notranslate">src/lib.rs</code>).</p>
+</dd>
+<dt id="user-content-option-cargo-init---edition"><a href="#option-cargo-init---edition"><code class="notranslate">--edition</code> <em>edition</em></a></dt>
+<dd><p>Specify the Rust edition to use. Default is 2024.
+Possible values: 2015, 2018, 2021, 2024</p>
+</dd>
+<dt id="user-content-option-cargo-init---name"><a href="#option-cargo-init---name"><code class="notranslate">--name</code> <em>name</em></a></dt>
+<dd><p>Set the package name. Defaults to the directory name.</p>
+</dd>
+<dt id="user-content-option-cargo-init---vcs"><a href="#option-cargo-init---vcs"><code class="notranslate">--vcs</code> <em>vcs</em></a></dt>
+<dd><p>Initialize a new VCS repository for the given version control system (git,
+hg, pijul, or fossil) or do not initialize any version control at all
+(none). If not specified, defaults to <code class="notranslate">git</code> or the configuration value
+<code class="notranslate">cargo-new.vcs</code>, or <code class="notranslate">none</code> if already inside a VCS repository.</p>
+</dd>
+<dt id="user-content-option-cargo-init---registry"><a href="#option-cargo-init---registry"><code class="notranslate">--registry</code> <em>registry</em></a></dt>
+<dd><p>This sets the <code class="notranslate">publish</code> field in <code class="notranslate">Cargo.toml</code> to the given registry name
+which will restrict publishing only to that registry.</p>
+<p>Registry names are defined in <a href="../reference/config.html">Cargo config files</a>.
+If not specified, the default registry defined by the <code class="notranslate">registry.default</code>
+config key is used. If the default registry is not set and <code class="notranslate">--registry</code> is not
+used, the <code class="notranslate">publish</code> field will not be set which means that publishing will not
+be restricted.</p>
+</dd>
+</dl>
+<h3>Display Options</h3>
+<dl>
+<dt id="user-content-option-cargo-init--v"><a href="#option-cargo-init--v"><code class="notranslate">-v</code></a></dt>
+<dt id="user-content-option-cargo-init---verbose"><a href="#option-cargo-init---verbose"><code class="notranslate">--verbose</code></a></dt>
+<dd><p>Use verbose output. May be specified twice for “very verbose” output which
+includes extra output such as dependency warnings and build script output.
+May also be specified with the <code class="notranslate">term.verbose</code>
+<a href="../reference/config.html">config value</a>.</p>
+</dd>
+<dt id="user-content-option-cargo-init--q"><a href="#option-cargo-init--q"><code class="notranslate">-q</code></a></dt>
+<dt id="user-content-option-cargo-init---quiet"><a href="#option-cargo-init---quiet"><code class="notranslate">--quiet</code></a></dt>
+<dd><p>Do not print cargo log messages.
+May also be specified with the <code class="notranslate">term.quiet</code>
+<a href="../reference/config.html">config value</a>.</p>
+</dd>
+<dt id="user-content-option-cargo-init---color"><a href="#option-cargo-init---color"><code class="notranslate">--color</code> <em>when</em></a></dt>
+<dd><p>Control when colored output is used. Valid values:</p>
+<ul>
+<li><code class="notranslate">auto</code> (default): Automatically detect if color support is available on the
+terminal.</li>
+<li><code class="notranslate">always</code>: Always display colors.</li>
+<li><code class="notranslate">never</code>: Never display colors.</li>
+</ul>
+<p>May also be specified with the <code class="notranslate">term.color</code>
+<a href="../reference/config.html">config value</a>.</p>
+</dd>
+</dl>
+<h3>Common Options</h3>
+<dl>
+<dt id="user-content-option-cargo-init-+toolchain"><a href="#option-cargo-init-+toolchain"><code class="notranslate">+</code><em>toolchain</em></a></dt>
+<dd><p>If Cargo has been installed with rustup, and the first argument to <code class="notranslate">cargo</code>
+begins with <code class="notranslate">+</code>, it will be interpreted as a rustup toolchain name (such
+as <code class="notranslate">+stable</code> or <code class="notranslate">+nightly</code>).
+See the <a href="https://rust-lang.github.io/rustup/overrides.html" rel="nofollow">rustup documentation</a>
+for more information about how toolchain overrides work.</p>
+</dd>
+<dt id="user-content-option-cargo-init---config"><a href="#option-cargo-init---config"><code class="notranslate">--config</code> <em>KEY=VALUE</em> or <em>PATH</em></a></dt>
+<dd><p>Overrides a Cargo configuration value. The argument should be in TOML syntax of <code class="notranslate">KEY=VALUE</code>,
+or provided as a path to an extra configuration file. This flag may be specified multiple times.
+See the <a href="../reference/config.html#command-line-overrides">command-line overrides section</a> for more information.</p>
+</dd>
+<dt id="user-content-option-cargo-init--c"><a href="#option-cargo-init--C"><code class="notranslate">-C</code> <em>PATH</em></a></dt>
+<dd><p>Changes the current working directory before executing any specified operations. This affects
+things like where cargo looks by default for the project manifest (<code class="notranslate">Cargo.toml</code>), as well as
+the directories searched for discovering <code class="notranslate">.cargo/config.toml</code>, for example. This option must
+appear before the command name, for example <code class="notranslate">cargo -C path/to/my-project build</code>.</p>
+<p>This option is only available on the <a href="https://doc.rust-lang.org/book/appendix-07-nightly-rust.html" rel="nofollow">nightly
+channel</a> and
+requires the <code class="notranslate">-Z unstable-options</code> flag to enable (see
+<a href="https://github.com/rust-lang/cargo/issues/10098" data-hovercard-type="issue" data-hovercard-url="/rust-lang/cargo/issues/10098/hovercard">#10098</a>).</p>
+</dd>
+<dt id="user-content-option-cargo-init--h"><a href="#option-cargo-init--h"><code class="notranslate">-h</code></a></dt>
+<dt id="user-content-option-cargo-init---help"><a href="#option-cargo-init---help"><code class="notranslate">--help</code></a></dt>
+<dd><p>Prints help information.</p>
+</dd>
+<dt id="user-content-option-cargo-init--z"><a href="#option-cargo-init--Z"><code class="notranslate">-Z</code> <em>flag</em></a></dt>
+<dd><p>Unstable (nightly-only) flags to Cargo. Run <code class="notranslate">cargo -Z help</code> for details.</p>
+</dd>
+</dl>
+<h2>ENVIRONMENT</h2>
+<p>See <a href="../reference/environment-variables.html">the reference</a> for<br>
+details on environment variables that Cargo reads.</p>
+<h2>EXIT STATUS</h2>
+<ul>
+<li><code class="notranslate">0</code>: Cargo succeeded.</li>
+<li><code class="notranslate">101</code>: Cargo failed to complete.</li>
+</ul>
+<h2>EXAMPLES</h2>
+<ol>
+<li>
+<p>Create a binary Cargo package in the current directory:</p>
+<pre class="notranslate"><code class="notranslate">cargo init
+</code></pre>
+</li>
+</ol>
+<h2>SEE ALSO</h2>
+<p><a href="cargo.html">cargo(1)</a>, <a href="cargo-new.html">cargo-new(1)</a></p>

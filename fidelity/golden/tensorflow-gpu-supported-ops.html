@@ -1,0 +1,1077 @@
+<p><strong>Supported operators for device: XLA_GPU_JIT</strong></p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Operator</th>
+<th>Type Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">Abs</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Acos</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Acosh</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Add</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AddN</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AdjustContrastv2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">AdjustHue</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">AdjustSaturation</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">All</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Angle</code></td>
+<td><code class="notranslate">Tout={double,float}</code><br><code class="notranslate">T={complex64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Any</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ApproximateEqual</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ArgMax</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">output_type={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ArgMin</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">output_type={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Asin</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Asinh</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AssignAddVariableOp</code></td>
+<td><code class="notranslate">dtype={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AssignSubVariableOp</code></td>
+<td><code class="notranslate">dtype={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AssignVariableOp</code></td>
+<td><code class="notranslate">dtype={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Atan</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Atan2</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Atanh</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AvgPool</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AvgPool3D</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AvgPool3DGrad</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">AvgPoolGrad</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BatchMatMul</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BatchToSpace</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BatchToSpaceND</code></td>
+<td><code class="notranslate">Tcrops={int32,int64}</code><br><code class="notranslate">Tblock_shape={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BiasAdd</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BiasAddGrad</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BiasAddV1</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BitwiseAnd</code></td>
+<td><code class="notranslate">T={int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BitwiseOr</code></td>
+<td><code class="notranslate">T={int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BroadcastArgs</code></td>
+<td><code class="notranslate">T={int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">BroadcastGradientArgs</code></td>
+<td><code class="notranslate">T={int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Cast</code></td>
+<td><code class="notranslate">DstT={bool,complex64,double,float,int32,int64,uint32,uint64}</code><br><code class="notranslate">SrcT={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Ceil</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Cholesky</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Complex</code></td>
+<td><code class="notranslate">Tout={complex64}</code><br><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ComplexAbs</code></td>
+<td><code class="notranslate">Tout={double,float}</code><br><code class="notranslate">T={complex64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Concat</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ConcatOffset</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">ConcatV2</code></td>
+<td><code class="notranslate">Tidx={int32}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Conj</code></td>
+<td><code class="notranslate">T={complex64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Const</code></td>
+<td><code class="notranslate">dtype={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ControlTrigger</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">Conv2D</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Conv2DBackpropFilter</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Conv2DBackpropInput</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Conv3D</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Conv3DBackpropFilterV2</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Conv3DBackpropInputV2</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Cos</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Cosh</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Cross</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Cumprod</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Cumsum</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">DepthToSpace</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">DepthwiseConv2dNative</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">DepthwiseConv2dNativeBackpropFilter</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">DepthwiseConv2dNativeBackpropInput</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Diag</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">DiagPart</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Div</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">DynamicStitch</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Elu</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">EluGrad</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Equal</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Exp</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ExpandDims</code></td>
+<td><code class="notranslate">Tdim={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Expm1</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ExtractImagePatches</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">FFT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">FFT2D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">FFT3D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">FakeQuantWithMinMaxArgs</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">FakeQuantWithMinMaxArgsGradient</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">FakeQuantWithMinMaxVars</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">FakeQuantWithMinMaxVarsGradient</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">Fill</code></td>
+<td><code class="notranslate">index_type={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Floor</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">FloorDiv</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">FloorMod</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">FusedBatchNorm</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">FusedBatchNormGrad</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">FusedBatchNormGradV2</code></td>
+<td><code class="notranslate">U={float}</code><br><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">FusedBatchNormV2</code></td>
+<td><code class="notranslate">U={float}</code><br><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Gather</code></td>
+<td><code class="notranslate">Tindices={int32,int64}</code><br><code class="notranslate">Tparams={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">GatherNd</code></td>
+<td><code class="notranslate">Tindices={int32,int64}</code><br><code class="notranslate">Tparams={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">GatherV2</code></td>
+<td><code class="notranslate">Taxis={int32,int64}</code><br><code class="notranslate">Tindices={int32,int64}</code><br><code class="notranslate">Tparams={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Greater</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">GreaterEqual</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">HSVToRGB</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">IFFT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">IFFT2D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">IFFT3D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">IRFFT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">IRFFT2D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">IRFFT3D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">Identity</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">IdentityN</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Imag</code></td>
+<td><code class="notranslate">Tout={double,float}</code><br><code class="notranslate">T={complex64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Inv</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Invert</code></td>
+<td><code class="notranslate">T={int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">InvertPermutation</code></td>
+<td><code class="notranslate">T={int32}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">IsFinite</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">IsInf</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">IsNan</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">L2Loss</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">LRN</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">LRNGrad</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">LeftShift</code></td>
+<td><code class="notranslate">T={int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Less</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">LessEqual</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">LinSpace</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Log</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Log1p</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">LogSoftmax</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">LogicalAnd</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">LogicalNot</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">LogicalOr</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">MatMul</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MatrixBandPart</code></td>
+<td><code class="notranslate">Tindex={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MatrixDiag</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MatrixDiagPart</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MatrixSetDiag</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MatrixTriangularSolve</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Max</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPool</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPool3D</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPool3DGrad</code></td>
+<td><code class="notranslate">TInput={float}</code><br><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPoolGrad</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPoolGradGrad</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPoolGradGradV2</code></td>
+<td><code class="notranslate">T={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPoolGradV2</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MaxPoolV2</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Maximum</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Mean</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Min</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Minimum</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">MirrorPad</code></td>
+<td><code class="notranslate">Tpaddings={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Mod</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Mul</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Multinomial</code></td>
+<td><code class="notranslate">output_dtype={int32,int64}</code><br><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Neg</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">NoOp</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">NotEqual</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">OneHot</code></td>
+<td><code class="notranslate">TI={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">OnesLike</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Pack</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Pad</code></td>
+<td><code class="notranslate">Tpaddings={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">PadV2</code></td>
+<td><code class="notranslate">Tpaddings={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ParallelDynamicStitch</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Pow</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">PreventGradient</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Prod</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">QuantizeAndDequantizeV2</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">RFFT</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">RFFT2D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">RFFT3D</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">RGBToHSV</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Range</code></td>
+<td><code class="notranslate">Tidx={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Rank</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ReadVariableOp</code></td>
+<td><code class="notranslate">dtype={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Real</code></td>
+<td><code class="notranslate">Tout={double,float}</code><br><code class="notranslate">T={complex64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">RealDiv</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Reciprocal</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ReciprocalGrad</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Relu</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Relu6</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Relu6Grad</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ReluGrad</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Reshape</code></td>
+<td><code class="notranslate">Tshape={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResizeBilinear</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResizeBilinearGrad</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceApplyAdagrad</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceApplyAdam</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceApplyFtrl</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceApplyFtrlV2</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceApplyGradientDescent</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceApplyMomentum</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceApplyRMSProp</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceGather</code></td>
+<td><code class="notranslate">Tindices={int32,int64}</code><br><code class="notranslate">dtype={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ResourceStridedSliceAssign</code></td>
+<td><code class="notranslate">Index={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Reverse</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ReverseSequence</code></td>
+<td><code class="notranslate">Tlen={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ReverseV2</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64}</code><br><code class="notranslate">Tidx={int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">RightShift</code></td>
+<td><code class="notranslate">T={int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Rint</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Round</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Rsqrt</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">RsqrtGrad</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ScatterNd</code></td>
+<td><code class="notranslate">Tindices={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Select</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Selu</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SeluGrad</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Shape</code></td>
+<td><code class="notranslate">out_type={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ShapeN</code></td>
+<td><code class="notranslate">out_type={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Sigmoid</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SigmoidGrad</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Sign</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Sin</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Sinh</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Size</code></td>
+<td><code class="notranslate">out_type={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Slice</code></td>
+<td><code class="notranslate">Index={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Snapshot</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Softmax</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SoftmaxCrossEntropyWithLogits</code></td>
+<td><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Softplus</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SoftplusGrad</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Softsign</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SoftsignGrad</code></td>
+<td><code class="notranslate">T={double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SpaceToBatch</code></td>
+<td><code class="notranslate">Tpaddings={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SpaceToBatchND</code></td>
+<td><code class="notranslate">Tblock_shape={int32,int64}</code><br><code class="notranslate">Tpaddings={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SpaceToDepth</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SparseMatMul</code></td>
+<td><code class="notranslate">Tb={float}</code><br><code class="notranslate">Ta={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SparseSoftmaxCrossEntropyWithLogits</code></td>
+<td><code class="notranslate">Tlabels={int32,int64}</code><br><code class="notranslate">T={double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Split</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SplitV</code></td>
+<td><code class="notranslate">Tlen={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Sqrt</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SqrtGrad</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Square</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SquaredDifference</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Squeeze</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StackCloseV2</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">StackPopV2</code></td>
+<td><code class="notranslate">elem_type={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StackPushV2</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StackV2</code></td>
+<td><code class="notranslate">elem_type={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StatelessRandomNormal</code></td>
+<td><code class="notranslate">Tseed={int32}</code><br><code class="notranslate">T={int32,int64}</code><br><code class="notranslate">dtype={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StatelessRandomUniform</code></td>
+<td><code class="notranslate">Tseed={int32}</code><br><code class="notranslate">T={int32,int64}</code><br><code class="notranslate">dtype={float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StopGradient</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StridedSlice</code></td>
+<td><code class="notranslate">Index={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">StridedSliceGrad</code></td>
+<td><code class="notranslate">Index={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Sub</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Sum</code></td>
+<td><code class="notranslate">Tidx={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">SymbolicGradient</code></td>
+<td><code class="notranslate">Tout={bool,complex64,double,float,int32,int64,uint32,uint64}</code><br><code class="notranslate">Tin={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Tan</code></td>
+<td><code class="notranslate">T={complex64,double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Tanh</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TanhGrad</code></td>
+<td><code class="notranslate">T={complex64,double,float}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayCloseV3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayConcatV3</code></td>
+<td><code class="notranslate">dtype={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayGatherV3</code></td>
+<td><code class="notranslate">dtype={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayGradV3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayReadV3</code></td>
+<td><code class="notranslate">dtype={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayScatterV3</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArraySizeV3</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArraySplitV3</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayV3</code></td>
+<td><code class="notranslate">dtype={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TensorArrayWriteV3</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Tile</code></td>
+<td><code class="notranslate">Tmultiples={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Transpose</code></td>
+<td><code class="notranslate">Tperm={int32,int64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TruncateDiv</code></td>
+<td><code class="notranslate">T={complex64,complex128,double,float,half,bfloat16,int8,int16,int32,int64,uint8,uint16,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">TruncateMod</code></td>
+<td><code class="notranslate">T={double,float,int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">Unpack</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">UnsortedSegmentSum</code></td>
+<td><code class="notranslate">Tnumsegments={int32,int64}</code><br><code class="notranslate">Tindices={int32,int64}</code><br><code class="notranslate">T={complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">VarIsInitializedOp</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code class="notranslate">VariableShape</code></td>
+<td><code class="notranslate">out_type={int32,int64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">XlaWhile</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,resource,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">ZerosLike</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">_Arg</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,resource,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">_ArrayToList</code></td>
+<td><code class="notranslate">out_types={bool,complex64,double,float,int32,int64,uint32,uint64}</code><br><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">_ListToArray</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code><br><code class="notranslate">Tin={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">_Retval</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">_XLARecv</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">_XLASend</code></td>
+<td><code class="notranslate">T={bool,complex64,double,float,int32,int64,uint32,uint64}</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<p>To regenerate this table, run:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">bazel run -c opt -- tensorflow/compiler/tf2xla:tf2xla_supported_ops --device=XLA_GPU_JIT</pre></div>

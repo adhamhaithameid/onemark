@@ -1,0 +1,275 @@
+<h1>Timeline Diagram</h1>
+<blockquote>
+<p>Timeline: This is an experimental diagram for now. The syntax and properties can change in future releases. The syntax is stable except for the icon integration which is the experimental part.</p>
+</blockquote>
+<p>"A timeline is a type of diagram used to illustrate a chronology of events, dates, or periods of time. It is usually presented graphically to indicate the passing of time, and it is usually organized chronologically. A basic timeline presents a list of events in chronological order, usually using dates as markers. A timeline can also be used to show the relationship between events, such as the relationship between the events of a person's life" <a href="https://en.wikipedia.org/wiki/Timeline" rel="nofollow">(Wikipedia)</a>.</p>
+<h3>An example of a timeline</h3>
+<div class="highlight highlight-source-mermaid"><pre class="notranslate"><span class="pl-k">timeline</span>
+    <span class="pl-k">title</span> <span class="pl-s">History of Social Media Platform</span>
+    <span class="pl-ent">2002 </span><span class="pl-k">:</span> <span class="pl-en">LinkedIn</span>
+    <span class="pl-ent">2004 </span><span class="pl-k">:</span> <span class="pl-en">Facebook</span>
+         <span class="pl-k">:</span> <span class="pl-en">Google</span>
+    <span class="pl-ent">2005 </span><span class="pl-k">:</span> <span class="pl-en">YouTube</span>
+    <span class="pl-ent">2006 </span><span class="pl-k">:</span> <span class="pl-en">Twitter</span></pre></div>
+<h2>Syntax</h2>
+<p>The syntax for creating Timeline diagram is simple. You always start with the <code class="notranslate">timeline</code> keyword to let mermaid know that you want to create a timeline diagram.</p>
+<p>After that there is a possibility to add a title to the timeline. This is done by adding a line with the keyword <code class="notranslate">title</code> followed by the title text.</p>
+<p>Then you add the timeline data, where you always start with a time period, followed by a colon and then the text for the event. Optionally you can add a second colon and then the text for the event. So, you can have one or more events per time period.</p>
+<div class="highlight highlight-source-json"><pre class="notranslate">{<span class="pl-ii">time period</span>} <span class="pl-ii">: {event}</span></pre></div>
+<p>or</p>
+<div class="highlight highlight-source-json"><pre class="notranslate">{<span class="pl-ii">time period</span>} <span class="pl-ii">: {event} : {event}</span></pre></div>
+<p>or</p>
+<div class="highlight highlight-source-json"><pre class="notranslate">{<span class="pl-ii">time period</span>} <span class="pl-ii">: {event}</span>
+              <span class="pl-ii">: {event}</span>
+              <span class="pl-ii">: {event}</span></pre></div>
+<p><strong>NOTE</strong>: Both time period and event are simple text, and not limited to numbers.</p>
+<p>Let us look at the syntax for the example above.</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">timeline
+    title History of Social Media Platform
+    2002 : LinkedIn
+    2004 : Facebook : Google
+    2005 : YouTube
+    2006 : Twitter
+</code></pre>
+<p>In this way we can use a text outline to generate a timeline diagram.<br>
+The sequence of time period and events is important, as it will be used to draw the timeline. The first time period will be placed at the left side of the timeline, and the last time period will be placed at the right side of the timeline.</p>
+<p>Similarly, the first event will be placed at the top for that specific time period, and the last event will be placed at the bottom.</p>
+<h2>Grouping of time periods in sections/ages</h2>
+<p>You can group time periods in sections/ages. This is done by adding a line with the keyword <code class="notranslate">section</code> followed by the section name.</p>
+<p>All subsequent time periods will be placed in this section until a new section is defined.</p>
+<p>If no section is defined, all time periods will be placed in the default section.</p>
+<p>Let us look at an example, where we have grouped the time periods in sections.</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">timeline
+    title Timeline of Industrial Revolution
+    section 17th-20th century
+        Industry 1.0 : Machinery, Water power, Steam &lt;br&gt;power
+        Industry 2.0 : Electricity, Internal combustion engine, Mass production
+        Industry 3.0 : Electronics, Computers, Automation
+    section 21st century
+        Industry 4.0 : Internet, Robotics, Internet of Things
+        Industry 5.0 : Artificial intelligence, Big data, 3D printing
+</code></pre>
+<p>As you can see, the time periods are placed in the sections, and the sections are placed in the order they are defined.</p>
+<p>All time periods and events under a given section follow a similar color scheme. This is done to make it easier to see the relationship between time periods and events.</p>
+<h2>Wrapping of text for long time-periods or events</h2>
+<p>By default, the text for time-periods and events will be wrapped if it is too long. This is done to avoid that the text is drawn outside the diagram.</p>
+<p>You can also use <code class="notranslate">&lt;br&gt;</code> to force a line break.</p>
+<p>Let us look at another example, where we have a long time period, and a long event.</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">timeline
+        title England's History Timeline
+        section Stone Age
+          7600 BC : Britain's oldest known house was built in Orkney, Scotland
+          6000 BC : Sea levels rise and Britain becomes an island.&lt;br&gt; The people who live here are hunter-gatherers.
+        section Bronze Age
+          2300 BC : People arrive from Europe and settle in Britain. &lt;br&gt;They bring farming and metalworking.
+                  : New styles of pottery and ways of burying the dead appear.
+          2200 BC : The last major building works are completed at Stonehenge.&lt;br&gt; People now bury their dead in stone circles.
+                  : The first metal objects are made in Britain.Some other nice things happen. it is a good time to be alive.
+
+</code></pre>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">timeline
+        title MermaidChart 2023 Timeline
+        section 2023 Q1 &lt;br&gt; Release Personal Tier
+          Bullet 1 : sub-point 1a : sub-point 1b
+               : sub-point 1c
+          Bullet 2 : sub-point 2a : sub-point 2b
+        section 2023 Q2 &lt;br&gt; Release XYZ Tier
+          Bullet 3 : sub-point &lt;br&gt; 3a : sub-point 3b
+               : sub-point 3c
+          Bullet 4 : sub-point 4a : sub-point 4b
+</code></pre>
+<h3>Direction (v11.14.0+)</h3>
+<p>Timeline can change its direction by the keyword after <code class="notranslate">timeline</code>.</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">timeline TD
+  title MermaidChart 2023 Timeline
+    section 2023 Q1 &lt;br&gt; Release Personal Tier
+      Bullet 1 : sub-point 1a : sub-point 1b
+      Bullet 2 : sub-point 2a : sub-point 2b
+    section 2023 Q2 &lt;br&gt; Release XYZ Tier
+      Bullet 3 : sub-point &lt;br&gt; 3a : sub-point 3b
+      Bullet 4 : sub-point 4a : sub-point 4b
+</code></pre>
+<p>Possible directions are:</p>
+<ul>
+<li><code class="notranslate">LR</code>: Left to right (default)</li>
+<li><code class="notranslate">TD</code>: Top top down.</li>
+</ul>
+<h2>Styling of time periods and events</h2>
+<p>As explained earlier, each section has a color scheme, and each time period and event under a section follow the similar color scheme.</p>
+<p>However, if there is no section defined, then we have two possibilities:</p>
+<ol>
+<li>Style time periods individually, i.e. each time period(and its corresponding events) will have its own color scheme. This is the DEFAULT behavior.</li>
+</ol>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">    timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+
+</code></pre>
+<p><strong>NOTE</strong>: that there are no sections defined, and each time period and its corresponding events will have its own color scheme.</p>
+<ol start="2">
+<li>Disable the multiColor option using the <code class="notranslate">disableMultiColor</code> option. This will make all time periods and events follow the same color scheme.</li>
+</ol>
+<p>You will need to add this option either via mermaid.initialize function or directives.</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-s1">mermaid</span><span class="pl-kos">.</span><span class="pl-c1">initialize</span><span class="pl-kos">(</span><span class="pl-kos">{</span>
+        <span class="pl-c1">theme</span>: <span class="pl-s">'base'</span><span class="pl-kos">,</span>
+        <span class="pl-c1">startOnLoad</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span>
+        <span class="pl-c1">logLevel</span>: <span class="pl-c1">0</span><span class="pl-kos">,</span>
+        <span class="pl-c1">timeline</span>: <span class="pl-kos">{</span>
+          <span class="pl-c1">disableMulticolor</span>: <span class="pl-c1">false</span><span class="pl-kos">,</span>
+        <span class="pl-kos">}</span><span class="pl-kos">,</span>
+        ...
+        ...</pre></div>
+<p>let us look at same example, where we have disabled the multiColor option.</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">---
+config:
+  logLevel: 'debug'
+  theme: 'base'
+  timeline:
+    disableMulticolor: true
+---
+    timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+
+</code></pre>
+<h3>Customizing Color scheme</h3>
+<p>You can customize the color scheme using the <code class="notranslate">cScale0</code> to <code class="notranslate">cScale11</code> theme variables, which will change the background colors. Mermaid allows you to set unique colors for up-to 12 sections, where <code class="notranslate">cScale0</code> variable will drive the value of the first section or time-period, <code class="notranslate">cScale1</code> will drive the value of the second section and so on.<br>
+In case you have more than 12 sections, the color scheme will start to repeat.</p>
+<p>If you also want to change the foreground color of a section, you can do so use theme variables corresponding <code class="notranslate">cScaleLabel0</code> to <code class="notranslate">cScaleLabel11</code> variables.</p>
+<p><strong>NOTE</strong>: Default values for these theme variables are picked from the selected theme. If you want to override the default values, you can use the <code class="notranslate">initialize</code> call to add your custom theme variable values.</p>
+<p>Example:</p>
+<p>Now let's override the default values for the <code class="notranslate">cScale0</code> to <code class="notranslate">cScale2</code> variables:</p>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">---
+config:
+  logLevel: 'debug'
+  theme: 'default'
+  themeVariables:
+    cScale0: '#ff0000'
+    cScaleLabel0: '#ffffff'
+    cScale1: '#00ff00'
+    cScale2: '#0000ff'
+    cScaleLabel2: '#ffffff'
+---
+       timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+          2007 : Tumblr
+          2008 : Instagram
+          2010 : Pinterest
+
+</code></pre>
+<p>See how the colors are changed to the values specified in the theme variables.</p>
+<h2>Themes</h2>
+<p>Mermaid supports a bunch of pre-defined themes which you can use to find the right one for you. PS: you can actually override an existing theme's variable to get your own custom theme going. Learn more about <a href="../config/theming.md">theming your diagram</a>.</p>
+<p>The following are the different pre-defined theme options:</p>
+<ul>
+<li><code class="notranslate">redux-color</code> (the default)</li>
+<li><code class="notranslate">redux-dark-color</code></li>
+<li><code class="notranslate">redux</code></li>
+<li><code class="notranslate">redux-dark</code></li>
+<li><code class="notranslate">default</code></li>
+<li><code class="notranslate">neutral</code></li>
+<li><code class="notranslate">dark</code></li>
+<li><code class="notranslate">forest</code></li>
+<li><code class="notranslate">neo</code></li>
+<li><code class="notranslate">neo-dark</code></li>
+<li><code class="notranslate">base</code></li>
+</ul>
+<p><strong>NOTE</strong>: To change theme you can either use the <code class="notranslate">initialize</code> call or <em>directives</em>. Learn more about <a href="../config/directives.md">directives</a><br>
+Let's put a few of them to use, and see how our sample diagram looks in different themes:</p>
+<h3>Base Theme</h3>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">---
+config:
+  logLevel: 'debug'
+  theme: 'base'
+---
+    timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+          2007 : Tumblr
+          2008 : Instagram
+          2010 : Pinterest
+</code></pre>
+<h3>Forest Theme</h3>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">---
+config:
+  logLevel: 'debug'
+  theme: 'forest'
+---
+    timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+          2007 : Tumblr
+          2008 : Instagram
+          2010 : Pinterest
+</code></pre>
+<h3>Dark Theme</h3>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">---
+config:
+  logLevel: 'debug'
+  theme: 'dark'
+---
+    timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+          2007 : Tumblr
+          2008 : Instagram
+          2010 : Pinterest
+</code></pre>
+<h3>The <code class="notranslate">default</code> Theme</h3>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">---
+config:
+  logLevel: 'debug'
+  theme: 'default'
+---
+    timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+          2007 : Tumblr
+          2008 : Instagram
+          2010 : Pinterest
+</code></pre>
+<h3>Neutral Theme</h3>
+<pre lang="mermaid-example" class="notranslate"><code class="notranslate">---
+config:
+  logLevel: 'debug'
+  theme: 'neutral'
+---
+    timeline
+        title History of Social Media Platform
+          2002 : LinkedIn
+          2004 : Facebook : Google
+          2005 : YouTube
+          2006 : Twitter
+          2007 : Tumblr
+          2008 : Instagram
+          2010 : Pinterest
+</code></pre>
+<h2>Integrating with your library/website</h2>
+<p>Timeline uses experimental lazy loading &amp; async rendering features which could change in the future.The lazy loading is important in order to be able to add additional diagrams going forward.</p>
+<p>You can use this method to add mermaid including the timeline diagram to a web page:</p>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">script</span> <span class="pl-c1">type</span>="<span class="pl-s">module</span>"<span class="pl-kos">&gt;</span>
+  <span class="pl-k">import</span> <span class="pl-s1">mermaid</span> <span class="pl-k">from</span> <span class="pl-s">'&lt;CDN_URL&gt;/mermaid@&lt;MERMAID_VERSION&gt;/dist/mermaid.esm.min.mjs'</span><span class="pl-kos">;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">script</span><span class="pl-kos">&gt;</span></pre></div>
+<p>You can also refer the <a href="https://github.com/mermaid-js/mermaid-live-editor/blob/develop/src/lib/util/mermaid.ts">implementation in the live editor</a> to see how the async loading is done.</p>

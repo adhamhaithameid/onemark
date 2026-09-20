@@ -1,0 +1,665 @@
+<h1>Lip Gloss</h1>
+<p>
+    <a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/d13bbe1a-d2b2-4d18-9302-419a0bc3f579"><img src="https://github.com/user-attachments/assets/d13bbe1a-d2b2-4d18-9302-419a0bc3f579" width="350" style="max-width: 100%;"></a><br>
+    <a href="https://github.com/charmbracelet/lipgloss/releases"><img src="https://camo.githubusercontent.com/2a9b9a02848cd04d26edf1bd7faecf09c478219aa53a64d7efd295d139cf5c33/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f72656c656173652f636861726d62726163656c65742f6c6970676c6f73732e737667" alt="Latest Release" data-canonical-src="https://img.shields.io/github/release/charmbracelet/lipgloss.svg" style="max-width: 100%;"></a>
+    <a href="https://pkg.go.dev/charm.land/lipgloss/v2?tab=doc" rel="nofollow"><img src="https://camo.githubusercontent.com/1f1b851f90e4f5260e8a530392d5e506c447009755b0a1fa9b4c67001d104223/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667" alt="GoDoc" data-canonical-src="https://godoc.org/github.com/golang/gddo?status.svg" style="max-width: 100%;"></a>
+    <a href="https://github.com/charmbracelet/lipgloss/actions"><img src="https://github.com/charmbracelet/lipgloss/workflows/build/badge.svg" alt="Build Status" style="max-width: 100%;"></a>
+</p>
+<p>Style definitions for nice terminal layouts. Built with TUIs in mind.</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/92560e60-d70e-4ce0-b39e-a60bb933356b"><img src="https://github.com/user-attachments/assets/92560e60-d70e-4ce0-b39e-a60bb933356b" alt="Lip Gloss example" style="max-width: 100%;"></a></p>
+<p>Lip Gloss takes an expressive, declarative approach to terminal rendering.<br>
+Users familiar with CSS will feel at home with Lip Gloss.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s">"charm.land/lipgloss/v2"</span>
+
+<span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Bold</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#FAFAFA"</span>)).
+    <span class="pl-c1">Background</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#7D56F4"</span>)).
+    <span class="pl-c1">PaddingTop</span>(<span class="pl-c1">2</span>).
+    <span class="pl-c1">PaddingLeft</span>(<span class="pl-c1">4</span>).
+    <span class="pl-c1">Width</span>(<span class="pl-c1">22</span>)
+
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">style</span>.<span class="pl-c1">Render</span>(<span class="pl-s">"Hello, kitty"</span>))</pre></div>
+<h2>Installation</h2>
+<div class="highlight highlight-source-shell"><pre class="notranslate">go get charm.land/lipgloss/v2</pre></div>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p>
+<p>Upgrading from v1? Check out the <a href="./UPGRADE_GUIDE_V2.md">upgrade guide</a>, or<br>
+point your LLM at it and let it go to town.</p>
+</div>
+<h2>Colors</h2>
+<p>Lip Gloss supports the following color profiles:</p>
+<h3>ANSI 16 colors (4-bit)</h3>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"5"</span>)  <span class="pl-c">// magenta</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"9"</span>)  <span class="pl-c">// red</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"12"</span>) <span class="pl-c">// light blue</span></pre></div>
+<h3>ANSI 256 Colors (8-bit)</h3>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"86"</span>)  <span class="pl-c">// aqua</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"201"</span>) <span class="pl-c">// hot pink</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"202"</span>) <span class="pl-c">// orange</span></pre></div>
+<h3>True Color (16,777,216 colors; 24-bit)</h3>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#0000FF"</span>) <span class="pl-c">// good ol' 100% blue</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#04B575"</span>) <span class="pl-c">// a green</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#3C3C3C"</span>) <span class="pl-c">// a dark gray</span></pre></div>
+<p>...as well as a 1-bit ASCII profile, which is black and white only.</p>
+<p>There are also named constants for the 16 standard ANSI colors:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Black</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Red</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Green</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Yellow</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Blue</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Magenta</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Cyan</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">White</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightBlack</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightRed</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightGreen</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightYellow</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightBlue</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightMagenta</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightCyan</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">BrightWhite</span></pre></div>
+<h3>Automatically Downsampling Colors</h3>
+<p>Some users don't have Truecolor terminals. Other times, output might not<br>
+support color at all (for example, in logs). Lip Gloss was designed to handle<br>
+this gracefully by automatically downsampling colors to the best available<br>
+profile.</p>
+<p>If you're using Lip Gloss with Bubble Tea, there’s nothing to do. If you're<br>
+using Lip Gloss standalone, just use <code class="notranslate">lipgloss.Println</code> or <code class="notranslate">lipgloss.Sprint</code><br>
+(and their variants).</p>
+<p>For more, see <a href="#advanced-color-usage">advanced color usage</a>.</p>
+<h3>Color Utilities</h3>
+<p>Lip Gloss ships with a handful of handy tools for working with colors:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">c</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#EB4268"</span>)      <span class="pl-c">// Sriracha sauce color</span>
+<span class="pl-s1">dark</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Darken</span>(<span class="pl-s1">c</span>, <span class="pl-c1">0.5</span>)     <span class="pl-c">// dark Sriracha sauce</span>
+<span class="pl-s1">light</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Lighten</span>(<span class="pl-s1">c</span>, <span class="pl-c1">0.35</span>)  <span class="pl-c">// light Sriracha sauce</span>
+<span class="pl-s1">green</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Complementary</span>(<span class="pl-s1">c</span>)  <span class="pl-c">// greenish Sriracha sauce</span>
+<span class="pl-s1">withAlpha</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Alpha</span>(<span class="pl-s1">c</span>, <span class="pl-c1">0.2</span>) <span class="pl-c">// watered down Sriracha sauce</span></pre></div>
+<h3>Advanced Color Tooling</h3>
+<p>Lip Gloss also supports color blending, automatically choosing light or dark<br>
+variants of colors at runtime, and a lot more. For details, see <a href="#advanced-color-usage">Advanced Color<br>
+Usage</a> and <a href="https://pkg.go.dev/charm.land/lipgloss/v2?tab=doc" rel="nofollow">the docs</a>.</p>
+<h2>Inline Formatting</h2>
+<p>Lip Gloss supports the usual ANSI text formatting options:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Bold</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">Italic</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">Faint</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">Blink</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">Strikethrough</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">Underline</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">Reverse</span>(<span class="pl-c1">true</span>)</pre></div>
+<h3>Underline Styles</h3>
+<p>Beyond simple on/off, underlines support multiple styles and custom colors:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">s</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">UnderlineStyle</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">UnderlineCurly</span>).
+    <span class="pl-c1">UnderlineColor</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#FF0000"</span>))</pre></div>
+<p>Available styles: <code class="notranslate">UnderlineNone</code>, <code class="notranslate">UnderlineSingle</code>, <code class="notranslate">UnderlineDouble</code>,<br>
+<code class="notranslate">UnderlineCurly</code>, <code class="notranslate">UnderlineDotted</code>, <code class="notranslate">UnderlineDashed</code>.</p>
+<h3>Hyperlinks</h3>
+<p>Styles can render clickable hyperlinks in supporting terminals:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">s</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#7B2FBE"</span>)).
+    <span class="pl-c1">Hyperlink</span>(<span class="pl-s">"https://charm.land"</span>)
+
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">s</span>.<span class="pl-c1">Render</span>(<span class="pl-s">"Visit Charm"</span>))</pre></div>
+<p>In unsupported terminals this will degrade gracefully and hyperlinks will<br>
+simply not render.</p>
+<h2>Block-Level Formatting</h2>
+<p>Lip Gloss also supports rules for block-level formatting:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Padding</span>
+<span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">PaddingTop</span>(<span class="pl-c1">2</span>).
+    <span class="pl-c1">PaddingRight</span>(<span class="pl-c1">4</span>).
+    <span class="pl-c1">PaddingBottom</span>(<span class="pl-c1">2</span>).
+    <span class="pl-c1">PaddingLeft</span>(<span class="pl-c1">4</span>)
+
+<span class="pl-c">// Margins</span>
+<span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">MarginTop</span>(<span class="pl-c1">2</span>).
+    <span class="pl-c1">MarginRight</span>(<span class="pl-c1">4</span>).
+    <span class="pl-c1">MarginBottom</span>(<span class="pl-c1">2</span>).
+    <span class="pl-c1">MarginLeft</span>(<span class="pl-c1">4</span>)</pre></div>
+<p>There is also shorthand syntax for margins and padding, which follows the same<br>
+format as CSS:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// 2 cells on all sides</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Padding</span>(<span class="pl-c1">2</span>)
+
+<span class="pl-c">// 2 cells on the top and bottom, 4 cells on the left and right</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Margin</span>(<span class="pl-c1">2</span>, <span class="pl-c1">4</span>)
+
+<span class="pl-c">// 1 cell on the top, 4 cells on the sides, 2 cells on the bottom</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Padding</span>(<span class="pl-c1">1</span>, <span class="pl-c1">4</span>, <span class="pl-c1">2</span>)
+
+<span class="pl-c">// Clockwise, starting from the top: 2 cells on the top, 4 on the right, 3 on</span>
+<span class="pl-c">// the bottom, and 1 on the left</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Margin</span>(<span class="pl-c1">2</span>, <span class="pl-c1">4</span>, <span class="pl-c1">3</span>, <span class="pl-c1">1</span>)</pre></div>
+<p>You can also customize the characters used for padding and margin fill:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">s</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Padding</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>).
+    <span class="pl-c1">PaddingChar</span>(<span class="pl-s">'·'</span>).
+    <span class="pl-c1">Margin</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>).
+    <span class="pl-c1">MarginChar</span>(<span class="pl-s">'░'</span>)</pre></div>
+<h2>Aligning Text</h2>
+<p>You can align paragraphs of text to the left, right, or center.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Width</span>(<span class="pl-c1">24</span>).
+    <span class="pl-c1">Align</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Left</span>).  <span class="pl-c">// align it left</span>
+    <span class="pl-c1">Align</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Right</span>). <span class="pl-c">// no wait, align it right</span>
+    <span class="pl-c1">Align</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Center</span>) <span class="pl-c">// just kidding, align it in the center</span></pre></div>
+<h2>Width and Height</h2>
+<p>Setting a minimum width and height is simple and straightforward.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">SetString</span>(<span class="pl-s">"What’s for lunch?"</span>).
+    <span class="pl-c1">Width</span>(<span class="pl-c1">24</span>).
+    <span class="pl-c1">Height</span>(<span class="pl-c1">32</span>).
+    <span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"63"</span>))</pre></div>
+<h2>Borders</h2>
+<p>Adding borders is easy:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Add a purple, rectangular border</span>
+<span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">BorderStyle</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NormalBorder</span>()).
+    <span class="pl-c1">BorderForeground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"63"</span>))
+
+<span class="pl-c">// Set a rounded, yellow-on-purple border to the top and left</span>
+<span class="pl-k">var</span> <span class="pl-s1">anotherStyle</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">BorderStyle</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">RoundedBorder</span>()).
+    <span class="pl-c1">BorderForeground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"228"</span>)).
+    <span class="pl-c1">BorderBackground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"63"</span>)).
+    <span class="pl-c1">BorderTop</span>(<span class="pl-c1">true</span>).
+    <span class="pl-c1">BorderLeft</span>(<span class="pl-c1">true</span>)
+
+<span class="pl-c">// Make your own border</span>
+<span class="pl-k">var</span> <span class="pl-s1">myCuteBorder</span> <span class="pl-c1">=</span> lipgloss.<span class="pl-smi">Border</span>{
+    <span class="pl-s1">Top</span>:         <span class="pl-s">"._.:*:"</span>,
+    <span class="pl-s1">Bottom</span>:      <span class="pl-s">"._.:*:"</span>,
+    <span class="pl-s1">Left</span>:        <span class="pl-s">"|*"</span>,
+    <span class="pl-s1">Right</span>:       <span class="pl-s">"|*"</span>,
+    <span class="pl-s1">TopLeft</span>:     <span class="pl-s">"*"</span>,
+    <span class="pl-s1">TopRight</span>:    <span class="pl-s">"*"</span>,
+    <span class="pl-s1">BottomLeft</span>:  <span class="pl-s">"*"</span>,
+    <span class="pl-s1">BottomRight</span>: <span class="pl-s">"*"</span>,
+}</pre></div>
+<p>There are also shorthand functions for defining borders, which follow a similar<br>
+pattern to the margin and padding shorthand functions.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Add a thick border to the top and bottom</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Border</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">ThickBorder</span>(), <span class="pl-c1">true</span>, <span class="pl-c1">false</span>)
+
+<span class="pl-c">// Add a double border to the top and left sides. Rules are set clockwise</span>
+<span class="pl-c">// from top.</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Border</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">DoubleBorder</span>(), <span class="pl-c1">true</span>, <span class="pl-c1">false</span>, <span class="pl-c1">false</span>, <span class="pl-c1">true</span>)</pre></div>
+<p>You can also pass multiple colors to a border for a gradient effect:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">s</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Border</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">RoundedBorder</span>()).
+    <span class="pl-c1">BorderForegroundBlend</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#FF0000"</span>), <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#0000FF"</span>))</pre></div>
+<p>For more on borders see <a href="https://pkg.go.dev/charm.land/lipgloss/v2#Border" rel="nofollow">the docs</a>.</p>
+<h2>Copying Styles</h2>
+<p>Just use assignment:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">style</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"219"</span>))
+
+<span class="pl-s1">copiedStyle</span> <span class="pl-c1">:=</span> <span class="pl-s1">style</span> <span class="pl-c">// this is a true copy</span>
+
+<span class="pl-s1">wildStyle</span> <span class="pl-c1">:=</span> <span class="pl-s1">style</span>.<span class="pl-c1">Blink</span>(<span class="pl-c1">true</span>) <span class="pl-c">// this is also true copy, with blink added</span></pre></div>
+<p>Since <code class="notranslate">Style</code> is a pure value type, assigning a style to another effectively<br>
+creates a new copy of the style without mutating the original.</p>
+<h2>Inheritance</h2>
+<p>Styles can inherit rules from other styles. When inheriting, only unset rules<br>
+on the receiver are inherited.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">styleA</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"229"</span>)).
+    <span class="pl-c1">Background</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"63"</span>))
+
+<span class="pl-c">// Only the background color will be inherited here, because the foreground</span>
+<span class="pl-c">// color will have been already set:</span>
+<span class="pl-k">var</span> <span class="pl-s1">styleB</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"201"</span>)).
+    <span class="pl-c1">Inherit</span>(<span class="pl-s1">styleA</span>)</pre></div>
+<h2>Unsetting Rules</h2>
+<p>All rules can be unset:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Bold</span>(<span class="pl-c1">true</span>).                        <span class="pl-c">// make it bold</span>
+    <span class="pl-c1">UnsetBold</span>().                       <span class="pl-c">// jk don't make it bold</span>
+    <span class="pl-c1">Background</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"227"</span>)). <span class="pl-c">// yellow background</span>
+    <span class="pl-c1">UnsetBackground</span>()                  <span class="pl-c">// never mind</span></pre></div>
+<p>When a rule is unset, it won’t be inherited or copied.</p>
+<h2>Enforcing Rules</h2>
+<p>Sometimes, such as when developing a component, you want to make sure style<br>
+definitions respect their intended purpose in the UI. This is where <code class="notranslate">Inline</code><br>
+and <code class="notranslate">MaxWidth</code>, and <code class="notranslate">MaxHeight</code> come in:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Force rendering onto a single line, ignoring margins, padding, and borders.</span>
+<span class="pl-s1">someStyle</span>.<span class="pl-c1">Inline</span>(<span class="pl-c1">true</span>).<span class="pl-c1">Render</span>(<span class="pl-s">"yadda yadda"</span>)
+
+<span class="pl-c">// Also limit rendering to five cells</span>
+<span class="pl-s1">someStyle</span>.<span class="pl-c1">Inline</span>(<span class="pl-c1">true</span>).<span class="pl-c1">MaxWidth</span>(<span class="pl-c1">5</span>).<span class="pl-c1">Render</span>(<span class="pl-s">"yadda yadda"</span>)
+
+<span class="pl-c">// Limit rendering to a 5x5 cell block</span>
+<span class="pl-s1">someStyle</span>.<span class="pl-c1">MaxWidth</span>(<span class="pl-c1">5</span>).<span class="pl-c1">MaxHeight</span>(<span class="pl-c1">5</span>).<span class="pl-c1">Render</span>(<span class="pl-s">"yadda yadda"</span>)</pre></div>
+<h2>Tabs</h2>
+<p>The tab character (<code class="notranslate">\t</code>) is rendered differently in different terminals (often<br>
+as 8 spaces, sometimes 4). Because of this inconsistency, Lip Gloss converts<br>
+tabs to 4 spaces at render time. This behavior can be changed on a per-style<br>
+basis, however:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">style</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>() <span class="pl-c">// tabs will render as 4 spaces, the default</span>
+<span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">style</span>.<span class="pl-c1">TabWidth</span>(<span class="pl-c1">2</span>)    <span class="pl-c">// render tabs as 2 spaces</span>
+<span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">style</span>.<span class="pl-c1">TabWidth</span>(<span class="pl-c1">0</span>)    <span class="pl-c">// remove tabs entirely</span>
+<span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">style</span>.<span class="pl-c1">TabWidth</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NoTabConversion</span>) <span class="pl-c">// leave tabs intact</span></pre></div>
+<h2>Wrapping</h2>
+<p>The <code class="notranslate">Wrap</code> function wraps text while preserving ANSI styles and hyperlinks<br>
+across line boundaries:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">wrapped</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Wrap</span>(<span class="pl-s1">styledText</span>, <span class="pl-c1">40</span>, <span class="pl-s">" "</span>)</pre></div>
+<h2>Rendering</h2>
+<p>Generally, you just call the <code class="notranslate">Render(string...)</code> method on a <code class="notranslate">lipgloss.Style</code>:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">style</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Bold</span>(<span class="pl-c1">true</span>).<span class="pl-c1">SetString</span>(<span class="pl-s">"Hello,"</span>)
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">style</span>.<span class="pl-c1">Render</span>(<span class="pl-s">"kitty."</span>)) <span class="pl-c">// Hello, kitty.</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">style</span>.<span class="pl-c1">Render</span>(<span class="pl-s">"puppy."</span>)) <span class="pl-c">// Hello, puppy.</span></pre></div>
+<p>But you could also use the Stringer interface:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">SetString</span>(<span class="pl-s">"你好，猫咪。"</span>).<span class="pl-c1">Bold</span>(<span class="pl-c1">true</span>)
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">style</span>) <span class="pl-c">// 你好，猫咪。</span></pre></div>
+<h2>Utilities</h2>
+<p>In addition to pure styling, Lip Gloss also ships with some utilities to help<br>
+assemble your layouts.</p>
+<h3>Compositing</h3>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/1921bac6-2408-436a-9d9e-7930fe4c6ec9"><img width="350" alt="xx" src="https://github.com/user-attachments/assets/1921bac6-2408-436a-9d9e-7930fe4c6ec9" style="max-width: 100%;"></a></p>
+<p>Lip Gloss includes a powerful, cell-based compositor for rendering layered<br>
+content:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Create some layers.</span>
+<span class="pl-s1">a</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewLayer</span>(<span class="pl-s1">pickles</span>).<span class="pl-c1">X</span>(<span class="pl-c1">4</span>).<span class="pl-c1">Y</span>(<span class="pl-c1">2</span>).<span class="pl-c1">Z</span>(<span class="pl-c1">1</span>)
+<span class="pl-s1">b</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewLayer</span>(<span class="pl-s1">bitterMelon</span>).<span class="pl-c1">X</span>(<span class="pl-c1">22</span>).<span class="pl-c1">Y</span>(<span class="pl-c1">1</span>)
+<span class="pl-s1">c</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewLayer</span>(<span class="pl-s1">sriracha</span>).<span class="pl-c1">X</span>(<span class="pl-c1">11</span>).<span class="pl-c1">Y</span>(<span class="pl-c1">7</span>)
+
+<span class="pl-c">// Composite 'em and render.</span>
+<span class="pl-s1">output</span> <span class="pl-c1">:=</span> <span class="pl-s1">compositor</span>.<span class="pl-c1">Compose</span>(<span class="pl-s1">a</span>, <span class="pl-s1">b</span>, <span class="pl-s1">c</span>).<span class="pl-c1">Render</span>()</pre></div>
+<p>For a more thorough example, see <a href="./examples/canvas/main.go">the canvas<br>
+example</a>. For reference, including how to detect<br>
+mouse clicks on layers, see <a href="https://pkg.go.dev/charm.land/lipgloss/v2?tab=doc" rel="nofollow">the docs</a>.</p>
+<h3>Joining Paragraphs</h3>
+<p>Horizontally and vertically joining paragraphs is a cinch.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Horizontally join three paragraphs along their bottom edges</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">JoinHorizontal</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Bottom</span>, <span class="pl-s1">paragraphA</span>, <span class="pl-s1">paragraphB</span>, <span class="pl-s1">paragraphC</span>)
+
+<span class="pl-c">// Vertically join two paragraphs along their center axes</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">JoinVertical</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Center</span>, <span class="pl-s1">paragraphA</span>, <span class="pl-s1">paragraphB</span>)
+
+<span class="pl-c">// Horizontally join three paragraphs, with the shorter ones aligning 20%</span>
+<span class="pl-c">// from the top of the tallest</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">JoinHorizontal</span>(<span class="pl-c1">0.2</span>, <span class="pl-s1">paragraphA</span>, <span class="pl-s1">paragraphB</span>, <span class="pl-s1">paragraphC</span>)</pre></div>
+<h3>Measuring Width and Height</h3>
+<p>Sometimes you’ll want to know the width and height of text blocks when building<br>
+your layouts.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Render a block of text.</span>
+<span class="pl-k">var</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().
+    <span class="pl-c1">Width</span>(<span class="pl-c1">40</span>).
+    <span class="pl-c1">Padding</span>(<span class="pl-c1">2</span>)
+<span class="pl-k">var</span> <span class="pl-s1">block</span> <span class="pl-smi">string</span> <span class="pl-c1">=</span> <span class="pl-s1">style</span>.<span class="pl-c1">Render</span>(<span class="pl-s1">someLongString</span>)
+
+<span class="pl-c">// Get the actual, physical dimensions of the text block.</span>
+<span class="pl-s1">width</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Width</span>(<span class="pl-s1">block</span>)
+<span class="pl-s1">height</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Height</span>(<span class="pl-s1">block</span>)
+
+<span class="pl-c">// Here's a shorthand function.</span>
+<span class="pl-s1">w</span>, <span class="pl-s1">h</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Size</span>(<span class="pl-s1">block</span>)</pre></div>
+<h3>Blending Colors</h3>
+<p>You can blend colors in one or two dimensions for gradient effects:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// 1-dimentinoal gradient</span>
+<span class="pl-s1">colors</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Blend1D</span>(<span class="pl-c1">10</span>, <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#FF0000"</span>), <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#0000FF"</span>))
+
+<span class="pl-c">// 2-dimensional gradient with rotation</span>
+<span class="pl-s1">colors</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Blend2D</span>(<span class="pl-c1">80</span>, <span class="pl-c1">24</span>, <span class="pl-c1">45.0</span>, <span class="pl-s1">color1</span>, <span class="pl-s1">color2</span>, <span class="pl-s1">color3</span>)</pre></div>
+<h3>Placing Text in Whitespace</h3>
+<p>Sometimes you’ll simply want to place a block of text in whitespace. This is<br>
+a lightweight alternative to compositing.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// Center a paragraph horizontally in a space 80 cells wide. The height of</span>
+<span class="pl-c">// the block returned will be as tall as the input paragraph.</span>
+<span class="pl-s1">block</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">PlaceHorizontal</span>(<span class="pl-c1">80</span>, <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Center</span>, <span class="pl-s1">fancyStyledParagraph</span>)
+
+<span class="pl-c">// Place a paragraph at the bottom of a space 30 cells tall. The width of</span>
+<span class="pl-c">// the text block returned will be as wide as the input paragraph.</span>
+<span class="pl-s1">block</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">PlaceVertical</span>(<span class="pl-c1">30</span>, <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Bottom</span>, <span class="pl-s1">fancyStyledParagraph</span>)
+
+<span class="pl-c">// Place a paragraph in the bottom right corner of a 30x80 cell space.</span>
+<span class="pl-s1">block</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Place</span>(<span class="pl-c1">30</span>, <span class="pl-c1">80</span>, <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Right</span>, <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Bottom</span>, <span class="pl-s1">fancyStyledParagraph</span>)</pre></div>
+<p>You can also style the whitespace. For details, see <a href="https://pkg.go.dev/charm.land/lipgloss/v2?tab=doc" rel="nofollow">the docs</a>.</p>
+<h2>Rendering Tables</h2>
+<p>Lip Gloss ships with a table rendering sub-package.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s">"charm.land/lipgloss/v2/table"</span></pre></div>
+<p>Define some rows of data.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">rows</span> <span class="pl-c1">:=</span> [][]<span class="pl-smi">string</span>{
+    {<span class="pl-s">"Chinese"</span>, <span class="pl-s">"您好"</span>, <span class="pl-s">"你好"</span>},
+    {<span class="pl-s">"Japanese"</span>, <span class="pl-s">"こんにちは"</span>, <span class="pl-s">"やあ"</span>},
+    {<span class="pl-s">"Arabic"</span>, <span class="pl-s">"أهلين"</span>, <span class="pl-s">"أهلا"</span>},
+    {<span class="pl-s">"Russian"</span>, <span class="pl-s">"Здравствуйте"</span>, <span class="pl-s">"Привет"</span>},
+    {<span class="pl-s">"Spanish"</span>, <span class="pl-s">"Hola"</span>, <span class="pl-s">"¿Qué tal?"</span>},
+}</pre></div>
+<p>Use the table package to style and render the table.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">var</span> (
+    <span class="pl-s1">purple</span>    <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"99"</span>)
+    <span class="pl-s1">gray</span>      <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"245"</span>)
+    <span class="pl-s1">lightGray</span> <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"241"</span>)
+
+    <span class="pl-s1">headerStyle</span>  <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">purple</span>).<span class="pl-c1">Bold</span>(<span class="pl-c1">true</span>).<span class="pl-c1">Align</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Center</span>)
+    <span class="pl-s1">cellStyle</span>    <span class="pl-c1">=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Padding</span>(<span class="pl-c1">0</span>, <span class="pl-c1">1</span>).<span class="pl-c1">Width</span>(<span class="pl-c1">14</span>)
+    <span class="pl-s1">oddRowStyle</span>  <span class="pl-c1">=</span> <span class="pl-s1">cellStyle</span>.<span class="pl-c1">Foreground</span>(<span class="pl-s1">gray</span>)
+    <span class="pl-s1">evenRowStyle</span> <span class="pl-c1">=</span> <span class="pl-s1">cellStyle</span>.<span class="pl-c1">Foreground</span>(<span class="pl-s1">lightGray</span>)
+)
+
+<span class="pl-s1">t</span> <span class="pl-c1">:=</span> <span class="pl-s1">table</span>.<span class="pl-c1">New</span>().
+    <span class="pl-c1">Border</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NormalBorder</span>()).
+    <span class="pl-c1">BorderStyle</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">purple</span>)).
+    <span class="pl-c1">StyleFunc</span>(<span class="pl-k">func</span>(<span class="pl-s1">row</span>, <span class="pl-s1">col</span> <span class="pl-smi">int</span>) lipgloss.<span class="pl-smi">Style</span> {
+        <span class="pl-k">switch</span> {
+        <span class="pl-k">case</span> <span class="pl-s1">row</span> <span class="pl-c1">==</span> <span class="pl-s1">table</span>.<span class="pl-c1">HeaderRow</span>:
+            <span class="pl-k">return</span> <span class="pl-s1">headerStyle</span>
+        <span class="pl-k">case</span> <span class="pl-s1">row</span><span class="pl-c1">%</span><span class="pl-c1">2</span> <span class="pl-c1">==</span> <span class="pl-c1">0</span>:
+            <span class="pl-k">return</span> <span class="pl-s1">evenRowStyle</span>
+        <span class="pl-k">default</span>:
+            <span class="pl-k">return</span> <span class="pl-s1">oddRowStyle</span>
+        }
+    }).
+    <span class="pl-c1">Headers</span>(<span class="pl-s">"LANGUAGE"</span>, <span class="pl-s">"FORMAL"</span>, <span class="pl-s">"INFORMAL"</span>).
+    <span class="pl-c1">Rows</span>(<span class="pl-s1">rows</span><span class="pl-c1">...</span>)
+
+<span class="pl-c">// You can also add tables row-by-row</span>
+<span class="pl-s1">t</span>.<span class="pl-c1">Row</span>(<span class="pl-s">"English"</span>, <span class="pl-s">"You look absolutely fabulous."</span>, <span class="pl-s">"How's it going?"</span>)</pre></div>
+<p>Print the table.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">t</span>)</pre></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/charmbracelet/lipgloss/assets/42545625/6e4b70c4-f494-45da-a467-bdd27df30d5d"><img src="https://github.com/charmbracelet/lipgloss/assets/42545625/6e4b70c4-f494-45da-a467-bdd27df30d5d" alt="Table Example" style="max-width: 100%;"></a></p>
+<h3>Table Borders</h3>
+<p>There are helpers to generate tables in markdown or ASCII style:</p>
+<h4>Markdown Table</h4>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">table</span>.<span class="pl-c1">New</span>().<span class="pl-c1">Border</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">MarkdownBorder</span>()).<span class="pl-c1">BorderTop</span>(<span class="pl-c1">false</span>).<span class="pl-c1">BorderBottom</span>(<span class="pl-c1">false</span>)</pre></div>
+<pre class="notranslate"><code class="notranslate">| LANGUAGE |    FORMAL    | INFORMAL  |
+|----------|--------------|-----------|
+| Chinese  | Nǐn hǎo      | Nǐ hǎo    |
+| French   | Bonjour      | Salut     |
+| Russian  | Zdravstvuyte | Privet    |
+| Spanish  | Hola         | ¿Qué tal? |
+</code></pre>
+<h4>ASCII Table</h4>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">table</span>.<span class="pl-c1">New</span>().<span class="pl-c1">Border</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">ASCIIBorder</span>())</pre></div>
+<pre class="notranslate"><code class="notranslate">+----------+--------------+-----------+
+| LANGUAGE |    FORMAL    | INFORMAL  |
++----------+--------------+-----------+
+| Chinese  | Nǐn hǎo      | Nǐ hǎo    |
+| French   | Bonjour      | Salut     |
+| Russian  | Zdravstvuyte | Privet    |
+| Spanish  | Hola         | ¿Qué tal? |
++----------+--------------+-----------+
+</code></pre>
+<p>For more on tables see <a href="https://pkg.go.dev/charm.land/lipgloss/v2?tab=doc" rel="nofollow">the docs</a> and <a href="https://github.com/charmbracelet/lipgloss/tree/master/examples/table">examples</a>.</p>
+<h2>Rendering Lists</h2>
+<p>Lip Gloss ships with a list rendering sub-package.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s">"charm.land/lipgloss/v2/list"</span></pre></div>
+<p>Define a new list.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">l</span> <span class="pl-c1">:=</span> <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"A"</span>, <span class="pl-s">"B"</span>, <span class="pl-s">"C"</span>)</pre></div>
+<p>Print the list.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">l</span>)
+
+<span class="pl-c">// • A</span>
+<span class="pl-c">// • B</span>
+<span class="pl-c">// • C</span></pre></div>
+<p>Lists have the ability to nest.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">l</span> <span class="pl-c1">:=</span> <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(
+    <span class="pl-s">"A"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Artichoke"</span>),
+    <span class="pl-s">"B"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Baking Flour"</span>, <span class="pl-s">"Bananas"</span>, <span class="pl-s">"Barley"</span>, <span class="pl-s">"Bean Sprouts"</span>),
+    <span class="pl-s">"C"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Cashew Apple"</span>, <span class="pl-s">"Cashews"</span>, <span class="pl-s">"Coconut Milk"</span>, <span class="pl-s">"Curry Paste"</span>, <span class="pl-s">"Currywurst"</span>),
+    <span class="pl-s">"D"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Dill"</span>, <span class="pl-s">"Dragonfruit"</span>, <span class="pl-s">"Dried Shrimp"</span>),
+    <span class="pl-s">"E"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Eggs"</span>),
+    <span class="pl-s">"F"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Fish Cake"</span>, <span class="pl-s">"Furikake"</span>),
+    <span class="pl-s">"J"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Jicama"</span>),
+    <span class="pl-s">"K"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Kohlrabi"</span>),
+    <span class="pl-s">"L"</span>, <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Leeks"</span>, <span class="pl-s">"Lentils"</span>, <span class="pl-s">"Licorice Root"</span>),
+)</pre></div>
+<p>Print the list.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">l</span>)</pre></div>
+<p align="center">
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/charmbracelet/lipgloss/assets/42545625/0dc9f440-0748-4151-a3b0-7dcf29dfcdb0"><img width="600" alt="image" src="https://github.com/charmbracelet/lipgloss/assets/42545625/0dc9f440-0748-4151-a3b0-7dcf29dfcdb0" style="max-width: 100%;"></a>
+</p>
+<p>Lists can be customized via their enumeration function as well as using<br>
+<code class="notranslate">lipgloss.Style</code>s.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">enumeratorStyle</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"99"</span>)).<span class="pl-c1">MarginRight</span>(<span class="pl-c1">1</span>)
+<span class="pl-s1">itemStyle</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"212"</span>)).<span class="pl-c1">MarginRight</span>(<span class="pl-c1">1</span>)
+
+<span class="pl-s1">l</span> <span class="pl-c1">:=</span> <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(
+    <span class="pl-s">"Glossier"</span>,
+    <span class="pl-s">"Claire's Boutique"</span>,
+    <span class="pl-s">"Nyx"</span>,
+    <span class="pl-s">"Mac"</span>,
+    <span class="pl-s">"Milk"</span>,
+    ).
+    <span class="pl-c1">Enumerator</span>(<span class="pl-s1">list</span>.<span class="pl-c1">Roman</span>).
+    <span class="pl-c1">EnumeratorStyle</span>(<span class="pl-s1">enumeratorStyle</span>).
+    <span class="pl-c1">ItemStyle</span>(<span class="pl-s1">itemStyle</span>)</pre></div>
+<p>Print the list.</p>
+<p align="center">
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/charmbracelet/lipgloss/assets/42545625/360494f1-57fb-4e13-bc19-0006efe01561"><img width="600" alt="List example" src="https://github.com/charmbracelet/lipgloss/assets/42545625/360494f1-57fb-4e13-bc19-0006efe01561" style="max-width: 100%;"></a>
+</p>
+<p>In addition to the predefined enumerators (<code class="notranslate">Arabic</code>, <code class="notranslate">Alphabet</code>, <code class="notranslate">Roman</code>, <code class="notranslate">Bullet</code>, <code class="notranslate">Tree</code>),<br>
+you may also define your own custom enumerator:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">l</span> <span class="pl-c1">:=</span> <span class="pl-s1">list</span>.<span class="pl-c1">New</span>(<span class="pl-s">"Duck"</span>, <span class="pl-s">"Duck"</span>, <span class="pl-s">"Duck"</span>, <span class="pl-s">"Duck"</span>, <span class="pl-s">"Goose"</span>, <span class="pl-s">"Duck"</span>, <span class="pl-s">"Duck"</span>)
+
+<span class="pl-k">func</span> <span class="pl-s1">DuckDuckGooseEnumerator</span>(<span class="pl-s1">l</span> list.<span class="pl-smi">Items</span>, <span class="pl-s1">i</span> <span class="pl-smi">int</span>) <span class="pl-smi">string</span> {
+    <span class="pl-k">if</span> <span class="pl-s1">l</span>.<span class="pl-c1">At</span>(<span class="pl-s1">i</span>).<span class="pl-c1">Value</span>() <span class="pl-c1">==</span> <span class="pl-s">"Goose"</span> {
+        <span class="pl-k">return</span> <span class="pl-s">"Honk →"</span>
+    }
+    <span class="pl-k">return</span> <span class="pl-s">""</span>
+}
+
+<span class="pl-s1">l</span> <span class="pl-c1">=</span> <span class="pl-s1">l</span>.<span class="pl-c1">Enumerator</span>(<span class="pl-s1">DuckDuckGooseEnumerator</span>)</pre></div>
+<p>Print the list:</p>
+<p align="center">
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/charmbracelet/lipgloss/assets/42545625/157aaf30-140d-4948-9bb4-dfba46e5b87e"><img width="600" alt="image" src="https://github.com/charmbracelet/lipgloss/assets/42545625/157aaf30-140d-4948-9bb4-dfba46e5b87e" style="max-width: 100%;"></a>
+</p>
+<p>If you need, you can also build lists incrementally:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">l</span> <span class="pl-c1">:=</span> <span class="pl-s1">list</span>.<span class="pl-c1">New</span>()
+
+<span class="pl-k">for</span> <span class="pl-s1">i</span> <span class="pl-c1">:=</span> <span class="pl-c1">0</span>; <span class="pl-s1">i</span> <span class="pl-c1">&lt;</span> <span class="pl-s1">repeat</span>; <span class="pl-s1">i</span><span class="pl-c1">++</span> {
+    <span class="pl-s1">l</span>.<span class="pl-c1">Item</span>(<span class="pl-s">"Lip Gloss"</span>)
+}</pre></div>
+<h2>Rendering Trees</h2>
+<p>Lip Gloss ships with a tree rendering sub-package.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s">"charm.land/lipgloss/v2/tree"</span></pre></div>
+<p>Define a new tree.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">t</span> <span class="pl-c1">:=</span> <span class="pl-s1">tree</span>.<span class="pl-c1">Root</span>(<span class="pl-s">"."</span>).
+    <span class="pl-c1">Child</span>(<span class="pl-s">"A"</span>, <span class="pl-s">"B"</span>, <span class="pl-s">"C"</span>)</pre></div>
+<p>Print the tree.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">t</span>)
+
+<span class="pl-c">// .</span>
+<span class="pl-c">// ├── A</span>
+<span class="pl-c">// ├── B</span>
+<span class="pl-c">// └── C</span></pre></div>
+<p>Trees have the ability to nest.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">t</span> <span class="pl-c1">:=</span> <span class="pl-s1">tree</span>.<span class="pl-c1">Root</span>(<span class="pl-s">"."</span>).
+    <span class="pl-c1">Child</span>(<span class="pl-s">"macOS"</span>).
+    <span class="pl-c1">Child</span>(
+        <span class="pl-s1">tree</span>.<span class="pl-c1">New</span>().
+            <span class="pl-c1">Root</span>(<span class="pl-s">"Linux"</span>).
+            <span class="pl-c1">Child</span>(<span class="pl-s">"NixOS"</span>).
+            <span class="pl-c1">Child</span>(<span class="pl-s">"Arch Linux (btw)"</span>).
+            <span class="pl-c1">Child</span>(<span class="pl-s">"Void Linux"</span>),
+        ).
+    <span class="pl-c1">Child</span>(
+        <span class="pl-s1">tree</span>.<span class="pl-c1">New</span>().
+            <span class="pl-c1">Root</span>(<span class="pl-s">"BSD"</span>).
+            <span class="pl-c1">Child</span>(<span class="pl-s">"FreeBSD"</span>).
+            <span class="pl-c1">Child</span>(<span class="pl-s">"OpenBSD"</span>),
+    )</pre></div>
+<p>Print the tree.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">t</span>)</pre></div>
+<p align="center">
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/5ef14eb8-a5d4-4f94-8834-e15d1e714f89"><img width="663" alt="Tree Example (simple)" src="https://github.com/user-attachments/assets/5ef14eb8-a5d4-4f94-8834-e15d1e714f89" style="max-width: 100%;"></a>
+</p>
+<p>Trees can be customized via their enumeration function as well as using<br>
+<code class="notranslate">lipgloss.Style</code>s.</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">enumeratorStyle</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"63"</span>)).<span class="pl-c1">MarginRight</span>(<span class="pl-c1">1</span>)
+<span class="pl-s1">rootStyle</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"35"</span>))
+<span class="pl-s1">itemStyle</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"212"</span>))
+
+<span class="pl-s1">t</span> <span class="pl-c1">:=</span> <span class="pl-s1">tree</span>.
+    <span class="pl-c1">Root</span>(<span class="pl-s">"⁜ Makeup"</span>).
+    <span class="pl-c1">Child</span>(
+        <span class="pl-s">"Glossier"</span>,
+        <span class="pl-s">"Fenty Beauty"</span>,
+        <span class="pl-s1">tree</span>.<span class="pl-c1">New</span>().<span class="pl-c1">Child</span>(
+            <span class="pl-s">"Gloss Bomb Universal Lip Luminizer"</span>,
+            <span class="pl-s">"Hot Cheeks Velour Blushlighter"</span>,
+        ),
+        <span class="pl-s">"Nyx"</span>,
+        <span class="pl-s">"Mac"</span>,
+        <span class="pl-s">"Milk"</span>,
+    ).
+    <span class="pl-c1">Enumerator</span>(<span class="pl-s1">tree</span>.<span class="pl-c1">RoundedEnumerator</span>).
+    <span class="pl-c1">EnumeratorStyle</span>(<span class="pl-s1">enumeratorStyle</span>).
+    <span class="pl-c1">RootStyle</span>(<span class="pl-s1">rootStyle</span>).
+    <span class="pl-c1">ItemStyle</span>(<span class="pl-s1">itemStyle</span>)</pre></div>
+<p>Print the tree.</p>
+<p align="center">
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/06d12d87-744a-4c89-bd98-45de9094a97e"><img width="663" alt="Tree Example (makeup)" src="https://github.com/user-attachments/assets/06d12d87-744a-4c89-bd98-45de9094a97e" style="max-width: 100%;"></a>
+</p>
+<p>The predefined enumerators for trees are <code class="notranslate">DefaultEnumerator</code> and <code class="notranslate">RoundedEnumerator</code>.</p>
+<p>If you need, you can also build trees incrementally:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">t</span> <span class="pl-c1">:=</span> <span class="pl-s1">tree</span>.<span class="pl-c1">New</span>()
+
+<span class="pl-k">for</span> <span class="pl-s1">i</span> <span class="pl-c1">:=</span> <span class="pl-c1">0</span>; <span class="pl-s1">i</span> <span class="pl-c1">&lt;</span> <span class="pl-s1">repeat</span>; <span class="pl-s1">i</span><span class="pl-c1">++</span> {
+    <span class="pl-s1">t</span>.<span class="pl-c1">Child</span>(<span class="pl-s">"Lip Gloss"</span>)
+}</pre></div>
+<h2>Advanced Color Usage</h2>
+<p>One of the most powerful features of Lip Gloss is the ability to render<br>
+different colors at runtime depending on the user's terminal and environment,<br>
+allowing you to present the best possible user experience.</p>
+<p>This section shows you how to do exactly that.</p>
+<details>
+<summary>Migrating from v1?</summary>
+<p>The <code class="notranslate">compat</code> package provides <code class="notranslate">AdaptiveColor</code>, <code class="notranslate">CompleteColor</code>, and<br>
+<code class="notranslate">CompleteAdaptiveColor</code> for a quicker migration from v1. These work by<br>
+looking at <code class="notranslate">stdin</code> and <code class="notranslate">stdout</code> on a global basis:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s">"charm.land/lipgloss/v2/compat"</span>
+
+<span class="pl-s1">color</span> <span class="pl-c1">:=</span> compat.<span class="pl-smi">AdaptiveColor</span>{
+    <span class="pl-s1">Light</span>: <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#f1f1f1"</span>),
+    <span class="pl-s1">Dark</span>:  <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#cccccc"</span>),
+}</pre></div>
+<p>Note that we don't recommend this for new code as it removes the purity from<br>
+Lip Gloss, computationally speaking, as it removes transparency around when<br>
+I/O happens, which could cause Lip Gloss to compete for resources (like stdin)<br>
+with other tools.</p>
+</details>
+<h3>Adaptive Colors</h3>
+<p>You can render different colors at runtime depending on whether the terminal<br>
+has a light or dark background:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">hasDarkBG</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">HasDarkBackground</span>(<span class="pl-s1">os</span>.<span class="pl-c1">Stdin</span>, <span class="pl-s1">os</span>.<span class="pl-c1">Stdout</span>)
+<span class="pl-s1">lightDark</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">LightDark</span>(<span class="pl-s1">hasDarkBG</span>)
+
+<span class="pl-s1">myColor</span> <span class="pl-c1">:=</span> <span class="pl-s1">lightDark</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#D7FFAE"</span>), <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#D75FEE"</span>))</pre></div>
+<h4>With Bubble Tea</h4>
+<p>In Bubble Tea, request the background color, listen for a<br>
+<code class="notranslate">BackgroundColorMsg</code>, and respond accordingly:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-k">func</span> (<span class="pl-s1">m</span> <span class="pl-smi">model</span>) <span class="pl-c1">Init</span>() tea.<span class="pl-smi">Cmd</span> {
+    <span class="pl-c">// First, send a Cmd to request the terminal background color.</span>
+    <span class="pl-k">return</span> <span class="pl-s1">tea</span>.<span class="pl-c1">RequestBackgroundColor</span>
+}
+
+<span class="pl-k">func</span> (<span class="pl-s1">m</span> <span class="pl-smi">model</span>) <span class="pl-c1">Update</span>(<span class="pl-s1">msg</span> tea.<span class="pl-smi">Msg</span>) (tea.<span class="pl-smi">Model</span>, tea.<span class="pl-smi">Cmd</span>) {
+    <span class="pl-k">switch</span> <span class="pl-s1">msg</span> <span class="pl-c1">:=</span> <span class="pl-s1">msg</span>.(<span class="pl-k">type</span>) {
+    <span class="pl-k">case</span> tea.<span class="pl-smi">BackgroundColorMsg</span>:
+        <span class="pl-c">// Great, we have the background color. Now we can set up our styles</span>
+        <span class="pl-c">// against the color.</span>
+        <span class="pl-s1">m</span>.<span class="pl-c1">styles</span> <span class="pl-c1">=</span> <span class="pl-s1">newStyles</span>(<span class="pl-s1">msg</span>.<span class="pl-c1">IsDark</span>())
+        <span class="pl-k">return</span> <span class="pl-s1">m</span>, <span class="pl-c1">nil</span>
+    }
+}
+
+<span class="pl-k">func</span> <span class="pl-s1">newStyles</span>(<span class="pl-s1">bgIsDark</span> <span class="pl-smi">bool</span>) <span class="pl-smi">styles</span> {
+    <span class="pl-c">// A little ternary function that will return the appropriate color</span>
+    <span class="pl-c">// based on the background color.</span>
+    <span class="pl-s1">lightDark</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">LightDark</span>(<span class="pl-s1">bgIsDark</span>)
+
+    <span class="pl-k">return</span> <span class="pl-smi">styles</span>{
+        <span class="pl-s1">myHotStyle</span>: <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">lightDark</span>(
+            <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#f1f1f1"</span>),
+            <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#333333"</span>),
+        )),
+    }
+}</pre></div>
+<h4>Standalone</h4>
+<p>If you’re not using Bubble Tea you can perform the query manually:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// What's the background color?</span>
+<span class="pl-s1">hasDarkBG</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">HasDarkBackground</span>(<span class="pl-s1">os</span>.<span class="pl-c1">Stdin</span>, <span class="pl-s1">os</span>.<span class="pl-c1">Stderr</span>)
+
+<span class="pl-c">// A helper function that will return the appropriate color based on the</span>
+<span class="pl-c">// background.</span>
+<span class="pl-s1">lightDark</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">LightDark</span>(<span class="pl-s1">hasDarkBG</span>)
+
+<span class="pl-c">// A couple colors with light and dark variants.</span>
+<span class="pl-s1">thisColor</span> <span class="pl-c1">:=</span> <span class="pl-s1">lightDark</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#C5ADF9"</span>), <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#864EFF"</span>))
+<span class="pl-s1">thatColor</span> <span class="pl-c1">:=</span> <span class="pl-s1">lightDark</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#37CD96"</span>), <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#22C78A"</span>))
+
+<span class="pl-s1">a</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">thisColor</span>).<span class="pl-c1">Render</span>(<span class="pl-s">"this"</span>)
+<span class="pl-s1">b</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>().<span class="pl-c1">Foreground</span>(<span class="pl-s1">thatColor</span>).<span class="pl-c1">Render</span>(<span class="pl-s">"that"</span>)
+
+<span class="pl-c">// Render the appropriate colors at runtime:</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Fprintf</span>(<span class="pl-s1">os</span>.<span class="pl-c1">Stderr</span>, <span class="pl-s">"my fave colors are %s and %s"</span>, <span class="pl-s1">a</span>, <span class="pl-s1">b</span>)</pre></div>
+<h3>Complete Colors</h3>
+<p>In some cases where you may want to specify exact values for each color profile<br>
+(ANSI 16, ANSI 156, and TrueColor). For these cases, use the <code class="notranslate">Complete</code> helper:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-c">// You'll need the colorprofile package.</span>
+<span class="pl-k">import</span> <span class="pl-s">"github.com/charmbracelet/colorprofile"</span>
+
+<span class="pl-c">// Get the color profile.</span>
+<span class="pl-s1">profile</span> <span class="pl-c1">:=</span> <span class="pl-s1">colorprofile</span>.<span class="pl-c1">Detect</span>(<span class="pl-s1">os</span>.<span class="pl-c1">Stdout</span>, <span class="pl-s1">os</span>.<span class="pl-c1">Environ</span>())
+
+<span class="pl-c">// Create a function for rendering the appropriate color based on the profile.</span>
+<span class="pl-k">var</span> <span class="pl-s1">completeColor</span> <span class="pl-c1">:=</span> lipgloss.<span class="pl-smi">Complete</span>(<span class="pl-smi">profile</span>)
+
+<span class="pl-c">// Now we'll choose the appropriate color at runtime.</span>
+<span class="pl-s1">myColor</span> <span class="pl-c1">:=</span> <span class="pl-s1">completeColor</span>(<span class="pl-s1">ansiColor</span>, <span class="pl-s1">ansi256Color</span>, <span class="pl-s1">trueColor</span>)</pre></div>
+<h3>Color Downsampling</h3>
+<p>One of the best things about Lip Gloss is that it can automatically downsample<br>
+colors to the best available profile, stripping colors (and ANSI) entirely when<br>
+output is not a TTY.</p>
+<p>If you’re using Lip Gloss with Bubble Tea there’s nothing to do here:<br>
+downsampling is built into Bubble Tea v2. If you’re not using Bubble Tea, use<br>
+the Lip Gloss writer functions, which are a drop-in replacement for the <code class="notranslate">fmt</code><br>
+package:</p>
+<div class="highlight highlight-source-go"><pre class="notranslate"><span class="pl-s1">s</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">NewStyle</span>()
+    .<span class="pl-s1">Foreground</span>(<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Color</span>(<span class="pl-s">"#EB4268"</span>))
+    .<span class="pl-s1">Render</span>(<span class="pl-s">"Hello!"</span>)
+
+<span class="pl-c">// Downsample if needed and print to stdout.</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Println</span>(<span class="pl-s1">s</span>)
+
+<span class="pl-c">// Render to a variable.</span>
+<span class="pl-s1">downsampled</span> <span class="pl-c1">:=</span> <span class="pl-s1">lipgloss</span>.<span class="pl-c1">Sprint</span>(<span class="pl-s1">s</span>)
+
+<span class="pl-c">// Print to stderr.</span>
+<span class="pl-s1">lipgloss</span>.<span class="pl-c1">Fprint</span>(<span class="pl-s1">os</span>.<span class="pl-c1">Stderr</span>, <span class="pl-s1">s</span>)</pre></div>
+<p>The full set: <code class="notranslate">Print</code>, <code class="notranslate">Println</code>, <code class="notranslate">Printf</code>, <code class="notranslate">Fprint</code>, <code class="notranslate">Fprintln</code>, <code class="notranslate">Fprintf</code>,<br>
+<code class="notranslate">Sprint</code>, <code class="notranslate">Sprintln</code>, <code class="notranslate">Sprintf</code>.</p>
+<p>Need more control? Check out<br>
+<a href="https://github.com/charmbracelet/colorprofile">Colorprofile</a>, which Lip Gloss<br>
+uses under the hood.</p>
+<h2>What about <a href="https://github.com/charmbracelet/bubbletea">Bubble Tea</a>?</h2>
+<p>Lip Gloss doesn’t replace Bubble Tea. Rather, it is an excellent Bubble Tea<br>
+companion. It was designed to make assembling terminal user interface views as<br>
+simple and fun as possible so that you can focus on building your application<br>
+instead of concerning yourself with low-level layout details.</p>
+<p>In simple terms, you can use Lip Gloss to help build your Bubble Tea views.</p>
+<h2>Rendering Markdown</h2>
+<p>For a more document-centric rendering solution with support for things like<br>
+lists, tables, and syntax-highlighted code have a look at <a href="https://github.com/charmbracelet/glamour">Glamour</a>,<br>
+the stylesheet-based Markdown renderer.</p>
+<h2>Contributing</h2>
+<p>See <a href="https://github.com/charmbracelet/lipgloss/contribute">contributing</a>.</p>
+<h2>Feedback</h2>
+<p>We’d love to hear your thoughts on this project. Feel free to drop us a note!</p>
+<ul>
+<li><a href="https://charm.land/chat" rel="nofollow">Discord</a></li>
+<li><a href="https://charm.land/matrix" rel="nofollow">Matrix</a></li>
+</ul>
+<h2>License</h2>
+<p><a href="https://github.com/charmbracelet/lipgloss/raw/master/LICENSE">MIT</a></p>
+<hr>
+<p>Part of <a href="https://charm.land" rel="nofollow">Charm</a>.</p>
+<p><a href="https://charm.land/" rel="nofollow"><img alt="The Charm logo" src="https://camo.githubusercontent.com/69664ad4650dabc137df37044e4d9366cfe32124b10f97b798c064aeaef86443/68747470733a2f2f73747566662e636861726d2e73682f636861726d2d62616e6e65722d6e6578742e6a7067" width="400" data-canonical-src="https://stuff.charm.sh/charm-banner-next.jpg" style="max-width: 100%;"></a></p>
+<p>Charm热爱开源 • Charm loves open source</p>

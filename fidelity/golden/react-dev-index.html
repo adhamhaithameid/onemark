@@ -1,0 +1,322 @@
+<hr>
+<h2>title: "React DOM Components"</h2>
+
+<p>React supports all of the browser built-in <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element" rel="nofollow">HTML</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element" rel="nofollow">SVG</a> components.</p>
+
+<hr>
+<h2>Common components {/<em>common-components</em>/}</h2>
+<p>All of the built-in browser components support some props and events.</p>
+<ul>
+<li><a href="/reference/react-dom/components/common">Common components (e.g. <code class="notranslate">&lt;div&gt;</code>)</a></li>
+</ul>
+<p>This includes React-specific props like <code class="notranslate">ref</code> and <code class="notranslate">dangerouslySetInnerHTML</code>.</p>
+<hr>
+<h2>Form components {/<em>form-components</em>/}</h2>
+<p>These built-in browser components accept user input:</p>
+<ul>
+<li><a href="/reference/react-dom/components/input"><code class="notranslate">&lt;input&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/select"><code class="notranslate">&lt;select&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/textarea"><code class="notranslate">&lt;textarea&gt;</code></a></li>
+</ul>
+<p>They are special in React because passing the <code class="notranslate">value</code> prop to them makes them <em><a href="/reference/react-dom/components/input#controlling-an-input-with-a-state-variable">controlled.</a></em></p>
+<hr>
+<h2>Resource and Metadata Components {/<em>resource-and-metadata-components</em>/}</h2>
+<p>These built-in browser components let you load external resources or annotate the document with metadata:</p>
+<ul>
+<li><a href="/reference/react-dom/components/link"><code class="notranslate">&lt;link&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/meta"><code class="notranslate">&lt;meta&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/script"><code class="notranslate">&lt;script&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/style"><code class="notranslate">&lt;style&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/title"><code class="notranslate">&lt;title&gt;</code></a></li>
+</ul>
+<p>They are special in React because React can render them into the document head, suspend while resources are loading, and enact other behaviors that are described on the reference page for each specific component.</p>
+<hr>
+<h2>All HTML components {/<em>all-html-components</em>/}</h2>
+<p>React supports all built-in browser HTML components. This includes:</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside" rel="nofollow"><code class="notranslate">&lt;aside&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio" rel="nofollow"><code class="notranslate">&lt;audio&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/b" rel="nofollow"><code class="notranslate">&lt;b&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base" rel="nofollow"><code class="notranslate">&lt;base&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdi" rel="nofollow"><code class="notranslate">&lt;bdi&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdo" rel="nofollow"><code class="notranslate">&lt;bdo&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote" rel="nofollow"><code class="notranslate">&lt;blockquote&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/body" rel="nofollow"><code class="notranslate">&lt;body&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br" rel="nofollow"><code class="notranslate">&lt;br&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button" rel="nofollow"><code class="notranslate">&lt;button&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas" rel="nofollow"><code class="notranslate">&lt;canvas&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption" rel="nofollow"><code class="notranslate">&lt;caption&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/cite" rel="nofollow"><code class="notranslate">&lt;cite&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code" rel="nofollow"><code class="notranslate">&lt;code&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col" rel="nofollow"><code class="notranslate">&lt;col&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup" rel="nofollow"><code class="notranslate">&lt;colgroup&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data" rel="nofollow"><code class="notranslate">&lt;data&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist" rel="nofollow"><code class="notranslate">&lt;datalist&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd" rel="nofollow"><code class="notranslate">&lt;dd&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del" rel="nofollow"><code class="notranslate">&lt;del&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details" rel="nofollow"><code class="notranslate">&lt;details&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dfn" rel="nofollow"><code class="notranslate">&lt;dfn&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog" rel="nofollow"><code class="notranslate">&lt;dialog&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div" rel="nofollow"><code class="notranslate">&lt;div&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl" rel="nofollow"><code class="notranslate">&lt;dl&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dt" rel="nofollow"><code class="notranslate">&lt;dt&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em" rel="nofollow"><code class="notranslate">&lt;em&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/embed" rel="nofollow"><code class="notranslate">&lt;embed&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset" rel="nofollow"><code class="notranslate">&lt;fieldset&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption" rel="nofollow"><code class="notranslate">&lt;figcaption&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure" rel="nofollow"><code class="notranslate">&lt;figure&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer" rel="nofollow"><code class="notranslate">&lt;footer&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form" rel="nofollow"><code class="notranslate">&lt;form&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h1" rel="nofollow"><code class="notranslate">&lt;h1&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head" rel="nofollow"><code class="notranslate">&lt;head&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header" rel="nofollow"><code class="notranslate">&lt;header&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hgroup" rel="nofollow"><code class="notranslate">&lt;hgroup&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr" rel="nofollow"><code class="notranslate">&lt;hr&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html" rel="nofollow"><code class="notranslate">&lt;html&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/i" rel="nofollow"><code class="notranslate">&lt;i&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe" rel="nofollow"><code class="notranslate">&lt;iframe&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img" rel="nofollow"><code class="notranslate">&lt;img&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/input"><code class="notranslate">&lt;input&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins" rel="nofollow"><code class="notranslate">&lt;ins&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd" rel="nofollow"><code class="notranslate">&lt;kbd&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label" rel="nofollow"><code class="notranslate">&lt;label&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend" rel="nofollow"><code class="notranslate">&lt;legend&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li" rel="nofollow"><code class="notranslate">&lt;li&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link" rel="nofollow"><code class="notranslate">&lt;link&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main" rel="nofollow"><code class="notranslate">&lt;main&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map" rel="nofollow"><code class="notranslate">&lt;map&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark" rel="nofollow"><code class="notranslate">&lt;mark&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu" rel="nofollow"><code class="notranslate">&lt;menu&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta" rel="nofollow"><code class="notranslate">&lt;meta&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter" rel="nofollow"><code class="notranslate">&lt;meter&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav" rel="nofollow"><code class="notranslate">&lt;nav&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript" rel="nofollow"><code class="notranslate">&lt;noscript&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/object" rel="nofollow"><code class="notranslate">&lt;object&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol" rel="nofollow"><code class="notranslate">&lt;ol&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup" rel="nofollow"><code class="notranslate">&lt;optgroup&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/option"><code class="notranslate">&lt;option&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/output" rel="nofollow"><code class="notranslate">&lt;output&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p" rel="nofollow"><code class="notranslate">&lt;p&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture" rel="nofollow"><code class="notranslate">&lt;picture&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre" rel="nofollow"><code class="notranslate">&lt;pre&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/progress"><code class="notranslate">&lt;progress&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q" rel="nofollow"><code class="notranslate">&lt;q&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rp" rel="nofollow"><code class="notranslate">&lt;rp&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt" rel="nofollow"><code class="notranslate">&lt;rt&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby" rel="nofollow"><code class="notranslate">&lt;ruby&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/s" rel="nofollow"><code class="notranslate">&lt;s&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp" rel="nofollow"><code class="notranslate">&lt;samp&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script" rel="nofollow"><code class="notranslate">&lt;script&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section" rel="nofollow"><code class="notranslate">&lt;section&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/select"><code class="notranslate">&lt;select&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot" rel="nofollow"><code class="notranslate">&lt;slot&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/small" rel="nofollow"><code class="notranslate">&lt;small&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source" rel="nofollow"><code class="notranslate">&lt;source&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span" rel="nofollow"><code class="notranslate">&lt;span&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong" rel="nofollow"><code class="notranslate">&lt;strong&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style" rel="nofollow"><code class="notranslate">&lt;style&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub" rel="nofollow"><code class="notranslate">&lt;sub&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary" rel="nofollow"><code class="notranslate">&lt;summary&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup" rel="nofollow"><code class="notranslate">&lt;sup&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table" rel="nofollow"><code class="notranslate">&lt;table&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody" rel="nofollow"><code class="notranslate">&lt;tbody&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td" rel="nofollow"><code class="notranslate">&lt;td&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template" rel="nofollow"><code class="notranslate">&lt;template&gt;</code></a></li>
+<li><a href="/reference/react-dom/components/textarea"><code class="notranslate">&lt;textarea&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot" rel="nofollow"><code class="notranslate">&lt;tfoot&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th" rel="nofollow"><code class="notranslate">&lt;th&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead" rel="nofollow"><code class="notranslate">&lt;thead&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time" rel="nofollow"><code class="notranslate">&lt;time&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title" rel="nofollow"><code class="notranslate">&lt;title&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr" rel="nofollow"><code class="notranslate">&lt;tr&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track" rel="nofollow"><code class="notranslate">&lt;track&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u" rel="nofollow"><code class="notranslate">&lt;u&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul" rel="nofollow"><code class="notranslate">&lt;ul&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/var" rel="nofollow"><code class="notranslate">&lt;var&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video" rel="nofollow"><code class="notranslate">&lt;video&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/wbr" rel="nofollow"><code class="notranslate">&lt;wbr&gt;</code></a></li>
+</ul>
+
+<p>Similar to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="nofollow">DOM standard,</a> React uses a <code class="notranslate">camelCase</code> convention for prop names. For example, you'll write <code class="notranslate">tabIndex</code> instead of <code class="notranslate">tabindex</code>. You can convert existing HTML to JSX with an <a href="https://transform.tools/html-to-jsx" rel="nofollow">online converter.</a></p>
+
+<hr>
+<h3>Custom HTML elements {/<em>custom-html-elements</em>/}</h3>
+<p>If you render a tag with a dash, like <code class="notranslate">&lt;my-element&gt;</code>, React will assume you want to render a <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements" rel="nofollow">custom HTML element.</a></p>
+<p>If you render a built-in browser HTML element with an <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/is" rel="nofollow"><code class="notranslate">is</code></a> attribute, it will also be treated as a custom element.</p>
+<h4>Setting values on custom elements {/<em>attributes-vs-properties</em>/}</h4>
+<p>Custom elements have two methods of passing data into them:</p>
+<ol>
+<li>Attributes: Which are displayed in markup and can only be set to string values</li>
+<li>Properties: Which are not displayed in markup and can be set to arbitrary JavaScript values</li>
+</ol>
+<p>By default, React will pass values bound in JSX as attributes:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c1">&lt;</span><span class="pl-s1">my-element</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-s">"Hello, world!"</span><span class="pl-c1">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-s1">my-element</span><span class="pl-c1">&gt;</span></pre></div>
+<p>Non-string JavaScript values passed to custom elements will be serialized by default:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// Will be passed as `"1,2,3"` as the output of `[1,2,3].toString()`</span>
+<span class="pl-c1">&lt;</span><span class="pl-s1">my-element</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">[</span><span class="pl-c1">1</span><span class="pl-kos">,</span><span class="pl-c1">2</span><span class="pl-kos">,</span><span class="pl-c1">3</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-s1">my-element</span><span class="pl-c1">&gt;</span></pre></div>
+<p>React will, however, recognize an custom element's property as one that it may pass arbitrary values to if the property name shows up on the class during construction:</p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-v">MyElement</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./MyElement.js'</span><span class="pl-kos">;</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">createRoot</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react-dom/client'</span><span class="pl-kos">;</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-v">App</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">"./App.js"</span><span class="pl-kos">;</span>
+
+<span class="pl-s1">customElements</span><span class="pl-kos">.</span><span class="pl-en">define</span><span class="pl-kos">(</span><span class="pl-s">'my-element'</span><span class="pl-kos">,</span> <span class="pl-v">MyElement</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">root</span> <span class="pl-c1">=</span> <span class="pl-en">createRoot</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">getElementById</span><span class="pl-kos">(</span><span class="pl-s">'root'</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-s1">root</span><span class="pl-kos">.</span><span class="pl-en">render</span><span class="pl-kos">(</span><span class="pl-c1">&lt;</span><span class="pl-v">App</span> <span class="pl-kos">/&gt;</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">class</span> <span class="pl-v">MyElement</span> <span class="pl-k">extends</span> <span class="pl-v">HTMLElement</span> <span class="pl-kos">{</span>
+  <span class="pl-en">constructor</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">super</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-c">// The value here will be overwritten by React</span>
+    <span class="pl-c">// when initialized as an element</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">value</span> <span class="pl-c1">=</span> <span class="pl-c1">undefined</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-en">connectedCallback</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">innerHTML</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">value</span><span class="pl-kos">.</span><span class="pl-en">join</span><span class="pl-kos">(</span><span class="pl-s">", "</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">function</span> <span class="pl-v">App</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-c1">&lt;</span><span class="pl-s1">my-element</span> <span class="pl-c1">value</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-kos">[</span><span class="pl-c1">1</span><span class="pl-kos">,</span><span class="pl-c1">2</span><span class="pl-kos">,</span><span class="pl-c1">3</span><span class="pl-kos">]</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-s1">my-element</span><span class="pl-c1">&gt;</span>
+<span class="pl-kos">}</span></pre></div>
+
+<h4>Listening for events on custom elements {/<em>custom-element-events</em>/}</h4>
+<p>A common pattern when using custom elements is that they may dispatch <a href="https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent" rel="nofollow"><code class="notranslate">CustomEvent</code>s</a> rather than accept a function to call when an event occur. You can listen for these events using an <code class="notranslate">on</code> prefix when binding to the event via JSX.</p>
+
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-v">MyElement</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'./MyElement.js'</span><span class="pl-kos">;</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">createRoot</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'react-dom/client'</span><span class="pl-kos">;</span>
+<span class="pl-k">import</span> <span class="pl-kos">{</span><span class="pl-v">App</span><span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">"./App.js"</span><span class="pl-kos">;</span>
+
+<span class="pl-s1">customElements</span><span class="pl-kos">.</span><span class="pl-en">define</span><span class="pl-kos">(</span><span class="pl-s">'my-element'</span><span class="pl-kos">,</span> <span class="pl-v">MyElement</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-k">const</span> <span class="pl-s1">root</span> <span class="pl-c1">=</span> <span class="pl-en">createRoot</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">getElementById</span><span class="pl-kos">(</span><span class="pl-s">'root'</span><span class="pl-kos">)</span><span class="pl-kos">)</span>
+<span class="pl-s1">root</span><span class="pl-kos">.</span><span class="pl-en">render</span><span class="pl-kos">(</span><span class="pl-c1">&lt;</span><span class="pl-v">App</span> <span class="pl-kos">/&gt;</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">class</span> <span class="pl-v">MyElement</span> <span class="pl-k">extends</span> <span class="pl-v">HTMLElement</span> <span class="pl-kos">{</span>
+  <span class="pl-en">constructor</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">super</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">test</span> <span class="pl-c1">=</span> <span class="pl-c1">undefined</span><span class="pl-kos">;</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">emitEvent</span> <span class="pl-c1">=</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">_emitEvent</span><span class="pl-kos">.</span><span class="pl-en">bind</span><span class="pl-kos">(</span><span class="pl-smi">this</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-en">_emitEvent</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">event</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">CustomEvent</span><span class="pl-kos">(</span><span class="pl-s">'speak'</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+      <span class="pl-c1">detail</span>: <span class="pl-kos">{</span>
+        <span class="pl-c1">message</span>: <span class="pl-s">'Hello, world!'</span><span class="pl-kos">,</span>
+      <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-en">dispatchEvent</span><span class="pl-kos">(</span><span class="pl-s1">event</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-en">connectedCallback</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">el</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">'button'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">el</span><span class="pl-kos">.</span><span class="pl-c1">innerText</span> <span class="pl-c1">=</span> <span class="pl-s">'Say hi'</span><span class="pl-kos">;</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">el</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'click'</span><span class="pl-kos">,</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">emitEvent</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">el</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-en">disconnectedCallback</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">el</span><span class="pl-kos">.</span><span class="pl-en">removeEventListener</span><span class="pl-kos">(</span><span class="pl-s">'click'</span><span class="pl-kos">,</span> <span class="pl-smi">this</span><span class="pl-kos">.</span><span class="pl-c1">emitEvent</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-k">export</span> <span class="pl-k">function</span> <span class="pl-v">App</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">return</span> <span class="pl-kos">(</span>
+    <span class="pl-c1">&lt;</span><span class="pl-s1">my-element</span>
+      <span class="pl-c1">onspeak</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-s1">e</span> <span class="pl-c1">=&gt;</span> <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s1">e</span><span class="pl-kos">.</span><span class="pl-c1">detail</span><span class="pl-kos">.</span><span class="pl-c1">message</span><span class="pl-kos">)</span><span class="pl-kos">}</span>
+    <span class="pl-c1">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-s1">my-element</span><span class="pl-c1">&gt;</span>
+  <span class="pl-kos">)</span>
+<span class="pl-kos">}</span></pre></div>
+
+
+<p>Events are case-sensitive and support dashes (<code class="notranslate">-</code>). Preserve the casing of the event and include all dashes when listening for custom element's events:</p>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">// Listens for `say-hi` events</span>
+<span class="pl-c1">&lt;</span><span class="pl-s1">my-element</span> <span class="pl-c1">onsay-hi</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-c1">log</span><span class="pl-kos">}</span><span class="pl-c1">&gt;</span><span class="pl-kos">&lt;/</span><span class="pl-s1">my-element</span><span class="pl-c1">&gt;</span>
+<span class="pl-c">// Listens for `sayHi` events</span>
+<span class="pl-c1">&lt;</span><span class="pl-s1">my</span><span class="pl-c1">-</span><span class="pl-s1">element</span> <span class="pl-s1">onsayHi</span><span class="pl-c1">=</span><span class="pl-kos">{</span><span class="pl-smi">console</span><span class="pl-kos">.</span>log<span class="pl-kos">}</span><span class="pl-c1">&gt;</span><span class="pl-c1">&lt;</span><span class="pl-c1">/</span><span class="pl-s1">my-element</span><span class="pl-c1">&gt;</span></pre></div>
+
+---
+<h2>All SVG components {/<em>all-svg-components</em>/}</h2>
+<p>React supports all built-in browser SVG components. This includes:</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/a" rel="nofollow"><code class="notranslate">&lt;a&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate" rel="nofollow"><code class="notranslate">&lt;animate&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion" rel="nofollow"><code class="notranslate">&lt;animateMotion&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateTransform" rel="nofollow"><code class="notranslate">&lt;animateTransform&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/circle" rel="nofollow"><code class="notranslate">&lt;circle&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath" rel="nofollow"><code class="notranslate">&lt;clipPath&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/defs" rel="nofollow"><code class="notranslate">&lt;defs&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc" rel="nofollow"><code class="notranslate">&lt;desc&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/discard" rel="nofollow"><code class="notranslate">&lt;discard&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/ellipse" rel="nofollow"><code class="notranslate">&lt;ellipse&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feBlend" rel="nofollow"><code class="notranslate">&lt;feBlend&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix" rel="nofollow"><code class="notranslate">&lt;feColorMatrix&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComponentTransfer" rel="nofollow"><code class="notranslate">&lt;feComponentTransfer&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite" rel="nofollow"><code class="notranslate">&lt;feComposite&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feConvolveMatrix" rel="nofollow"><code class="notranslate">&lt;feConvolveMatrix&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDiffuseLighting" rel="nofollow"><code class="notranslate">&lt;feDiffuseLighting&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap" rel="nofollow"><code class="notranslate">&lt;feDisplacementMap&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDistantLight" rel="nofollow"><code class="notranslate">&lt;feDistantLight&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow" rel="nofollow"><code class="notranslate">&lt;feDropShadow&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFlood" rel="nofollow"><code class="notranslate">&lt;feFlood&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncA" rel="nofollow"><code class="notranslate">&lt;feFuncA&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncB" rel="nofollow"><code class="notranslate">&lt;feFuncB&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncG" rel="nofollow"><code class="notranslate">&lt;feFuncG&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncR" rel="nofollow"><code class="notranslate">&lt;feFuncR&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur" rel="nofollow"><code class="notranslate">&lt;feGaussianBlur&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feImage" rel="nofollow"><code class="notranslate">&lt;feImage&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMerge" rel="nofollow"><code class="notranslate">&lt;feMerge&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMergeNode" rel="nofollow"><code class="notranslate">&lt;feMergeNode&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMorphology" rel="nofollow"><code class="notranslate">&lt;feMorphology&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feOffset" rel="nofollow"><code class="notranslate">&lt;feOffset&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/fePointLight" rel="nofollow"><code class="notranslate">&lt;fePointLight&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpecularLighting" rel="nofollow"><code class="notranslate">&lt;feSpecularLighting&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpotLight" rel="nofollow"><code class="notranslate">&lt;feSpotLight&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTile" rel="nofollow"><code class="notranslate">&lt;feTile&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence" rel="nofollow"><code class="notranslate">&lt;feTurbulence&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter" rel="nofollow"><code class="notranslate">&lt;filter&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject" rel="nofollow"><code class="notranslate">&lt;foreignObject&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g" rel="nofollow"><code class="notranslate">&lt;g&gt;</code></a></li>
+<li><code class="notranslate">&lt;hatch&gt;</code></li>
+<li><code class="notranslate">&lt;hatchpath&gt;</code></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image" rel="nofollow"><code class="notranslate">&lt;image&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line" rel="nofollow"><code class="notranslate">&lt;line&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient" rel="nofollow"><code class="notranslate">&lt;linearGradient&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker" rel="nofollow"><code class="notranslate">&lt;marker&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mask" rel="nofollow"><code class="notranslate">&lt;mask&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/metadata" rel="nofollow"><code class="notranslate">&lt;metadata&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mpath" rel="nofollow"><code class="notranslate">&lt;mpath&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path" rel="nofollow"><code class="notranslate">&lt;path&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern" rel="nofollow"><code class="notranslate">&lt;pattern&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polygon" rel="nofollow"><code class="notranslate">&lt;polygon&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polyline" rel="nofollow"><code class="notranslate">&lt;polyline&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient" rel="nofollow"><code class="notranslate">&lt;radialGradient&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/rect" rel="nofollow"><code class="notranslate">&lt;rect&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/script" rel="nofollow"><code class="notranslate">&lt;script&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/set" rel="nofollow"><code class="notranslate">&lt;set&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop" rel="nofollow"><code class="notranslate">&lt;stop&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/style" rel="nofollow"><code class="notranslate">&lt;style&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/svg" rel="nofollow"><code class="notranslate">&lt;svg&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/switch" rel="nofollow"><code class="notranslate">&lt;switch&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol" rel="nofollow"><code class="notranslate">&lt;symbol&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/text" rel="nofollow"><code class="notranslate">&lt;text&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath" rel="nofollow"><code class="notranslate">&lt;textPath&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/title" rel="nofollow"><code class="notranslate">&lt;title&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/tspan" rel="nofollow"><code class="notranslate">&lt;tspan&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use" rel="nofollow"><code class="notranslate">&lt;use&gt;</code></a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/view" rel="nofollow"><code class="notranslate">&lt;view&gt;</code></a></li>
+</ul>
+
+<p>Similar to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model" rel="nofollow">DOM standard,</a> React uses a <code class="notranslate">camelCase</code> convention for prop names. For example, you'll write <code class="notranslate">tabIndex</code> instead of <code class="notranslate">tabindex</code>. You can convert existing SVG to JSX with an <a href="https://transform.tools/" rel="nofollow">online converter.</a></p>
+<p>Namespaced attributes also have to be written without the colon:</p>
+<ul>
+<li><code class="notranslate">xlink:actuate</code> becomes <code class="notranslate">xlinkActuate</code>.</li>
+<li><code class="notranslate">xlink:arcrole</code> becomes <code class="notranslate">xlinkArcrole</code>.</li>
+<li><code class="notranslate">xlink:href</code> becomes <code class="notranslate">xlinkHref</code>.</li>
+<li><code class="notranslate">xlink:role</code> becomes <code class="notranslate">xlinkRole</code>.</li>
+<li><code class="notranslate">xlink:show</code> becomes <code class="notranslate">xlinkShow</code>.</li>
+<li><code class="notranslate">xlink:title</code> becomes <code class="notranslate">xlinkTitle</code>.</li>
+<li><code class="notranslate">xlink:type</code> becomes <code class="notranslate">xlinkType</code>.</li>
+<li><code class="notranslate">xml:base</code> becomes <code class="notranslate">xmlBase</code>.</li>
+<li><code class="notranslate">xml:lang</code> becomes <code class="notranslate">xmlLang</code>.</li>
+<li><code class="notranslate">xml:space</code> becomes <code class="notranslate">xmlSpace</code>.</li>
+<li><code class="notranslate">xmlns:xlink</code> becomes <code class="notranslate">xmlnsXlink</code>.</li>
+</ul>

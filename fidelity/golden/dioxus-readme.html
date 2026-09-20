@@ -1,0 +1,209 @@
+<p>
+    </p><p align="center">
+      
+      
+      <a target="_blank" rel="noopener noreferrer" href="./notes/splash-header-darkmode.svg#gh-dark-mode-only"><img src="./notes/splash-header-darkmode.svg#gh-dark-mode-only" style="max-width: 100%;"></a>
+      <a target="_blank" rel="noopener noreferrer" href="./notes/splash-header.svg#gh-light-mode-only"><img src="./notes/splash-header.svg#gh-light-mode-only" style="max-width: 100%;"></a>
+      
+      <br>
+    </p>
+<p></p>
+<div align="center">
+  
+  <a href="https://crates.io/crates/dioxus" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/810979a0226eeb22b47af439311cc3177cf172ba8a6ae040efbdf25c21d91dee/68747470733a2f2f696d672e736869656c64732e696f2f6372617465732f762f64696f7875732e7376673f7374796c653d666c61742d737175617265" alt="Crates.io version" data-canonical-src="https://img.shields.io/crates/v/dioxus.svg?style=flat-square" style="max-width: 100%;">
+  </a>
+  
+  <a href="https://crates.io/crates/dioxus" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/0dd4becbf4819f4ab0725d06f92235c23890eca9ec7b1ea3c20fe8c1aa5dadbe/68747470733a2f2f696d672e736869656c64732e696f2f6372617465732f642f64696f7875732e7376673f7374796c653d666c61742d737175617265" alt="Download" data-canonical-src="https://img.shields.io/crates/d/dioxus.svg?style=flat-square" style="max-width: 100%;">
+  </a>
+  
+  <a href="https://docs.rs/dioxus" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/19d626b56348f9601bce221112fef0a38d8097c211d26b1bf9d9f91694a5b837/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f63732d6c61746573742d626c75652e7376673f7374796c653d666c61742d737175617265" alt="docs.rs docs" data-canonical-src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square" style="max-width: 100%;">
+  </a>
+  
+  <a href="https://github.com/jkelleyrtp/dioxus/actions">
+    <img src="https://github.com/dioxuslabs/dioxus/actions/workflows/main.yml/badge.svg" alt="CI status" style="max-width: 100%;">
+  </a>
+  
+  <a href="https://dioxuslabs.com/awesome" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/2727609d8bfde9ba1a95be1449eb878bfafa4d76789ba05661857e2c8ac70fa1/68747470733a2f2f63646e2e7261776769742e636f6d2f73696e647265736f726875732f617765736f6d652f643733303566333864323966656437386661383536353265336136336531353464643865383832392f6d656469612f62616467652e737667" alt="Awesome Page" data-canonical-src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" style="max-width: 100%;">
+  </a>
+  
+  <a href="https://discord.gg/XgGxMSkvUM" rel="nofollow">
+    <img src="https://camo.githubusercontent.com/9a337de6a1c3a1145fb05fd4e1a3cb6e6c056b3aebcf9bb19fdcde2d152fbf7b/68747470733a2f2f696d672e736869656c64732e696f2f646973636f72642f3839393835313935323839313030323839302e7376673f6c6f676f3d646973636f7264267374796c653d666c61742d737175617265" alt="Discord Link" data-canonical-src="https://img.shields.io/discord/899851952891002890.svg?logo=discord&amp;style=flat-square" style="max-width: 100%;">
+  </a>
+</div>
+<div align="center">
+  <h3>
+    <a href="https://dioxuslabs.com" rel="nofollow"> Website </a>
+    <span> | </span>
+    <a href="https://github.com/DioxusLabs/dioxus/tree/main/examples"> Examples </a>
+    <span> | </span>
+    <a href="https://dioxuslabs.com/learn/0.7/tutorial" rel="nofollow"> Tutorial </a>
+    <span> | </span>
+    <a href="https://github.com/DioxusLabs/dioxus/blob/main/notes/translations/zh-cn/README.md"> 中文 </a>
+    <span> | </span>
+    <a href="https://github.com/DioxusLabs/dioxus/blob/main/notes/translations/pt-br/README.md"> PT-BR </a>
+    <span> | </span>
+    <a href="https://github.com/DioxusLabs/dioxus/blob/main/notes/translations/ja-jp/README.md"> 日本語 </a>
+    <span> | </span>
+    <a href="https://github.com/DioxusLabs/dioxus/blob/main/notes/translations/tr-tr"> Türkçe </a>
+    <span> | </span>
+    <a href="https://github.com/DioxusLabs/dioxus/blob/main/notes/translations/ko-kr"> 한국어 </a>
+  </h3>
+</div>
+<br>
+
+<br>
+<p>Build for web, desktop, and mobile, and more with a single codebase. Zero-config setup, integrated hot-reloading, and signals-based state management. Add backend functionality with Server Functions and bundle with our CLI.</p>
+<div class="highlight highlight-source-rust"><pre class="notranslate"><span class="pl-k">fn</span> <span class="pl-en">app</span><span class="pl-kos">(</span><span class="pl-kos">)</span> -&gt; <span class="pl-smi">Element</span> <span class="pl-kos">{</span>
+    <span class="pl-k">let</span> <span class="pl-k">mut</span> count = <span class="pl-en">use_signal</span><span class="pl-kos">(</span>|| <span class="pl-c1">0</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-en">rsx</span><span class="pl-en">!</span> <span class="pl-kos">{</span>
+        h1 <span class="pl-kos">{</span> <span class="pl-s">"High-Five counter: {count}"</span> <span class="pl-kos">}</span>
+        button <span class="pl-kos">{</span> onclick<span class="pl-kos">:</span> move |_| count += <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-s">"Up high!"</span> <span class="pl-kos">}</span>
+        button <span class="pl-kos">{</span> onclick<span class="pl-kos">:</span> move |_| count -= <span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-s">"Down low!"</span> <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<h2>⭐️ Unique features:</h2>
+<ul>
+<li>Cross-platform apps in three lines of code (web, desktop, mobile, server, and more)</li>
+<li><a href="https://dioxuslabs.com/blog/release-050" rel="nofollow">Ergonomic state management</a> combines the best of React, Solid, and Svelte</li>
+<li>Built-in featureful, type-safe, fullstack web framework</li>
+<li>Integrated bundler for deploying to the web, macOS, Linux, and Windows</li>
+<li>Subsecond Rust hot-patching and asset hot-reloading</li>
+<li>And more! <a href="https://dioxuslabs.com/learn/0.7/" rel="nofollow">Take a tour of Dioxus</a>.</li>
+</ul>
+<h2>Instant hot-reloading</h2>
+<p>With one command, <code class="notranslate">dx serve</code> and your app is running. Edit your markup, styles, and see changes in milliseconds. Use our experimental <code class="notranslate">dx serve --hotpatch</code> to update Rust code in real time.</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/DioxusLabs/screenshots/refs/heads/main/blitz/hotreload-video.webp"><img src="https://raw.githubusercontent.com/DioxusLabs/screenshots/refs/heads/main/blitz/hotreload-video.webp" style="max-width: 100%;"></a>
+  
+  
+</div>
+<h2>Build Beautiful Apps</h2>
+<p>Dioxus apps are styled with HTML and CSS. Use the built-in TailwindCSS support or load your favorite CSS library. Easily call into native code (objective-c, JNI, Web-Sys) for a perfect native touch.</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer" href="./notes/ebou2.avif"><img src="./notes/ebou2.avif" style="max-width: 100%;"></a>
+</div>
+<h2>Truly fullstack applications</h2>
+<p>Dioxus deeply integrates with <a href="https://github.com/tokio-rs/axum">axum</a> to provide powerful fullstack capabilities for both clients and servers. Pick from a wide array of built-in batteries like WebSockets, SSE, Streaming, File Upload/Download, Server-Side-Rendering, Forms, Middleware, and Hot-Reload, or go fully custom and integrate your existing axum backend.</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer" href="./notes/fullstack-websockets.avif"><img src="./notes/fullstack-websockets.avif" width="700" style="max-width: 100%;"></a>
+</div>
+<h2>Experimental Native Renderer</h2>
+<p>Render using web-sys, webview, server-side-rendering, liveview, or even with our experimental WGPU-based renderer. Embed Dioxus in Bevy, WGPU, or even run on embedded Linux!</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/DioxusLabs/screenshots/refs/heads/main/blitz/native-blitz-wgpu.webp"><img src="https://raw.githubusercontent.com/DioxusLabs/screenshots/refs/heads/main/blitz/native-blitz-wgpu.webp" style="max-width: 100%;"></a>
+</div>
+<h2>First-party primitive components</h2>
+<p>Get started quickly with a complete set of primitives modeled after shadcn/ui and Radix-Primitives.</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/DioxusLabs/screenshots/refs/heads/main/blitz/dioxus-components.webp"><img src="https://raw.githubusercontent.com/DioxusLabs/screenshots/refs/heads/main/blitz/dioxus-components.webp" width="700" style="max-width: 100%;"></a>
+</div>
+<h2>First-class Android and iOS support</h2>
+<p>Dioxus is the fastest way to build native mobile apps with Rust. Simply run <code class="notranslate">dx serve --platform android</code> and your app is running in an emulator or on device in seconds. Call directly into JNI and Native APIs.</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer" href="./notes/android_and_ios2.avif"><img src="./notes/android_and_ios2.avif" width="500" style="max-width: 100%;"></a>
+</div>
+<h2>Bundle for web, desktop, and mobile</h2>
+<p>Simply run <code class="notranslate">dx bundle</code> and your app will be built and bundled with maximization optimizations. On the web, take advantage of <a href="https://dioxuslabs.com/learn/0.7/tutorial/assets" rel="nofollow"><code class="notranslate">.avif</code> generation, <code class="notranslate">.wasm</code> compression, minification</a>, and more. Build WebApps weighing <a href="https://github.com/ealmloff/tiny-dioxus/">less than 50kb</a> and desktop/mobile apps less than 5mb.</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer" href="./notes/bundle.gif"><img src="./notes/bundle.gif" style="max-width: 100%;"></a>
+</div>
+<h2>Fantastic documentation</h2>
+<p>We've put a ton of effort into building clean, readable, and comprehensive documentation. All html elements and listeners are documented with MDN docs, and our Docs runs continuous integration with Dioxus itself to ensure that the docs are always up to date. Check out the <a href="https://dioxuslabs.com/learn/0.7/" rel="nofollow">Dioxus website</a> for guides, references, recipes, and more. Fun fact: we use the Dioxus website as a testbed for new Dioxus features - <a href="https://github.com/dioxusLabs/docsite">check it out!</a></p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer" href="./notes/docs.avif"><img src="./notes/docs.avif" style="max-width: 100%;"></a>
+</div>
+<h2>Community</h2>
+<p>Dioxus is a community-driven project, with a very active <a href="https://discord.gg/XgGxMSkvUM" rel="nofollow">Discord</a> and <a href="https://github.com/DioxusLabs/dioxus/issues">GitHub</a> community. We're always looking for help, and we're happy to answer questions and help you get started. <a href="https://github.com/DioxusLabs/dioxus-std">Our SDK</a> is community-run and we even have a <a href="https://github.com/dioxus-community/">GitHub organization</a> for the best Dioxus crates that receive free upgrades and support.</p>
+<div align="center">
+  <a target="_blank" rel="noopener noreferrer" href="./notes/dioxus-community.avif"><img src="./notes/dioxus-community.avif" style="max-width: 100%;"></a>
+</div>
+<h2>Full-time core team</h2>
+<p>Dioxus has grown from a side project to a small team of fulltime engineers. Thanks to the generous support of FutureWei, Satellite.im, the GitHub Accelerator program, we're able to work on Dioxus full-time. Our long term goal is for Dioxus to become self-sustaining by providing paid high-quality enterprise tools. If your company is interested in adopting Dioxus and would like to work with us, please reach out!</p>
+<h2>Supported Platforms</h2>
+<div align="center">
+  <markdown-accessiblity-table><table role="table">
+    <tbody><tr>
+      <td>
+      <b>Web</b>
+      </td>
+      <td>
+        <ul>
+          <li>Render directly to the DOM using WebAssembly</li>
+          <li>Pre-render with SSR and rehydrate on the client</li>
+          <li>Simple "hello world" at about 50kb, comparable to React</li>
+          <li>Built-in dev server and hot reloading for quick iteration</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <b>Desktop</b>
+      </td>
+      <td>
+        <ul>
+          <li>Render using Webview or - experimentally - with WGPU or <a href="https://freyaui.dev" rel="nofollow">Freya</a> (Skia) </li>
+          <li>Zero-config setup. Simply `cargo run` or `dx serve` to build your app </li>
+          <li>Full support for native system access without IPC </li>
+          <li>Supports macOS, Linux, and Windows. Portable &lt;3mb binaries </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <b>Mobile</b>
+      </td>
+      <td>
+        <ul>
+          <li>Render using Webview or - experimentally - with WGPU or Skia </li>
+          <li>Build .ipa and .apk files for iOS and Android </li>
+          <li>Call directly into Java and Objective-C with minimal overhead</li>
+          <li>From "hello world" to running on device in seconds</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+      <b>Server-side Rendering</b>
+      </td>
+      <td>
+        <ul>
+          <li>Suspense, hydration, and server-side rendering</li>
+          <li>Quickly drop in backend functionality with server functions</li>
+          <li>Extractors, middleware, and routing integrations</li>
+          <li>Static-site generation and incremental regeneration</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody></table></markdown-accessiblity-table>
+</div>
+<h2>Running the examples</h2>
+<blockquote>
+<p>The examples in the main branch of this repository target the git version of dioxus and the CLI. If you are looking for examples that work with the latest stable release of dioxus, check out the <a href="https://github.com/DioxusLabs/dioxus/tree/v0.6/examples">0.6 branch</a>.</p>
+</blockquote>
+<p>The examples in the top level of this repository can be run with:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cargo run --example <span class="pl-k">&lt;</span>example<span class="pl-k">&gt;</span></pre></div>
+<p>However, we encourage you to download the dioxus-cli to test out features like hot-reloading. To install the most recent binary CLI, you can use cargo binstall.</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">curl -fsSL https://dioxuslabs.com/install.sh <span class="pl-k">|</span> bash</pre></div>
+<p>If this CLI is out-of-date, you can install it directly from git or cargo-binstall</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">cargo install --git https://github.com/DioxusLabs/dioxus dioxus-cli --locked</pre></div>
+<p>With the CLI, you can also run examples with the web platform. You will need to disable the default desktop feature and enable the web feature with this command:</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">dx serve --example <span class="pl-k">&lt;</span>example<span class="pl-k">&gt;</span> --platform web -- --no-default-features</pre></div>
+<h2>Contributing</h2>
+<ul>
+<li>Check out the website <a href="https://dioxuslabs.com/learn/0.7/beyond/contributing" rel="nofollow">section on contributing</a>.</li>
+<li>Report issues on our <a href="https://github.com/dioxuslabs/dioxus/issues">issue tracker</a>.</li>
+<li><a href="https://discord.gg/XgGxMSkvUM" rel="nofollow">Join</a> the discord and ask questions!</li>
+</ul>
+<a href="https://github.com/dioxuslabs/dioxus/graphs/contributors">
+  <img src="https://camo.githubusercontent.com/e72ac207c70dae6ae4e8b08064a6b1e0f78f1e5c0f0eb3e46c9152ad7f22ab6e/68747470733a2f2f636f6e747269622e726f636b732f696d6167653f7265706f3d64696f7875736c6162732f64696f787573266d61783d333026636f6c756d6e733d3130" data-canonical-src="https://contrib.rocks/image?repo=dioxuslabs/dioxus&amp;max=30&amp;columns=10" style="max-width: 100%;">
+</a>
+<h2>License</h2>
+<p>This project is licensed under either the <a href="https://github.com/DioxusLabs/dioxus/blob/master/LICENSE-MIT">MIT license</a> or the <a href="https://github.com/DioxusLabs/dioxus/blob/master/LICENSE-APACHE">Apache-2 License</a>.</p>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted<br>
+for inclusion in Dioxus by you, shall be licensed as MIT or Apache-2, without any additional<br>
+terms or conditions.</p>
