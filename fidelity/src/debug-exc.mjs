@@ -1,0 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { normalize } from '/Users/adhamhaithameid/Desktop/code/OneMark/fidelity/src/normalize.mjs';
+import { loadNodeEngine } from '@onemark/engine/node';
+import { renderToSafeHtml } from '@onemark/renderer';
+import { JSDOM } from 'jsdom';
+const engine = await loadNodeEngine();
+const source = readFileSync('/Users/adhamhaithameid/Desktop/code/OneMark/fidelity/corpus/excalidraw-readme.md', 'utf8');
+const ast = await engine.parse(source, { dialect: 'gfm', extensions: { tables: true, strikethrough: true, autolink: true, taskList: true, footnotes: true, alerts: true, math: true, frontmatter: true } });
+const dom = new JSDOM('');
+const html = renderToSafeHtml(ast, { window: dom.window });
+const i = html.indexOf('<div align="center">');
+console.log(html.slice(i, i + 320));
