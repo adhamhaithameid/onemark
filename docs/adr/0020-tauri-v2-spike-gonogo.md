@@ -1,9 +1,9 @@
-# ADR-0020: Tauri v2 spike — BLOCKED-ENVIRONMENTAL (one local command from unblocking)
+# ADR-0020: Tauri v2 spike — GO (compile verified)
 
 | Field | Value |
 |---|---|
-| Status | Accepted (spike outcome: **blocked-environmental**, go-leaning) |
-| Date | 2026-09-20 |
+| Status | Accepted (spike outcome: **GO**, `cargo check` green) |
+| Date | 2026-09-20 (blocked-environmental same morning; author accepted the Xcode license, unblocking same day) |
 | Deciders | Author (delegated to the campaign) |
 | Relates to | Build plan M2 (tasks 2.1–2.8), ticket `OneMark-42l` |
 
@@ -25,50 +25,41 @@ FolderStorage + bookmarks, menus/file associations, signing) comes after.
 - `tauri.conf.json` disables bundling for the spike; a placeholder 32×32 icon
   keeps the config valid (`cargo tauri icon` generates the real set in M2).
 
-## The blocker (exact)
+## The blocker (resolved same day)
 
-`cargo check` in `src-tauri/` fails while compiling a dependency's build
-script, before any OneMark code:
+The first `cargo check` failed on machine state — the Apple SDK toolchain
+required the author to accept the Xcode license (`sudo xcodebuild -license`);
+the agent does not run sudo. The author accepted the license, and the check
+then surfaced one real scaffold bug (a `main.rs` lib-name mismatch —
+`onemark_shell_lib` vs the default `onemark_shell`), fixed and re-checked:
 
 ```
-= note: You have not agreed to the Xcode license agreements.
-        Please run 'sudo xcodebuild -license' from within a Terminal window
-        to review and agree to the Xcode and Apple SDKs license.
-error: could not compile `zmij` (build script) due to 1 previous error
+Checking onemark-shell v0.1.0 (…/src-tauri)
+Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.19s
 ```
 
-This is a **machine state issue, not a project issue**: the Apple SDK toolchain
-on this Mac requires the author to accept the Xcode license. Accepting it needs
-`sudo`, which the agent will not run. One command unblocks the spike:
-
-```bash
-sudo xcodebuild -license accept   # then: cd src-tauri && cargo check
-```
+The full tauri 2 dependency tree compiles for the pinned toolchain (1.97.1)
+against this Mac's Apple SDK.
 
 ## Go / no-go
 
-**GO-leaning, pending that one command.** Evidence for the lean:
+**GO — verified.** The spike's compile gate passes, the config schema holds,
+and the biggest M2 architecture risk was already retired by M0: native comrak
+and WASM comrak produce byte-identical ASTs (the NFR-6 harness exists), so
+task 2.2's determinism test is a formality the tooling already proves.
+M2 proceeds in build-plan order; the remaining unknowns (WKWebView quirks
+with the worker + OPFS paths, bookmark persistence) are exactly what tasks
+2.3–2.6 exist to answer.
 
-- The tauri 2 dependency tree resolves for the pinned toolchain (1.97.1) and
-  the config/capability schemas are stable v2 — the shell scaffolding is
-  mechanically valid.
-- The architecture risk M2 was worried about is already retired by M0: native
-  comrak and WASM comrak produce byte-identical ASTs (NFR-6 harness exists),
-  so task 2.2's determinism test is a formality the tooling already proves.
-- The remaining unknowns (WKWebView quirks with the worker + OPFS paths,
-  bookmark persistence) are exactly what M2's tasks 2.3–2.6 exist to answer.
-
-If, after `xcodebuild -license`, `cargo check` still fails on tauri 2 itself,
-record it here and M2 falls back to the no-go branch: M1–M3 remain the shipped
-product (the build plan already guarantees this is a real product without
-desktop shells).
+If a later task collapses, the standing fallback holds: M1–M3 remain the
+shipped product.
 
 ## Rejected alternatives
 
 - **Run `sudo xcodebuild -license` from the agent** — requires the author's
-  sudo; out of bounds by policy.
+  sudo; out of bounds by policy (the author ran it).
 - **Add src-tauri to the root workspace** — couples shell compilation to every
-  crate-level gate and vice versa; the spike (and M2) stand alone until they
+  crate-level gate and vice versa; the shell (and M2) stand alone until they
   earn integration.
 - **Electron fallback** — NFR-7 (2 MB budget) is the disqualifier, unchanged
   since the PRD.

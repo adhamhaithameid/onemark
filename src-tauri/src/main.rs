@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    onemark_shell_lib::run()
+    onemark_shell::run()
 }
