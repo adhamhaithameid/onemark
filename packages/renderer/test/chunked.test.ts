@@ -56,7 +56,10 @@ const RENDER_OPTIONS = {
 } as const;
 
 describe('chunked render invariant (rung 2)', () => {
-  it('joinBlocks(blocks(x)) === renderToUnsafeHtml(x) across the corpora', async () => {
+  // Heavy by design: ~674 corpus examples, each parsed + rendered twice.
+  const TIMEOUT = 120_000;
+
+  it('joinBlocks(blocks(x)) === renderToUnsafeHtml(x) across the corpora', { timeout: TIMEOUT }, async () => {
     let mismatches = 0;
     for (const c of cases()) {
       let ast: MarkdownNode;
@@ -79,7 +82,7 @@ describe('chunked render invariant (rung 2)', () => {
     expect(mismatches).toBe(0);
   });
 
-  it('per-block sanitisation equals whole-string sanitisation across the corpora', async () => {
+  it('per-block sanitisation equals whole-string sanitisation across the corpora', { timeout: TIMEOUT }, async () => {
     const { JSDOM } = await import('jsdom');
     const dom = new JSDOM('');
     let mismatches = 0;
