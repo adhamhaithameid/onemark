@@ -1,0 +1,51 @@
+name: 🔬 Fidelity report
+description: This document renders differently than GitHub renders it — tell us where.
+title: "[fidelity] "
+labels: ["fidelity"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fidelity **is** the product — every real divergence is triaged into the
+        parse / render / present layers (PRD §7) and becomes a permanent
+        regression fixture. Thank you for the report.
+  - type: textarea
+    id: markdown
+    attributes:
+      label: The markdown source
+      description: Paste the exact markdown that renders differently. Without the source we cannot reproduce.
+      render: markdown
+    validations:
+      required: true
+  - type: input
+    id: github-url
+    attributes:
+      label: GitHub URL showing the reference rendering
+      description: A github.com URL (file, issue, comment) where GitHub's rendering can be seen.
+    validations:
+      required: true
+  - type: textarea
+    id: difference
+    attributes:
+      label: What differs
+      description: What OneMark shows vs what GitHub shows. Screenshots welcome.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Where did you see it?
+      options:
+        - Web app (deployed)
+        - Web app (local build)
+        - Desktop (Tauri build)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: OneMark version / commit
+      placeholder: v0.1.0 or commit SHA
+    validations:
+      required: false
