@@ -15,13 +15,15 @@
   },
   "dependencies": {
     "@codemirror/commands": "^6.8.0",
-    "@codemirror/language": "^6.11.0",
     "@codemirror/lang-markdown": "^6.3.2",
+    "@codemirror/language": "^6.11.0",
     "@codemirror/state": "^6.5.2",
     "@codemirror/view": "^6.36.4",
     "@onemark/engine": "workspace:*",
     "@onemark/renderer": "workspace:*",
-    "@onemark/storage": "workspace:*"
+    "@onemark/storage": "workspace:*",
+    "@tauri-apps/plugin-dialog": "^2.7.3",
+    "@tauri-apps/plugin-fs": "^2.5.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",

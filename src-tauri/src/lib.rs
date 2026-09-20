@@ -30,6 +30,40 @@ fn parse_markdown(source: &str) -> Result<serde_json::Value, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Tasks 2.3–2.4: dialog picks the folder, fs reads/writes it. Files the
+        // user picks are auto-scoped at runtime — no broad filesystem access.
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
+        // Task 2.5: a native Edit menu — without it macOS loses copy/paste in
+        // the CodeMirror source pane (webview text editing routes through the
+        // menu's action targets).
+        .setup(|app| {
+            #[cfg(target_os = "macos")]
+            {
+                use tauri::menu::{MenuBuilder, PredefinedMenuItem, SubmenuBuilder};
+                let edit = SubmenuBuilder::new(app, "Edit")
+                    .undo()
+                    .redo()
+                    .separator()
+                    .cut()
+                    .copy()
+                    .paste()
+                    .select_all()
+                    .build()?;
+                let window = SubmenuBuilder::new(app, "Window")
+                    .minimize()
+                    .maximize()
+                    .close_window()
+                    .build()?;
+                let menu = MenuBuilder::new(app)
+                    .item(&PredefinedMenuItem::about(app, None, None)?)
+                    .item(&edit)
+                    .item(&window)
+                    .build()?;
+                app.set_menu(menu)?;
+            }
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![greet, parse_markdown])
         .run(tauri::generate_context!())
         .expect("error while running OneMark shell");
