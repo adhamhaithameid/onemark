@@ -1,0 +1,21 @@
+[package]
+name = "onemark-shell"
+version = "0.1.0"
+description = "OneMark desktop shell (M2 spike)"
+edition = "2021"
+license = "LicenseRef-PolyForm-Noncommercial-1.0.0"
+
+# Standalone on purpose (spike, P10): NOT a member of the root cargo workspace.
+# The shell wraps the apps/web build (frontendDist ../apps/web/dist); real M2
+# work (native comrak command, dialog/fs plugins, security-scoped bookmarks,
+# menus/file associations) lands behind the same seams documented in the README.
+
+[workspace]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
