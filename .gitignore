@@ -54,3 +54,5 @@ pnpm-debug.log*
 .beads-credential-key
 .beads/proxieddb/
 apps/marketing/app/tokens.css
+
+*.tsbuildinfo

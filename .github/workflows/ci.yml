@@ -80,6 +80,34 @@ jobs:
       - name: Bundle budget gate (M6)
         run: node scripts/check-bundle.mjs
 
+  e2e:
+    name: E2E — app flows in real Chromium
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.97.1"
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-bindgen-cli@0.2.127
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: ./scripts/build-wasm.sh
+      - run: pnpm --filter @onemark/web build
+      - run: pnpm --filter @onemark/web exec playwright install chromium --with-deps
+      - name: E2E app flows
+        run: pnpm --filter @onemark/web test:e2e
+
   browser-security:
     name: Security — real browser engines
     runs-on: ubuntu-latest
