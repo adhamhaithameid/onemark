@@ -301,55 +301,72 @@ async function resolveSha(ownerRepo, path, token, cache) {
 
 export async function buildCorpus({ limitPerStrata = Infinity } = {}) {
   const rand = prng(SEED);
-  const picked = new Map();
 
-  // Deterministic order inside each stratum, then cap at its target.
-  const byStrata = {};
+  // Per stratum: pre-filter tree-verified sizes (5th element), seeded-shuffle,
+  // keep the whole ordered list — we fetch down it until the stratum's target
+  // is actually met, so a 404 or an out-of-band file costs one candidate, not
+  // one document slot.
+  const perStrata = {};
   for (const entry of DEDUPED_POOL) {
-    (byStrata[entry[3]] ??= []).push(entry);
+    const bytes = entry[4];
+    if (bytes !== undefined && (bytes < 5 * 1024 || bytes > 200 * 1024)) continue;
+    (perStrata[entry[3]] ??= []).push(entry);
   }
-  for (const [strata, entries] of Object.entries(byStrata)) {
+  for (const entries of Object.values(perStrata)) {
     entries.sort(() => rand() - 0.5);
-    const target = Math.min(STRATA_TARGETS[strata] ?? entries.length, limitPerStrata);
-    for (const entry of entries.slice(0, Math.min(target, entries.length))) {
-      picked.set(slug(entry[0]), entry);
-    }
   }
+  const strataOrder = Object.keys(STRATA_TARGETS).filter((s) => (perStrata[s] ?? []).length > 0);
 
   const token = process.env.GITHUB_TOKEN ?? undefined;
   const shaCache = new Map();
   const documents = [];
+  const counts = {};
   let failed = 0;
+  const cursor = Object.fromEntries(strataOrder.map((s) => [s, 0]));
 
-  for (const [id, ownerRepo, path, strata] of picked.values()) {
-    const docId = id;
-    try {
-      const source = await fetchRaw(ownerRepo, 'HEAD', path);
-      writeFileSync(join(root, 'corpus', `${docId}.md`), source);
-      const sha = await resolveSha(ownerRepo, path, token, shaCache);
-      documents.push({
-        id: docId,
-        sourceUrl: `https://github.com/${ownerRepo}/blob/${sha}/${path}`,
-        commitSha: sha,
-        strata,
-        bytes: source.length,
-      });
-      process.stdout.write(`source ${docId} (${source.length} B)\n`);
-    } catch (error) {
-      failed += 1;
-      console.warn(`skipped ${docId} (${ownerRepo}/${path}): ${error.message}`);
+  const totalTarget = Object.values(STRATA_TARGETS).reduce((a, b) => Math.min(a + b, a + b), 0);
+  let progressed = true;
+  while (documents.length < totalTarget && progressed) {
+    progressed = false;
+    for (const strata of strataOrder) {
+      const target = Math.min(STRATA_TARGETS[strata], limitPerStrata);
+      if ((counts[strata] ?? 0) >= target) continue;
+      const list = perStrata[strata];
+      if (cursor[strata] >= list.length) continue;
+      progressed = true;
+      const entry = list[cursor[strata]++];
+      const [, ownerRepo, path] = entry;
+      const docId = slug(entry[0]);
+      try {
+        const source = await fetchRaw(ownerRepo, 'HEAD', path);
+        writeFileSync(join(root, 'corpus', `${docId}.md`), source);
+        const sha = await resolveSha(ownerRepo, path, token, shaCache);
+        documents.push({
+          id: docId,
+          sourceUrl: `https://github.com/${ownerRepo}/blob/${sha}/${path}`,
+          commitSha: sha,
+          strata,
+          bytes: source.length,
+        });
+        counts[strata] = (counts[strata] ?? 0) + 1;
+        process.stdout.write(`source ${docId} (${source.length} B)\n`);
+      } catch (error) {
+        failed += 1;
+        console.warn(`skipped ${docId} (${ownerRepo}/${path}): ${error.message}`);
+      }
     }
   }
   if (failed > 0) console.warn(`${failed} candidates skipped (fetch failures are non-fatal)`);
 
-  // Size guard from the OQ-1 rule: 5–200 KB per document.
+  // Size guard from the OQ-1 rule: 5–200 KB per document (defence in depth —
+  // tree sizes and the stub filter should have kept the band already).
   const sized = documents.filter((d) => d.bytes >= 5 * 1024 && d.bytes <= 200 * 1024);
   const dropped = documents.length - sized.length;
   if (dropped > 0) console.log(`dropped ${dropped} outside the 5–200 KB band`);
 
-  const counts = {};
-  for (const d of sized) counts[d.strata] = (counts[d.strata] ?? 0) + 1;
-  console.log(`strata filled: ${JSON.stringify(counts)} of targets ${JSON.stringify(STRATA_TARGETS)}`);
+  const filled = {};
+  for (const d of sized) filled[d.strata] = (filled[d.strata] ?? 0) + 1;
+  console.log(`strata filled: ${JSON.stringify(filled)} of targets ${JSON.stringify(STRATA_TARGETS)}`);
 
   writeFileSync(
     join(root, 'corpus', 'manifest.json'),

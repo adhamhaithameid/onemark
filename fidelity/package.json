@@ -6,7 +6,7 @@
     "spec": "node src/spec.mjs",
     "corpus": "node src/build-corpus.mjs",
     "goldens": "node src/fetch-goldens.mjs",
-    "diff": "node src/diff.mjs",
+    "diff": "tsx src/diff.mjs",
     "test": "vitest run",
     "typecheck": "echo ok"
   },
@@ -14,6 +14,7 @@
     "@types/jsdom": "^30.0.0",
     "jsdom": "^30.0.1",
     "parse5": "^8.0.1",
+    "tsx": "^4.23.13",
     "vitest": "^3.2.7"
   },
   "dependencies": {
