@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-09-20 (campaign session, wave 2) |
-| Phase | **v0.1.0 shipped + hardened** — all 12 campaign issues closed. Live on Pages; M5 at 100% gated; perf ladder rung 1 done (worker render), sanitiser fail-closed hardening, E2E in CI, coverage floors. Remaining: perf rungs 2+ (ADR-0019/0022 roadmap), M2 after xcode unlock |
+| Last updated | 2026-09-20 (campaign session, wave 3) |
+| Phase | **v0.1.0 shipped + hardened; M2 STARTED** — all 12 campaign issues + the M2 spike closed. M2 tasks 2.1–2.2 done (shell compiles, native comrak behind the same interface, determinism proven in-shell); 2.3–2.8 ticketed (`OneMark-11y`, `OneMark-pws`, `OneMark-8uh`). Perf ladder rung 2+ is the other open thread (ADR-0019/0022) |
 | Live | https://adhamhaithameid.github.io/onemark/ (site) · [/app/](https://adhamhaithameid.github.io/onemark/app/) (the app) |
 | Repo | https://github.com/adhamhaithameid/onemark — pushed, `v0.1.0` + `v0.1.0-alpha` tagged, [release notes](https://github.com/adhamhaithameid/onemark/releases/tag/v0.1.0) |
 
