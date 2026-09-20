@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneMark — Typography & Motion Prototype</title>
+<style>
+/* ═══ Tokens — snapshot of packages/design-tokens/css/tokens.css (ADR-0017) ═══ */
+:root {
+  color-scheme: light;
+  --om-color-primary-50: #fdf5f3; --om-color-primary-100: #fbe8e2; --om-color-primary-200: #f6cfc4; --om-color-primary-300: #efa892; --om-color-primary-400: #e57c5f; --om-color-primary-500: #c8412d; --om-color-primary-600: #b03622; --om-color-primary-700: #8f2b1b; --om-color-primary-800: #6f2216; --om-color-primary-900: #551c14; --om-color-primary-950: #33100b;
+  --om-color-gray-0: #ffffff; --om-color-gray-50: #f6f8fa; --om-color-gray-100: #eaeef2; --om-color-gray-200: #d8dee4; --om-color-gray-300: #b1bac4; --om-color-gray-400: #8c959f; --om-color-gray-500: #6e7781; --om-color-gray-600: #57606a; --om-color-gray-700: #424a53; --om-color-gray-800: #32383f; --om-color-gray-900: #24292f; --om-color-gray-1000: #000000;
+  --om-space-1: 4px; --om-space-2: 8px; --om-space-3: 12px; --om-space-4: 16px; --om-space-5: 20px; --om-space-6: 24px; --om-space-8: 32px; --om-space-10: 40px;
+  --om-radius-sm: 6px; --om-radius-md: 10px; --om-radius-lg: 14px;
+  --om-duration-instant: 100ms; --om-duration-fast: 150ms; --om-duration-base: 250ms; --om-duration-slow: 400ms;
+  --om-ease-standard: cubic-bezier(0.2, 0, 0, 1); --om-ease-decelerate: cubic-bezier(0, 0, 0.2, 1); --om-ease-accelerate: cubic-bezier(0.4, 0, 1, 1); --om-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --om-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --om-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --om-font-size-xs: 12px; --om-font-size-sm: 13px; --om-font-size-base: 14px; --om-font-size-md: 16px; --om-font-size-lg: 20px; --om-font-size-xl: 24px; --om-font-size-2xl: 32px; --om-font-size-3xl: 40px; --om-font-size-4xl: 56px;
+  --om-line-height-xs: 16px; --om-line-height-sm: 20px; --om-line-height-base: 20px; --om-line-height-md: 24px; --om-line-height-lg: 28px; --om-line-height-xl: 32px; --om-line-height-2xl: 40px; --om-line-height-3xl: 48px; --om-line-height-4xl: 64px;
+  --om-letter-spacing-tight: -0.02em; --om-letter-spacing-wide: 0.08em;
+  --om-weight-regular: 400; --om-weight-medium: 500; --om-weight-semibold: 600; --om-weight-bold: 700;
+}
+[data-theme="light"] {
+  --om-bg: #ffffff; --om-surface: #f6f8fa; --om-surface-raised: #ffffff;
+  --om-border: #d0d7de; --om-text: #1f2328; --om-text-muted: #59636e; --om-text-subtle: #656d76;
+  --om-primary: #c8412d; --om-on-primary: #ffffff;
+  --om-shadow-md: 0 1px 2px rgba(31,35,40,.06), 0 4px 12px rgba(31,35,40,.1);
+}
+[data-theme="dark"] {
+  --om-bg: #0d1117; --om-surface: #161b22; --om-surface-raised: #1f2630;
+  --om-border: #30363d; --om-text: #e6edf3; --om-text-muted: #9198a1; --om-text-subtle: #7d8590;
+  --om-primary: #e57c5f; --om-on-primary: #0d1117;
+  --om-shadow-md: 0 1px 2px rgba(1,4,9,.35), 0 4px 12px rgba(1,4,9,.45);
+}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--om-font-ui); font-size: var(--om-font-size-base); background: var(--om-color-gray-100); color: var(--om-text); padding: 24px; }
+.prototype-banner { max-width: 1100px; margin: 0 auto 16px; font-size: var(--om-font-size-sm); color: var(--om-color-gray-600); display: flex; justify-content: space-between; }
+.prototype-banner strong { color: var(--om-primary); letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase; font-size: 11px; }
+.sheet { max-width: 1100px; margin: 0 auto 32px; border-radius: var(--om-radius-lg); overflow: hidden; border: 1px solid var(--om-border); box-shadow: var(--om-shadow-md); background: var(--om-bg); }
+.sheet-label { padding: 8px 16px; font-size: 11px; letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase; color: var(--om-text-muted); background: var(--om-surface); border-bottom: 1px solid var(--om-border); }
+.sheet-body { padding: 40px; display: grid; gap: 40px; }
+
+.type-row { display: flex; align-items: baseline; gap: 24px; border-bottom: 1px solid var(--om-border); padding-bottom: 16px; }
+.type-row .meta { flex: 0 0 220px; font-family: var(--om-font-mono); font-size: var(--om-font-size-xs); color: var(--om-text-subtle); }
+.t4xl { font-size: var(--om-font-size-4xl); line-height: var(--om-line-height-4xl); font-weight: var(--om-weight-bold); letter-spacing: var(--om-letter-spacing-tight); }
+.t3xl { font-size: var(--om-font-size-3xl); line-height: var(--om-line-height-3xl); font-weight: var(--om-weight-bold); letter-spacing: var(--om-letter-spacing-tight); }
+.t2xl { font-size: var(--om-font-size-2xl); line-height: var(--om-line-height-2xl); font-weight: var(--om-weight-semibold); letter-spacing: var(--om-letter-spacing-tight); }
+.txl  { font-size: var(--om-font-size-xl);  line-height: var(--om-line-height-xl);  font-weight: var(--om-weight-semibold); }
+.tlg  { font-size: var(--om-font-size-lg);  line-height: var(--om-line-height-lg);  font-weight: var(--om-weight-semibold); }
+.tmd  { font-size: var(--om-font-size-md);  line-height: var(--om-line-height-md);  font-weight: var(--om-weight-regular); }
+.tbase{ font-size: var(--om-font-size-base);line-height: var(--om-line-height-base); font-weight: var(--om-weight-regular); }
+.tsm  { font-size: var(--om-font-size-sm);  line-height: var(--om-line-height-sm);  color: var(--om-text-muted); }
+.txs  { font-size: var(--om-font-size-xs);  line-height: var(--om-line-height-xs);  color: var(--om-text-subtle); }
+
+.spacing-row { display: flex; align-items: center; gap: 16px; }
+.spacing-row .label { flex: 0 0 90px; font-family: var(--om-font-mono); font-size: var(--om-font-size-xs); color: var(--om-text-subtle); }
+.spacing-row .bar { height: 12px; border-radius: 3px; background: color-mix(in srgb, var(--om-primary) 55%, var(--om-primary-100)); }
+
+.motion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.motion-card { background: var(--om-surface-raised); border: 1px solid var(--om-border); border-radius: var(--om-radius-md); padding: 20px; cursor: pointer; user-select: none; transition: transform var(--om-duration-base) var(--om-ease-standard), box-shadow var(--om-duration-base) var(--om-ease-standard), border-color var(--om-duration-fast); }
+.motion-card:hover { transform: translateY(-4px); box-shadow: var(--om-shadow-md); border-color: var(--om-primary); }
+.motion-card:active { transform: translateY(-1px) scale(.99); }
+.motion-card h4 { font-size: var(--om-font-size-sm); font-weight: var(--om-weight-semibold); margin-bottom: 4px; }
+.motion-card code { font-family: var(--om-font-mono); font-size: 11px; color: var(--om-text-subtle); }
+.motion-card .demo { margin-top: 14px; height: 36px; border-radius: var(--om-radius-sm); background: linear-gradient(90deg, var(--om-primary), var(--om-color-primary-300)); transition: inherit; }
+.motion-card:hover .demo { transform: translateX(60%) scale(1.05, 1); }
+</style>
+</head>
+<body>
+<div class="prototype-banner"><span><strong>PROTOTYPE</strong> — v1 for validation · typography, spacing & motion</span><span>OneMark · design tokens ADR-0017</span></div>
+
+<div class="sheet" data-theme="light">
+  <div class="sheet-label">Type scale — 9 steps, tight tracking on display sizes</div>
+  <div class="sheet-body">
+    <div class="type-row"><span class="meta">4xl · 56/64 · 700</span><span class="t4xl">Renders like GitHub</span></div>
+    <div class="type-row"><span class="meta">3xl · 40/48 · 700</span><span class="t3xl">One engine, six platforms</span></div>
+    <div class="type-row"><span class="meta">2xl · 32/40 · 600</span><span class="t2xl">Fidelity is provable</span></div>
+    <div class="type-row"><span class="meta">xl · 24/32 · 600</span><span class="txl">Offline by architecture</span></div>
+    <div class="type-row"><span class="meta">lg · 20/28 · 600</span><span class="tlg">Section heading</span></div>
+    <div class="type-row"><span class="meta">md · 16/24 · 400</span><span class="tmd">Body large for marketing copy and feature blurbs.</span></div>
+    <div class="type-row"><span class="meta">base · 14/20 · 400</span><span class="tbase">App body text — the editor, menus and dialogs.</span></div>
+    <div class="type-row"><span class="meta">sm · 13/20 · 400</span><span class="tsm">Secondary text: labels, captions, metadata.</span></div>
+    <div class="type-row"><span class="meta">xs · 12/16 · 400</span><span class="txs">FINE PRINT · BADGES · LEGAL</span></div>
+  </div>
+</div>
+
+<div class="sheet" data-theme="light">
+  <div class="sheet-label">Spacing scale — 4px base</div>
+  <div class="sheet-body" style="gap: 12px;">
+    <div class="spacing-row"><span class="label">space-1</span><span class="bar" style="width:4px"></span></div>
+    <div class="spacing-row"><span class="label">space-2</span><span class="bar" style="width:8px"></span></div>
+    <div class="spacing-row"><span class="label">space-3</span><span class="bar" style="width:12px"></span></div>
+    <div class="spacing-row"><span class="label">space-4</span><span class="bar" style="width:16px"></span></div>
+    <div class="spacing-row"><span class="label">space-6</span><span class="bar" style="width:24px"></span></div>
+    <div class="spacing-row"><span class="label">space-8</span><span class="bar" style="width:32px"></span></div>
+    <div class="spacing-row"><span class="label">space-12</span><span class="bar" style="width:48px"></span></div>
+    <div class="spacing-row"><span class="label">space-16</span><span class="bar" style="width:64px"></span></div>
+    <div class="spacing-row"><span class="label">space-24</span><span class="bar" style="width:96px"></span></div>
+  </div>
+</div>
+
+<div class="sheet" data-theme="light">
+  <div class="sheet-label">Motion — hover the cards (standard · decelerate · spring · slow)</div>
+  <div class="sheet-body">
+    <div class="motion-grid">
+      <div class="motion-card" style="transition-duration: var(--om-duration-base); transition-timing-function: var(--om-ease-standard);"><h4>Standard</h4><code>250ms · cubic-bezier(0.2,0,0,1)</code><div class="demo"></div></div>
+      <div class="motion-card" style="transition-duration: var(--om-duration-fast); transition-timing-function: var(--om-ease-decelerate);"><h4>Decelerate</h4><code>150ms · cubic-bezier(0,0,.2,1)</code><div class="demo"></div></div>
+      <div class="motion-card" style="transition-duration: var(--om-duration-base); transition-timing-function: var(--om-ease-spring);"><h4>Spring</h4><code>250ms · cubic-bezier(.34,1.56,.64,1)</code><div class="demo"></div></div>
+      <div class="motion-card" style="transition-duration: var(--om-duration-slow); transition-timing-function: var(--om-ease-standard);"><h4>Slow</h4><code>400ms · cubic-bezier(0.2,0,0,1)</code><div class="demo"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" data-theme="dark">
+  <div class="sheet-label">Dark — same scales</div>
+  <div class="sheet-body" style="gap: 24px;">
+    <div class="t3xl">Renders like GitHub</div>
+    <div class="tmd">Body large for marketing copy and feature blurbs.</div>
+    <div class="tsm">Secondary text: labels, captions, metadata.</div>
+    <div class="motion-grid">
+      <div class="motion-card"><h4>Standard</h4><code>250ms</code><div class="demo"></div></div>
+      <div class="motion-card"><h4>Spring</h4><code>250ms spring</code><div class="demo"></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

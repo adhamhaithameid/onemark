@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneMark — Prototype Gallery</title>
+<style>
+/* ═══ Tokens — snapshot of packages/design-tokens/css/tokens.css (ADR-0017) ═══ */
+:root {
+  color-scheme: light;
+  --om-color-primary-50: #fdf5f3; --om-color-primary-100: #fbe8e2; --om-color-primary-200: #f6cfc4; --om-color-primary-300: #efa892; --om-color-primary-400: #e57c5f; --om-color-primary-500: #c8412d; --om-color-primary-600: #b03622; --om-color-primary-700: #8f2b1b; --om-color-primary-800: #6f2216; --om-color-primary-900: #551c14; --om-color-primary-950: #33100b;
+  --om-color-gray-0: #ffffff; --om-color-gray-50: #f6f8fa; --om-color-gray-100: #eaeef2; --om-color-gray-200: #d8dee4; --om-color-gray-300: #b1bac4; --om-color-gray-400: #8c959f; --om-color-gray-500: #6e7781; --om-color-gray-600: #57606a; --om-color-gray-700: #424a53; --om-color-gray-800: #32383f; --om-color-gray-900: #24292f; --om-color-gray-1000: #000000;
+  --om-space-0: 0px; --om-space-1: 4px; --om-space-2: 8px; --om-space-3: 12px; --om-space-4: 16px; --om-space-5: 20px; --om-space-6: 24px; --om-space-7: 28px; --om-space-8: 32px; --om-space-9: 36px; --om-space-10: 40px; --om-space-11: 44px; --om-space-12: 48px; --om-space-13: 52px; --om-space-14: 56px; --om-space-15: 60px; --om-space-16: 64px; --om-space-17: 68px; --om-space-18: 72px; --om-space-19: 76px; --om-space-20: 80px; --om-space-21: 84px; --om-space-22: 88px; --om-space-23: 92px; --om-space-24: 96px;
+  --om-radius-sm: 6px; --om-radius-md: 10px; --om-radius-lg: 14px; --om-radius-xl: 20px; --om-radius-full: 9999px;
+  --om-border-width-thin: 1px; --om-border-width-thick: 2px;
+  --om-control-sm: 28px; --om-control-md: 32px; --om-control-lg: 40px;
+  --om-focus-ring-width: 2px; --om-focus-ring-offset: 2px;
+  --om-opacity-disabled: 0.55; --om-opacity-hover: 0.8;
+  --om-duration-instant: 100ms; --om-duration-fast: 150ms; --om-duration-base: 250ms; --om-duration-slow: 400ms;
+  --om-ease-standard: cubic-bezier(0.2, 0, 0, 1); --om-ease-decelerate: cubic-bezier(0, 0, 0.2, 1); --om-ease-accelerate: cubic-bezier(0.4, 0, 1, 1); --om-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); --om-ease-linear: linear;
+  --om-transition-colors: color 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms cubic-bezier(0.2, 0, 0, 1), fill 150ms cubic-bezier(0.2, 0, 0, 1), stroke 150ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-opacity: opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-transform: transform 250ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-shadow: box-shadow 250ms cubic-bezier(0.2, 0, 0, 1);
+  --om-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --om-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --om-font-size-xs: 12px; --om-font-size-sm: 13px; --om-font-size-base: 14px; --om-font-size-md: 16px; --om-font-size-lg: 20px; --om-font-size-xl: 24px; --om-font-size-2xl: 32px; --om-font-size-3xl: 40px; --om-font-size-4xl: 56px;
+  --om-line-height-none: 1; --om-line-height-xs: 16px; --om-line-height-sm: 20px; --om-line-height-base: 20px; --om-line-height-md: 24px; --om-line-height-lg: 28px; --om-line-height-xl: 32px; --om-line-height-2xl: 40px; --om-line-height-3xl: 48px; --om-line-height-4xl: 64px;
+  --om-letter-spacing-tight: -0.02em; --om-letter-spacing-normal: 0em; --om-letter-spacing-wide: 0.08em;
+  --om-weight-regular: 400; --om-weight-medium: 500; --om-weight-semibold: 600; --om-weight-bold: 700;
+  --om-z-base: 0; --om-z-raised: 1; --om-z-dropdown: 100; --om-z-sticky: 200; --om-z-overlay: 300; --om-z-modal: 400; --om-z-toast: 500; --om-z-tooltip: 600;
+  --om-success-bg: #e9f7ee; --om-success-border: #4ac26b; --om-success-text: #1a7f37;
+  --om-warning-bg: #fff8c5; --om-warning-border: #d4a72c; --om-warning-text: #9a6700;
+  --om-danger-bg: #ffebe9; --om-danger-border: #ff8182; --om-danger-text: #cf222e;
+  --om-info-bg: #ddf4ff; --om-info-border: #54aeff; --om-info-text: #0969da;
+  --om-important-bg: #faf5ff; --om-important-border: #c297ff; --om-important-text: #8250df;
+  --om-bg: #ffffff; --om-surface: #f6f8fa; --om-surface-raised: #ffffff;
+  --om-border: #d0d7de; --om-border-strong: #afb8c1;
+  --om-text: #1f2328; --om-text-muted: #59636e; --om-text-subtle: #656d76;
+  --om-primary: #c8412d; --om-primary-hover: #b03622; --om-primary-active: #8f2b1b;
+  --om-on-primary: #ffffff; --om-focus-ring: #c8412d;
+  --om-shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.06);
+  --om-shadow-md: 0 1px 2px rgba(31, 35, 40, 0.06), 0 4px 12px rgba(31, 35, 40, 0.1);
+  --om-shadow-lg: 0 4px 12px rgba(31, 35, 40, 0.1), 0 16px 40px rgba(31, 35, 40, 0.14);
+  --om-backdrop: rgba(31, 35, 40, 0.5);
+  --om-color-scheme: light;
+  --om-syntax-keyword: #cf222e; --om-syntax-string: #0a3069; --om-syntax-comment: #6e7781; --om-syntax-number: #0550ae;
+  --om-syntax-function: #8250df; --om-syntax-tag: #116329; --om-syntax-attr: #953800; --om-syntax-punctuation: #24292f;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --om-success-bg: #12311f; --om-success-border: #2ea043; --om-success-text: #4ec96a;
+  --om-warning-bg: #2a2008; --om-warning-border: #bb8009; --om-warning-text: #d29922;
+  --om-danger-bg: #321419; --om-danger-border: #e5534b; --om-danger-text: #f85149;
+  --om-info-bg: #12233c; --om-info-border: #316dca; --om-info-text: #4493f8;
+  --om-important-bg: #201b33; --om-important-border: #8957e5; --om-important-text: #ab7df8;
+  --om-bg: #0d1117; --om-surface: #161b22; --om-surface-raised: #1f2630;
+  --om-border: #30363d; --om-border-strong: #444c56;
+  --om-text: #e6edf3; --om-text-muted: #9198a1; --om-text-subtle: #7d8590;
+  --om-primary: #e57c5f; --om-primary-hover: #f08a6b; --om-primary-active: #d96a4c;
+  --om-on-primary: #0d1117; --om-focus-ring: #e57c5f;
+  --om-shadow-sm: 0 1px 2px rgba(1, 4, 9, 0.35);
+  --om-shadow-md: 0 1px 2px rgba(1, 4, 9, 0.35), 0 4px 12px rgba(1, 4, 9, 0.45);
+  --om-shadow-lg: 0 4px 12px rgba(1, 4, 9, 0.45), 0 16px 40px rgba(1, 4, 9, 0.55);
+  --om-backdrop: rgba(1, 4, 9, 0.7);
+  --om-color-scheme: dark;
+  --om-syntax-keyword: #ff7b72; --om-syntax-string: #a5d6ff; --om-syntax-comment: #8b949e; --om-syntax-number: #79c0ff;
+  --om-syntax-function: #d2a8ff; --om-syntax-tag: #7ee787; --om-syntax-attr: #ffa657; --om-syntax-punctuation: #e6edf3;
+}
+
+/* ═══ Base ═══ */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--om-bg);
+  color: var(--om-text);
+  font: var(--om-weight-regular) var(--om-font-size-base)/var(--om-line-height-base) var(--om-font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: var(--om-transition-colors);
+}
+a { color: inherit; text-decoration: none; }
+code, pre, kbd { font-family: var(--om-font-mono); }
+:focus-visible { outline: var(--om-focus-ring-width) solid var(--om-focus-ring); outline-offset: var(--om-focus-ring-offset); }
+
+/* ═══ Prototype chrome ═══ */
+.proto-banner {
+  display: flex; align-items: center; gap: var(--om-space-2);
+  padding: var(--om-space-2) var(--om-space-5);
+  background: var(--om-surface);
+  border-bottom: var(--om-border-width-thin) solid var(--om-border);
+  font-size: var(--om-font-size-xs); line-height: var(--om-line-height-xs);
+  letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase;
+  color: var(--om-text-muted);
+}
+.proto-banner .dot { width: 6px; height: 6px; border-radius: var(--om-radius-full); background: var(--om-primary); flex: none; }
+.page { max-width: 1080px; margin: 0 auto; padding: var(--om-space-8) var(--om-space-5) var(--om-space-12); }
+.mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: var(--om-radius-sm);
+  background: var(--om-primary); color: var(--om-on-primary);
+  font-size: 10px; font-weight: var(--om-weight-bold); letter-spacing: 0.02em; flex: none;
+}
+.page-head { margin-bottom: var(--om-space-8); }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: var(--om-space-2);
+  font-size: var(--om-font-size-xs); font-weight: var(--om-weight-semibold);
+  letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase;
+  color: var(--om-primary); margin-bottom: var(--om-space-2);
+}
+h1 { font-size: clamp(var(--om-font-size-2xl), 5vw, var(--om-font-size-3xl)); line-height: var(--om-line-height-2xl); letter-spacing: var(--om-letter-spacing-tight); font-weight: var(--om-weight-semibold); margin: 0 0 var(--om-space-3); }
+.lede { font-size: var(--om-font-size-md); line-height: var(--om-line-height-md); color: var(--om-text-muted); max-width: 60ch; margin: 0 0 var(--om-space-5); }
+.mono { font-family: var(--om-font-mono); }
+
+/* palette strip */
+.card { background: var(--om-bg); border: var(--om-border-width-thin) solid var(--om-border); border-radius: var(--om-radius-lg); padding: var(--om-space-5); }
+.card + .card { margin-top: var(--om-space-4); }
+.card h2 { font-size: var(--om-font-size-md); font-weight: var(--om-weight-semibold); margin: 0 0 var(--om-space-1); }
+.card .hint { font-size: var(--om-font-size-xs); color: var(--om-text-subtle); margin: 0 0 var(--om-space-4); }
+.ramp { display: grid; grid-template-columns: repeat(11, 1fr); gap: var(--om-space-1); min-width: 560px; }
+.ramp-scroll { overflow-x: auto; padding-bottom: var(--om-space-1); }
+.swatch { border-radius: var(--om-radius-sm); height: 44px; border: var(--om-border-width-thin) solid rgba(31, 35, 40, 0.08); }
+.swatch-label { display: block; margin-top: var(--om-space-1); font-family: var(--om-font-mono); font-size: 10px; color: var(--om-text-subtle); text-align: center; }
+.semantic-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--om-space-2); }
+.semantic-chip { border: var(--om-border-width-thin) solid var(--om-border); border-radius: var(--om-radius-md); padding: var(--om-space-3); font-size: var(--om-font-size-xs); }
+.semantic-chip .name { font-weight: var(--om-weight-semibold); display: block; margin-bottom: 2px; }
+.semantic-chip .role { font-family: var(--om-font-mono); font-size: 10px; opacity: 0.85; display: block; }
+
+/* gallery cards */
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--om-space-4); margin-top: var(--om-space-6); }
+.tile {
+  display: flex; flex-direction: column; gap: var(--om-space-2);
+  border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-lg);
+  padding: var(--om-space-5);
+  background: var(--om-bg);
+  transition: var(--om-transition-transform), var(--om-transition-shadow), var(--om-transition-colors);
+}
+.tile:hover { transform: translateY(-2px); box-shadow: var(--om-shadow-md); border-color: var(--om-border-strong); }
+.tile .num { font-family: var(--om-font-mono); font-size: var(--om-font-size-xs); color: var(--om-primary); }
+.tile h3 { margin: 0; font-size: var(--om-font-size-md); font-weight: var(--om-weight-semibold); }
+.tile p { margin: 0; font-size: var(--om-font-size-sm); line-height: var(--om-line-height-sm); color: var(--om-text-muted); }
+.tile .go { margin-top: var(--om-space-2); font-size: var(--om-font-size-sm); color: var(--om-primary); font-weight: var(--om-weight-medium); }
+
+footer { margin-top: var(--om-space-8); padding-top: var(--om-space-4); border-top: var(--om-border-width-thin) solid var(--om-border); font-size: var(--om-font-size-xs); color: var(--om-text-subtle); display: flex; flex-wrap: wrap; gap: var(--om-space-2) var(--om-space-4); justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="proto-banner"><span class="dot"></span> Prototype — v1 for validation · OneMark design system (P2)</div>
+<main class="page">
+  <header class="page-head">
+    <span class="eyebrow"><span class="mark">OM</span> OneMark · design tokens</span>
+    <h1>Prototype gallery</h1>
+    <p class="lede">
+      Static validation surfaces for the OneMark design system. Every color, space, radius, shadow,
+      duration and type size comes from one source of truth —
+      <code class="mono">packages/design-tokens/tokens.json</code> — snapshotted inline below.
+      Themes switch on <code class="mono">data-theme</code>.
+    </p>
+  </header>
+
+  <section class="card">
+    <h2>Brand ramp — vermilion <span class="mono">#c8412d</span></h2>
+    <p class="hint">Primary 500 anchors the ramp. Red is an accent: one CTA, links, focus — never a painted wall.</p>
+    <div class="ramp-scroll">
+      <div class="ramp">
+        <div><div class="swatch" style="background:#fdf5f3"></div><span class="swatch-label">50</span></div>
+        <div><div class="swatch" style="background:#fbe8e2"></div><span class="swatch-label">100</span></div>
+        <div><div class="swatch" style="background:#f6cfc4"></div><span class="swatch-label">200</span></div>
+        <div><div class="swatch" style="background:#efa892"></div><span class="swatch-label">300</span></div>
+        <div><div class="swatch" style="background:#e57c5f"></div><span class="swatch-label">400</span></div>
+        <div><div class="swatch" style="background:#c8412d"></div><span class="swatch-label">500</span></div>
+        <div><div class="swatch" style="background:#b03622"></div><span class="swatch-label">600</span></div>
+        <div><div class="swatch" style="background:#8f2b1b"></div><span class="swatch-label">700</span></div>
+        <div><div class="swatch" style="background:#6f2216"></div><span class="swatch-label">800</span></div>
+        <div><div class="swatch" style="background:#551c14"></div><span class="swatch-label">900</span></div>
+        <div><div class="swatch" style="background:#33100b"></div><span class="swatch-label">950</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Semantic colors — both themes</h2>
+    <p class="hint">bg / border / text roles. Text-on-bg pairings are asserted ≥ 4.5:1 (WCAG AA) in the token test suite.</p>
+    <div class="semantic-row" style="margin-bottom: var(--om-space-2); color: var(--om-text);">
+      <div class="semantic-chip" style="background: var(--om-success-bg); border-color: var(--om-success-border); color: var(--om-success-text);"><span class="name">success</span><span class="role">tip · pass</span></div>
+      <div class="semantic-chip" style="background: var(--om-warning-bg); border-color: var(--om-warning-border); color: var(--om-warning-text);"><span class="name">warning</span><span class="role">caution-adjacent</span></div>
+      <div class="semantic-chip" style="background: var(--om-danger-bg); border-color: var(--om-danger-border); color: var(--om-danger-text);"><span class="name">danger</span><span class="role">caution · errors</span></div>
+      <div class="semantic-chip" style="background: var(--om-info-bg); border-color: var(--om-info-border); color: var(--om-info-text);"><span class="name">info</span><span class="role">note · links</span></div>
+      <div class="semantic-chip" style="background: var(--om-important-bg); border-color: var(--om-important-border); color: var(--om-important-text);"><span class="name">important</span><span class="role">GitHub alert</span></div>
+    </div>
+    <div class="semantic-row" data-theme="dark">
+      <div class="semantic-chip" style="background: var(--om-success-bg); border-color: var(--om-success-border); color: var(--om-success-text);"><span class="name">success</span><span class="role">dark island ↑</span></div>
+      <div class="semantic-chip" style="background: var(--om-warning-bg); border-color: var(--om-warning-border); color: var(--om-warning-text);"><span class="name">warning</span><span class="role">dark island ↑</span></div>
+      <div class="semantic-chip" style="background: var(--om-danger-bg); border-color: var(--om-danger-border); color: var(--om-danger-text);"><span class="name">danger</span><span class="role">dark island ↑</span></div>
+      <div class="semantic-chip" style="background: var(--om-info-bg); border-color: var(--om-info-border); color: var(--om-info-text);"><span class="name">info</span><span class="role">dark island ↑</span></div>
+      <div class="semantic-chip" style="background: var(--om-important-bg); border-color: var(--om-important-border); color: var(--om-important-text);"><span class="name">important</span><span class="role">dark island ↑</span></div>
+    </div>
+  </section>
+
+  <nav class="gallery">
+    <a class="tile" href="app-shell.html">
+      <span class="num">01</span>
+      <h3>App shell</h3>
+      <p>The editor: toolbar, split source/preview panes, status bar — light and dark side by side.</p>
+      <span class="go">Open →</span>
+    </a>
+    <a class="tile" href="marketing-hero.html">
+      <span class="num">02</span>
+      <h3>Marketing hero</h3>
+      <p>Glass navbar, headline, CTAs and a CSS-drawn product shot over a subtle grid.</p>
+      <span class="go">Open →</span>
+    </a>
+    <a class="tile" href="components.html">
+      <span class="num">03</span>
+      <h3>Components</h3>
+      <p>Buttons, inputs, cards, badges, the five GitHub alerts, code, table, toggles, tooltips, modal.</p>
+      <span class="go">Open →</span>
+    </a>
+    <a class="tile" href="typography-motion.html">
+      <span class="num">04</span>
+      <h3>Type &amp; motion</h3>
+      <p>Type scale, spacing ladder, radii, shadows — and easing you can feel by hovering.</p>
+      <span class="go">Open →</span>
+    </a>
+  </nav>
+
+  <footer>
+    <span>Source of truth: <code class="mono">packages/design-tokens/tokens.json</code> · ADR-0017</span>
+    <span>Generated CSS: <code class="mono">css/tokens.css</code> · TS: <code class="mono">src/tokens.ts</code></span>
+  </footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneMark — Marketing Hero Prototype</title>
+<style>
+/* ═══ Tokens — snapshot of packages/design-tokens/css/tokens.css (ADR-0017) ═══ */
+:root {
+  color-scheme: light;
+  --om-color-primary-50: #fdf5f3; --om-color-primary-100: #fbe8e2; --om-color-primary-200: #f6cfc4; --om-color-primary-300: #efa892; --om-color-primary-400: #e57c5f; --om-color-primary-500: #c8412d; --om-color-primary-600: #b03622; --om-color-primary-700: #8f2b1b; --om-color-primary-800: #6f2216; --om-color-primary-900: #551c14; --om-color-primary-950: #33100b;
+  --om-color-gray-0: #ffffff; --om-color-gray-50: #f6f8fa; --om-color-gray-100: #eaeef2; --om-color-gray-200: #d8dee4; --om-color-gray-300: #b1bac4; --om-color-gray-400: #8c959f; --om-color-gray-500: #6e7781; --om-color-gray-600: #57606a; --om-color-gray-700: #424a53; --om-color-gray-800: #32383f; --om-color-gray-900: #24292f; --om-color-gray-1000: #000000;
+  --om-space-0: 0px; --om-space-1: 4px; --om-space-2: 8px; --om-space-3: 12px; --om-space-4: 16px; --om-space-5: 20px; --om-space-6: 24px; --om-space-7: 28px; --om-space-8: 32px; --om-space-9: 36px; --om-space-10: 40px; --om-space-11: 44px; --om-space-12: 48px; --om-space-13: 52px; --om-space-14: 56px; --om-space-15: 60px; --om-space-16: 64px; --om-space-17: 68px; --om-space-18: 72px; --om-space-19: 76px; --om-space-20: 80px; --om-space-21: 84px; --om-space-22: 88px; --om-space-23: 92px; --om-space-24: 96px;
+  --om-radius-sm: 6px; --om-radius-md: 10px; --om-radius-lg: 14px; --om-radius-xl: 20px; --om-radius-full: 9999px;
+  --om-border-width-thin: 1px; --om-border-width-thick: 2px;
+  --om-control-sm: 28px; --om-control-md: 32px; --om-control-lg: 40px;
+  --om-focus-ring-width: 2px; --om-focus-ring-offset: 2px;
+  --om-opacity-disabled: 0.55; --om-opacity-hover: 0.8;
+  --om-duration-instant: 100ms; --om-duration-fast: 150ms; --om-duration-base: 250ms; --om-duration-slow: 400ms;
+  --om-ease-standard: cubic-bezier(0.2, 0, 0, 1); --om-ease-decelerate: cubic-bezier(0, 0, 0.2, 1); --om-ease-accelerate: cubic-bezier(0.4, 0, 1, 1); --om-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); --om-ease-linear: linear;
+  --om-transition-colors: color 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms cubic-bezier(0.2, 0, 0, 1), fill 150ms cubic-bezier(0.2, 0, 0, 1), stroke 150ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-opacity: opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-transform: transform 250ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-shadow: box-shadow 250ms cubic-bezier(0.2, 0, 0, 1);
+  --om-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --om-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --om-font-size-xs: 12px; --om-font-size-sm: 13px; --om-font-size-base: 14px; --om-font-size-md: 16px; --om-font-size-lg: 20px; --om-font-size-xl: 24px; --om-font-size-2xl: 32px; --om-font-size-3xl: 40px; --om-font-size-4xl: 56px;
+  --om-line-height-none: 1; --om-line-height-xs: 16px; --om-line-height-sm: 20px; --om-line-height-base: 20px; --om-line-height-md: 24px; --om-line-height-lg: 28px; --om-line-height-xl: 32px; --om-line-height-2xl: 40px; --om-line-height-3xl: 48px; --om-line-height-4xl: 64px;
+  --om-letter-spacing-tight: -0.02em; --om-letter-spacing-normal: 0em; --om-letter-spacing-wide: 0.08em;
+  --om-weight-regular: 400; --om-weight-medium: 500; --om-weight-semibold: 600; --om-weight-bold: 700;
+  --om-z-base: 0; --om-z-raised: 1; --om-z-dropdown: 100; --om-z-sticky: 200; --om-z-overlay: 300; --om-z-modal: 400; --om-z-toast: 500; --om-z-tooltip: 600;
+  --om-success-bg: #e9f7ee; --om-success-border: #4ac26b; --om-success-text: #1a7f37;
+  --om-warning-bg: #fff8c5; --om-warning-border: #d4a72c; --om-warning-text: #9a6700;
+  --om-danger-bg: #ffebe9; --om-danger-border: #ff8182; --om-danger-text: #cf222e;
+  --om-info-bg: #ddf4ff; --om-info-border: #54aeff; --om-info-text: #0969da;
+  --om-important-bg: #faf5ff; --om-important-border: #c297ff; --om-important-text: #8250df;
+  --om-bg: #ffffff; --om-surface: #f6f8fa; --om-surface-raised: #ffffff;
+  --om-border: #d0d7de; --om-border-strong: #afb8c1;
+  --om-text: #1f2328; --om-text-muted: #59636e; --om-text-subtle: #656d76;
+  --om-primary: #c8412d; --om-primary-hover: #b03622; --om-primary-active: #8f2b1b;
+  --om-on-primary: #ffffff; --om-focus-ring: #c8412d;
+  --om-shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.06);
+  --om-shadow-md: 0 1px 2px rgba(31, 35, 40, 0.06), 0 4px 12px rgba(31, 35, 40, 0.1);
+  --om-shadow-lg: 0 4px 12px rgba(31, 35, 40, 0.1), 0 16px 40px rgba(31, 35, 40, 0.14);
+  --om-backdrop: rgba(31, 35, 40, 0.5);
+  --om-color-scheme: light;
+  --om-syntax-keyword: #cf222e; --om-syntax-string: #0a3069; --om-syntax-comment: #6e7781; --om-syntax-number: #0550ae;
+  --om-syntax-function: #8250df; --om-syntax-tag: #116329; --om-syntax-attr: #953800; --om-syntax-punctuation: #24292f;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --om-success-bg: #12311f; --om-success-border: #2ea043; --om-success-text: #4ec96a;
+  --om-warning-bg: #2a2008; --om-warning-border: #bb8009; --om-warning-text: #d29922;
+  --om-danger-bg: #321419; --om-danger-border: #e5534b; --om-danger-text: #f85149;
+  --om-info-bg: #12233c; --om-info-border: #316dca; --om-info-text: #4493f8;
+  --om-important-bg: #201b33; --om-important-border: #8957e5; --om-important-text: #ab7df8;
+  --om-bg: #0d1117; --om-surface: #161b22; --om-surface-raised: #1f2630;
+  --om-border: #30363d; --om-border-strong: #444c56;
+  --om-text: #e6edf3; --om-text-muted: #9198a1; --om-text-subtle: #7d8590;
+  --om-primary: #e57c5f; --om-primary-hover: #f08a6b; --om-primary-active: #d96a4c;
+  --om-on-primary: #0d1117; --om-focus-ring: #e57c5f;
+  --om-shadow-sm: 0 1px 2px rgba(1, 4, 9, 0.35);
+  --om-shadow-md: 0 1px 2px rgba(1, 4, 9, 0.35), 0 4px 12px rgba(1, 4, 9, 0.45);
+  --om-shadow-lg: 0 4px 12px rgba(1, 4, 9, 0.45), 0 16px 40px rgba(1, 4, 9, 0.55);
+  --om-backdrop: rgba(1, 4, 9, 0.7);
+  --om-color-scheme: dark;
+  --om-syntax-keyword: #ff7b72; --om-syntax-string: #a5d6ff; --om-syntax-comment: #8b949e; --om-syntax-number: #79c0ff;
+  --om-syntax-function: #d2a8ff; --om-syntax-tag: #7ee787; --om-syntax-attr: #ffa657; --om-syntax-punctuation: #e6edf3;
+}
+
+/* ═══ Base ═══ */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--om-bg);
+  color: var(--om-text);
+  font: var(--om-weight-regular) var(--om-font-size-base)/var(--om-line-height-base) var(--om-font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: var(--om-transition-colors);
+}
+a { color: inherit; text-decoration: none; }
+code, pre, kbd { font-family: var(--om-font-mono); }
+:focus-visible { outline: var(--om-focus-ring-width) solid var(--om-focus-ring); outline-offset: var(--om-focus-ring-offset); }
+
+/* ═══ Ambient background: soft brand glow + hairline grid ═══ */
+.ambient {
+  position: fixed; inset: 0; z-index: var(--om-z-base);
+  pointer-events: none;
+  background:
+    radial-gradient(60% 44% at 50% -6%, var(--om-color-primary-100) 0%, transparent 70%),
+    linear-gradient(var(--om-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--om-border) 1px, transparent 1px);
+  background-size: auto, 36px 36px, 36px 36px;
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(#000 0%, transparent 78%);
+  mask-image: linear-gradient(#000 0%, transparent 78%);
+}
+[data-theme="dark"] .ambient { opacity: 0.35; }
+main, nav { position: relative; z-index: var(--om-z-raised); }
+
+/* ═══ Prototype chrome ═══ */
+.proto-banner {
+  display: flex; align-items: center; gap: var(--om-space-2);
+  padding: var(--om-space-2) var(--om-space-5);
+  background: var(--om-surface);
+  border-bottom: var(--om-border-width-thin) solid var(--om-border);
+  font-size: var(--om-font-size-xs); line-height: var(--om-line-height-xs);
+  letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase;
+  color: var(--om-text-muted);
+}
+.proto-banner .dot { width: 6px; height: 6px; border-radius: var(--om-radius-full); background: var(--om-primary); flex: none; }
+.mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: var(--om-radius-sm);
+  background: var(--om-primary); color: var(--om-on-primary);
+  font-size: 10px; font-weight: var(--om-weight-bold); letter-spacing: 0.02em; flex: none;
+}
+
+/* ═══ Buttons ═══ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--om-space-2);
+  height: var(--om-control-md); padding: 0 var(--om-space-4);
+  border-radius: var(--om-radius-md);
+  border: var(--om-border-width-thin) solid transparent;
+  font: var(--om-weight-medium) var(--om-font-size-sm)/var(--om-line-height-sm) var(--om-font-ui);
+  cursor: pointer; transition: var(--om-transition-colors), var(--om-transition-transform);
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn-lg { height: var(--om-control-lg); padding: 0 var(--om-space-5); font-size: var(--om-font-size-base); }
+.btn-primary { background: var(--om-primary); color: var(--om-on-primary); box-shadow: var(--om-shadow-sm); }
+.btn-primary:hover { background: var(--om-primary-hover); }
+.btn-primary:active { background: var(--om-primary-active); }
+.btn-secondary { background: var(--om-bg); color: var(--om-text); border-color: var(--om-border-strong); }
+.btn-secondary:hover { background: var(--om-surface); }
+.btn-ghost { background: transparent; color: var(--om-text-muted); }
+.btn-ghost:hover { background: var(--om-surface); color: var(--om-text); }
+
+/* ═══ Glass navbar ═══ */
+nav.site {
+  position: sticky; top: 0; z-index: var(--om-z-sticky);
+  background: var(--om-bg); /* fallback */
+  border-bottom: var(--om-border-width-thin) solid var(--om-border);
+}
+@supports (backdrop-filter: blur(1px)) {
+  nav.site { background: color-mix(in srgb, var(--om-bg) 72%, transparent); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); }
+}
+.nav-inner {
+  max-width: 1160px; margin: 0 auto;
+  display: flex; align-items: center; gap: var(--om-space-5);
+  padding: var(--om-space-3) var(--om-space-5);
+}
+.brand { display: inline-flex; align-items: center; gap: var(--om-space-2); font-weight: var(--om-weight-semibold); font-size: var(--om-font-size-md); }
+.nav-links { display: flex; gap: var(--om-space-1); margin-left: var(--om-space-4); }
+.nav-links a {
+  padding: var(--om-space-1) var(--om-space-3);
+  border-radius: var(--om-radius-md);
+  font-size: var(--om-font-size-sm); color: var(--om-text-muted);
+  transition: var(--om-transition-colors);
+}
+.nav-links a:hover { color: var(--om-text); background: var(--om-surface); }
+.nav-cta { margin-left: auto; display: flex; gap: var(--om-space-2); align-items: center; }
+@media (max-width: 720px) { .nav-links, .nav-cta .btn-ghost { display: none; } }
+
+/* ═══ Hero ═══ */
+.hero { max-width: 820px; margin: 0 auto; padding: var(--om-space-16) var(--om-space-5) var(--om-space-10); text-align: center; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: var(--om-space-2);
+  padding: var(--om-space-1) var(--om-space-3);
+  border: var(--om-border-width-thin) solid var(--om-color-primary-200);
+  border-radius: var(--om-radius-full);
+  background: var(--om-color-primary-50);
+  color: var(--om-primary);
+  font-size: var(--om-font-size-xs); font-weight: var(--om-weight-semibold);
+  letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase;
+  margin-bottom: var(--om-space-5);
+}
+[data-theme="dark"] .eyebrow, .island-dark .eyebrow { border-color: color-mix(in srgb, var(--om-primary) 40%, transparent); background: color-mix(in srgb, var(--om-primary) 12%, transparent); }
+.hero h1 {
+  font-size: clamp(var(--om-font-size-3xl), 7vw, var(--om-font-size-4xl));
+  line-height: 1.08;
+  letter-spacing: var(--om-letter-spacing-tight);
+  font-weight: var(--om-weight-semibold);
+  margin: 0 0 var(--om-space-4);
+}
+.hero h1 .accent { color: var(--om-primary); }
+.hero .sub {
+  font-size: var(--om-font-size-md); line-height: var(--om-line-height-md);
+  color: var(--om-text-muted);
+  max-width: 58ch; margin: 0 auto var(--om-space-6);
+}
+.cta-row { display: flex; gap: var(--om-space-3); justify-content: center; flex-wrap: wrap; margin-bottom: var(--om-space-5); }
+.meta-row { display: flex; gap: var(--om-space-2); justify-content: center; flex-wrap: wrap; }
+.meta-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--om-font-mono); font-size: var(--om-font-size-xs);
+  color: var(--om-text-subtle);
+  border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-full);
+  padding: var(--om-space-1) var(--om-space-3);
+}
+.meta-chip .tick { color: var(--om-success-text); }
+
+/* ═══ Product shot (CSS-drawn editor) ═══ */
+.shot-wrap { max-width: 920px; margin: 0 auto; padding: 0 var(--om-space-5) var(--om-space-12); }
+.shot {
+  background: var(--om-bg);
+  border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-lg);
+  box-shadow: var(--om-shadow-lg);
+  overflow: hidden;
+}
+.shot-bar {
+  display: flex; align-items: center; gap: var(--om-space-2);
+  padding: var(--om-space-2) var(--om-space-3);
+  background: var(--om-surface);
+  border-bottom: var(--om-border-width-thin) solid var(--om-border);
+}
+.traffic { display: flex; gap: 6px; }
+.traffic i { width: 10px; height: 10px; border-radius: var(--om-radius-full); background: var(--om-border-strong); display: block; }
+.traffic i:first-child { background: var(--om-color-primary-300); }
+.shot-title { font-family: var(--om-font-mono); font-size: var(--om-font-size-xs); color: var(--om-text-subtle); margin: 0 auto; transform: translateX(-22px); }
+.shot-body { display: grid; grid-template-columns: 1fr 1.2fr; min-height: 320px; }
+.shot-src {
+  border-right: var(--om-border-width-thin) solid var(--om-border);
+  padding: var(--om-space-4);
+  font-family: var(--om-font-mono); font-size: var(--om-font-size-xs); line-height: 1.9;
+  color: var(--om-text-muted); overflow: hidden;
+}
+.shot-src .ln { display: flex; gap: var(--om-space-3); white-space: pre; }
+.shot-src .no { color: var(--om-text-subtle); opacity: 0.6; width: 16px; text-align: right; flex: none; }
+.shot-src .h { color: var(--om-text); font-weight: var(--om-weight-semibold); }
+.shot-src .fence { color: var(--om-syntax-comment); }
+.shot-preview { padding: var(--om-space-5); }
+.skel { height: 9px; border-radius: var(--om-radius-full); background: var(--om-border); margin-bottom: var(--om-space-2); }
+.skel.h1 { height: 16px; width: 55%; background: var(--om-border-strong); margin: var(--om-space-2) 0 var(--om-space-4); }
+.skel.h2 { height: 12px; width: 34%; background: var(--om-border-strong); margin: var(--om-space-4) 0 var(--om-space-3); }
+.skel.w90 { width: 90%; } .skel.w75 { width: 75%; } .skel.w60 { width: 60%; } .skel.w45 { width: 45%; }
+.mini-alert {
+  display: flex; align-items: center; gap: var(--om-space-2);
+  border: var(--om-border-width-thin) solid var(--om-info-border);
+  border-left: 3px solid var(--om-info-text);
+  background: var(--om-info-bg); color: var(--om-info-text);
+  border-radius: var(--om-radius-md);
+  padding: var(--om-space-2) var(--om-space-3);
+  font-size: var(--om-font-size-xs); font-weight: var(--om-weight-semibold);
+  margin: var(--om-space-3) 0;
+}
+.mini-code {
+  background: var(--om-surface); border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-md);
+  padding: var(--om-space-3); margin-top: var(--om-space-3);
+  font-family: var(--om-font-mono); font-size: var(--om-font-size-xs); line-height: 1.8;
+}
+.mini-code .tk-key { color: var(--om-syntax-keyword); } .mini-code .tk-str { color: var(--om-syntax-string); }
+.mini-code .tk-attr { color: var(--om-syntax-attr); } .mini-code .tk-pun { color: var(--om-syntax-punctuation); }
+@media (max-width: 680px) { .shot-body { grid-template-columns: 1fr; } .shot-src { border-right: none; border-bottom: var(--om-border-width-thin) solid var(--om-border); } .shot-title { transform: none; } }
+
+/* ═══ Dark section ═══ */
+.dark-block { max-width: 920px; margin: 0 auto; padding: 0 var(--om-space-5) var(--om-space-12); text-align: center; }
+.dark-block h2 { font-size: var(--om-font-size-xl); line-height: var(--om-line-height-xl); letter-spacing: var(--om-letter-spacing-tight); font-weight: var(--om-weight-semibold); margin: 0 0 var(--om-space-2); }
+.dark-block .sub { color: var(--om-text-muted); font-size: var(--om-font-size-sm); margin: 0 0 var(--om-space-5); }
+.island-dark {
+  text-align: left;
+  background: var(--om-bg); color: var(--om-text);
+  border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-lg);
+  box-shadow: var(--om-shadow-lg);
+  padding: var(--om-space-7);
+}
+.island-dark .mini-nav { display: flex; align-items: center; gap: var(--om-space-4); padding-bottom: var(--om-space-4); margin-bottom: var(--om-space-5); border-bottom: var(--om-border-width-thin) solid var(--om-border); }
+.island-dark .mini-nav .links { display: flex; gap: var(--om-space-3); font-size: var(--om-font-size-xs); color: var(--om-text-muted); margin-left: auto; }
+.island-dark h3 { font-size: var(--om-font-size-xl); line-height: var(--om-line-height-xl); letter-spacing: var(--om-letter-spacing-tight); font-weight: var(--om-weight-semibold); margin: 0 0 var(--om-space-2); }
+.island-dark h3 .accent { color: var(--om-primary); }
+.island-dark p { font-size: var(--om-font-size-sm); color: var(--om-text-muted); max-width: 52ch; margin: 0 0 var(--om-space-4); }
+@media (max-width: 720px) { .island-dark .mini-nav .links { display: none; } }
+
+footer.site {
+  border-top: var(--om-border-width-thin) solid var(--om-border);
+  padding: var(--om-space-5);
+  text-align: center;
+  font-size: var(--om-font-size-xs); color: var(--om-text-subtle);
+  display: flex; gap: var(--om-space-2) var(--om-space-4); justify-content: center; flex-wrap: wrap;
+}
+
+/* floating theme toggle */
+.float-toggle {
+  position: fixed; right: var(--om-space-4); bottom: var(--om-space-4);
+  z-index: var(--om-z-toast);
+  width: var(--om-control-lg); height: var(--om-control-lg);
+  border-radius: var(--om-radius-full);
+  border: var(--om-border-width-thin) solid var(--om-border);
+  background: var(--om-surface-raised); color: var(--om-text-muted);
+  box-shadow: var(--om-shadow-md);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: var(--om-transition-colors), var(--om-transition-transform);
+}
+.float-toggle:hover { color: var(--om-text); transform: translateY(-2px); }
+</style>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div>
+<div class="proto-banner"><span class="dot"></span> Prototype — v1 for validation · OneMark design system (P2)</div>
+
+<nav class="site" aria-label="Main">
+  <div class="nav-inner">
+    <a class="brand" href="#"><span class="mark">OM</span> OneMark</a>
+    <div class="nav-links">
+      <a href="#">Product</a>
+      <a href="#">Fidelity</a>
+      <a href="#">Docs</a>
+      <a href="#">Changelog</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#">Sign in</a>
+      <a class="btn btn-primary" href="#">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <span class="eyebrow">GitHub-identical · offline</span>
+    <h1>Your markdown, <span class="accent">pixel-identical</span> to GitHub.</h1>
+    <p class="sub">
+      OneMark renders CommonMark + GFM through the same engine and the same stylesheet the site uses —
+      so the preview in your editor is the review you would get on github.com. Offline, in milliseconds.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-lg btn-primary" href="#">Download for macOS</a>
+      <a class="btn btn-lg btn-secondary" href="#">Read the fidelity spec</a>
+    </div>
+    <div class="meta-row">
+      <span class="meta-chip"><span class="tick">✓</span> offline-first</span>
+      <span class="meta-chip"><span class="tick">✓</span> comrak → WASM</span>
+      <span class="meta-chip"><span class="tick">✓</span> vendored github-markdown-css</span>
+    </div>
+  </section>
+
+  <section class="shot-wrap" aria-label="Product screenshot mock">
+    <div class="shot">
+      <div class="shot-bar">
+        <span class="traffic" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="shot-title">release-notes.md — OneMark</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-src" aria-hidden="true">
+          <div class="ln"><span class="no">1</span><span><span class="h"># Release notes</span></span></div>
+          <div class="ln"><span class="no">2</span><span></span></div>
+          <div class="ln"><span class="no">3</span><span>&gt; Rendered like GitHub,</span></div>
+          <div class="ln"><span class="no">4</span><span>&gt; asserted like CI.</span></div>
+          <div class="ln"><span class="no">5</span><span></span></div>
+          <div class="ln"><span class="no">6</span><span><span class="fence">```json</span></span></div>
+          <div class="ln"><span class="no">7</span><span>{ "gfm": true }</span></div>
+          <div class="ln"><span class="no">8</span><span><span class="fence">```</span></span></div>
+        </div>
+        <div class="shot-preview" aria-hidden="true">
+          <div class="skel h1"></div>
+          <div class="skel w90"></div>
+          <div class="skel w75"></div>
+          <div class="skel h2"></div>
+          <div class="skel w60"></div>
+          <div class="mini-alert">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm0 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm.5 8h-1v-4h1v4Z"/></svg>
+            Note — asserted, not eyeballed
+          </div>
+          <div class="skel w45"></div>
+          <div class="mini-code"><span class="tk-pun">{</span> <span class="tk-attr">"fidelity"</span><span class="tk-pun">:</span> <span class="tk-str">"github.com"</span><span class="tk-pun">,</span> <span class="tk-attr">"network"</span><span class="tk-pun">:</span> <span class="tk-key">false</span> <span class="tk-pun">}</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dark-block">
+    <h2>And when your OS goes dark, so does your preview.</h2>
+    <p class="sub">Same tokens, same markup — the frame below is the light page with one attribute flipped.</p>
+    <div class="island-dark" data-theme="dark">
+      <div class="mini-nav" aria-hidden="true">
+        <span class="brand"><span class="mark">OM</span> OneMark</span>
+        <span class="links"><span>Product</span><span>Fidelity</span><span>Docs</span></span>
+      </div>
+      <h3>Your markdown, <span class="accent">pixel-identical</span> to GitHub.</h3>
+      <p>Dark surfaces stay readable: muted text on canvas is 6.5:1, subtle 5.1:1, and the vermilion lifts to ramp-400 so links keep AA contrast.</p>
+      <div class="cta-row" style="justify-content: flex-start; margin-bottom: 0;">
+        <a class="btn btn-primary" href="#" tabindex="-1">Download for macOS</a>
+        <a class="btn btn-secondary" href="#" tabindex="-1">Read the fidelity spec</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <span>PROTOTYPE — v1 for validation · not production marketing</span>
+  <span>Tokens: <code>--om-*</code> from <code>packages/design-tokens</code> · ADR-0017</span>
+</footer>
+
+<button class="float-toggle" data-toggle-theme aria-label="Toggle page theme" title="Toggle page theme">
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</button>
+<script>
+document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const root = document.documentElement;
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  });
+});
+</script>
+</body>
+</html>

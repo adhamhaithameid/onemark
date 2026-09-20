@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneMark — Components Prototype</title>
+<style>
+/* ═══ Tokens — snapshot of packages/design-tokens/css/tokens.css (ADR-0017) ═══ */
+:root {
+  color-scheme: light;
+  --om-color-primary-50: #fdf5f3; --om-color-primary-100: #fbe8e2; --om-color-primary-200: #f6cfc4; --om-color-primary-300: #efa892; --om-color-primary-400: #e57c5f; --om-color-primary-500: #c8412d; --om-color-primary-600: #b03622; --om-color-primary-700: #8f2b1b; --om-color-primary-800: #6f2216; --om-color-primary-900: #551c14; --om-color-primary-950: #33100b;
+  --om-color-gray-0: #ffffff; --om-color-gray-50: #f6f8fa; --om-color-gray-100: #eaeef2; --om-color-gray-200: #d8dee4; --om-color-gray-300: #b1bac4; --om-color-gray-400: #8c959f; --om-color-gray-500: #6e7781; --om-color-gray-600: #57606a; --om-color-gray-700: #424a53; --om-color-gray-800: #32383f; --om-color-gray-900: #24292f; --om-color-gray-1000: #000000;
+  --om-space-1: 4px; --om-space-2: 8px; --om-space-3: 12px; --om-space-4: 16px; --om-space-5: 20px; --om-space-6: 24px; --om-space-8: 32px;
+  --om-radius-sm: 6px; --om-radius-md: 10px; --om-radius-lg: 14px; --om-radius-full: 9999px;
+  --om-duration-fast: 150ms; --om-duration-base: 250ms;
+  --om-ease-standard: cubic-bezier(0.2, 0, 0, 1); --om-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --om-transition-colors: color 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms cubic-bezier(0.2, 0, 0, 1);
+  --om-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --om-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --om-font-size-xs: 12px; --om-font-size-sm: 13px; --om-font-size-base: 14px; --om-font-size-md: 16px; --om-font-size-lg: 20px;
+  --om-weight-regular: 400; --om-weight-medium: 500; --om-weight-semibold: 600; --om-weight-bold: 700;
+  --om-letter-spacing-wide: 0.08em;
+  --om-z-tooltip: 600;
+}
+[data-theme="light"] {
+  --om-bg: #ffffff; --om-surface: #f6f8fa; --om-surface-raised: #ffffff;
+  --om-border: #d0d7de; --om-border-strong: #afb8c1;
+  --om-text: #1f2328; --om-text-muted: #59636e; --om-text-subtle: #656d76;
+  --om-primary: #c8412d; --om-primary-hover: #b03622; --om-primary-active: #8f2b1b;
+  --om-on-primary: #ffffff; --om-focus-ring: #c8412d;
+  --om-shadow-sm: 0 1px 2px rgba(31,35,40,.06); --om-shadow-md: 0 1px 2px rgba(31,35,40,.06), 0 4px 12px rgba(31,35,40,.1); --om-shadow-lg: 0 4px 12px rgba(31,35,40,.1), 0 16px 40px rgba(31,35,40,.14);
+  --om-backdrop: rgba(31,35,40,.5);
+  --om-success-bg:#e9f7ee; --om-success-border:#4ac26b; --om-success-text:#1a7f37;
+  --om-warning-bg:#fff8c5; --om-warning-border:#d4a72c; --om-warning-text:#9a6700;
+  --om-danger-bg:#ffebe9; --om-danger-border:#ff8182; --om-danger-text:#cf222e;
+  --om-info-bg:#ddf4ff; --om-info-border:#54aeff; --om-info-text:#0969da;
+  --om-important-bg:#faf5ff; --om-important-border:#c297ff; --om-important-text:#8250df;
+  --om-syntax-keyword:#cf222e; --om-syntax-string:#0a3069; --om-syntax-comment:#6e7781; --om-syntax-function:#8250df; --om-syntax-tag:#116329;
+}
+[data-theme="dark"] {
+  --om-bg: #0d1117; --om-surface: #161b22; --om-surface-raised: #1f2630;
+  --om-border: #30363d; --om-border-strong: #444c56;
+  --om-text: #e6edf3; --om-text-muted: #9198a1; --om-text-subtle: #7d8590;
+  --om-primary: #e57c5f; --om-primary-hover: #f08a6b; --om-primary-active: #d96a4c;
+  --om-on-primary: #0d1117; --om-focus-ring: #e57c5f;
+  --om-shadow-sm: 0 1px 2px rgba(1,4,9,.35); --om-shadow-md: 0 1px 2px rgba(1,4,9,.35), 0 4px 12px rgba(1,4,9,.45); --om-shadow-lg: 0 4px 12px rgba(1,4,9,.45), 0 16px 40px rgba(1,4,9,.55);
+  --om-backdrop: rgba(1,4,9,.6);
+  --om-success-bg:#12261e; --om-success-border:#2ea043; --om-success-text:#7ee2b8;
+  --om-warning-bg:#241d10; --om-warning-border:#bb8009; --om-warning-text:#eac54f;
+  --om-danger-bg:#25171c; --om-danger-border:#f85149; --om-danger-text:#ff6a69;
+  --om-info-bg:#0d1a2d; --om-info-border:#388bfd; --om-info-text:#79c0ff;
+  --om-important-bg:#1d1333; --om-important-border:#a371f7; --om-important-text:#d2a8ff;
+  --om-syntax-keyword:#ff7b72; --om-syntax-string:#a5d6ff; --om-syntax-comment:#8b949e; --om-syntax-function:#d2a8ff; --om-syntax-tag:#7ee787;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--om-font-ui); font-size: var(--om-font-size-base); background: var(--om-color-gray-100); color: var(--om-text); padding: 24px; }
+.prototype-banner { max-width: 1100px; margin: 0 auto 16px; font-size: var(--om-font-size-sm); color: var(--om-color-gray-600); display: flex; justify-content: space-between; }
+.prototype-banner strong { color: var(--om-primary); letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase; font-size: 11px; }
+.sheet { max-width: 1100px; margin: 0 auto 32px; border-radius: var(--om-radius-lg); overflow: hidden; border: 1px solid var(--om-border); box-shadow: var(--om-shadow-lg); background: var(--om-bg); }
+.sheet-label { padding: 8px 16px; font-size: 11px; letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase; color: var(--om-text-muted); background: var(--om-surface); border-bottom: 1px solid var(--om-border); }
+.sheet-body { padding: 32px; display: grid; gap: 32px; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.group h3 { font-size: 11px; letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase; color: var(--om-text-subtle); margin-bottom: 12px; font-weight: var(--om-weight-semibold); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; border-radius: var(--om-radius-md); font-weight: var(--om-weight-semibold); font-size: var(--om-font-size-base); padding: 9px 16px; cursor: pointer; border: 1px solid transparent; font-family: inherit; transition: var(--om-transition-colors), transform var(--om-duration-fast) var(--om-ease-spring), box-shadow var(--om-duration-base) var(--om-ease-standard); }
+.btn:focus-visible { outline: 2px solid var(--om-focus-ring); outline-offset: 2px; }
+.btn-primary { background: var(--om-primary); color: var(--om-on-primary); box-shadow: var(--om-shadow-sm); }
+.btn-primary:hover { background: var(--om-primary-hover); transform: translateY(-1px); }
+.btn-primary:active { background: var(--om-primary-active); transform: none; }
+.btn-secondary { background: var(--om-surface-raised); color: var(--om-text); border-color: var(--om-border); box-shadow: var(--om-shadow-sm); }
+.btn-secondary:hover { border-color: var(--om-border-strong); background: var(--om-surface); }
+.btn-ghost { background: transparent; color: var(--om-text); }
+.btn-ghost:hover { background: var(--om-surface); }
+.btn-danger { background: var(--om-danger-text); color: #fff; }
+.btn-danger:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .55; cursor: not-allowed; transform: none !important; }
+
+/* Inputs */
+.input { font: inherit; font-size: var(--om-font-size-base); color: var(--om-text); background: var(--om-bg); border: 1px solid var(--om-border); border-radius: var(--om-radius-md); padding: 9px 12px; min-width: 240px; transition: var(--om-transition-colors); }
+.input::placeholder { color: var(--om-text-subtle); }
+.input:hover { border-color: var(--om-border-strong); }
+.input:focus { outline: 2px solid var(--om-focus-ring); outline-offset: -1px; border-color: transparent; }
+
+/* Cards */
+.card { background: var(--om-surface-raised); border: 1px solid var(--om-border); border-radius: var(--om-radius-lg); padding: 20px; box-shadow: var(--om-shadow-sm); max-width: 300px; transition: box-shadow var(--om-duration-base) var(--om-ease-standard), transform var(--om-duration-base) var(--om-ease-standard), border-color var(--om-duration-fast); }
+.card:hover { box-shadow: var(--om-shadow-md); transform: translateY(-2px); }
+.card h4 { margin: 0 0 8px; font-size: var(--om-font-size-md); }
+.card p { margin: 0; color: var(--om-text-muted); font-size: var(--om-font-size-sm); line-height: 1.55; }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: var(--om-font-size-xs); font-weight: var(--om-weight-semibold); border-radius: var(--om-radius-full); padding: 3px 10px; border: 1px solid var(--om-border); color: var(--om-text-muted); background: var(--om-surface); }
+.badge.red { color: var(--om-primary); border-color: color-mix(in srgb, var(--om-primary) 40%, transparent); background: color-mix(in srgb, var(--om-primary) 8%, transparent); }
+.badge.success { color: var(--om-success-text); border-color: var(--om-success-border); background: var(--om-success-bg); }
+.badge.warning { color: var(--om-warning-text); border-color: var(--om-warning-border); background: var(--om-warning-bg); }
+.badge.danger { color: var(--om-danger-text); border-color: var(--om-danger-border); background: var(--om-danger-bg); }
+.badge.info { color: var(--om-info-text); border-color: var(--om-info-border); background: var(--om-info-bg); }
+
+/* Alerts — the five GitHub types */
+.alert { border: 1px solid; border-left-width: 4px; border-radius: var(--om-radius-md); padding: 12px 16px; font-size: var(--om-font-size-sm); line-height: 1.55; max-width: 560px; }
+.alert strong { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: var(--om-font-size-sm); }
+.alert.note { border-color: var(--om-info-border); background: var(--om-info-bg); color: var(--om-info-text); }
+.alert.tip { border-color: var(--om-success-border); background: var(--om-success-bg); color: var(--om-success-text); }
+.alert.warning { border-color: var(--om-warning-border); background: var(--om-warning-bg); color: var(--om-warning-text); }
+.alert.caution { border-color: var(--om-danger-border); background: var(--om-danger-bg); color: var(--om-danger-text); }
+.alert.important { border-color: var(--om-important-border); background: var(--om-important-bg); color: var(--om-important-text); }
+.alert p { color: var(--om-text); margin: 0; }
+
+/* Code block */
+.codeblock { background: var(--om-surface); border: 1px solid var(--om-border); border-radius: var(--om-radius-md); padding: 14px 16px; font-family: var(--om-font-mono); font-size: 12.5px; line-height: 1.7; max-width: 560px; overflow-x: auto; white-space: pre; }
+.codeblock .kw { color: var(--om-syntax-keyword); } .codeblock .fn { color: var(--om-syntax-function); } .codeblock .str { color: var(--om-syntax-string); } .codeblock .cm { color: var(--om-syntax-comment); }
+
+/* Table */
+table.data { border-collapse: collapse; font-size: var(--om-font-size-sm); width: 100%; max-width: 560px; }
+table.data th, table.data td { border: 1px solid var(--om-border); padding: 8px 12px; text-align: left; }
+table.data th { background: var(--om-surface); font-weight: var(--om-weight-semibold); }
+table.data tr:hover td { background: color-mix(in srgb, var(--om-primary) 4%, transparent); }
+
+/* Toggle */
+.toggle { position: relative; width: 40px; height: 22px; border-radius: var(--om-radius-full); background: var(--om-border); cursor: pointer; transition: background var(--om-duration-fast); border: none; }
+.toggle::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: var(--om-shadow-sm); transition: transform var(--om-duration-base) var(--om-ease-spring); }
+.toggle[aria-checked="true"] { background: var(--om-primary); }
+.toggle[aria-checked="true"]::after { transform: translateX(18px); }
+
+/* Tooltip */
+.tip-wrap { position: relative; display: inline-block; }
+.tip-wrap .tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) scale(.96); background: var(--om-text); color: var(--om-bg); font-size: var(--om-font-size-xs); padding: 5px 10px; border-radius: var(--om-radius-sm); white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity var(--om-duration-fast), transform var(--om-duration-fast) var(--om-ease-spring); z-index: var(--om-z-tooltip); }
+.tip-wrap:hover .tip, .tip-wrap:focus-within .tip { opacity: 1; transform: translateX(-50%) scale(1); }
+
+/* Modal */
+.modal-scene { border: 1px solid var(--om-border); border-radius: var(--om-radius-md); padding: 24px; background: var(--om-surface); text-align: center; }
+.modal { background: var(--om-surface-raised); border: 1px solid var(--om-border); border-radius: var(--om-radius-lg); box-shadow: var(--om-shadow-lg); max-width: 380px; margin: 0 auto; padding: 20px; text-align: left; }
+.modal h4 { margin: 0 0 8px; font-size: var(--om-font-size-md); }
+.modal p { font-size: var(--om-font-size-sm); color: var(--om-text-muted); margin: 0 0 16px; line-height: 1.55; }
+.modal .row { justify-content: flex-end; }
+</style>
+</head>
+<body>
+<div class="prototype-banner"><span><strong>PROTOTYPE</strong> — v1 for validation · component sheet</span><span>OneMark · design tokens ADR-0017</span></div>
+
+<div class="sheet" data-theme="light">
+  <div class="sheet-label">Light theme</div>
+  <div class="sheet-body">
+    <div class="group"><h3>Buttons</h3>
+      <div class="row">
+        <button class="btn btn-primary">Save</button>
+        <button class="btn btn-secondary">Open file…</button>
+        <button class="btn btn-ghost">Cancel</button>
+        <button class="btn btn-danger">Delete</button>
+        <button class="btn btn-primary" disabled>Disabled</button>
+      </div>
+    </div>
+    <div class="group"><h3>Inputs</h3>
+      <div class="row">
+        <input class="input" placeholder="Search documents…">
+        <input class="input" value="README.md">
+      </div>
+    </div>
+    <div class="group"><h3>Cards</h3>
+      <div class="row">
+        <div class="card"><h4>GitHub-identical</h4><p>Every heading anchor, table alignment and task list — verified by diffing GitHub's own renderer on a 74-document golden corpus.</p></div>
+        <div class="card"><h4>Fully offline</h4><p>Shiki, KaTeX and Mermaid ship inside the app. Zero first-party network calls, enforced by test.</p></div>
+      </div>
+    </div>
+    <div class="group"><h3>Badges</h3>
+      <div class="row">
+        <span class="badge red">fidelity</span><span class="badge">v0.1.0</span><span class="badge success">CI green</span><span class="badge warning">beta</span><span class="badge danger">3 diffs</span><span class="badge info">web · macOS</span>
+      </div>
+    </div>
+    <div class="group"><h3>Alerts — the five GitHub types</h3>
+      <div class="row" style="flex-direction: column; align-items: stretch;">
+        <div class="alert note"><strong>ℹ️ Note</strong><p>Information that users should take into account, even when skimming.</p></div>
+        <div class="alert tip"><strong>💡 Tip</strong><p>Optional information to help a user be more successful.</p></div>
+        <div class="alert important"><strong>❗ Important</strong><p>Crucial information necessary for users to succeed.</p></div>
+        <div class="alert warning"><strong>⚠️ Warning</strong><p>Critical content demanding immediate user attention due to relatively risks.</p></div>
+        <div class="alert caution"><strong>🚨 Caution</strong><p>Negative potential consequences of an action.</p></div>
+      </div>
+    </div>
+    <div class="group"><h3>Code & table</h3>
+      <div class="codeblock"><span class="cm">// render exactly like GitHub</span>
+<span class="kw">const</span> html = <span class="fn">renderToSafeHtml</span>(ast, { highlighter });
+<span class="fn">assert</span>(html <span class="kw">===</span> <span class="str">github.golden</span>);</div>
+      <table class="data">
+        <tr><th>Tier</th><th>Budget</th><th>Measured</th></tr>
+        <tr><td>M1a · 100 KB</td><td>&lt; 100 ms</td><td>41 ms ✅</td></tr>
+        <tr><td>M1b · 1 MB</td><td>&lt; 500 ms</td><td>380 ms ✅</td></tr>
+      </table>
+    </div>
+    <div class="group"><h3>Toggles & tooltips</h3>
+      <div class="row">
+        <button class="toggle" role="switch" aria-checked="true" onclick="this.setAttribute('aria-checked', this.getAttribute('aria-checked')==='true'?'false':'true')"></button>
+        <span class="tip-wrap"><button class="btn btn-secondary">Hover me</button><span class="tip">Renders in 41 ms</span></span>
+      </div>
+    </div>
+    <div class="group"><h3>Modal</h3>
+      <div class="modal-scene">
+        <div class="modal">
+          <h4>Save changes?</h4>
+          <p>README.md has unsaved edits. Saving writes to the OPFS recent-files store.</p>
+          <div class="row"><button class="btn btn-ghost">Discard</button><button class="btn btn-primary">Save</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" data-theme="dark">
+  <div class="sheet-label">Dark theme</div>
+  <div class="sheet-body">
+    <div class="group"><h3>Buttons</h3>
+      <div class="row">
+        <button class="btn btn-primary">Save</button>
+        <button class="btn btn-secondary">Open file…</button>
+        <button class="btn btn-ghost">Cancel</button>
+        <button class="btn btn-danger">Delete</button>
+        <button class="btn btn-primary" disabled>Disabled</button>
+      </div>
+    </div>
+    <div class="group"><h3>Inputs</h3>
+      <div class="row"><input class="input" placeholder="Search documents…"><input class="input" value="README.md"></div>
+    </div>
+    <div class="group"><h3>Cards</h3>
+      <div class="row">
+        <div class="card"><h4>GitHub-identical</h4><p>Every heading anchor, table alignment and task list — verified by diffing GitHub's own renderer on a 74-document golden corpus.</p></div>
+        <div class="card"><h4>Fully offline</h4><p>Shiki, KaTeX and Mermaid ship inside the app. Zero first-party network calls, enforced by test.</p></div>
+      </div>
+    </div>
+    <div class="group"><h3>Badges</h3>
+      <div class="row">
+        <span class="badge red">fidelity</span><span class="badge">v0.1.0</span><span class="badge success">CI green</span><span class="badge warning">beta</span><span class="badge danger">3 diffs</span><span class="badge info">web · macOS</span>
+      </div>
+    </div>
+    <div class="group"><h3>Alerts — the five GitHub types</h3>
+      <div class="row" style="flex-direction: column; align-items: stretch;">
+        <div class="alert note"><strong>ℹ️ Note</strong><p>Information that users should take into account, even when skimming.</p></div>
+        <div class="alert tip"><strong>💡 Tip</strong><p>Optional information to help a user be more successful.</p></div>
+        <div class="alert important"><strong>❗ Important</strong><p>Crucial information necessary for users to succeed.</p></div>
+        <div class="alert warning"><strong>⚠️ Warning</strong><p>Critical content demanding immediate user attention due to relative risks.</p></div>
+        <div class="alert caution"><strong>🚨 Caution</strong><p>Negative potential consequences of an action.</p></div>
+      </div>
+    </div>
+    <div class="group"><h3>Code & table</h3>
+      <div class="codeblock"><span class="cm">// render exactly like GitHub</span>
+<span class="kw">const</span> html = <span class="fn">renderToSafeHtml</span>(ast, { highlighter });
+<span class="fn">assert</span>(html <span class="kw">===</span> <span class="str">github.golden</span>);</div>
+      <table class="data">
+        <tr><th>Tier</th><th>Budget</th><th>Measured</th></tr>
+        <tr><td>M1a · 100 KB</td><td>&lt; 100 ms</td><td>41 ms ✅</td></tr>
+        <tr><td>M1b · 1 MB</td><td>&lt; 500 ms</td><td>380 ms ✅</td></tr>
+      </table>
+    </div>
+    <div class="group"><h3>Toggles & tooltips</h3>
+      <div class="row">
+        <button class="toggle" role="switch" aria-checked="true" onclick="this.setAttribute('aria-checked', this.getAttribute('aria-checked')==='true'?'false':'true')"></button>
+        <span class="tip-wrap"><button class="btn btn-secondary">Hover me</button><span class="tip">Renders in 41 ms</span></span>
+      </div>
+    </div>
+    <div class="group"><h3>Modal</h3>
+      <div class="modal-scene">
+        <div class="modal">
+          <h4>Save changes?</h4>
+          <p>README.md has unsaved edits. Saving writes to the OPFS recent-files store.</p>
+          <div class="row"><button class="btn btn-ghost">Discard</button><button class="btn btn-primary">Save</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

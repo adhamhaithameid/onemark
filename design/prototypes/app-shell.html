@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OneMark — App Shell Prototype</title>
+<style>
+/* ═══ Tokens — snapshot of packages/design-tokens/css/tokens.css (ADR-0017) ═══ */
+:root {
+  color-scheme: light;
+  --om-color-primary-50: #fdf5f3; --om-color-primary-100: #fbe8e2; --om-color-primary-200: #f6cfc4; --om-color-primary-300: #efa892; --om-color-primary-400: #e57c5f; --om-color-primary-500: #c8412d; --om-color-primary-600: #b03622; --om-color-primary-700: #8f2b1b; --om-color-primary-800: #6f2216; --om-color-primary-900: #551c14; --om-color-primary-950: #33100b;
+  --om-color-gray-0: #ffffff; --om-color-gray-50: #f6f8fa; --om-color-gray-100: #eaeef2; --om-color-gray-200: #d8dee4; --om-color-gray-300: #b1bac4; --om-color-gray-400: #8c959f; --om-color-gray-500: #6e7781; --om-color-gray-600: #57606a; --om-color-gray-700: #424a53; --om-color-gray-800: #32383f; --om-color-gray-900: #24292f; --om-color-gray-1000: #000000;
+  --om-space-0: 0px; --om-space-1: 4px; --om-space-2: 8px; --om-space-3: 12px; --om-space-4: 16px; --om-space-5: 20px; --om-space-6: 24px; --om-space-7: 28px; --om-space-8: 32px; --om-space-9: 36px; --om-space-10: 40px; --om-space-11: 44px; --om-space-12: 48px; --om-space-13: 52px; --om-space-14: 56px; --om-space-15: 60px; --om-space-16: 64px; --om-space-17: 68px; --om-space-18: 72px; --om-space-19: 76px; --om-space-20: 80px; --om-space-21: 84px; --om-space-22: 88px; --om-space-23: 92px; --om-space-24: 96px;
+  --om-radius-sm: 6px; --om-radius-md: 10px; --om-radius-lg: 14px; --om-radius-xl: 20px; --om-radius-full: 9999px;
+  --om-border-width-thin: 1px; --om-border-width-thick: 2px;
+  --om-control-sm: 28px; --om-control-md: 32px; --om-control-lg: 40px;
+  --om-focus-ring-width: 2px; --om-focus-ring-offset: 2px;
+  --om-opacity-disabled: 0.55; --om-opacity-hover: 0.8;
+  --om-duration-instant: 100ms; --om-duration-fast: 150ms; --om-duration-base: 250ms; --om-duration-slow: 400ms;
+  --om-ease-standard: cubic-bezier(0.2, 0, 0, 1); --om-ease-decelerate: cubic-bezier(0, 0, 0.2, 1); --om-ease-accelerate: cubic-bezier(0.4, 0, 1, 1); --om-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); --om-ease-linear: linear;
+  --om-transition-colors: color 150ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms cubic-bezier(0.2, 0, 0, 1), fill 150ms cubic-bezier(0.2, 0, 0, 1), stroke 150ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-opacity: opacity 150ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-transform: transform 250ms cubic-bezier(0.2, 0, 0, 1);
+  --om-transition-shadow: box-shadow 250ms cubic-bezier(0.2, 0, 0, 1);
+  --om-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --om-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --om-font-size-xs: 12px; --om-font-size-sm: 13px; --om-font-size-base: 14px; --om-font-size-md: 16px; --om-font-size-lg: 20px; --om-font-size-xl: 24px; --om-font-size-2xl: 32px; --om-font-size-3xl: 40px; --om-font-size-4xl: 56px;
+  --om-line-height-none: 1; --om-line-height-xs: 16px; --om-line-height-sm: 20px; --om-line-height-base: 20px; --om-line-height-md: 24px; --om-line-height-lg: 28px; --om-line-height-xl: 32px; --om-line-height-2xl: 40px; --om-line-height-3xl: 48px; --om-line-height-4xl: 64px;
+  --om-letter-spacing-tight: -0.02em; --om-letter-spacing-normal: 0em; --om-letter-spacing-wide: 0.08em;
+  --om-weight-regular: 400; --om-weight-medium: 500; --om-weight-semibold: 600; --om-weight-bold: 700;
+  --om-z-base: 0; --om-z-raised: 1; --om-z-dropdown: 100; --om-z-sticky: 200; --om-z-overlay: 300; --om-z-modal: 400; --om-z-toast: 500; --om-z-tooltip: 600;
+  --om-success-bg: #e9f7ee; --om-success-border: #4ac26b; --om-success-text: #1a7f37;
+  --om-warning-bg: #fff8c5; --om-warning-border: #d4a72c; --om-warning-text: #9a6700;
+  --om-danger-bg: #ffebe9; --om-danger-border: #ff8182; --om-danger-text: #cf222e;
+  --om-info-bg: #ddf4ff; --om-info-border: #54aeff; --om-info-text: #0969da;
+  --om-important-bg: #faf5ff; --om-important-border: #c297ff; --om-important-text: #8250df;
+  --om-bg: #ffffff; --om-surface: #f6f8fa; --om-surface-raised: #ffffff;
+  --om-border: #d0d7de; --om-border-strong: #afb8c1;
+  --om-text: #1f2328; --om-text-muted: #59636e; --om-text-subtle: #656d76;
+  --om-primary: #c8412d; --om-primary-hover: #b03622; --om-primary-active: #8f2b1b;
+  --om-on-primary: #ffffff; --om-focus-ring: #c8412d;
+  --om-shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.06);
+  --om-shadow-md: 0 1px 2px rgba(31, 35, 40, 0.06), 0 4px 12px rgba(31, 35, 40, 0.1);
+  --om-shadow-lg: 0 4px 12px rgba(31, 35, 40, 0.1), 0 16px 40px rgba(31, 35, 40, 0.14);
+  --om-backdrop: rgba(31, 35, 40, 0.5);
+  --om-color-scheme: light;
+  --om-syntax-keyword: #cf222e; --om-syntax-string: #0a3069; --om-syntax-comment: #6e7781; --om-syntax-number: #0550ae;
+  --om-syntax-function: #8250df; --om-syntax-tag: #116329; --om-syntax-attr: #953800; --om-syntax-punctuation: #24292f;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --om-success-bg: #12311f; --om-success-border: #2ea043; --om-success-text: #4ec96a;
+  --om-warning-bg: #2a2008; --om-warning-border: #bb8009; --om-warning-text: #d29922;
+  --om-danger-bg: #321419; --om-danger-border: #e5534b; --om-danger-text: #f85149;
+  --om-info-bg: #12233c; --om-info-border: #316dca; --om-info-text: #4493f8;
+  --om-important-bg: #201b33; --om-important-border: #8957e5; --om-important-text: #ab7df8;
+  --om-bg: #0d1117; --om-surface: #161b22; --om-surface-raised: #1f2630;
+  --om-border: #30363d; --om-border-strong: #444c56;
+  --om-text: #e6edf3; --om-text-muted: #9198a1; --om-text-subtle: #7d8590;
+  --om-primary: #e57c5f; --om-primary-hover: #f08a6b; --om-primary-active: #d96a4c;
+  --om-on-primary: #0d1117; --om-focus-ring: #e57c5f;
+  --om-shadow-sm: 0 1px 2px rgba(1, 4, 9, 0.35);
+  --om-shadow-md: 0 1px 2px rgba(1, 4, 9, 0.35), 0 4px 12px rgba(1, 4, 9, 0.45);
+  --om-shadow-lg: 0 4px 12px rgba(1, 4, 9, 0.45), 0 16px 40px rgba(1, 4, 9, 0.55);
+  --om-backdrop: rgba(1, 4, 9, 0.7);
+  --om-color-scheme: dark;
+  --om-syntax-keyword: #ff7b72; --om-syntax-string: #a5d6ff; --om-syntax-comment: #8b949e; --om-syntax-number: #79c0ff;
+  --om-syntax-function: #d2a8ff; --om-syntax-tag: #7ee787; --om-syntax-attr: #ffa657; --om-syntax-punctuation: #e6edf3;
+}
+
+/* ═══ Base ═══ */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--om-bg);
+  color: var(--om-text);
+  font: var(--om-weight-regular) var(--om-font-size-base)/var(--om-line-height-base) var(--om-font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: var(--om-transition-colors);
+}
+a { color: inherit; text-decoration: none; }
+code, pre, kbd { font-family: var(--om-font-mono); }
+:focus-visible { outline: var(--om-focus-ring-width) solid var(--om-focus-ring); outline-offset: var(--om-focus-ring-offset); }
+
+/* ═══ Prototype chrome ═══ */
+.proto-banner {
+  display: flex; align-items: center; gap: var(--om-space-2);
+  padding: var(--om-space-2) var(--om-space-5);
+  background: var(--om-surface);
+  border-bottom: var(--om-border-width-thin) solid var(--om-border);
+  font-size: var(--om-font-size-xs); line-height: var(--om-line-height-xs);
+  letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase;
+  color: var(--om-text-muted);
+}
+.proto-banner .dot { width: 6px; height: 6px; border-radius: var(--om-radius-full); background: var(--om-primary); flex: none; }
+.page { max-width: 1440px; margin: 0 auto; padding: var(--om-space-6) var(--om-space-5) var(--om-space-10); }
+.mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: var(--om-radius-sm);
+  background: var(--om-primary); color: var(--om-on-primary);
+  font-size: 10px; font-weight: var(--om-weight-bold); letter-spacing: 0.02em; flex: none;
+}
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--om-space-4); flex-wrap: wrap; margin-bottom: var(--om-space-5); }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: var(--om-space-2);
+  font-size: var(--om-font-size-xs); font-weight: var(--om-weight-semibold);
+  letter-spacing: var(--om-letter-spacing-wide); text-transform: uppercase;
+  color: var(--om-primary); margin-bottom: var(--om-space-2);
+}
+h1 { font-size: var(--om-font-size-lg); line-height: var(--om-line-height-lg); font-weight: var(--om-weight-semibold); margin: 0; }
+.head-note { font-size: var(--om-font-size-sm); color: var(--om-text-muted); margin: var(--om-space-1) 0 0; }
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--om-control-md); height: var(--om-control-md);
+  border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-md);
+  background: var(--om-bg); color: var(--om-text-muted);
+  cursor: pointer; transition: var(--om-transition-colors);
+}
+.icon-btn:hover { border-color: var(--om-border-strong); color: var(--om-text); }
+
+/* ═══ Buttons used in the shell ═══ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--om-space-2);
+  height: var(--om-control-sm); padding: 0 var(--om-space-3);
+  border-radius: var(--om-radius-md);
+  border: var(--om-border-width-thin) solid transparent;
+  font: var(--om-weight-medium) var(--om-font-size-sm)/var(--om-line-height-sm) var(--om-font-ui);
+  cursor: pointer; transition: var(--om-transition-colors);
+  white-space: nowrap;
+}
+.btn-primary { background: var(--om-primary); color: var(--om-on-primary); }
+.btn-primary:hover { background: var(--om-primary-hover); }
+.btn-primary:active { background: var(--om-primary-active); }
+
+/* ═══ Frames ═══ */
+.frames { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(560px, 100%), 1fr)); gap: var(--om-space-6); }
+.frame-label {
+  display: flex; align-items: center; gap: var(--om-space-2);
+  font-family: var(--om-font-mono); font-size: var(--om-font-size-xs);
+  color: var(--om-text-subtle); margin-bottom: var(--om-space-2);
+}
+.frame-label .chip { background: var(--om-surface); border: var(--om-border-width-thin) solid var(--om-border); border-radius: var(--om-radius-full); padding: 2px 10px; }
+
+/* ═══ The app shell ═══ */
+.app {
+  display: flex; flex-direction: column;
+  height: 640px;
+  background: var(--om-bg);
+  border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-lg);
+  box-shadow: var(--om-shadow-lg);
+  overflow: hidden;
+}
+.toolbar {
+  display: flex; align-items: center; gap: var(--om-space-3);
+  padding: var(--om-space-2) var(--om-space-3) var(--om-space-2) var(--om-space-4);
+  background: var(--om-surface);
+  border-bottom: var(--om-border-width-thin) solid var(--om-border);
+}
+.doc-meta { display: flex; flex-direction: column; min-width: 0; }
+.doc-name { font-size: var(--om-font-size-sm); font-weight: var(--om-weight-semibold); line-height: var(--om-line-height-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.doc-path { font-family: var(--om-font-mono); font-size: 11px; line-height: 14px; color: var(--om-text-subtle); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toolbar .spacer { flex: 1; }
+.toolbar .divider { width: var(--om-border-width-thin); height: var(--om-control-sm); background: var(--om-border); }
+
+.split { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
+.pane { min-width: 0; overflow: auto; }
+.pane-editor { background: var(--om-bg); border-right: var(--om-border-width-thin) solid var(--om-border); }
+.editor-code { font-family: var(--om-font-mono); font-size: var(--om-font-size-xs); line-height: var(--om-line-height-md); padding: var(--om-space-4) 0 var(--om-space-6); min-width: max-content; }
+.cline { display: flex; white-space: pre; }
+.cline .no { width: var(--om-space-10); flex: none; text-align: right; padding-right: var(--om-space-3); color: var(--om-text-subtle); user-select: none; opacity: 0.7; }
+.cline .src { padding-right: var(--om-space-5); }
+.cline.active { background: var(--om-surface); }
+.cline.active .no { color: var(--om-primary); opacity: 1; font-weight: var(--om-weight-medium); }
+.md-h { color: var(--om-text); font-weight: var(--om-weight-bold); }
+.md-marker { color: var(--om-syntax-punctuation); }
+.md-em { font-style: italic; color: var(--om-text-muted); }
+.md-bold { font-weight: var(--om-weight-semibold); }
+.md-code { background: var(--om-surface); border-radius: var(--om-radius-sm); padding: 0 4px; color: var(--om-syntax-attr); }
+.md-fence { color: var(--om-syntax-comment); }
+.md-quote { color: var(--om-syntax-function); }
+.md-link { color: var(--om-syntax-number); text-decoration: underline; text-underline-offset: 2px; }
+
+.pane-preview { padding: var(--om-space-5) var(--om-space-6); }
+.pv h1 { font-size: var(--om-font-size-xl); line-height: var(--om-line-height-xl); margin: 0 0 var(--om-space-3); padding-bottom: var(--om-space-3); border-bottom: var(--om-border-width-thin) solid var(--om-border); }
+.pv h2 { font-size: var(--om-font-size-lg); line-height: var(--om-line-height-lg); margin: var(--om-space-5) 0 var(--om-space-2); }
+.pv p { margin: 0 0 var(--om-space-3); color: var(--om-text); }
+.pv .muted { color: var(--om-text-muted); }
+.pv ul { margin: 0 0 var(--om-space-3); padding-left: var(--om-space-5); }
+.pv li { margin-bottom: var(--om-space-1); }
+.pv code { background: var(--om-surface); border-radius: var(--om-radius-sm); padding: 1px 5px; font-size: 85%; color: var(--om-syntax-attr); }
+.pv blockquote { margin: 0 0 var(--om-space-3); padding: 0 var(--om-space-3); border-left: 3px solid var(--om-border-strong); color: var(--om-text-muted); }
+.pv .gfm-alert {
+  display: flex; gap: var(--om-space-2);
+  padding: var(--om-space-3);
+  margin: 0 0 var(--om-space-3);
+  background: var(--om-info-bg);
+  border: var(--om-border-width-thin) solid var(--om-info-border);
+  border-left: 3px solid var(--om-info-text);
+  border-radius: var(--om-radius-md);
+  font-size: var(--om-font-size-sm); line-height: var(--om-line-height-sm);
+}
+.pv .gfm-alert .t { font-weight: var(--om-weight-semibold); color: var(--om-info-text); }
+.pv .gfm-alert .icon { flex: none; margin-top: 2px; color: var(--om-info-text); }
+.pv .codeblock {
+  background: var(--om-surface); border: var(--om-border-width-thin) solid var(--om-border);
+  border-radius: var(--om-radius-md); margin: 0 0 var(--om-space-3); overflow: hidden;
+}
+.pv .codeblock .bar { display: flex; align-items: center; padding: var(--om-space-1) var(--om-space-3); border-bottom: var(--om-border-width-thin) solid var(--om-border); font-family: var(--om-font-mono); font-size: 11px; color: var(--om-text-subtle); }
+.pv .codeblock pre { margin: 0; padding: var(--om-space-3); font-size: var(--om-font-size-xs); line-height: var(--om-line-height-md); overflow: auto; }
+.tk-key { color: var(--om-syntax-keyword); } .tk-str { color: var(--om-syntax-string); }
+.tk-num { color: var(--om-syntax-number); } .tk-fn { color: var(--om-syntax-function); }
+.tk-com { color: var(--om-syntax-comment); } .tk-pun { color: var(--om-syntax-punctuation); }
+.tk-tag { color: var(--om-syntax-tag); } .tk-attr { color: var(--om-syntax-attr); }
+
+.statusbar {
+  display: flex; align-items: center; gap: var(--om-space-4);
+  padding: var(--om-space-1) var(--om-space-4);
+  background: var(--om-surface);
+  border-top: var(--om-border-width-thin) solid var(--om-border);
+  font-size: var(--om-font-size-xs); line-height: var(--om-line-height-xs);
+  color: var(--om-text-muted);
+}
+.statusbar .spacer { flex: 1; }
+.status-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--om-success-text); font-weight: var(--om-weight-medium); }
+.status-ok .ok-dot { width: 6px; height: 6px; border-radius: var(--om-radius-full); background: var(--om-success-text); }
+
+footer { margin-top: var(--om-space-8); padding-top: var(--om-space-4); border-top: var(--om-border-width-thin) solid var(--om-border); font-size: var(--om-font-size-xs); color: var(--om-text-subtle); display: flex; flex-wrap: wrap; gap: var(--om-space-2) var(--om-space-4); justify-content: space-between; }
+
+@media (max-width: 900px) {
+  .app { height: auto; }
+  .split { grid-template-columns: 1fr; }
+  .pane-editor { border-right: none; border-bottom: var(--om-border-width-thin) solid var(--om-border); max-height: 260px; }
+  .pane-preview { max-height: 420px; }
+  .doc-path { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="proto-banner"><span class="dot"></span> Prototype — v1 for validation · OneMark design system (P2)</div>
+<main class="page">
+  <header class="page-head">
+    <div>
+      <span class="eyebrow"><span class="mark">OM</span> App shell · both themes</span>
+      <h1>Editor shell</h1>
+      <p class="head-note">Toolbar, split source/preview, status bar. Each frame is pinned with a <code class="mono">data-theme</code> attribute — the toolbar toggle flips the whole page.</p>
+    </div>
+    <button class="icon-btn" data-toggle-theme aria-label="Toggle page theme" title="Toggle page theme">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+  </header>
+
+  <div class="frames">
+    <!-- ═══════════ LIGHT ═══════════ -->
+    <section class="frame" aria-label="Light theme editor">
+      <div class="frame-label"><span class="chip">data-theme="light"</span> default</div>
+      <div class="app" data-theme="light">
+        <div class="toolbar">
+          <span class="mark">OM</span>
+          <div class="doc-meta">
+            <span class="doc-name">release-notes.md</span>
+            <span class="doc-path">onemark/docs/release-notes.md</span>
+          </div>
+          <span class="spacer"></span>
+          <span class="divider"></span>
+          <button class="icon-btn" data-toggle-theme aria-label="Toggle theme" title="Toggle theme">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13.5 9.5A6 6 0 0 1 6.5 2.5a6 6 0 1 0 7 7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn btn-primary">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.4 1.6a1.7 1.7 0 0 1 2.4 0l.6.6a1.7 1.7 0 0 1 0 2.4l-7.6 7.6-3.7 1 1-3.7 7.3-7.9Z"/></svg>
+            Save
+          </button>
+        </div>
+        <div class="split">
+          <div class="pane pane-editor" aria-label="Markdown source (mock)">
+            <div class="editor-code">
+              <div class="cline"><span class="no">1</span><span class="src"><span class="md-marker"># </span><span class="md-h">OneMark release notes</span></span></div>
+              <div class="cline"><span class="no">2</span><span class="src"></span></div>
+              <div class="cline"><span class="no">3</span><span class="src"><span class="md-marker">_</span><span class="md-em">A GitHub-identical renderer_</span></span></div>
+              <div class="cline"><span class="no">4</span><span class="src"></span></div>
+              <div class="cline"><span class="no">5</span><span class="src"><span class="md-marker">## </span><span class="md-h">Highlights</span></span></div>
+              <div class="cline"><span class="no">6</span><span class="src"></span></div>
+              <div class="cline active"><span class="no">7</span><span class="src"><span class="md-marker">- </span>Byte-faithful <span class="md-bold">**tables**</span> and <span class="md-bold">**alerts**</span></span></div>
+              <div class="cline"><span class="no">8</span><span class="src"><span class="md-marker">- </span>Offline WASM engine — <span class="md-code">`comrak`</span></span></div>
+              <div class="cline"><span class="no">9</span><span class="src"><span class="md-marker">- </span>Vendored CSS pinned by <span class="md-link">[ADR-0015]</span></span></div>
+              <div class="cline"><span class="no">10</span><span class="src"></span></div>
+              <div class="cline"><span class="no">11</span><span class="src"><span class="md-quote">&gt; </span>Fidelity is asserted, not eyeballed.</span></div>
+              <div class="cline"><span class="no">12</span><span class="src"></span></div>
+              <div class="cline"><span class="no">13</span><span class="src"><span class="md-fence">```json</span></span></div>
+              <div class="cline"><span class="no">14</span><span class="src"><span class="md-marker">{</span><span class="md-code">"engine"</span><span class="md-marker">:</span> <span class="md-em">"comrak 0.34"</span><span class="md-marker">}</span></span></div>
+              <div class="cline"><span class="no">15</span><span class="src"><span class="md-fence">```</span></span></div>
+            </div>
+          </div>
+          <div class="pane pane-preview" aria-label="Rendered preview (mock)">
+            <article class="pv">
+              <h1>OneMark release notes</h1>
+              <p class="muted"><em>A GitHub-identical renderer</em></p>
+              <h2>Highlights</h2>
+              <ul>
+                <li>Byte-faithful <strong>tables</strong> and <strong>alerts</strong></li>
+                <li>Offline WASM engine — <code>comrak</code></li>
+              </ul>
+              <div class="gfm-alert">
+                <svg class="icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm0 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm.5 8h-1v-4h1v4Z"/></svg>
+                <span><span class="t">Note</span><br>Fidelity is asserted, not eyeballed.</span>
+              </div>
+              <div class="codeblock">
+                <div class="bar">release.json</div>
+                <pre><span class="tk-pun">{</span> <span class="tk-attr">"engine"</span><span class="tk-pun">:</span> <span class="tk-str">"comrak 0.34"</span><span class="tk-pun">,</span> <span class="tk-attr">"gfm"</span><span class="tk-pun">:</span> <span class="tk-key">true</span> <span class="tk-pun">}</span></pre>
+              </div>
+              <blockquote>Fidelity is asserted, not eyeballed.</blockquote>
+            </article>
+          </div>
+        </div>
+        <div class="statusbar">
+          <span class="status-ok"><span class="ok-dot"></span>Saved locally</span>
+          <span>42 words · 231 chars</span>
+          <span>Ln 7, Col 34</span>
+          <span class="spacer"></span>
+          <span>UTF-8 · Markdown · GFM</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ DARK ═══════════ -->
+    <section class="frame" aria-label="Dark theme editor">
+      <div class="frame-label"><span class="chip">data-theme="dark"</span> island — same markup, only the attribute changes</div>
+      <div class="app" data-theme="dark">
+        <div class="toolbar">
+          <span class="mark">OM</span>
+          <div class="doc-meta">
+            <span class="doc-name">release-notes.md</span>
+            <span class="doc-path">onemark/docs/release-notes.md</span>
+          </div>
+          <span class="spacer"></span>
+          <span class="divider"></span>
+          <button class="icon-btn" data-toggle-theme aria-label="Toggle theme" title="Toggle theme">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/></svg>
+          </button>
+          <button class="btn btn-primary">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M11.4 1.6a1.7 1.7 0 0 1 2.4 0l.6.6a1.7 1.7 0 0 1 0 2.4l-7.6 7.6-3.7 1 1-3.7 7.3-7.9Z"/></svg>
+            Save
+          </button>
+        </div>
+        <div class="split">
+          <div class="pane pane-editor" aria-label="Markdown source (mock)">
+            <div class="editor-code">
+              <div class="cline"><span class="no">1</span><span class="src"><span class="md-marker"># </span><span class="md-h">OneMark release notes</span></span></div>
+              <div class="cline"><span class="no">2</span><span class="src"></span></div>
+              <div class="cline"><span class="no">3</span><span class="src"><span class="md-marker">_</span><span class="md-em">A GitHub-identical renderer_</span></span></div>
+              <div class="cline"><span class="no">4</span><span class="src"></span></div>
+              <div class="cline"><span class="no">5</span><span class="src"><span class="md-marker">## </span><span class="md-h">Highlights</span></span></div>
+              <div class="cline"><span class="no">6</span><span class="src"></span></div>
+              <div class="cline active"><span class="no">7</span><span class="src"><span class="md-marker">- </span>Byte-faithful <span class="md-bold">**tables**</span> and <span class="md-bold">**alerts**</span></span></div>
+              <div class="cline"><span class="no">8</span><span class="src"><span class="md-marker">- </span>Offline WASM engine — <span class="md-code">`comrak`</span></span></div>
+              <div class="cline"><span class="no">9</span><span class="src"><span class="md-marker">- </span>Vendored CSS pinned by <span class="md-link">[ADR-0015]</span></span></div>
+              <div class="cline"><span class="no">10</span><span class="src"></span></div>
+              <div class="cline"><span class="no">11</span><span class="src"><span class="md-quote">&gt; </span>Fidelity is asserted, not eyeballed.</span></div>
+              <div class="cline"><span class="no">12</span><span class="src"></span></div>
+              <div class="cline"><span class="no">13</span><span class="src"><span class="md-fence">```json</span></span></div>
+              <div class="cline"><span class="no">14</span><span class="src"><span class="md-marker">{</span><span class="md-code">"engine"</span><span class="md-marker">:</span> <span class="md-em">"comrak 0.34"</span><span class="md-marker">}</span></span></div>
+              <div class="cline"><span class="no">15</span><span class="src"><span class="md-fence">```</span></span></div>
+            </div>
+          </div>
+          <div class="pane pane-preview" aria-label="Rendered preview (mock)">
+            <article class="pv">
+              <h1>OneMark release notes</h1>
+              <p class="muted"><em>A GitHub-identical renderer</em></p>
+              <h2>Highlights</h2>
+              <ul>
+                <li>Byte-faithful <strong>tables</strong> and <strong>alerts</strong></li>
+                <li>Offline WASM engine — <code>comrak</code></li>
+              </ul>
+              <div class="gfm-alert">
+                <svg class="icon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm0 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm.5 8h-1v-4h1v4Z"/></svg>
+                <span><span class="t">Note</span><br>Fidelity is asserted, not eyeballed.</span>
+              </div>
+              <div class="codeblock">
+                <div class="bar">release.json</div>
+                <pre><span class="tk-pun">{</span> <span class="tk-attr">"engine"</span><span class="tk-pun">:</span> <span class="tk-str">"comrak 0.34"</span><span class="tk-pun">,</span> <span class="tk-attr">"gfm"</span><span class="tk-pun">:</span> <span class="tk-key">true</span> <span class="tk-pun">}</span></pre>
+              </div>
+              <blockquote>Fidelity is asserted, not eyeballed.</blockquote>
+            </article>
+          </div>
+        </div>
+        <div class="statusbar">
+          <span class="status-ok"><span class="ok-dot"></span>Saved locally</span>
+          <span>42 words · 231 chars</span>
+          <span>Ln 7, Col 34</span>
+          <span class="spacer"></span>
+          <span>UTF-8 · Markdown · GFM</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <span>PROTOTYPE — v1 for validation · not production UI</span>
+    <span>Tokens: <code class="mono">--om-*</code> from <code class="mono">packages/design-tokens</code> · ADR-0017</span>
+  </footer>
+</main>
+<script>
+document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const root = document.documentElement;
+    root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  });
+});
+</script>
+</body>
+</html>
