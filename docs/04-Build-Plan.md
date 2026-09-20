@@ -155,6 +155,6 @@ Ordered by expected value, all deferred until v1 ships and gets used daily:
 |---|---|
 | M0 · Foundation | ✅ **complete** — see [session log](session-logs/2026-08-18-m0-foundation.md) |
 | M1 · Web | ✅ **v0.1.0 shipped + deployed** — [app](https://adhamhaithameid.github.io/onemark/app/); M3/M4 100%, M5 100% gated, M6 0.95 MB; perf ladder rung 1 done ([ADR-0019](adr/0019-browser-perf-arbitration-results.md)) |
-| M2 · macOS | 🟡 **started** — spike GO + task 2.1/2.2 done (shell compiles, native comrak behind the same interface, determinism proven in-shell; [ADR-0020](adr/0020-tauri-v2-spike-gonogo.md)); 2.3–2.8 ticketed |
+| M2 · macOS | 🟡 **2.1–2.7 done** — shell compiles, native comrak + determinism proven in-shell, FolderStorage (dialog/fs, persisted folder), Edit/Window menus, `.md` associations, file watching, corpus determinism in CI ([ADR-0020](adr/0020-tauri-v2-spike-gonogo.md)). Remaining: 2.8 signing/notarization (author Apple Developer ID) + first interactive desktop run (`cargo tauri dev`) |
 | M3 · Windows + Linux | ⬜ not started |
 | M4 · Mobile | ⬜ not started |

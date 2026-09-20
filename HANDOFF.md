@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-09-20 (campaign session, wave 3) |
-| Phase | **v0.1.0 shipped + hardened; M2 STARTED** — all 12 campaign issues + the M2 spike closed. M2 tasks 2.1–2.2 done (shell compiles, native comrak behind the same interface, determinism proven in-shell); 2.3–2.8 ticketed (`OneMark-11y`, `OneMark-pws`, `OneMark-8uh`). Perf ladder rung 2+ is the other open thread (ADR-0019/0022) |
+| Last updated | 2026-09-21 |
+| Phase | **v0.1.0 shipped + hardened; M2 tasks 2.1–2.7 done** — GitHub milestone PRs merged (#1 rung 2, #2 rung 1/hardening, #3 FolderStorage, #4 corpus determinism CI, #6 watch wiring). Remaining: M2 2.8 signing (author Apple Developer ID), first interactive desktop run, perf rungs 3+ |
 | Live | https://adhamhaithameid.github.io/onemark/ (site) · [/app/](https://adhamhaithameid.github.io/onemark/app/) (the app) |
-| Repo | https://github.com/adhamhaithameid/onemark — pushed, `v0.1.0` + `v0.1.0-alpha` tagged, [release notes](https://github.com/adhamhaithameid/onemark/releases/tag/v0.1.0) |
+| Repo | https://github.com/adhamhaithameid/onemark — pushed, `v0.1.0` + `v0.1.0-alpha` tagged, milestone PRs #1–#6 merged |
 
 ---
 
