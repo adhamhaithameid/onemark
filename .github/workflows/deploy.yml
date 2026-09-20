@@ -59,9 +59,23 @@ jobs:
       - name: Bundle budget gate (M6, <2 MB gzipped)
         run: node scripts/check-bundle.mjs
 
+      # Pages publishes the artifact at the site root — stage the app under
+      # app/ so its base path holds, plus a root redirect until P8 lands.
+      - name: Stage site layout
+        run: |
+          mkdir -p staging/app
+          cp -R apps/web/dist/. staging/app/
+          cat > staging/index.html << 'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>OneMark</title>
+          <meta http-equiv="refresh" content="0; url=./app/">
+          <p><a href="./app/">Open OneMark</a></p>
+          HTML
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/web/dist
+          path: staging
 
   deploy:
     name: Deploy to GitHub Pages
