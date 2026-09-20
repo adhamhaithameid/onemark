@@ -101,7 +101,10 @@ export function renderToSafeHtml(root: MarkdownNode, options: SafeRenderOptions 
  * (ADR-0022 — the sanitiser refuses partial DOMs, fail-closed).
  */
 export function sanitiseHtml(html: string, options: { window?: DomWindow } = {}): string {
-  return sanitizerFor(options.window ?? defaultWindow()).sanitize(html);
+  const sanitized = sanitizerFor(options.window ?? defaultWindow()).sanitize(html);
+  // GitHub's pipeline strips C0 control characters (except tab/newline, which
+  // are structural in HTML); they render as nothing or as replacement glyphs.
+  return sanitized.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
 }
 
 /**

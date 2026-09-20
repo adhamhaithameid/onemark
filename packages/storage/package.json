@@ -8,10 +8,12 @@
   "types": "./src/index.ts",
   "scripts": {
     "test": "vitest run --exclude '**/node_modules/**'",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^3.2.7",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
   }
