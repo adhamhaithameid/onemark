@@ -61,6 +61,14 @@ export interface RenderOptions {
    * forces this on; a document viewer wants them.
    */
   headingAnchors?: boolean;
+
+  /**
+   * GitHub renders single newlines inside paragraphs as `<br>` — in .md file
+   * rendering and in the POST /markdown oracle alike (soft break → hard break
+   * is GFM file behaviour, unlike bare CommonMark). **Off by default**: the
+   * conformance suites require cmark's `\n`. The safe path forces this on.
+   */
+  softBreakAsBr?: boolean;
 }
 
 const DEFAULTS: RenderOptions = { tagfilter: true, urlPolicy: true };
@@ -343,14 +351,16 @@ function render(node: MarkdownNode, ctx: Ctx, ancestors: MarkdownNode[]): void {
     case 'code_block': {
       const lang = typeof attrs['lang'] === 'string' ? attrs['lang'] : '';
 
-      // Mermaid is client-side by nature: emit the source as inert text, the
-      // way GitHub's static HTML does, and let the app hydrate it with the
-      // bundled mermaid at securityLevel 'strict' (see mermaid.ts).
+      // Mermaid is client-side by nature: emit a standard fenced-code block
+      // (GitHub's static HTML also ships the source, tokenised as
+      // highlight-source-mermaid) and let the app hydrate it with the bundled
+      // mermaid at securityLevel 'strict' (see mermaid.ts). Keeping the
+      // block-shaped DOM makes the pre-hydration shape match GitHub's.
       if (lang === 'mermaid') {
         out.cr();
-        out.lit('<div class="onemark-mermaid">');
+        out.lit('<pre><code class="language-mermaid">');
         out.lit(escapeHtml(node.literal ?? ''));
-        out.lit('</div>');
+        out.lit('</code></pre>');
         out.cr();
         break;
       }
@@ -454,7 +464,7 @@ function render(node: MarkdownNode, ctx: Ctx, ancestors: MarkdownNode[]): void {
       break;
 
     case 'soft_break':
-      out.lit('\n');
+      out.lit(ctx.options.softBreakAsBr ? '<br />\n' : '\n');
       break;
 
     case 'line_break':

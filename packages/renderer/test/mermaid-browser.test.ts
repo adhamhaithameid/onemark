@@ -35,11 +35,11 @@ afterAll(async () => {
 });
 
 describe('mermaid renders offline (task 1.7 verify column)', () => {
-  it('hydrates the placeholder into SVG with zero network requests', async () => {
+  it('hydrates the code block into SVG with zero network requests', async () => {
     const engine = await loadNodeEngine();
     const ast = await engine.parse('```mermaid\n' + DIAGRAM + '```\n', GFM_OPTIONS);
     const body = renderToSafeHtml(ast);
-    expect(body).toContain('onemark-mermaid');
+    expect(body).toContain('<code class="language-mermaid">');
 
     const page = await browser.newPage();
     const requests: string[] = [];
@@ -55,11 +55,13 @@ describe('mermaid renders offline (task 1.7 verify column)', () => {
         mermaid: { initialize: (c: object) => void; render: (id: string, src: string) => Promise<{ svg: string }> };
       };
       g.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict' });
-      const nodes = Array.from(document.querySelectorAll<HTMLElement>('div.onemark-mermaid'));
-      for (const [i, el] of nodes.entries()) {
-        const { svg } = await g.mermaid.render(`m-${i}`, el.textContent ?? '');
-        el.innerHTML = svg;
-        el.setAttribute('data-rendered', 'true');
+      const nodes = Array.from(document.querySelectorAll<HTMLElement>('pre > code.language-mermaid'));
+      for (const [i, code] of nodes.entries()) {
+        const { svg } = await g.mermaid.render(`m-${i}`, code.textContent ?? '');
+        const holder = document.createElement('div');
+        holder.className = 'onemark-mermaid';
+        holder.innerHTML = svg;
+        (code.closest('pre') as HTMLElement).replaceWith(holder);
       }
       return nodes.length;
     });
@@ -87,9 +89,9 @@ describe('mermaid renders offline (task 1.7 verify column)', () => {
         mermaid: { initialize: (c: object) => void; render: (id: string, src: string) => Promise<{ svg: string }> };
       };
       g.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict' });
-      const el = document.querySelector<HTMLElement>('div.onemark-mermaid');
-      if (!el) return false;
-      const { svg } = await g.mermaid.render('m-strict', el.textContent ?? '');
+      const code = document.querySelector<HTMLElement>('pre > code.language-mermaid');
+      if (!code) return false;
+      const { svg } = await g.mermaid.render('m-strict', code.textContent ?? '');
       return svg.includes('<svg');
     });
     expect(rendered).toBe(true);

@@ -83,11 +83,13 @@ function hydrateMath(html: string): string {
 export function renderToSafeHtml(root: MarkdownNode, options: SafeRenderOptions = {}): string {
   const { window, ...renderOptions } = options;
   // Forced, not defaulted: a caller casting past the type still gets the policy.
-  // `headingAnchors` is likewise a viewer behaviour — on unless explicitly off.
+  // `headingAnchors` and `softBreakAsBr` are likewise viewer behaviours —
+  // GitHub .md rendering — on unless explicitly off.
   const html = renderToUnsafeHtml(root, {
     ...renderOptions,
     urlPolicy: true,
     headingAnchors: renderOptions.headingAnchors ?? true,
+    softBreakAsBr: renderOptions.softBreakAsBr ?? true,
   });
   return hydrateMath(sanitizerFor(window ?? defaultWindow()).sanitize(html));
 }
