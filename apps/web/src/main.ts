@@ -70,6 +70,21 @@ async function boot(): Promise<void> {
 
   // Desktop-only affordance: folder open (tasks 2.3–2.4). Hidden on web.
   const openFolderButton = document.getElementById('open-folder-button');
+  let unwatchExternal: (() => void) | undefined;
+
+  async function openAndWatch(ref: import('@onemark/storage').DocumentRef): Promise<void> {
+    // Re-arm the watcher per document (task 2.6): external changes (e.g. a
+    // git pull in another terminal) reload the doc when there are no local
+    // edits to lose.
+    unwatchExternal?.();
+    await workspace.openDocument(ref);
+    if (storage.capabilities.canWatch && typeof (storage as TauriFolderStorage).watch === 'function') {
+      unwatchExternal = await (storage as TauriFolderStorage).watch(ref, () => {
+        if (!workspace.isDirty()) void workspace.openDocument(ref);
+      });
+    }
+  }
+
   if (openFolderButton instanceof HTMLButtonElement) {
     openFolderButton.hidden = !storage.capabilities.canOpenFolder;
     openFolderButton.addEventListener('click', () => {
@@ -122,14 +137,14 @@ async function boot(): Promise<void> {
     if (!file) return;
     const content = await file.text();
     const { ref } = await storage.put({ name: file.name, content });
-    await workspace.openDocument(ref);
+    await openAndWatch(ref);
   });
   document.addEventListener('paste', async (e) => {
     const text = e.clipboardData?.getData('text/plain');
     if (!text || !(e.target instanceof Element) || e.target.closest('.cm-editor')) return;
     const name = `pasted-${Date.now()}.md`;
     const { ref } = await storage.put({ name, content: text });
-    await workspace.openDocument(ref);
+    await openAndWatch(ref);
   });
 
   window.addEventListener('beforeunload', (e) => {
