@@ -23,7 +23,10 @@ fn main() {
             continue;
         }
         let source = fs::read_to_string(&path).expect("corpus file readable");
-        let name = path.file_stem().and_then(|s| s.to_str()).expect("utf8 stem");
+        let name = path
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .expect("utf8 stem");
         let json = parse_to_json(&source, &options);
         fs::write(out_dir.join(format!("{name}.json")), json).expect("write native dump");
         count += 1;
