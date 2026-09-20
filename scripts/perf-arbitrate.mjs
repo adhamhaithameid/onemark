@@ -32,36 +32,51 @@ const BASE_URL = arg('--url', 'http://localhost:4173/');
 const OUT = arg('--out', 'perf-arbitration.json');
 const RUNS = Number(arg('--runs', '5'));
 
-/** Deterministic synthetic document near the target size. */
+/** Deterministic synthetic document near the target size, realistic mix:
+ *  PRD §4's workload is prose-heavy documentation — mostly paragraphs, lists
+ *  and tables, with an occasional fence (~1 per 8 KB), alert and math block.
+ *  The first version of this harness weighted code fences ~50× reality and
+ *  measured Shiki, not OneMark. */
 function makeDoc(targetBytes) {
-  const block = [
-    '## Section {#section}',
-    '',
-    'Paragraph with **bold**, *italic*, `inline code`, a [link](https://example.com) and :tada: emoji.',
-    '',
-    '> [!WARNING]',
-    '> Alert content with `code` and [links](https://example.com).',
-    '',
-    '| Column A | Column B | Column C |',
-    '| :------- | :------: | -------: |',
-    '| cell | cell | cell |',
-    '| cell | cell | cell |',
-    '',
-    '- [ ] task one',
-    '- [x] task two',
-    '',
+  const prose = [
+    'Paragraph with **bold**, *italic*, `inline code`, a [link](https://example.com) and :tada: emoji across a couple of lines of running documentation text so the parser sees real prose structure.',
+    'A second paragraph, slightly longer, mentioning `utils.formatDate`, "quotes", and an <em>inline HTML</em> tag, plus an autolink https://example.com/docs to exercise the inline renderers.',
+    '- list item with **emphasis** and a [link](https://example.com)\n- another item\n  - nested item with `code`\n- [ ] a task item\n- [x] a done task',
+    '1. numbered one\n2. numbered two\n3. numbered three with a longer line of text to pad the document realistically toward the target size.',
+    '| Column A | Column B | Column C |\n| :------- | :------: | -------: |\n| cell | cell | cell |\n| cell | cell | cell |\n| data | data | data |',
+    '> A plain blockquote with a line of quoted prose and a [link](https://example.com).',
+    '> [!NOTE]\n> Note content with `code` and [links](https://example.com).',
+    '### Subsection heading\n\nText under a subsection so heading levels vary through the document body.',
+  ];
+  const fence = [
     '```rust',
-    'fn main() { println!("hello"); }',
+    'fn main() {',
+    '    let numbers: Vec<i32> = (1..100).collect();',
+    '    for n in numbers { println!("{} squared is {}", n, n * n); }',
+    '}',
     '```',
-    '',
   ].join('\n');
+  const math = '$$\\int_0^\\infty e^{-x^2}\\,dx = \\frac{\\sqrt{\\pi}}{2}$$';
   let doc = '# Arbitration Document\n\n';
   let i = 0;
-  while (doc.length < targetBytes) doc += block.replace('## Section', `## Section ${i++}`);
+  let sinceFence = 0;
+  while (doc.length < targetBytes) {
+    const block = prose[i % prose.length];
+    doc += `## Section ${i}\n\n` + block + '\n\n';
+    i += 1;
+    sinceFence += block.length;
+    if (sinceFence >= 8 * 1024) {
+      doc += fence + '\n\n';
+      if (i % 5 === 0) doc += math + '\n\n';
+      sinceFence = 0;
+    }
+  }
   return doc.slice(0, targetBytes);
 }
 
 const SIZES = [
+  // Informational: the size PRD §4 actually describes. Not a budget tier.
+  { tier: 'real-workload', bytes: 20 * 1024, budgetMs: 100, informational: true },
   { tier: 'M1a', bytes: 100 * 1024, budgetMs: 100 },
   { tier: 'M1b', bytes: 1024 * 1024, budgetMs: 500 },
 ];
@@ -98,7 +113,7 @@ const results = { url: BASE_URL, generatedAt: new Date().toISOString(), debounce
 const browser = await chromium.launch();
 const page = await (await browser.newContext()).newPage();
 
-for (const { tier, bytes, budgetMs } of SIZES) {
+for (const { tier, bytes, budgetMs, informational } of SIZES) {
   const source = makeDoc(bytes);
   await page.goto(BASE_URL, { waitUntil: 'networkidle' });
   await page.waitForSelector('.onemark-editor-pane .cm-content', { timeout: 20_000 });
@@ -113,12 +128,12 @@ for (const { tier, bytes, budgetMs } of SIZES) {
   const median = samples[Math.floor(samples.length / 2)];
   const adjusted = Math.max(0, median - DEBOUNCE_MS);
   const pass = adjusted < budgetMs;
-  results.tiers[tier] = { bytes, budgetMs, samples: samples.map(Math.round), medianMs: Math.round(median), adjustedMs: Math.round(adjusted), pass };
-  console.log(`${tier}: median ${Math.round(median)} ms raw, ${Math.round(adjusted)} ms adjusted (budget < ${budgetMs} ms) — ${pass ? 'PASS' : 'FAIL'}`);
+  results.tiers[tier] = { bytes, budgetMs, informational: informational === true, samples: samples.map(Math.round), medianMs: Math.round(median), adjustedMs: Math.round(adjusted), pass };
+  console.log(`${tier}: median ${Math.round(median)} ms raw, ${Math.round(adjusted)} ms adjusted (budget < ${budgetMs} ms) — ${pass ? 'PASS' : 'FAIL'}${informational ? ' (informational)' : ''}`);
 }
 
 await browser.close();
 writeFileSync(OUT, JSON.stringify(results, null, 2) + '\n');
 console.log(`results written to ${OUT}`);
-const allPass = Object.values(results.tiers).every((t) => t.pass);
+const allPass = Object.values(results.tiers).every((t) => t.informational || t.pass);
 process.exit(allPass ? 0 : 1);
