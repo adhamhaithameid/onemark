@@ -33,6 +33,16 @@ async function boot(): Promise<void> {
   const container = document.getElementById('app') as HTMLElement;
   const workspace = createWorkspace({ engine, container, storage, highlighter });
 
+  // Shiki token colours: the adapter emits theme-prefixed `.tk-*` classes, so
+  // both sheets can live in one style node and only the rendered spans'
+  // classes apply. Without this the highlighted code is unstyled.
+  if (highlighter) {
+    const style = document.createElement('style');
+    style.id = 'shiki-tokens';
+    style.textContent = `${highlighter.css('light')}\n${highlighter.css('dark')}`;
+    document.head.appendChild(style);
+  }
+
   workspace.setTheme('system');
   onSystemThemeChange(() => {
     const current = (document.getElementById('theme-button')?.dataset['choice'] as ThemeChoice) ?? 'system';

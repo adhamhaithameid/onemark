@@ -14,6 +14,7 @@ import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 
 import type { MarkdownEngine, MarkdownNode } from '@onemark/engine';
+import { GFM_OPTIONS } from '@onemark/engine';
 import { renderToSafeHtml, hydrateMermaid, type SyntaxHighlighter } from '@onemark/renderer';
 import type { DocumentRef, StorageProvider } from '@onemark/storage';
 
@@ -59,22 +60,11 @@ export function createWorkspace(options: WorkspaceOptions): Workspace {
   let dirty = false;
 
   async function renderPreview(source: string): Promise<void> {
-    const ast: MarkdownNode = await engine.parse(source, {
-      dialect: 'gfm',
-      extensions: {
-        tables: true,
-        strikethrough: true,
-        autolink: true,
-        taskList: true,
-        footnotes: true,
-        alerts: true,
-        math: true,
-        frontmatter: true,
-      },
-    });
+    const ast: MarkdownNode = await engine.parse(source, GFM_OPTIONS);
+    const theme = document.documentElement.dataset['theme'] === 'dark' ? 'dark' : 'light';
     previewPane.innerHTML = renderToSafeHtml(
       ast,
-      highlighter ? { highlighter } : {},
+      highlighter ? { highlighter, theme } : {},
     );
     await hydrateMermaid(previewPane);
   }
@@ -152,6 +142,10 @@ export function createWorkspace(options: WorkspaceOptions): Workspace {
 
     setTheme(choice: ThemeChoice): void {
       applyTheme(document, choice, options.prefersDark ?? false);
+      // Token colours are rendered into the spans at render time, so the
+      // preview must re-render for existing code blocks to switch themes.
+      const source = editorView.state.doc.toString();
+      if (source.length > 0) void renderPreview(source);
     },
 
     currentRef(): DocumentRef | undefined {

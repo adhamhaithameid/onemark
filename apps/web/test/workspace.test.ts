@@ -104,4 +104,20 @@ describe('theme control (task 1.18)', () => {
     expect(['light', 'dark']).toContain(document.documentElement.dataset['theme']);
     ws.destroy();
   });
+
+  it('re-renders code token colours when the theme switches', async () => {
+    const ws = makeWorkspace();
+    ws.setDocumentText('```rust\nfn main() {}\n```\n');
+    await new Promise((r) => setTimeout(r, 5));
+    ws.setTheme('dark');
+    await new Promise((r) => setTimeout(r, 5));
+    // Token classes carry the theme prefix at render time — a dark-mode
+    // preview must not still hold light-theme spans.
+    expect(ws.previewHtml()).toMatch(/tk-dark-[0-9a-z]+/);
+    expect(ws.previewHtml()).not.toMatch(/tk-light-[0-9a-z]+/);
+    ws.setTheme('light');
+    await new Promise((r) => setTimeout(r, 5));
+    expect(ws.previewHtml()).toMatch(/tk-light-[0-9a-z]+/);
+    ws.destroy();
+  });
 });
