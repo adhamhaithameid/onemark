@@ -68,7 +68,10 @@ export async function main() {
       done += 1;
       continue;
     }
-    const html = await fetchGolden(process.env.GITHUB_TOKEN, readFileSync(doc.localPath, 'utf8'));
+    const html = await fetchGolden(
+      process.env.GITHUB_TOKEN,
+      readFileSync(join(root, 'corpus', `${doc.id}.md`), 'utf8'),
+    );
     writeFileSync(out, html);
     done += 1;
     console.log(`${done}/${documents.length} ${doc.id}`);
