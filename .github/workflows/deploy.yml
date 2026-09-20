@@ -72,10 +72,7 @@ jobs:
         run: |
           mkdir -p staging/app
           cp -R apps/marketing/out/. staging/
-          rm -f staging/app
           cp -R apps/web/dist/. staging/app/
-          # The marketing site links to the app relatively ("app/"), which
-          # resolves correctly at /onemark/app/.
 
       - uses: actions/upload-pages-artifact@v3
         with:
