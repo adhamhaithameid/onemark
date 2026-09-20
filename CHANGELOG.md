@@ -9,7 +9,26 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-**Campaign 2026-09-20 — M1 done-line within reach.** First push in project history; CI green; golden corpus frozen with a real M5 number; design system landed; deploy pipeline live.
+**Campaign 2026-09-20/21 — v0.1.0 shipped; M2 underway.** First push in project history; CI green; golden corpus frozen with a real M5 number; design system landed; deploy pipeline live; perf ladder rungs 1–2 shipped.
+
+### Added — 2026-09-21 (wave 3: M2 started, rung 2 shipped)
+- **M2 GO + tasks 2.1–2.2** — the author accepted the Xcode license; `src-tauri`
+  compiles (`cargo check`/`cargo test` green). Native comrak exposed to the
+  shell as `parse_markdown`, with in-shell determinism tests asserting the
+  native AST against the shared contract fixtures (mirror-rot guard reads the
+  dump manifest). ADR-0020 upgraded to GO. Remaining M2 ticketed
+  (`OneMark-11y`, `OneMark-pws`, `OneMark-8uh`).
+- **Perf ladder rung 2 — chunked sanitisation** — `renderToUnsafeBlocks` emits
+  top-level blocks; each is sanitised independently and reassembled with the
+  renderer's block discipline. Byte-equivalence with whole-string sanitisation
+  proven across the ENTIRE CommonMark + GFM corpora. Arbitrated live:
+  **M1b 27.4 s → 9.5 s (−65%, super-linear term broken)**, M1a 411 → 310 ms.
+  Worker returns blocks; workspace sanitises chunked.
+- **Sanitiser host policy hardened** — guard tests exposed that happy-dom's
+  chunked output can carry a `javascript:` residue past the DOM walk in an
+  encoded form; happy-dom is now refused **by name** as an unsupported
+  sanitiser host (linkedom was already refused via the support check).
+  Sanitisation runs only on complete DOMs, full stop.
 
 ### Added — 2026-09-20 (wave 2: perf ladder rung 1, fail-closed sanitiser, E2E, robustness)
 - **Security hardening (ADR-0022)** — DOMPurify **silently no-ops on linkedom** and
