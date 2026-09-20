@@ -11,6 +11,26 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 **Campaign 2026-09-20 — M1 done-line within reach.** First push in project history; CI green; golden corpus frozen with a real M5 number; design system landed; deploy pipeline live.
 
+### Added — 2026-09-20 (wave 2: perf ladder rung 1, fail-closed sanitiser, E2E, robustness)
+- **Security hardening (ADR-0022)** — DOMPurify **silently no-ops on linkedom** and
+  **reports support yet passes scripts on happy-dom**; either would be an XSS hole in a
+  worker. `sanitiseHtml` now fails closed: throws when DOMPurify reports no support, and
+  re-parses its own output with the host DOMParser to walk for forbidden elements,
+  `on*` handlers and `javascript:` URLs (DOM-precise — a string regex false-positived on
+  legitimately escaped attribute text). Guard tests pin all three hosts.
+- **Perf ladder rung 1** — parse + render + Shiki highlighting moved into the worker;
+  the main thread only sanitises (complete DOM, fail-closed) and hydrates math.
+  Bundle 0.67 → 0.95 MB of the 2 MB budget (the worker carries the renderer).
+- **E2E suite (P6)** — five real-Chromium flows against the built bundle via
+  `vite preview`: boot/split view, type→live preview, theme toggle (data-theme +
+  token re-render), paste import, save→OPFS byte round-trip. Wired as a blocking CI job.
+- **UTF-8 robustness suite (P5)** — BOM, CRLF, RTL, CJK, ZWJ emoji sequences,
+  combining marks, 100K-char lines, and all combined. Found + fixed: the safe path
+  now strips C0 control characters like GitHub's pipeline.
+- **Coverage thresholds (P6)** — v8 provider with floors: engine 85% lines
+  (browser-only loaders excluded — covered by the WASM round-trip gate), renderer 93%,
+  storage 94%; `test:coverage` scripts.
+
 ### Added — 2026-09-20 (campaign: backup, corpus, M5, design, deploy)
 - **Repo backup (P0)** — the entire Rust engine, CI, workspace manifests, README and
   license were untracked on a single disk. Committed one logical change at a time,
