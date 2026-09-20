@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Last updated | 2026-08-22 |
-| Phase | **M1a render + M1c editor + gates complete** — only M1b goldens + deploy remain; both need author input (GITHUB_TOKEN, hosting choice) |
+| Last updated | 2026-09-20 |
+| Phase | **Campaign running** — P0 backup + P1 baseline complete (first push in history, CI green); P2 design system · P3 corpus · P7 sync · P9 analytics · P10 Tauri spike in flight; next: P4 deploy + v0.1.0 |
 | Repo | https://github.com/adhamhaithameid/onemark (public, nothing pushed) |
 | Local | `~/Desktop/code/OneMark` — git initialised, remote added, **2 local commits** (tooling only: beads init + graphify/session-log; all product code still untracked) |
 
@@ -69,15 +69,16 @@ CI wiring for all gates lands with the first push (nothing has ever been pushed)
 **Carry forward on security:** unchanged — safe path is the shipping path; hydration is
 post-sanitisation program output; parsing lives in the worker.
 
-### Verified state after gates (2026-08-22)
+### Verified state after P1 baseline (2026-09-20)
 
 | | |
 |---|---|
-| fmt / clippy -D warnings | clean |
-| Tests | 17 rust · 57 engine · 112 renderer · 14 storage · 14 fidelity · 6 web · 2 bench floor |
+| First push | `master` + tag `v0.1.0-alpha` on GitHub; **CI green (4/4 jobs)** |
+| fmt / clippy -D warnings | clean (Rust 1.97.1 — run with `~/.cargo/bin` first; PATH shadows via MacPorts) |
+| Tests | 17 rust · 57 engine · 112 renderer · 14 storage · 14 fidelity · 6 web · 5 browser security |
 | M3 / M4 | 652/652 · 22/22 (100%) |
-| Bundle | **0.67 MB / 2 MB** initial gzipped |
-| Perf | Node floor recorded (~1.2–2.3 s @ 100 KB); browser arbitration pending (ADR-0016) |
+| Bundle | **0.67 MB / 2 MB** initial gzipped (M6 gate ok) |
+| WASM | 455 KB both targets |
 
 ### What M0 delivered
 
