@@ -29,6 +29,7 @@ docs/fidelity/.cache/
 .env
 .env.local
 .env.*.local
+.dev.vars
 
 # Editor / OS
 .DS_Store

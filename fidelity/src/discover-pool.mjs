@@ -28,11 +28,12 @@ function prng(seed) {
 
 /** Repos mined for candidates, with per-repo caps. Docs-heavy by design. */
 const REPOS = [
-  ['mdn/content', 12],
-  ['reactjs/react.dev', 10],
+  ['mdn/content', 16],
+  ['reactjs/react.dev', 12],
+  ['rust-lang/reference', 10],
   ['rust-lang/book', 8],
   ['rust-lang/async-book', 4],
-  ['nodejs/node', 8],
+  ['nodejs/node', 10],
   ['electron/electron', 6],
   ['microsoft/TypeScript', 5],
   ['golang/go', 5],
@@ -56,8 +57,32 @@ const REPOS = [
   ['rust-lang/rustc-dev-guide', 5],
   ['python/devguide', 4],
   ['docker/docs', 4],
-  ['kubernetes/website', 8],
+  ['kubernetes/website', 12],
   ['yt-dlp/yt-dlp', 4],
+  ['eslint/eslint', 4],
+  ['vitest-dev/vitest', 4],
+  ['gohugoio/hugo', 4],
+  ['prettier/prettier', 3],
+  ['webpack/webpack', 4],
+  ['pytorch/pytorch', 4],
+  ['tensorflow/tensorflow', 3],
+  ['apache/airflow', 4],
+  ['nlohmann/json', 3],
+  ['google/googletest', 3],
+  ['grpc/grpc', 4],
+  ['envoyproxy/envoy', 4],
+  ['elastic/elasticsearch', 4],
+  ['quarkusio/quarkus', 4],
+  ['spring-projects/spring-boot', 4],
+  ['dotnet/runtime', 4],
+  ['fish-shell/fish', 3],
+  ['git/git', 3],
+  ['libuv/libuv', 3],
+  ['apache/kafka', 3],
+  ['nvm-sh/nvm', 2],
+  ['pyenv/pyenv', 2],
+  ['asdf-vm/asdf', 2],
+  ['junegunn/vim-plug', 2],
 ];
 
 function classify(path) {
@@ -123,7 +148,7 @@ async function main() {
   const counts = {};
   for (const [strata, entries] of Object.entries(byStrata)) {
     counts[strata] = entries.length;
-    for (const e of entries) pool.push([e.id, e.repo, e.path, strata]);
+    for (const e of entries) pool.push([e.id, e.repo, e.path, strata, e.bytes]);
   }
 
   writeFileSync(

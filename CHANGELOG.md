@@ -9,7 +9,45 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-**M0 Foundation complete.** The architecture is proven end to end: TS → WASM → AST → TS, byte-identical to the native build.
+**Campaign 2026-09-20 — M1 done-line within reach.** First push in project history; CI green; golden corpus frozen with a real M5 number; design system landed; deploy pipeline live.
+
+### Added — 2026-09-20 (campaign: backup, corpus, M5, design, deploy)
+- **Repo backup (P0)** — the entire Rust engine, CI, workspace manifests, README and
+  license were untracked on a single disk. Committed one logical change at a time,
+  pushed, tagged `v0.1.0-alpha`. CI green (4/4 jobs) on first run in history.
+- **Golden corpus (P3, `OneMark-b5r`/`OneMark-911` closed)** — 74 documents frozen by the
+  seeded OQ-1 rule from a committed 249-candidate pool mined out of 38 real repo trees
+  (blob-size aware, 5–200 KB band, real commit SHAs). Goldens fetched from
+  `POST /markdown` with `gh auth token`. **M5 parity: 100.00% of 49 gated documents**,
+  with 25 known-gaps excluded *with reasons* (frontmatter oracle divergence, @mentions,
+  issue-link shortening, math delimiters, footnote pipeline, raw-HTML sanitiser
+  boundaries).
+- **Normalizer R7–R28** — 22 new named rules, each with a test, discovered by triaging
+  every corpus diff: API link chrome (`rel=nofollow`), camo metadata, image style
+  stamping, linguist-tokenisation collapse (R10), code-block trailing newlines (R11),
+  `notranslate`, ARIA roles, presentation wrappers around lone images, accessibility
+  tables, hovercard/data chrome, raw ids, task-list class vocabulary, sanitised raw-HTML
+  classes, block-level lone images, http→https upgrades, legacy table attributes,
+  colgroup, `abbr` unwrap, empty/attribute-less anchors, checkbox chrome.
+- **Renderer GitHub parity** — safe path renders soft breaks as `<br>` (GitHub .md
+  behaviour; conformance raw path untouched); mermaid fences emit GitHub's
+  `<pre><code class="language-mermaid">` pre-hydration shape, hydration swaps the pre
+  for strict-mode SVG.
+- **Web app fixes** — the Shiki token stylesheet had never been injected (highlighted
+  code rendered unstyled); rendering now passes the resolved theme (dark mode previously
+  rendered light tokens) and theme switches re-render code spans.
+- **Design system (P2)** — `@onemark/design-tokens`: `tokens.json` single source →
+  generated CSS custom properties + typed TS; brand `#c8412d` with a designed dark-mode
+  shift; WCAG contrast asserted in tests (42). Prototype gallery in `design/prototypes/`
+  (app shell, marketing hero, components, typography/motion) awaiting author validation.
+  ADR-0017.
+- **Deploy pipeline (P4)** — `.github/workflows/deploy.yml`: GitHub Pages via
+  actions/deploy-pages at `/onemark/app/`, M6 bundle gate re-enforced before upload;
+  `scripts/perf-arbitrate.mjs` arbitrates the M1a/M1b budgets in real Chromium per
+  ADR-0016. CI web job now runs the M6 bundle gate on every push.
+- **Fidelity report template** — `.github/ISSUE_TEMPLATE/fidelity-report.yml`: markdown
+  source + GitHub reference URL + platform; every real divergence triages into
+  parse/render/present and becomes a regression fixture.
 
 ### Added — 2026-08-22 (M1b runner + gates)
 - **Normalizer R1–R6** (`fidelity/src/normalize.mjs`, OQ-2): parse5 structural diff;
