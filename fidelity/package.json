@@ -4,6 +4,9 @@
   "type": "module",
   "scripts": {
     "spec": "node src/spec.mjs",
+    "corpus": "node src/build-corpus.mjs",
+    "goldens": "node src/fetch-goldens.mjs",
+    "diff": "node src/diff.mjs",
     "test": "vitest run",
     "typecheck": "echo ok"
   },
